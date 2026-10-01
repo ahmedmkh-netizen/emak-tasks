@@ -6,6 +6,8 @@
 <title>EMAK Hub - إدارة المهام</title>
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
@@ -24,6 +26,7 @@ const firebaseConfig = {
 };
 
 const ADMIN_EMAILS = ["ahmedmkh@gmail.com"];
+const LOGO_URL = "https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -38,14 +41,8 @@ let currentSearch = "";
 let currentSort = "priority";
 let currentTheme = localStorage.getItem("theme") || "dark";
 let openTaskId = null;
-
-// ==== الثيم ====
-function applyTheme() {
-  document.documentElement.setAttribute("data-theme", currentTheme);
-  const btn = document.getElementById("themeBtn");
-  if (btn) btn.textContent = currentTheme === "dark" ? "☀️" : "🌙";
-  localStorage.setItem("theme", currentTheme);
-}
+let pinnedTaskId = localStorage.getItem("pinnedTask") || null;
+let charts = {};
 
 // ==== أدوات ====
 function escapeHtml(s) {
@@ -78,8 +75,28 @@ function dueLabel(dueDate) {
   if (d <= 3) return `📅 باقي ${d} أيام`;
   return `📅 ${dueDate}`;
 }
+function isThisWeek(ts) {
+  if (!ts) return false;
+  const now = Date.now();
+  const week = 7 * 24 * 60 * 60 * 1000;
+  return (now - ts) <= week;
+}
+function isThisMonth(ts) {
+  if (!ts) return false;
+  const now = Date.now();
+  const month = 30 * 24 * 60 * 60 * 1000;
+  return (now - ts) <= month;
+}
 
-// ==== تسجيل الدخول ====
+// ==== الثيم ====
+function applyTheme() {
+  document.documentElement.setAttribute("data-theme", currentTheme);
+  const btn = document.getElementById("themeBtn");
+  if (btn) btn.textContent = currentTheme === "dark" ? "☀️" : "🌙";
+  localStorage.setItem("theme", currentTheme);
+}
+
+// ==== الدخول ====
 document.getElementById("loginBtn").onclick = async () => {
   try { await signInWithPopup(auth, provider); }
   catch (e) { alert("فشل تسجيل الدخول: " + e.message); }
@@ -120,14 +137,11 @@ function loadTasks() {
   onValue(ref(db, "tasks"), (snap) => {
     allTasks = snap.val() || {};
     renderAll();
-    // تحديث المودال لو مفتوح
-    if (openTaskId && allTasks[openTaskId]) {
-      renderModal(openTaskId);
-    }
+    if (openTaskId && allTasks[openTaskId]) renderModal(openTaskId);
   });
 }
 
-// ==== إضافة مهمة ====
+// ==== إضافة ====
 document.getElementById("addTaskForm").onsubmit = async (e) => {
   e.preventDefault();
   if (!isAdmin) return alert("غير مصرح");
@@ -136,10 +150,11 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
   const priority = document.getElementById("taskPriority").value;
   const dueDate = document.getElementById("taskDue").value;
   const notes = document.getElementById("taskNotes").value.trim();
+  const tags = document.getElementById("taskTags").value.trim();
   if (!title || !assignee) return;
 
   await push(ref(db, "tasks"), {
-    title, assignee, priority, dueDate, notes,
+    title, assignee, priority, dueDate, notes, tags,
     status: "جديدة",
     createdBy: currentUser.email,
     createdByName: currentUser.displayName || currentUser.email.split("@")[0],
@@ -150,7 +165,7 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
   showToast("✅ تمت إضافة المهمة");
 };
 
-// ==== تغيير الحالة ====
+// ==== الحالة ====
 async function changeStatus(taskId, newStatus) {
   const t = allTasks[taskId];
   if (!t) return;
@@ -163,13 +178,12 @@ async function changeStatus(taskId, newStatus) {
   showToast(`🔄 الحالة: ${newStatus}`);
 }
 
-// ==== إضافة ملاحظة ====
+// ==== تعليق ====
 async function addComment(taskId, fromModal = false) {
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
   const input = document.getElementById(inputId);
   const text = input.value.trim();
   if (!text) return;
-
   const commentRef = push(ref(db, "tasks/" + taskId + "/comments"));
   await set(commentRef, {
     text,
@@ -183,7 +197,7 @@ async function addComment(taskId, fromModal = false) {
     updatedByName: currentUser.displayName || currentUser.email.split("@")[0]
   });
   input.value = "";
-  showToast("💬 تمت إضافة الملاحظة");
+  showToast("💬 تمت الإضافة");
 }
 
 // ==== حذف ====
@@ -201,25 +215,42 @@ async function editTask(taskId) {
   if (!isAdmin) return alert("غير مصرح");
   const t = allTasks[taskId];
   if (!t) return;
-  const newTitle = prompt("العنوان الجديد:", t.title);
+  const newTitle = prompt("العنوان:", t.title);
   if (newTitle === null) return;
-  const newDue = prompt("تاريخ التسليم (YYYY-MM-DD):", t.dueDate || "");
+  const newDue = prompt("التسليم (YYYY-MM-DD):", t.dueDate || "");
   if (newDue === null) return;
-  const newPriority = prompt("الأولوية (عاجل / مهم / عادي):", t.priority || "عادي");
+  const newPriority = prompt("الأولوية (عاجل/مهم/عادي):", t.priority || "عادي");
   if (newPriority === null) return;
-  const newAssignee = prompt("المسؤول (بهاء / محمود):", t.assignee);
+  const newAssignee = prompt("المسؤول (بهاء/محمود):", t.assignee);
   if (newAssignee === null) return;
+  const newTags = prompt("الوسوم (فاصلة بين كل وسم):", t.tags || "");
+  if (newTags === null) return;
 
   await update(ref(db, "tasks/" + taskId), {
     title: newTitle.trim() || t.title,
     dueDate: newDue.trim(),
     priority: newPriority.trim() || "عادي",
     assignee: newAssignee.trim() || t.assignee,
+    tags: newTags.trim(),
     updatedAt: serverTimestamp(),
     updatedBy: currentUser.email,
     updatedByName: currentUser.displayName || currentUser.email.split("@")[0]
   });
   showToast("✏️ تم التعديل");
+}
+
+// ==== تثبيت ====
+function togglePin(taskId) {
+  if (pinnedTaskId === taskId) {
+    pinnedTaskId = null;
+    localStorage.removeItem("pinnedTask");
+    showToast("📌 تم إلغاء التثبيت");
+  } else {
+    pinnedTaskId = taskId;
+    localStorage.setItem("pinnedTask", taskId);
+    showToast("⭐ تم التثبيت في الأعلى");
+  }
+  renderTasks();
 }
 
 // ==== المودال ====
@@ -238,7 +269,6 @@ function closeModal() {
 function renderModal(taskId) {
   const t = allTasks[taskId];
   if (!t) return closeModal();
-
   const statusClass = t.status === "مكتملة" ? "done"
     : t.status === "جاري التنفيذ" ? "progress" : "new";
   const priorityClass = t.priority === "عاجل" ? "urgent"
@@ -259,7 +289,11 @@ function renderModal(taskId) {
       </div>
       <div class="modal-comment-text">${escapeHtml(c.text)}</div>
     </div>
-  `).join("") : '<p class="empty-comments">لا توجد ملاحظات بعد</p>';
+  `).join("") : '<p class="empty-comments">لا توجد تعليقات بعد</p>';
+
+  const tagsHtml = t.tags ? t.tags.split(",").map(tag => tag.trim()).filter(Boolean).map(tag =>
+    `<span class="tag">${escapeHtml(tag)}</span>`
+  ).join("") : "";
 
   document.getElementById("modalBody").innerHTML = `
     <div class="modal-header ${priorityClass}">
@@ -272,16 +306,14 @@ function renderModal(taskId) {
       </div>
       <button class="modal-close" onclick="window.closeModal()">✕</button>
     </div>
-
     <h2 class="modal-title">${escapeHtml(t.title)}</h2>
-
+    ${tagsHtml ? `<div class="modal-tags">${tagsHtml}</div>` : ""}
     <div class="modal-meta">
       <div class="meta-item">
         <span class="meta-label">👤 المسؤول</span>
         <span class="meta-value">${escapeHtml(t.assignee)}</span>
       </div>
-      ${t.dueDate ? `
-      <div class="meta-item">
+      ${t.dueDate ? `<div class="meta-item">
         <span class="meta-label">📅 التسليم</span>
         <span class="meta-value ${isOverdue ? 'overdue-text' : ''}">${dueLabel(t.dueDate)}</span>
       </div>` : ""}
@@ -291,16 +323,13 @@ function renderModal(taskId) {
       </div>
       <div class="meta-item">
         <span class="meta-label">🆕 أُنشئت</span>
-        <span class="meta-value">${t.createdByName ? escapeHtml(t.createdByName) + " — " + formatDate(t.createdAt) : formatDate(t.createdAt)}</span>
+        <span class="meta-value">${formatDate(t.createdAt)}</span>
       </div>
     </div>
-
-    ${t.notes ? `
-      <div class="modal-section">
-        <div class="modal-section-title">📝 ملاحظات المهمة</div>
-        <div class="modal-notes">${escapeHtml(t.notes)}</div>
-      </div>` : ""}
-
+    ${t.notes ? `<div class="modal-section">
+      <div class="modal-section-title">📝 ملاحظات المهمة</div>
+      <div class="modal-notes">${escapeHtml(t.notes)}</div>
+    </div>` : ""}
     <div class="modal-section">
       <div class="modal-section-title">💬 التعليقات (${comments.length})</div>
       <div class="modal-comments-list">${commentsHtml}</div>
@@ -309,8 +338,8 @@ function renderModal(taskId) {
         <button onclick="window.addComment('${taskId}', true)">إرسال</button>
       </div>
     </div>
-
     <div class="modal-actions">
+      <button class="btn-pin ${pinnedTaskId === taskId ? 'active' : ''}" onclick="window.togglePin('${taskId}')">${pinnedTaskId === taskId ? '⭐ مثبتة' : '☆ تثبيت'}</button>
       <select onchange="window.changeStatus('${taskId}', this.value)" class="modal-status-select">
         <option ${t.status === "جديدة" ? "selected" : ""}>جديدة</option>
         <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
@@ -322,11 +351,10 @@ function renderModal(taskId) {
       ` : ""}
     </div>
   `;
-
   document.getElementById("modalBox").className = "modal-box" + (isUrgent ? " urgent-glow" : "");
 }
 
-// ==== فلترة وبحث وترتيب ====
+// ==== التحكم ====
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -335,17 +363,14 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
     renderAll();
   };
 });
-
 document.getElementById("searchBox").addEventListener("input", (e) => {
   currentSearch = e.target.value.trim().toLowerCase();
   renderTasks();
 });
-
 document.getElementById("sortSelect").addEventListener("change", (e) => {
   currentSort = e.target.value;
   renderTasks();
 });
-
 document.getElementById("themeBtn").onclick = () => {
   currentTheme = currentTheme === "dark" ? "light" : "dark";
   applyTheme();
@@ -359,11 +384,12 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove("show"), 2500);
 }
 
-// ==== عرض ====
+// ==== العرض ====
 function renderAll() {
   renderStats();
   renderTeam();
   renderTasks();
+  renderCharts();
 }
 
 function renderStats() {
@@ -375,7 +401,6 @@ function renderStats() {
     const d = daysRemaining(t.dueDate);
     return d !== null && d < 0 && t.status !== "مكتملة";
   }).length;
-
   document.getElementById("statTotal").textContent = total;
   document.getElementById("statDone").textContent = done;
   document.getElementById("statProgress").textContent = progress;
@@ -389,44 +414,125 @@ function renderTeam() {
     team[t.assignee].total++;
     if (t.status === "مكتملة") team[t.assignee].done++;
   });
-
   const html = Object.entries(team).map(([name, s]) => {
     const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
-    return `
-      <div class="team-row">
-        <div class="team-name">${escapeHtml(name)}</div>
-        <div class="team-bar"><div class="team-fill" style="width:${pct}%"></div></div>
-        <div class="team-pct">${pct}% (${s.done}/${s.total})</div>
-      </div>`;
+    return `<div class="team-row">
+      <div class="team-name">${escapeHtml(name)}</div>
+      <div class="team-bar"><div class="team-fill" style="width:${pct}%"></div></div>
+      <div class="team-pct">${pct}% (${s.done}/${s.total})</div>
+    </div>`;
   }).join("");
-
   document.getElementById("teamList").innerHTML = html || '<p class="empty">لا توجد بيانات</p>';
 }
 
+// ==== الرسوم البيانية ====
+function renderCharts() {
+  const entries = Object.values(allTasks);
+  const done = entries.filter(t => t.status === "مكتملة").length;
+  const progress = entries.filter(t => t.status === "جاري التنفيذ").length;
+  const newT = entries.filter(t => t.status === "جديدة").length;
+
+  // Pie Chart - الحالات
+  const ctx1 = document.getElementById("chartStatus");
+  if (ctx1) {
+    if (charts.status) charts.status.destroy();
+    charts.status = new Chart(ctx1, {
+      type: "doughnut",
+      data: {
+        labels: ["مكتملة", "جارية", "جديدة"],
+        datasets: [{
+          data: [done, progress, newT],
+          backgroundColor: ["#22c55e", "#f59e0b", "#4f8ef7"],
+          borderColor: "transparent",
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim(), font: { family: "Cairo", size: 12 } }
+          }
+        }
+      }
+    });
+  }
+
+  // Bar Chart - الإنتاجية الأسبوعية
+  const ctx2 = document.getElementById("chartProductivity");
+  if (ctx2) {
+    const days = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+    const counts = [0,0,0,0,0,0,0];
+    entries.filter(t => t.status === "مكتملة" && isThisWeek(t.updatedAt)).forEach(t => {
+      const d = new Date(t.updatedAt).getDay();
+      counts[d]++;
+    });
+    const reordered = [counts[6], counts[0], counts[1], counts[2], counts[3], counts[4], counts[5]];
+
+    if (charts.productivity) charts.productivity.destroy();
+    charts.productivity = new Chart(ctx2, {
+      type: "bar",
+      data: {
+        labels: days,
+        datasets: [{
+          label: "مهام مكتملة هذا الأسبوع",
+          data: reordered,
+          backgroundColor: "#4f8ef7",
+          borderRadius: 8,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim(), stepSize: 1, font: { family: "Cairo" } },
+            grid: { color: "rgba(128,128,128,0.1)" }
+          },
+          x: {
+            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim(), font: { family: "Cairo" } },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  }
+}
+
+// ==== المهام ====
 function renderTasks() {
   const list = document.getElementById("tasksList");
   let entries = Object.entries(allTasks);
 
   // ترتيب
-  if (currentSort === "priority") {
-    entries.sort((a, b) => {
+  entries.sort((a, b) => {
+    // المثبتة فوق
+    if (a[0] === pinnedTaskId) return -1;
+    if (b[0] === pinnedTaskId) return 1;
+
+    if (currentSort === "priority") {
       const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
       const pa = pri[a[1].priority] ?? 2;
       const pb = pri[b[1].priority] ?? 2;
       if (pa !== pb) return pa - pb;
       return (b[1].createdAt || 0) - (a[1].createdAt || 0);
-    });
-  } else if (currentSort === "date") {
-    entries.sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
-  } else if (currentSort === "due") {
-    entries.sort((a, b) => {
+    }
+    if (currentSort === "date") return (b[1].createdAt || 0) - (a[1].createdAt || 0);
+    if (currentSort === "due") {
       if (!a[1].dueDate) return 1;
       if (!b[1].dueDate) return -1;
       return new Date(a[1].dueDate) - new Date(b[1].dueDate);
-    });
-  } else if (currentSort === "title") {
-    entries.sort((a, b) => (a[1].title || "").localeCompare(b[1].title || "", "ar"));
-  }
+    }
+    if (currentSort === "title") return (a[1].title || "").localeCompare(b[1].title || "", "ar");
+    return 0;
+  });
 
   // فلترة
   let filtered = entries.filter(([_, t]) => {
@@ -439,13 +545,14 @@ function renderTasks() {
       const d = daysRemaining(t.dueDate);
       return d !== null && d < 0 && t.status !== "مكتملة";
     }
+    if (currentFilter === "week") return isThisWeek(t.createdAt);
+    if (currentFilter === "month") return isThisMonth(t.createdAt);
     return true;
   });
 
-  // بحث
   if (currentSearch) {
     filtered = filtered.filter(([_, t]) => {
-      const haystack = `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""}`.toLowerCase();
+      const haystack = `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""} ${t.tags || ""}`.toLowerCase();
       return haystack.includes(currentSearch);
     });
   }
@@ -464,14 +571,21 @@ function renderTasks() {
     const d = daysRemaining(t.dueDate);
     const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
     const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
+    const isPinned = pinnedTaskId === id;
+
+    const tagsHtml = t.tags ? t.tags.split(",").map(tag => tag.trim()).filter(Boolean).slice(0, 2).map(tag =>
+      `<span class="card-tag">${escapeHtml(tag)}</span>`
+    ).join("") : "";
 
     return `
-      <div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""}" onclick="window.openModal('${id}')">
+      <div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""} ${isPinned ? "pinned" : ""}" onclick="window.openModal('${id}')">
+        ${isPinned ? '<div class="pin-badge">⭐</div>' : ""}
         <div class="card-top">
           <span class="priority-dot ${priorityClass}"></span>
           <span class="assignee-chip">👤 ${escapeHtml(t.assignee)}</span>
         </div>
         <h3 class="card-title">${escapeHtml(t.title)}</h3>
+        ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
         ${t.notes ? `<p class="card-notes">${escapeHtml(t.notes)}</p>` : ""}
         <div class="card-bottom">
           ${t.dueDate ? `<span class="card-due ${isOverdue ? 'overdue' : ''}">${dueLabel(t.dueDate)}</span>` : "<span></span>"}
@@ -485,19 +599,178 @@ function renderTasks() {
   }).join("");
 }
 
+// ==== تقرير PDF ====
+function openReport() {
+  const entries = Object.entries(allTasks);
+  const done = entries.filter(([_, t]) => t.status === "مكتملة");
+  const progress = entries.filter(([_, t]) => t.status === "جاري التنفيذ");
+  const newT = entries.filter(([_, t]) => t.status === "جديدة");
+  const overdue = entries.filter(([_, t]) => {
+    const d = daysRemaining(t.dueDate);
+    return d !== null && d < 0 && t.status !== "مكتملة";
+  });
+
+  const team = {};
+  entries.forEach(([_, t]) => {
+    if (!team[t.assignee]) team[t.assignee] = { total: 0, done: 0, progress: 0, overdue: 0 };
+    team[t.assignee].total++;
+    if (t.status === "مكتملة") team[t.assignee].done++;
+    else if (t.status === "جاري التنفيذ") team[t.assignee].progress++;
+    const d = daysRemaining(t.dueDate);
+    if (d !== null && d < 0 && t.status !== "مكتملة") team[t.assignee].overdue++;
+  });
+
+  const teamRows = Object.entries(team).map(([name, s]) => `
+    <tr>
+      <td>${escapeHtml(name)}</td>
+      <td>${s.total}</td>
+      <td>${s.done}</td>
+      <td>${s.progress}</td>
+      <td>${s.overdue}</td>
+      <td>${s.total ? Math.round((s.done/s.total)*100) : 0}%</td>
+    </tr>
+  `).join("");
+
+  const taskRow = (id, t) => `
+    <div class="r-task">
+      <div class="r-task-head">
+        <span class="r-badge ${t.priority === 'عاجل' ? 'r-urgent' : t.priority === 'مهم' ? 'r-important' : 'r-normal'}">${t.priority || 'عادي'}</span>
+        <span class="r-status">${t.status}</span>
+      </div>
+      <div class="r-title">${escapeHtml(t.title)}</div>
+      <div class="r-meta">
+        <span>👤 ${escapeHtml(t.assignee)}</span>
+        ${t.dueDate ? `<span>📅 ${t.dueDate}</span>` : ""}
+        ${t.updatedByName ? `<span>✏️ آخر تعديل: ${escapeHtml(t.updatedByName)}</span>` : ""}
+      </div>
+      ${t.notes ? `<div class="r-notes">📝 ${escapeHtml(t.notes)}</div>` : ""}
+      ${t.comments ? `<div class="r-comments">💬 ${Object.keys(t.comments).length} تعليق</div>` : ""}
+    </div>
+  `;
+
+  const today = new Date().toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" });
+
+  const reportHtml = `
+    <div id="reportContent" class="report-content">
+      <div class="r-header">
+        <img src="${LOGO_URL}" class="r-logo">
+        <div class="r-header-text">
+          <h1>EMAK Hub</h1>
+          <p>تقرير المهام — قسم نظم المعلومات</p>
+          <p class="r-date">التاريخ: ${today}</p>
+        </div>
+      </div>
+
+      <div class="r-summary">
+        <div class="r-sum-item"><div class="r-sum-num">${entries.length}</div><div class="r-sum-label">إجمالي</div></div>
+        <div class="r-sum-item done"><div class="r-sum-num">${done.length}</div><div class="r-sum-label">مكتملة</div></div>
+        <div class="r-sum-item progress"><div class="r-sum-num">${progress.length}</div><div class="r-sum-label">جارية</div></div>
+        <div class="r-sum-item overdue"><div class="r-sum-num">${overdue.length}</div><div class="r-sum-label">متأخرة</div></div>
+      </div>
+
+      <div class="r-section">
+        <h2>👥 أداء الفريق</h2>
+        <table class="r-table">
+          <thead>
+            <tr>
+              <th>الموظف</th>
+              <th>الإجمالي</th>
+              <th>مكتملة</th>
+              <th>جارية</th>
+              <th>متأخرة</th>
+              <th>النسبة</th>
+            </tr>
+          </thead>
+          <tbody>${teamRows}</tbody>
+        </table>
+      </div>
+
+      ${overdue.length > 0 ? `
+      <div class="r-section">
+        <h2>⚠️ المهام المتأخرة (${overdue.length})</h2>
+        ${overdue.map(([id,t]) => taskRow(id,t)).join("")}
+      </div>` : ""}
+
+      ${progress.length > 0 ? `
+      <div class="r-section">
+        <h2>⏳ المهام الجارية (${progress.length})</h2>
+        ${progress.map(([id,t]) => taskRow(id,t)).join("")}
+      </div>` : ""}
+
+      ${newT.length > 0 ? `
+      <div class="r-section">
+        <h2>🆕 المهام الجديدة (${newT.length})</h2>
+        ${newT.map(([id,t]) => taskRow(id,t)).join("")}
+      </div>` : ""}
+
+      ${done.length > 0 ? `
+      <div class="r-section">
+        <h2>✅ المهام المكتملة (${done.length})</h2>
+        ${done.map(([id,t]) => taskRow(id,t)).join("")}
+      </div>` : ""}
+
+      <div class="r-footer">
+        تم إنشاء التقرير تلقائياً بواسطة EMAK Hub — ${today}
+      </div>
+    </div>
+  `;
+
+  document.getElementById("reportBody").innerHTML = reportHtml;
+  document.getElementById("reportOverlay").classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeReport() {
+  document.getElementById("reportOverlay").classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+async function downloadPDF() {
+  const btn = document.getElementById("downloadPdfBtn");
+  btn.disabled = true;
+  btn.textContent = "⏳ جاري التحميل...";
+  try {
+    const element = document.getElementById("reportContent");
+    const opt = {
+      margin: [10, 10, 10, 10],
+      filename: `EMAK-Report-${new Date().toISOString().slice(0,10)}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    };
+    await html2pdf().set(opt).from(element).save();
+    showToast("📄 تم تحميل التقرير");
+  } catch (e) {
+    alert("خطأ في التحميل: " + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "📄 تحميل PDF";
+  }
+}
+
+// ==== ربط الأزرار ====
 window.changeStatus = changeStatus;
 window.addComment = addComment;
 window.deleteTask = deleteTask;
 window.editTask = editTask;
 window.openModal = openModal;
 window.closeModal = closeModal;
+window.togglePin = togglePin;
+window.openReport = openReport;
+window.closeReport = closeReport;
+window.downloadPDF = downloadPDF;
 
-// إغلاق المودال بالضغط على الخلفية أو Escape
 document.getElementById("modalOverlay").addEventListener("click", (e) => {
   if (e.target.id === "modalOverlay") closeModal();
 });
+document.getElementById("reportOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "reportOverlay") closeReport();
+});
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeModal();
+  if (e.key === "Escape") {
+    closeModal();
+    closeReport();
+  }
 });
 
 applyTheme();
@@ -505,51 +778,31 @@ applyTheme();
 
 <style>
 :root[data-theme="dark"] {
-  --bg: #0a0e1a;
-  --bg-2: #131826;
-  --bg-3: #1e2537;
-  --bg-4: #2a3349;
-  --text: #f1f5f9;
-  --text-2: #94a3b8;
-  --text-3: #64748b;
+  --bg: #0a0e1a; --bg-2: #131826; --bg-3: #1e2537; --bg-4: #2a3349;
+  --text: #f1f5f9; --text-2: #94a3b8; --text-3: #64748b;
   --border: #2a3349;
-  --primary: #4f8ef7;
-  --primary-2: #2563eb;
-  --accent: #f59e0b;
-  --urgent: #ff4d4f;
-  --important: #f59e0b;
-  --success: #22c55e;
+  --primary: #4f8ef7; --primary-2: #2563eb;
+  --accent: #f59e0b; --urgent: #ff4d4f; --important: #f59e0b; --success: #22c55e;
   --shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 :root[data-theme="light"] {
-  --bg: #f5f7fb;
-  --bg-2: #ffffff;
-  --bg-3: #f1f5f9;
-  --bg-4: #e2e8f0;
-  --text: #0f172a;
-  --text-2: #64748b;
-  --text-3: #94a3b8;
+  --bg: #f5f7fb; --bg-2: #ffffff; --bg-3: #f1f5f9; --bg-4: #e2e8f0;
+  --text: #0f172a; --text-2: #64748b; --text-3: #94a3b8;
   --border: #e2e8f0;
-  --primary: #2563eb;
-  --primary-2: #1e40af;
-  --accent: #d97706;
-  --urgent: #dc2626;
-  --important: #d97706;
-  --success: #059669;
+  --primary: #2563eb; --primary-2: #1e40af;
+  --accent: #d97706; --urgent: #dc2626; --important: #d97706; --success: #059669;
   --shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--bg); color: var(--text);
   min-height: 100vh;
   transition: background 0.3s, color 0.3s;
 }
 
-/* ==== شاشة الدخول ==== */
+/* شاشة الدخول */
 #loginScreen {
   display: flex; align-items: center; justify-content: center;
   min-height: 100vh; padding: 20px;
@@ -564,7 +817,7 @@ body {
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 .login-logo { width: 100px; margin-bottom: 20px; }
-.login-card h1 { color: #f1f5f9; margin-bottom: 8px; font-size: 30px; font-weight: 900; letter-spacing: -0.5px; }
+.login-card h1 { color: #f1f5f9; margin-bottom: 8px; font-size: 30px; font-weight: 900; }
 .login-card p { color: #94a3b8; margin-bottom: 32px; font-size: 14px; }
 #loginBtn {
   background: white; color: #1e293b; border: none;
@@ -576,28 +829,24 @@ body {
 #loginBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
 #loginBtn img { width: 22px; }
 
-/* ==== الهيدر ==== */
+/* الهيدر */
 #mainScreen { display: none; }
 header {
-  background: var(--bg-2);
-  border-bottom: 1px solid var(--border);
+  background: var(--bg-2); border-bottom: 1px solid var(--border);
   padding: 12px 24px;
   display: flex; justify-content: space-between; align-items: center;
   position: sticky; top: 0; z-index: 50;
   box-shadow: var(--shadow);
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 12px; flex-wrap: wrap;
 }
 .header-brand { display: flex; align-items: center; gap: 12px; }
 .header-brand img { width: 42px; height: 42px; object-fit: contain; }
 .header-brand h1 { font-size: 20px; color: var(--text); font-weight: 800; line-height: 1; }
 .header-brand .subtitle { font-size: 11px; color: var(--text-2); margin-top: 2px; }
-
 .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; flex-wrap: wrap; }
 .role { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 .role.admin { background: rgba(245,158,11,0.15); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
 .role.user { background: rgba(79,142,247,0.15); color: var(--primary); border: 1px solid rgba(79,142,247,0.3); }
-
 .icon-btn {
   background: var(--bg-3); color: var(--text);
   border: 1px solid var(--border);
@@ -605,49 +854,38 @@ header {
   font-size: 15px; transition: 0.2s;
 }
 .icon-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
-
+.btn-report {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white; border: none;
+  padding: 9px 18px; border-radius: 10px; cursor: pointer;
+  font-size: 13px; font-weight: 700; font-family: inherit;
+  transition: 0.2s;
+}
+.btn-report:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34,197,94,0.4); }
 #logoutBtn {
   background: rgba(220,38,38,0.1); color: var(--urgent);
   border: 1px solid rgba(220,38,38,0.3);
   padding: 8px 16px; border-radius: 10px; cursor: pointer;
   font-size: 12px; font-weight: 600; font-family: inherit;
-  transition: 0.2s;
 }
 #logoutBtn:hover { background: var(--urgent); color: white; }
 
-/* ==== الحاوية ==== */
 .container { max-width: 1500px; margin: 20px auto; padding: 0 20px; }
-
 .card-panel {
-  background: var(--bg-2);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px; margin-bottom: 20px;
   box-shadow: var(--shadow);
 }
 .panel-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
 
-/* ==== الإحصائيات ==== */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-}
+/* الإحصائيات */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 .stat {
-  background: var(--bg-3);
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-  border: 1px solid var(--border);
-  transition: 0.2s;
-  position: relative;
-  overflow: hidden;
+  background: var(--bg-3); border-radius: 14px; padding: 16px;
+  text-align: center; border: 1px solid var(--border);
+  transition: 0.2s; position: relative; overflow: hidden;
 }
-.stat::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
-}
+.stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .stat.total::before { background: var(--primary); }
 .stat.done::before { background: var(--success); }
 .stat.progress::before { background: var(--important); }
@@ -660,36 +898,36 @@ header {
 .stat.progress .stat-num { color: var(--important); }
 .stat.overdue .stat-num { color: var(--urgent); }
 
-/* ==== الفريق ==== */
+/* الفريق */
 .team-row {
-  display: grid;
-  grid-template-columns: 120px 1fr 130px;
-  gap: 12px;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: 120px 1fr 130px;
+  gap: 12px; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
 }
 .team-row:last-child { border-bottom: none; }
 .team-name { font-weight: 600; font-size: 14px; }
 .team-bar { height: 8px; background: var(--bg-4); border-radius: 4px; overflow: hidden; }
-.team-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--success));
-  transition: width 0.5s;
-  border-radius: 4px;
-}
+.team-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); transition: width 0.5s; border-radius: 4px; }
 .team-pct { font-size: 13px; color: var(--text-2); text-align: left; font-weight: 600; }
 
-/* ==== الفورم ==== */
+/* الرسوم البيانية */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.chart-box { height: 280px; position: relative; }
+@media (max-width: 800px) {
+  .charts-grid { grid-template-columns: 1fr; }
+}
+
+/* الفورم */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .form-grid input, .form-grid select, .form-grid textarea {
   padding: 12px 14px;
-  background: var(--bg-3);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  background: var(--bg-3); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
   font-size: 14px; font-family: inherit;
-  transition: 0.2s;
 }
 .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
   outline: none; border-color: var(--primary);
@@ -701,81 +939,48 @@ header {
   color: white; border: none;
   padding: 14px; border-radius: 10px; cursor: pointer;
   font-size: 15px; font-weight: 700; font-family: inherit;
-  transition: 0.2s;
 }
 .form-grid button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(79,142,247,0.4); }
 
-/* ==== أدوات التحكم ==== */
-.controls-bar {
-  display: flex; gap: 12px; margin-bottom: 20px;
-  flex-wrap: wrap; align-items: center;
-}
-.search-wrap {
-  flex: 1; min-width: 200px; position: relative;
-}
+/* التحكم */
+.controls-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.search-wrap { flex: 1; min-width: 200px; position: relative; }
 .search-wrap input {
   width: 100%; padding: 12px 16px 12px 44px;
   background: var(--bg-2); color: var(--text);
   border: 1px solid var(--border); border-radius: 12px;
   font-size: 14px; font-family: inherit;
 }
-.search-wrap input:focus {
-  outline: none; border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
-}
-.search-wrap::before {
-  content: '🔍';
-  position: absolute; right: 16px; top: 50%;
-  transform: translateY(-50%); font-size: 14px;
-  pointer-events: none;
-}
+.search-wrap input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,142,247,0.15); }
+.search-wrap::before { content: '🔍'; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 14px; pointer-events: none; }
 #sortSelect {
-  padding: 12px 16px;
-  background: var(--bg-2); color: var(--text);
+  padding: 12px 16px; background: var(--bg-2); color: var(--text);
   border: 1px solid var(--border); border-radius: 12px;
   font-size: 13px; font-family: inherit; cursor: pointer;
 }
 
-/* ==== الفلاتر ==== */
 .filters { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
 .filter-btn {
-  background: var(--bg-2);
-  color: var(--text);
+  background: var(--bg-2); color: var(--text);
   border: 1px solid var(--border);
   padding: 8px 16px; border-radius: 20px; cursor: pointer;
   font-size: 13px; font-family: inherit; font-weight: 500;
   transition: 0.2s;
 }
 .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
-.filter-btn.active {
-  background: var(--primary); color: white; border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(79,142,247,0.3);
-}
+.filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(79,142,247,0.3); }
 
-/* ==== شبكة المهام ==== */
-#tasksList {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
-}
+/* شبكة المهام */
+#tasksList { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
 
-/* ==== كارت المهمة ==== */
 .task-card {
-  background: var(--bg-2);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  cursor: pointer;
-  transition: all 0.25s;
-  position: relative;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px; cursor: pointer;
+  transition: all 0.25s; position: relative;
   display: flex; flex-direction: column;
-  min-height: 170px;
-  overflow: hidden;
+  min-height: 170px; overflow: hidden;
 }
-.task-card::before {
-  content: '';
-  position: absolute; top: 0; right: 0; left: 0; height: 3px;
-}
+.task-card::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 3px; }
 .task-card.normal::before { background: var(--success); }
 .task-card.important::before { background: var(--important); }
 .task-card.urgent::before { background: var(--urgent); }
@@ -783,227 +988,285 @@ header {
 .task-card.done { opacity: 0.65; }
 .task-card.done:hover { opacity: 1; }
 
-/* ✨ الفلاشر النيون للمهام العاجلة ✨ */
-@keyframes urgentGlow {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(255,77,79,0.2),
-                0 0 15px rgba(255,77,79,0.15);
-    border-color: var(--border);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(255,77,79,0.7),
-                0 0 45px rgba(255,77,79,0.4);
-    border-color: var(--urgent);
-  }
+.task-card.pinned {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(245,158,11,0.3);
 }
-.task-card.urgent-glow {
-  animation: urgentGlow 1.8s ease-in-out infinite;
+.pin-badge {
+  position: absolute; top: 10px; left: 10px;
+  font-size: 16px; z-index: 2;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
 }
 
-.card-top {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px;
+@keyframes urgentGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(255,77,79,0.2), 0 0 15px rgba(255,77,79,0.15); border-color: var(--border); }
+  50% { box-shadow: 0 0 25px rgba(255,77,79,0.7), 0 0 45px rgba(255,77,79,0.4); border-color: var(--urgent); }
 }
-.priority-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-}
+.task-card.urgent-glow { animation: urgentGlow 1.8s ease-in-out infinite; }
+
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.priority-dot { width: 10px; height: 10px; border-radius: 50%; }
 .priority-dot.urgent { background: var(--urgent); box-shadow: 0 0 10px var(--urgent); }
 .priority-dot.important { background: var(--important); }
 .priority-dot.normal { background: var(--success); }
-
-.assignee-chip {
-  font-size: 11px; padding: 4px 10px;
-  background: var(--bg-3); border-radius: 12px;
-  color: var(--text-2); font-weight: 600;
-}
+.assignee-chip { font-size: 11px; padding: 4px 10px; background: var(--bg-3); border-radius: 12px; color: var(--text-2); font-weight: 600; }
 
 .card-title {
   font-size: 15px; font-weight: 700; line-height: 1.4;
   color: var(--text); margin-bottom: 8px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  min-height: 42px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; min-height: 42px;
 }
 .card-notes {
-  font-size: 12px; color: var(--text-2); line-height: 1.5;
-  margin-bottom: 10px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 10px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-tags { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+.card-tag {
+  font-size: 10px; padding: 3px 8px;
+  background: rgba(79,142,247,0.15); color: var(--primary);
+  border-radius: 10px; font-weight: 600;
 }
 
 .card-bottom {
-  margin-top: auto;
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 8px; flex-wrap: wrap;
+  margin-top: auto; display: flex; justify-content: space-between;
+  align-items: center; gap: 8px; flex-wrap: wrap;
 }
-.card-due {
-  font-size: 11px; color: var(--text-2);
-  padding: 4px 8px; background: var(--bg-3);
-  border-radius: 6px; font-weight: 600;
-}
+.card-due { font-size: 11px; color: var(--text-2); padding: 4px 8px; background: var(--bg-3); border-radius: 6px; font-weight: 600; }
 .card-due.overdue { background: rgba(255,77,79,0.15); color: var(--urgent); }
-
 .card-icons { display: flex; gap: 6px; align-items: center; }
 .card-icon { font-size: 11px; color: var(--text-2); }
-
-.status-pill {
-  font-size: 10px; font-weight: 700;
-  padding: 4px 10px; border-radius: 12px;
-}
+.status-pill { font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 12px; }
 .status-pill.new { background: rgba(79,142,247,0.15); color: var(--primary); }
 .status-pill.progress { background: rgba(245,158,11,0.15); color: var(--important); }
 .status-pill.done { background: rgba(34,197,94,0.15); color: var(--success); }
 
 .empty { text-align: center; padding: 40px; color: var(--text-2); }
 
-/* ==== المودال ==== */
+/* المودال */
 #modalOverlay {
   position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(6px);
-  display: none;
-  align-items: center; justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-  animation: fadeIn 0.2s;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1000; padding: 20px;
 }
 #modalOverlay.active { display: flex; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
 .modal-box {
-  background: var(--bg-2);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  max-width: 650px; width: 100%;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 20px; max-width: 650px; width: 100%;
   max-height: 90vh; overflow-y: auto;
   box-shadow: 0 30px 80px rgba(0,0,0,0.5);
   animation: slideUp 0.3s;
 }
 @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-.modal-box.urgent-glow {
-  animation: urgentGlow 1.8s ease-in-out infinite, slideUp 0.3s;
-}
-
 .modal-header {
-  padding: 20px 24px;
-  display: flex; justify-content: space-between; align-items: center;
-  border-bottom: 1px solid var(--border);
-  position: relative;
+  padding: 20px 24px; display: flex; justify-content: space-between;
+  align-items: center; border-bottom: 1px solid var(--border); position: relative;
 }
-.modal-header::before {
-  content: '';
-  position: absolute; top: 0; right: 0; left: 0; height: 4px;
-}
+.modal-header::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 4px; }
 .modal-header.normal::before { background: var(--success); }
 .modal-header.important::before { background: var(--important); }
 .modal-header.urgent::before { background: var(--urgent); }
-
 .modal-badges { display: flex; gap: 8px; }
-.priority-badge, .status-badge {
-  padding: 5px 12px; border-radius: 20px;
-  font-size: 12px; font-weight: 700;
-}
+.priority-badge, .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
 .priority-badge.urgent { background: rgba(255,77,79,0.15); color: var(--urgent); border: 1px solid rgba(255,77,79,0.3); }
 .priority-badge.important { background: rgba(245,158,11,0.15); color: var(--important); border: 1px solid rgba(245,158,11,0.3); }
 .priority-badge.normal { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
 .status-badge.new { background: rgba(79,142,247,0.15); color: var(--primary); border: 1px solid rgba(79,142,247,0.3); }
 .status-badge.progress { background: rgba(245,158,11,0.15); color: var(--important); border: 1px solid rgba(245,158,11,0.3); }
 .status-badge.done { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
-
 .modal-close {
-  background: var(--bg-3); color: var(--text);
-  border: none; width: 34px; height: 34px;
-  border-radius: 50%; cursor: pointer;
-  font-size: 16px; transition: 0.2s;
+  background: var(--bg-3); color: var(--text); border: none;
+  width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+  font-size: 16px;
 }
 .modal-close:hover { background: var(--urgent); color: white; }
-
-.modal-title {
-  padding: 20px 24px 12px;
-  font-size: 22px; font-weight: 800;
-  line-height: 1.4;
+.modal-title { padding: 20px 24px 12px; font-size: 22px; font-weight: 800; line-height: 1.4; }
+.modal-tags { padding: 0 24px 12px; display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-size: 11px; padding: 4px 12px;
+  background: rgba(79,142,247,0.15); color: var(--primary);
+  border-radius: 12px; font-weight: 600;
 }
-
-.modal-meta {
-  padding: 0 24px 16px;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-}
-.meta-item {
-  background: var(--bg-3); padding: 10px 14px;
-  border-radius: 10px; display: flex; flex-direction: column; gap: 2px;
-}
+.modal-meta { padding: 0 24px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.meta-item { background: var(--bg-3); padding: 10px 14px; border-radius: 10px; display: flex; flex-direction: column; gap: 2px; }
 .meta-label { font-size: 11px; color: var(--text-3); font-weight: 600; }
 .meta-value { font-size: 13px; color: var(--text); font-weight: 600; }
 .overdue-text { color: var(--urgent); }
-
 .modal-section { padding: 16px 24px; border-top: 1px solid var(--border); }
 .modal-section-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
-
-.modal-notes {
-  background: var(--bg-3); padding: 12px 14px;
-  border-radius: 10px; font-size: 13px; line-height: 1.7;
-  color: var(--text-2);
-}
-
+.modal-notes { background: var(--bg-3); padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.7; color: var(--text-2); }
 .modal-comments-list { max-height: 220px; overflow-y: auto; margin-bottom: 12px; }
-.modal-comment {
-  background: var(--bg-3); padding: 10px 14px;
-  border-radius: 10px; margin-bottom: 8px;
-}
-.modal-comment-head {
-  display: flex; justify-content: space-between;
-  margin-bottom: 4px; font-size: 12px;
-}
+.modal-comment { background: var(--bg-3); padding: 10px 14px; border-radius: 10px; margin-bottom: 8px; }
+.modal-comment-head { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
 .modal-comment-author { color: var(--primary); font-weight: 700; }
 .modal-comment-date { color: var(--text-3); font-size: 11px; }
 .modal-comment-text { font-size: 13px; line-height: 1.6; color: var(--text); }
 .empty-comments { text-align: center; color: var(--text-3); font-size: 13px; padding: 20px; }
-
 .modal-comment-form { display: flex; gap: 8px; }
 .modal-comment-form input {
-  flex: 1; padding: 10px 14px;
-  background: var(--bg-3); color: var(--text);
-  border: 1px solid var(--border); border-radius: 10px;
-  font-size: 13px; font-family: inherit;
+  flex: 1; padding: 10px 14px; background: var(--bg-3); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px; font-size: 13px; font-family: inherit;
 }
 .modal-comment-form input:focus { outline: none; border-color: var(--primary); }
 .modal-comment-form button {
-  padding: 10px 20px;
-  background: var(--primary); color: white;
-  border: none; border-radius: 10px; cursor: pointer;
-  font-size: 13px; font-weight: 700; font-family: inherit;
+  padding: 10px 20px; background: var(--primary); color: white;
+  border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit;
 }
-.modal-comment-form button:hover { background: var(--primary-2); }
-
 .modal-actions {
-  padding: 16px 24px;
-  border-top: 1px solid var(--border);
+  padding: 16px 24px; border-top: 1px solid var(--border);
   display: flex; gap: 8px; align-items: center;
   background: var(--bg-3);
 }
 .modal-status-select {
-  padding: 10px 14px;
-  background: var(--bg-2); color: var(--text);
+  padding: 10px 14px; background: var(--bg-2); color: var(--text);
   border: 1px solid var(--border); border-radius: 10px;
-  font-size: 13px; font-family: inherit; cursor: pointer;
-  margin-left: auto;
+  font-size: 13px; font-family: inherit; cursor: pointer; margin-left: auto;
 }
-.btn-edit, .btn-del {
+.btn-edit, .btn-del, .btn-pin {
   padding: 10px 18px; border-radius: 10px;
   font-size: 13px; font-weight: 700; font-family: inherit;
   cursor: pointer; border: 1px solid var(--border);
   background: var(--bg-2); color: var(--text);
-  transition: 0.2s;
 }
 .btn-edit:hover { background: var(--primary); color: white; border-color: var(--primary); }
 .btn-del:hover { background: var(--urgent); color: white; border-color: var(--urgent); }
+.btn-pin:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.btn-pin.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-/* ==== Toast ==== */
+/* تقرير PDF */
+#reportOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 1100; padding: 20px;
+}
+#reportOverlay.active { display: flex; }
+.report-wrapper {
+  background: var(--bg-2);
+  border-radius: 20px; max-width: 850px; width: 100%;
+  max-height: 95vh; overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  animation: slideUp 0.3s;
+}
+.report-toolbar {
+  padding: 16px 24px;
+  background: var(--bg-3);
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+.report-toolbar-title { font-size: 16px; font-weight: 700; }
+.report-toolbar-actions { display: flex; gap: 10px; }
+.btn-download {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white; border: none;
+  padding: 10px 20px; border-radius: 10px; cursor: pointer;
+  font-size: 14px; font-weight: 700; font-family: inherit;
+}
+.btn-download:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34,197,94,0.4); }
+.btn-download:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-close-report {
+  background: var(--bg-2); color: var(--text);
+  border: 1px solid var(--border);
+  padding: 10px 20px; border-radius: 10px; cursor: pointer;
+  font-size: 14px; font-weight: 600; font-family: inherit;
+}
+.btn-close-report:hover { background: var(--urgent); color: white; border-color: var(--urgent); }
+
+.report-scroll { overflow-y: auto; flex: 1; padding: 24px; }
+
+/* التقرير نفسه */
+.report-content {
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 40px;
+  border-radius: 12px;
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+}
+.r-header {
+  display: flex; align-items: center; gap: 20px;
+  padding-bottom: 20px; margin-bottom: 24px;
+  border-bottom: 3px solid #1e3a8a;
+}
+.r-logo { width: 70px; height: 70px; object-fit: contain; }
+.r-header-text h1 { color: #1e3a8a; font-size: 28px; margin-bottom: 4px; font-weight: 900; }
+.r-header-text p { color: #64748b; font-size: 14px; }
+.r-date { font-weight: 600; color: #1e3a8a !important; margin-top: 4px; }
+
+.r-summary {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 28px;
+}
+.r-sum-item {
+  background: #f1f5f9; padding: 16px; border-radius: 12px;
+  text-align: center; border-right: 4px solid #64748b;
+}
+.r-sum-item.done { border-right-color: #22c55e; background: rgba(34,197,94,0.08); }
+.r-sum-item.progress { border-right-color: #f59e0b; background: rgba(245,158,11,0.08); }
+.r-sum-item.overdue { border-right-color: #dc2626; background: rgba(220,38,38,0.08); }
+.r-sum-num { font-size: 26px; font-weight: 900; margin-bottom: 4px; color: #1e3a8a; }
+.r-sum-item.done .r-sum-num { color: #16a34a; }
+.r-sum-item.progress .r-sum-num { color: #d97706; }
+.r-sum-item.overdue .r-sum-num { color: #dc2626; }
+.r-sum-label { font-size: 12px; color: #64748b; font-weight: 600; }
+
+.r-section { margin-bottom: 28px; page-break-inside: avoid; }
+.r-section h2 {
+  font-size: 18px; color: #1e3a8a; margin-bottom: 14px;
+  padding-bottom: 8px; border-bottom: 2px solid #e2e8f0;
+  font-weight: 800;
+}
+.r-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.r-table th {
+  background: #1e3a8a; color: white; padding: 10px;
+  text-align: right; font-weight: 700;
+}
+.r-table th:first-child { border-top-right-radius: 8px; }
+.r-table th:last-child { border-top-left-radius: 8px; }
+.r-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+.r-table tbody tr:nth-child(even) { background: #f8fafc; }
+
+.r-task {
+  background: #f8fafc; padding: 14px; border-radius: 10px;
+  margin-bottom: 10px; border-right: 4px solid #64748b;
+  page-break-inside: avoid;
+}
+.r-task-head { display: flex; gap: 8px; margin-bottom: 6px; }
+.r-badge {
+  font-size: 11px; padding: 3px 10px; border-radius: 12px;
+  font-weight: 700;
+}
+.r-urgent { background: #fee2e2; color: #dc2626; }
+.r-important { background: #fef3c7; color: #d97706; }
+.r-normal { background: #d1fae5; color: #059669; }
+.r-status {
+  font-size: 11px; padding: 3px 10px; border-radius: 12px;
+  background: #e0e7ff; color: #3730a3; font-weight: 700;
+}
+.r-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #1a1a1a; }
+.r-meta {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  font-size: 12px; color: #64748b; margin-bottom: 4px;
+}
+.r-notes { font-size: 12px; color: #64748b; margin-top: 6px; font-style: italic; }
+.r-comments { font-size: 12px; color: #2563eb; margin-top: 4px; }
+
+.r-footer {
+  margin-top: 30px; padding-top: 16px;
+  border-top: 2px solid #e2e8f0;
+  text-align: center; font-size: 12px; color: #94a3b8;
+}
+
+/* Toast */
 #toast {
   position: fixed; bottom: 30px; left: 50%;
   transform: translateX(-50%) translateY(100px);
@@ -1016,7 +1279,7 @@ header {
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ==== Responsive ==== */
+/* Responsive */
 @media (max-width: 700px) {
   #tasksList { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
@@ -1028,6 +1291,8 @@ header {
   .modal-meta { grid-template-columns: 1fr; }
   .modal-actions { flex-wrap: wrap; }
   .modal-status-select { margin-left: 0; width: 100%; }
+  .r-summary { grid-template-columns: 1fr 1fr; }
+  .report-content { padding: 20px; }
 }
 </style>
 </head>
@@ -1057,6 +1322,7 @@ header {
     <div class="user-info">
       <span id="userName"></span>
       <span id="userRole" class="role"></span>
+      <button class="btn-report" onclick="window.openReport()">📄 تقرير PDF</button>
       <button id="themeBtn" class="icon-btn" title="تبديل الوضع">☀️</button>
       <button id="logoutBtn">خروج</button>
     </div>
@@ -1067,22 +1333,18 @@ header {
     <div class="card-panel">
       <div class="panel-title">📊 نظرة عامة</div>
       <div class="stats-grid">
-        <div class="stat total">
-          <div class="stat-num" id="statTotal">0</div>
-          <div class="stat-label">إجمالي المهام</div>
-        </div>
-        <div class="stat done">
-          <div class="stat-num" id="statDone">0</div>
-          <div class="stat-label">مكتملة</div>
-        </div>
-        <div class="stat progress">
-          <div class="stat-num" id="statProgress">0</div>
-          <div class="stat-label">جارية</div>
-        </div>
-        <div class="stat overdue">
-          <div class="stat-num" id="statOverdue">0</div>
-          <div class="stat-label">متأخرة</div>
-        </div>
+        <div class="stat total"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي المهام</div></div>
+        <div class="stat done"><div class="stat-num" id="statDone">0</div><div class="stat-label">مكتملة</div></div>
+        <div class="stat progress"><div class="stat-num" id="statProgress">0</div><div class="stat-label">جارية</div></div>
+        <div class="stat overdue"><div class="stat-num" id="statOverdue">0</div><div class="stat-label">متأخرة</div></div>
+      </div>
+    </div>
+
+    <div class="card-panel">
+      <div class="panel-title">📈 تحليل الإنتاجية</div>
+      <div class="charts-grid">
+        <div class="chart-box"><canvas id="chartStatus"></canvas></div>
+        <div class="chart-box"><canvas id="chartProductivity"></canvas></div>
       </div>
     </div>
 
@@ -1107,6 +1369,7 @@ header {
         </select>
         <input id="taskDue" type="date" title="تاريخ التسليم">
         <input id="taskNotes" type="text" placeholder="ملاحظات (اختياري)">
+        <input id="taskTags" type="text" placeholder="وسوم (فاصلة: شبكات, صيانة)">
         <button type="submit">إضافة المهمة</button>
       </form>
     </div>
@@ -1130,6 +1393,8 @@ header {
       <button class="filter-btn" data-filter="pending">معلقة</button>
       <button class="filter-btn" data-filter="overdue">متأخرة</button>
       <button class="filter-btn" data-filter="done">مكتملة</button>
+      <button class="filter-btn" data-filter="week">هذا الأسبوع</button>
+      <button class="filter-btn" data-filter="month">هذا الشهر</button>
     </div>
 
     <div id="tasksList"></div>
@@ -1139,6 +1404,21 @@ header {
 <div id="modalOverlay">
   <div class="modal-box" id="modalBox">
     <div id="modalBody"></div>
+  </div>
+</div>
+
+<div id="reportOverlay">
+  <div class="report-wrapper">
+    <div class="report-toolbar">
+      <div class="report-toolbar-title">📄 معاينة التقرير</div>
+      <div class="report-toolbar-actions">
+        <button class="btn-download" id="downloadPdfBtn" onclick="window.downloadPDF()">📄 تحميل PDF</button>
+        <button class="btn-close-report" onclick="window.closeReport()">إغلاق</button>
+      </div>
+    </div>
+    <div class="report-scroll">
+      <div id="reportBody"></div>
+    </div>
   </div>
 </div>
 
