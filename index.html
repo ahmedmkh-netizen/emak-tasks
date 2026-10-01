@@ -10,15 +10,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  sendPasswordResetEmail, updatePassword, EmailAuthProvider,
-  reauthenticateWithCredential
+  updatePassword, EmailAuthProvider,
+  reauthenticateWithCredential, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-  getDatabase, ref, push, set, onValue, update, remove, serverTimestamp, get, child, query, orderByChild, limitToLast
+  getDatabase, ref, push, set, onValue, update, remove,
+  serverTimestamp, get
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 /* ============================================================
@@ -47,7 +48,7 @@ const googleProvider = new GoogleAuthProvider();
    2) الحالة العامة
    ============================================================ */
 let currentUser = null;
-let currentUserProfile = null;    // { username, displayName, role, ... }
+let currentUserProfile = null;
 let isAdmin = false;
 let allTasks = {};
 let allTeam = {};
@@ -55,10 +56,10 @@ let allUsers = {};
 let currentFilter = "all";
 let currentSearch = "";
 let currentSort = "priority";
-let currentView = "grid";        // grid | kanban
+let currentView = "grid";
 let currentTheme = localStorage.getItem("theme") || "dark";
 let openTaskId = null;
-let pinnedTaskId = null;         // لكل مستخدم على حدة
+let pinnedTaskId = null;
 let charts = {};
 let logoDataUrl = null;
 let unsubTasks = null;
@@ -72,18 +73,21 @@ function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 }
+function isValidTs(ts) {
+  return typeof ts === "number" && isFinite(ts) && ts > 0;
+}
 function formatDate(ts) {
-  if (!ts) return "";
+  if (!isValidTs(ts)) return "";
   return new Date(ts).toLocaleDateString("ar-EG", { year:"numeric", month:"short", day:"numeric" });
 }
 function formatDateTime(ts) {
-  if (!ts) return "";
+  if (!isValidTs(ts)) return "";
   return new Date(ts).toLocaleString("ar-EG", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" });
 }
 function timeAgo(ts) {
-  if (!ts) return "";
+  if (!isValidTs(ts)) return "";
   const s = Math.floor((Date.now() - ts) / 1000);
-  if (s < 60) return "الآن";
+  if (s < 0 || s < 60) return "الآن";
   if (s < 3600) return `قبل ${Math.floor(s/60)} د`;
   if (s < 86400) return `قبل ${Math.floor(s/3600)} س`;
   if (s < 604800) return `قبل ${Math.floor(s/86400)} ي`;
@@ -93,6 +97,7 @@ function daysRemaining(dueDate) {
   if (!dueDate) return null;
   const today = new Date(); today.setHours(0,0,0,0);
   const due = new Date(dueDate); due.setHours(0,0,0,0);
+  if (isNaN(due.getTime())) return null;
   return Math.round((due - today) / 86400000);
 }
 function dueLabel(dueDate) {
@@ -104,11 +109,15 @@ function dueLabel(dueDate) {
   if (d <= 3) return `باقي ${d} أيام`;
   return dueDate;
 }
-function isThisWeek(ts) { return ts && (Date.now() - ts) <= 7*86400000; }
-function isThisMonth(ts) { return ts && (Date.now() - ts) <= 30*86400000; }
+function isThisWeek(ts) { return isValidTs(ts) && (Date.now() - ts) <= 7*86400000; }
+function isThisMonth(ts) { return isValidTs(ts) && (Date.now() - ts) <= 30*86400000; }
+
+function themeBg() { return getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(); }
+function themeFg() { return getComputedStyle(document.documentElement).getPropertyValue('--text').trim(); }
 
 function showToast(msg, type = "info") {
   const t = document.getElementById("toast");
+  if (!t) return;
   t.textContent = msg;
   t.className = "show " + type;
   clearTimeout(t._tid);
@@ -116,22 +125,18 @@ function showToast(msg, type = "info") {
 }
 function swalSuccess(title, text="") {
   return Swal.fire({ icon:"success", title, text, timer:1800, showConfirmButton:false,
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() });
+    background: themeBg(), color: themeFg() });
 }
 function swalError(title, text="") {
   return Swal.fire({ icon:"error", title, text,
-    confirmButtonColor:"#dc2626",
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() });
+    confirmButtonColor:"#dc2626", background: themeBg(), color: themeFg() });
 }
 function swalConfirm(title, text="لا يمكن التراجع!") {
   return Swal.fire({
     icon:"warning", title, text, showCancelButton:true,
-    confirmButtonText:"نعم، احذف", cancelButtonText:"إلغاء",
+    confirmButtonText:"نعم", cancelButtonText:"إلغاء",
     confirmButtonColor:"#dc2626", cancelButtonColor:"#64748b",
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim()
+    background: themeBg(), color: themeFg()
   });
 }
 
@@ -152,7 +157,6 @@ function applyTheme() {
   const btn = document.getElementById("themeBtn");
   if (btn) btn.textContent = currentTheme === "dark" ? "☀️" : "🌙";
   localStorage.setItem("theme", currentTheme);
-  // إعادة رسم الرسوم
   if (Object.keys(charts).length) renderCharts();
 }
 
@@ -161,10 +165,10 @@ function applyTheme() {
    ============================================================ */
 function togglePassword() {
   const inp = document.getElementById("loginPassword");
+  if (!inp) return;
   inp.type = inp.type === "password" ? "text" : "password";
 }
 
-// تسجيل دخول باليوزرنيم
 document.getElementById("loginForm").onsubmit = async (e) => {
   e.preventDefault();
   const username = document.getElementById("loginUsername").value.trim().toLowerCase();
@@ -185,6 +189,8 @@ document.getElementById("loginForm").onsubmit = async (e) => {
     await signInWithEmailAndPassword(auth, email, password);
     if (document.getElementById("rememberMe").checked) {
       localStorage.setItem("emak_last_username", username);
+    } else {
+      localStorage.removeItem("emak_last_username");
     }
   } catch (err) {
     const msgs = {
@@ -200,13 +206,11 @@ document.getElementById("loginForm").onsubmit = async (e) => {
   }
 };
 
-// دخول بجوجل
 document.getElementById("loginBtn").onclick = async () => {
   try { await signInWithPopup(auth, googleProvider); }
   catch (e) { swalError("فشل تسجيل الدخول بجوجل", e.message); }
 };
 
-// تحميل آخر يوزرنيم محفوظ
 window.addEventListener("DOMContentLoaded", () => {
   const last = localStorage.getItem("emak_last_username");
   if (last) {
@@ -216,17 +220,16 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ============================================================
-   5) مراقبة حالة المصادقة + تحميل الملف الشخصي
+   5) مراقبة حالة المصادقة
    ============================================================ */
 onAuthStateChanged(auth, async (user) => {
   const loginScreen = document.getElementById("loginScreen");
   const mainScreen = document.getElementById("mainScreen");
   const loadingScreen = document.getElementById("loadingScreen");
 
-  // تنظيف الاشتراكات القديمة
-  if (unsubTasks) { unsubTasks(); unsubTasks = null; }
-  if (unsubTeam)  { unsubTeam();  unsubTeam  = null; }
-  if (unsubUsers) { unsubUsers(); unsubUsers = null; }
+  if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
+  if (unsubTeam)  { try { unsubTeam(); }  catch(e){} unsubTeam  = null; }
+  if (unsubUsers) { try { unsubUsers(); } catch(e){} unsubUsers = null; }
 
   if (!user) {
     currentUser = null; currentUserProfile = null; isAdmin = false;
@@ -240,25 +243,38 @@ onAuthStateChanged(auth, async (user) => {
   loadingScreen.style.display = "flex";
   loginScreen.style.display = "none";
 
-  if (!logoDataUrl) logoDataUrl = await loadLogoAsBase64();
+  try {
+    if (!logoDataUrl) logoDataUrl = await loadLogoAsBase64();
+    const profile = await ensureUserProfile(user);
+    currentUserProfile = profile;
+    isAdmin = profile.role === "admin";
+    pinnedTaskId = localStorage.getItem(`pinnedTask_${user.uid}`) || null;
 
-  // تحميل/إنشاء الملف الشخصي
-  const profile = await ensureUserProfile(user);
-  currentUserProfile = profile;
-  isAdmin = profile.role === "admin";
-  pinnedTaskId = localStorage.getItem(`pinnedTask_${user.uid}`) || null;
+    // فحص التعطيل
+    if (profile.active === false) {
+      await signOut(auth);
+      loadingScreen.style.display = "none";
+      return swalError("هذا الحساب معطّل", "تواصل مع المدير لتنشيطه");
+    }
+  } catch (err) {
+    console.error("Profile load error:", err);
+    loadingScreen.style.display = "none";
+    loginScreen.style.display = "flex";
+    swalError("خطأ في تحميل الملف الشخصي", err.message + "\n\nتحقق من قواعد Firebase Rules");
+    return;
+  }
 
   setTimeout(() => {
     loadingScreen.style.display = "none";
     mainScreen.style.display = "block";
-    document.getElementById("userName").textContent = profile.displayName || profile.username;
+    document.getElementById("userName").textContent = currentUserProfile.displayName || currentUserProfile.username;
     document.getElementById("userRole").textContent = isAdmin ? "👑 مدير" : "👤 موظف";
     document.getElementById("userRole").className = "role " + (isAdmin ? "admin" : "user");
     document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
     document.getElementById("usersNavBtn").style.display = isAdmin ? "inline-flex" : "none";
     document.getElementById("teamNavBtn").style.display = isAdmin ? "inline-flex" : "none";
     startRealtimeListeners();
-  }, 700);
+  }, 500);
 });
 
 async function ensureUserProfile(user) {
@@ -266,8 +282,8 @@ async function ensureUserProfile(user) {
   const snap = await get(uref);
   if (snap.exists()) {
     const data = snap.val();
-    // تحديث آخر دخول
-    await update(uref, { lastLogin: serverTimestamp() });
+    if (data.active === false) return data;
+    try { await update(uref, { lastLogin: Date.now() }); } catch(e) {}
     return data;
   }
   // مستخدم جديد
@@ -275,8 +291,7 @@ async function ensureUserProfile(user) {
   const username = (user.email || "").split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g,"") || "user";
   const displayName = user.displayName || username;
   const profile = {
-    username,
-    displayName,
+    username, displayName,
     email: user.email || "",
     role: isSuperAdmin ? "admin" : "employee",
     active: true,
@@ -284,50 +299,57 @@ async function ensureUserProfile(user) {
     lastLogin: Date.now()
   };
   await set(uref, profile);
-  // فهرس اليوزرنيم (فقط لو مش موجود)
   if (username) {
-    const unameSnap = await get(ref(db, "usernames/" + username));
-    if (!unameSnap.exists()) {
-      await set(ref(db, "usernames/" + username), { uid: user.uid, createdAt: Date.now() });
+    try {
+      const unameSnap = await get(ref(db, "usernames/" + username));
+      if (!unameSnap.exists()) {
+        await set(ref(db, "usernames/" + username), { uid: user.uid, createdAt: Date.now() });
+      }
+    } catch(e) {}
+  }
+  try {
+    const teamSnap = await get(ref(db, "team"));
+    const team = teamSnap.val() || {};
+    const already = Object.values(team).some(m => m.uid === user.uid);
+    if (!already && !isSuperAdmin) {
+      await push(ref(db, "team"), {
+        uid: user.uid, username, name: displayName, createdAt: Date.now()
+      });
     }
-  }
-  // إضافة للفريق (افتراضياً)
-  const teamSnap = await get(ref(db, "team"));
-  const team = teamSnap.val() || {};
-  const already = Object.values(team).some(m => m.uid === user.uid);
-  if (!already && !isSuperAdmin) {
-    await push(ref(db, "team"), {
-      uid: user.uid,
-      username,
-      name: displayName,
-      createdAt: Date.now()
-    });
-  }
+  } catch(e) {}
   return profile;
 }
 
 /* ============================================================
-   6) المشتركات الفعلية (Realtime)
+   6) المشتركات الفعلية
    ============================================================ */
 function startRealtimeListeners() {
-  // المهام
+  if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
+  if (unsubTeam)  { try { unsubTeam(); }  catch(e){} unsubTeam  = null; }
+  if (unsubUsers) { try { unsubUsers(); } catch(e){} unsubUsers = null; }
+
   unsubTasks = onValue(ref(db, "tasks"), (snap) => {
     allTasks = snap.val() || {};
-    renderAll();
+    try { renderAll(); } catch(e) { console.warn("renderAll:", e); }
     if (openTaskId && allTasks[openTaskId]) renderModal(openTaskId);
     else if (openTaskId && !allTasks[openTaskId]) closeModal();
+  }, (err) => {
+    console.error("Tasks listener error:", err);
+    if (err.code === "PERMISSION_DENIED") {
+      swalError("لا تملك صلاحية قراءة المهام", "تواصل مع المدير لضبط قواعد Firebase Rules");
+    }
   });
-  // الفريق
+
   unsubTeam = onValue(ref(db, "team"), (snap) => {
     allTeam = snap.val() || {};
     populateAssigneeSelect();
-  });
-  // المستخدمين (للأدمن)
+  }, (err) => console.warn("Team listener:", err));
+
   if (isAdmin) {
     unsubUsers = onValue(ref(db, "users"), (snap) => {
       allUsers = snap.val() || {};
       if (document.getElementById("usersView").classList.contains("active")) renderUsersList();
-    });
+    }, (err) => console.warn("Users listener:", err));
   }
 }
 
@@ -335,12 +357,15 @@ function populateAssigneeSelect() {
   const sel = document.getElementById("taskAssignee");
   if (!sel) return;
   const current = sel.value;
-  sel.innerHTML = '<option value="">-- المسؤول --</option>' +
-    Object.entries(allTeam)
-      .sort((a,b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
-      .map(([id, m]) =>
-        `<option value="${id}" data-name="${escapeHtml(m.name)}">${escapeHtml(m.name)}</option>`).join("");
-  if (current) sel.value = current;
+  const options = ['<option value="">-- المسؤول --</option>'];
+  Object.entries(allTeam)
+    .filter(([id, m]) => m && m.name)
+    .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
+    .forEach(([id, m]) => {
+      options.push(`<option value="${escapeHtml(id)}">${escapeHtml(m.name)}</option>`);
+    });
+  sel.innerHTML = options.join("");
+  if (current && sel.querySelector(`option[value="${current}"]`)) sel.value = current;
 }
 
 /* ============================================================
@@ -348,14 +373,14 @@ function populateAssigneeSelect() {
    ============================================================ */
 document.getElementById("addTaskForm").onsubmit = async (e) => {
   e.preventDefault();
-  if (!isAdmin) return swalError("غير مصرح");
+  if (!isAdmin || !currentUserProfile) return swalError("غير مصرح");
   const title = document.getElementById("taskTitle").value.trim();
   const assigneeId = document.getElementById("taskAssignee").value;
   const priority = document.getElementById("taskPriority").value;
   const dueDate = document.getElementById("taskDue").value;
   const notes = document.getElementById("taskNotes").value.trim();
   const tags = document.getElementById("taskTags").value.trim();
-  if (!title || !assigneeId) return;
+  if (!title || !assigneeId) return swalError("أكمل البيانات المطلوبة");
   const member = allTeam[assigneeId];
   if (!member) return swalError("عضو الفريق غير موجود");
 
@@ -373,6 +398,7 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
   });
   await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key);
   e.target.reset();
+  populateAssigneeSelect();
   showToast("✅ تمت إضافة المهمة", "success");
 };
 
@@ -380,6 +406,7 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
    8) تغيير الحالة + تعليقات + حذف + تعديل
    ============================================================ */
 async function changeStatus(taskId, newStatus) {
+  if (!currentUserProfile) return;
   const t = allTasks[taskId]; if (!t) return;
   await update(ref(db, "tasks/" + taskId), {
     status: newStatus, updatedAt: Date.now(),
@@ -391,6 +418,7 @@ async function changeStatus(taskId, newStatus) {
 }
 
 async function addComment(taskId, fromModal = false) {
+  if (!currentUserProfile) return;
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -428,7 +456,8 @@ async function editTask(taskId) {
   const t = allTasks[taskId]; if (!t) return;
 
   const teamOptions = Object.entries(allTeam)
-    .map(([id, m]) => `<option value="${id}" ${t.assigneeId===id?"selected":""}>${escapeHtml(m.name)}</option>`).join("");
+    .filter(([id, m]) => m && m.name)
+    .map(([id, m]) => `<option value="${escapeHtml(id)}" ${t.assigneeId===id?"selected":""}>${escapeHtml(m.name)}</option>`).join("");
 
   const { value: formValues } = await Swal.fire({
     title: "✏️ تعديل المهمة",
@@ -455,20 +484,27 @@ async function editTask(taskId) {
     confirmButtonText: "حفظ",
     cancelButtonText: "إلغاء",
     confirmButtonColor: "#2563eb",
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim(),
-    preConfirm: () => ({
-      title: document.getElementById("swal-title").value.trim(),
-      assigneeId: document.getElementById("swal-assignee").value,
-      priority: document.getElementById("swal-priority").value,
-      dueDate: document.getElementById("swal-due").value,
-      tags: document.getElementById("swal-tags").value.trim(),
-      notes: document.getElementById("swal-notes").value.trim()
-    })
+    focusConfirm: false,
+    background: themeBg(), color: themeFg(),
+    preConfirm: () => {
+      const title = document.getElementById("swal-title").value.trim();
+      if (!title) {
+        Swal.showValidationMessage("العنوان مطلوب");
+        return false;
+      }
+      return {
+        title,
+        assigneeId: document.getElementById("swal-assignee").value,
+        priority: document.getElementById("swal-priority").value,
+        dueDate: document.getElementById("swal-due").value,
+        tags: document.getElementById("swal-tags").value.trim(),
+        notes: document.getElementById("swal-notes").value.trim()
+      };
+    }
   });
   if (!formValues) return;
   const member = allTeam[formValues.assigneeId];
-  if (!formValues.title || !member) return swalError("بيانات ناقصة");
+  if (!member) return swalError("بيانات ناقصة");
 
   await update(ref(db, "tasks/" + taskId), {
     title: formValues.title,
@@ -504,12 +540,12 @@ function togglePin(taskId) {
    9) سجل النشاط
    ============================================================ */
 async function logActivity(type, text, taskId=null) {
+  if (!currentUser) return;
   try {
     await push(ref(db, "activity"), {
-      type, text,
-      taskId,
+      type, text, taskId,
       uid: currentUser.uid,
-      byName: currentUserProfile.displayName,
+      byName: currentUserProfile?.displayName || "—",
       at: Date.now()
     });
   } catch(e) { console.warn("log failed", e); }
@@ -552,15 +588,15 @@ function renderModal(taskId) {
     <div class="modal-header ${priorityClass}">
       <div class="modal-badges">
         <span class="priority-badge ${priorityClass}">${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}</span>
-        <span class="status-badge ${statusClass}">${t.status}</span>
+        <span class="status-badge ${statusClass}">${escapeHtml(t.status)}</span>
       </div>
       <button class="modal-close" onclick="window.closeModal()">✕</button>
     </div>
     <h2 class="modal-title">${escapeHtml(t.title)}</h2>
     ${tagsHtml ? `<div class="modal-tags">${tagsHtml}</div>` : ""}
     <div class="modal-meta">
-      <div class="meta-item"><span class="meta-label">👤 المسؤول</span><span class="meta-value">${escapeHtml(t.assignee)}</span></div>
-      ${t.dueDate ? `<div class="meta-item"><span class="meta-label">📅 التسليم</span><span class="meta-value ${isOverdue?'overdue-text':''}">${dueLabel(t.dueDate)}</span></div>` : ""}
+      <div class="meta-item"><span class="meta-label">👤 المسؤول</span><span class="meta-value">${escapeHtml(t.assignee || "—")}</span></div>
+      ${t.dueDate ? `<div class="meta-item"><span class="meta-label">📅 التسليم</span><span class="meta-value ${isOverdue?'overdue-text':''}">${escapeHtml(dueLabel(t.dueDate))}</span></div>` : ""}
       <div class="meta-item"><span class="meta-label">✏️ آخر تعديل</span><span class="meta-value">${t.updatedByName ? escapeHtml(t.updatedByName) + " — " + formatDate(t.updatedAt) : "—"}</span></div>
       <div class="meta-item"><span class="meta-label">🆕 أُنشئت</span><span class="meta-value">${formatDate(t.createdAt)}</span></div>
     </div>
@@ -587,7 +623,7 @@ function renderModal(taskId) {
 }
 
 /* ============================================================
-   11) الأحداث العامة (بحث/فرز/فلاتر/ثيم/عرض)
+   11) الأحداث العامة
    ============================================================ */
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.onclick = () => {
@@ -619,24 +655,24 @@ document.querySelectorAll(".view-toggle button").forEach(b => {
   };
 });
 document.getElementById("logoutBtn").onclick = async () => {
-  const r = await Swal.fire({
-    icon:"question", title:"تسجيل الخروج؟",
-    showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء",
-    confirmButtonColor:"#dc2626",
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim()
-  });
-  if (r.isConfirmed) signOut(auth);
+  const r = await swalConfirm("تسجيل الخروج؟", "");
+  if (r.isConfirmed) {
+    if (unsubTasks) { try { unsubTasks(); } catch(e){} }
+    if (unsubTeam)  { try { unsubTeam(); }  catch(e){} }
+    if (unsubUsers) { try { unsubUsers(); } catch(e){} }
+    signOut(auth);
+  }
 };
 
 /* ============================================================
    12) الرسم العام
    ============================================================ */
 function renderAll() {
-  renderStats();
-  renderTeamProgress();
-  renderTasks();
-  renderCharts();
+  if (!currentUserProfile) return;
+  try { renderStats(); } catch(e) { console.warn("stats:", e); }
+  try { renderTeamProgress(); } catch(e) { console.warn("team:", e); }
+  try { renderTasks(); } catch(e) { console.warn("tasks:", e); }
+  try { renderCharts(); } catch(e) { console.warn("charts:", e); }
 }
 
 function renderStats() {
@@ -683,7 +719,7 @@ function renderCharts() {
 
   const ctx1 = document.getElementById("chartStatus");
   if (ctx1) {
-    if (charts.status) charts.status.destroy();
+    if (charts.status) { try { charts.status.destroy(); } catch(e){} }
     charts.status = new Chart(ctx1, {
       type:"doughnut",
       data:{ labels:["مكتملة","جارية","جديدة"],
@@ -701,7 +737,7 @@ function renderCharts() {
       const d = new Date(t.updatedAt).getDay(); counts[d]++;
     });
     const reordered = [counts[6], counts[0], counts[1], counts[2], counts[3], counts[4], counts[5]];
-    if (charts.productivity) charts.productivity.destroy();
+    if (charts.productivity) { try { charts.productivity.destroy(); } catch(e){} }
     charts.productivity = new Chart(ctx2, {
       type:"bar",
       data:{ labels:days, datasets:[{ label:"مهام مكتملة هذا الأسبوع", data:reordered, backgroundColor:"#4f8ef7", borderRadius:8, borderSkipped:false }] },
@@ -716,10 +752,11 @@ function renderCharts() {
 }
 
 function renderTasks() {
+  if (!currentUserProfile) return;
   const list = document.getElementById("tasksList");
+  if (!list) return;
   let entries = Object.entries(allTasks);
 
-  // الفرز
   entries.sort((a, b) => {
     if (a[0] === pinnedTaskId) return -1;
     if (b[0] === pinnedTaskId) return 1;
@@ -738,7 +775,6 @@ function renderTasks() {
     return 0;
   });
 
-  // الفلترة
   let filtered = entries.filter(([_, t]) => {
     if (currentFilter === "all") return true;
     if (currentFilter === "pending") return t.status !== "مكتملة";
@@ -749,8 +785,7 @@ function renderTasks() {
     }
     if (currentFilter === "week") return isThisWeek(t.createdAt);
     if (currentFilter === "month") return isThisMonth(t.createdAt);
-    if (currentFilter === "mine") return t.assigneeId && currentUserProfile && t.assigneeId === currentUser?.uid;
-    // فلترة ديناميكية لأعضاء الفريق
+    if (currentFilter === "mine") return t.assigneeId && currentUser && t.assigneeId === currentUser.uid;
     const member = Object.values(allTeam).find(m => m.name === currentFilter);
     if (member) return t.assigneeId === Object.keys(allTeam).find(k => allTeam[k].name === currentFilter);
     return true;
@@ -763,7 +798,6 @@ function renderTasks() {
     });
   }
 
-  // Kanban vs Grid
   if (currentView === "kanban") {
     renderKanban(list, filtered);
   } else {
@@ -796,10 +830,10 @@ function taskCardHtml(id, t) {
     ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
     ${t.notes ? `<p class="card-notes">${escapeHtml(t.notes)}</p>` : ""}
     <div class="card-bottom">
-      ${t.dueDate ? `<span class="card-due ${isOverdue?'overdue':''}">${dueLabel(t.dueDate)}</span>` : "<span></span>"}
+      ${t.dueDate ? `<span class="card-due ${isOverdue?'overdue':''}">${escapeHtml(dueLabel(t.dueDate))}</span>` : "<span></span>"}
       <div class="card-icons">
         ${commentsCount > 0 ? `<span class="card-icon">💬 ${commentsCount}</span>` : ""}
-        <span class="status-pill ${statusClass}">${t.status}</span>
+        <span class="status-pill ${statusClass}">${escapeHtml(t.status)}</span>
       </div>
     </div>
   </div>`;
@@ -811,15 +845,18 @@ function taskCardHtml(id, t) {
 function renderKanban(list, filtered) {
   list.className = "kanban-board";
   const cols = { "جديدة": [], "جاري التنفيذ": [], "مكتملة": [] };
-  filtered.forEach(([id, t]) => { (cols[t.status] || cols["جديدة"]).push([id, t]); });
+  filtered.forEach(([id, t]) => {
+    const key = cols[t.status] !== undefined ? t.status : "جديدة";
+    cols[key].push([id, t]);
+  });
 
   list.innerHTML = Object.entries(cols).map(([status, items]) => `
-    <div class="kanban-col" data-status="${status}"
+    <div class="kanban-col" data-status="${escapeHtml(status)}"
          ondragover="event.preventDefault();this.classList.add('dragover')"
          ondragleave="this.classList.remove('dragover')"
-         ondrop="window.kanbanDrop(event, '${status}')">
+         ondrop="window.kanbanDrop(event, '${escapeHtml(status)}')">
       <div class="kanban-col-header">
-        <span>${status === "جديدة" ? "🆕" : status === "جاري التنفيذ" ? "⏳" : "✅"} ${status}</span>
+        <span>${status === "جديدة" ? "🆕" : status === "جاري التنفيذ" ? "⏳" : "✅"} ${escapeHtml(status)}</span>
         <span class="kanban-count">${items.length}</span>
       </div>
       <div class="kanban-col-body">
@@ -828,7 +865,7 @@ function renderKanban(list, filtered) {
             <div class="kanban-card-title">${escapeHtml(t.title)}</div>
             <div class="kanban-card-meta">
               <span class="assignee-chip">👤 ${escapeHtml(t.assignee || "—")}</span>
-              ${t.dueDate ? `<span class="card-due ${daysRemaining(t.dueDate)<0 && t.status!=="مكتملة" ? "overdue" : ""}">${dueLabel(t.dueDate)}</span>` : ""}
+              ${t.dueDate ? `<span class="card-due ${daysRemaining(t.dueDate)<0 && t.status!=="مكتملة" ? "overdue" : ""}">${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
             </div>
           </div>
         `).join("") || '<p class="empty">لا توجد مهام</p>'}
@@ -856,17 +893,11 @@ document.querySelectorAll(".nav-btn[data-view]").forEach(btn => {
     btn.classList.add("active");
     document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
     const view = btn.dataset.view;
-    document.getElementById(view + "View").classList.add("active");
+    const el = document.getElementById(view + "View");
+    if (el) el.classList.add("active");
     if (view === "users") renderUsersList();
   };
 });
-document.getElementById("usersNavBtn").onclick = () => {
-  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-  document.getElementById("usersNavBtn").classList.add("active");
-  document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
-  document.getElementById("usersView").classList.add("active");
-  renderUsersList();
-};
 
 /* ============================================================
    15) لوحة المستخدمين (أدمن)
@@ -882,7 +913,7 @@ async function renderUsersList() {
   }
   wrap.innerHTML = users.map(([uid, u]) => `
     <div class="user-row">
-      <div class="user-avatar">${(u.displayName || "?").charAt(0)}</div>
+      <div class="user-avatar">${escapeHtml((u.displayName || "?").charAt(0))}</div>
       <div class="user-info-cell">
         <div class="user-name">${escapeHtml(u.displayName || u.username || "—")} ${uid === currentUser.uid ? "<span class='me-tag'>أنت</span>" : ""}</div>
         <div class="user-meta">
@@ -897,6 +928,7 @@ async function renderUsersList() {
         ${u.active !== false
           ? `<button class="btn-sm warn" onclick="window.toggleUserActive('${uid}', false)">تعطيل</button>`
           : `<button class="btn-sm success" onclick="window.toggleUserActive('${uid}', true)">تنشيط</button>`}
+        <button class="btn-sm" onclick="window.resetUserPassword('${uid}')">🔑 إعادة تعيين كلمة المرور</button>
         ${uid !== currentUser.uid ? `<button class="btn-sm danger" onclick="window.deleteUser('${uid}')">حذف</button>` : ""}
       </div>
     </div>
@@ -905,19 +937,18 @@ async function renderUsersList() {
 
 window.promoteUser = async (uid) => {
   if (!isAdmin) return;
-  const r = await Swal.fire({ icon:"question", title:"ترقية إلى مدير؟", showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#2563eb",
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() });
+  const r = await swalConfirm("ترقية إلى مدير؟", "");
   if (!r.isConfirmed) return;
   await update(ref(db, "users/" + uid), { role: "admin" });
+  await logActivity("user_promoted", `رقّى مستخدم`);
   showToast("👑 تمت الترقية", "success");
 };
 
 window.demoteUser = async (uid) => {
   if (!isAdmin) return;
-  const r = await Swal.fire({ icon:"warning", title:"إزالة صلاحية الإدارة؟", showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#dc2626",
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim() });
+  const adminCount = Object.values(allUsers).filter(x => x.role === "admin" && x.active !== false).length;
+  if (adminCount <= 1) return swalError("لا يمكن", "لا يمكن إزالة آخر مدير في النظام");
+  const r = await swalConfirm("إزالة صلاحية الإدارة؟", "");
   if (!r.isConfirmed) return;
   await update(ref(db, "users/" + uid), { role: "employee" });
   showToast("تمت إزالة الإدارة", "info");
@@ -925,6 +956,11 @@ window.demoteUser = async (uid) => {
 
 window.toggleUserActive = async (uid, active) => {
   if (!isAdmin) return;
+  if (!active) {
+    const adminCount = Object.values(allUsers).filter(x => x.role === "admin" && x.active !== false).length;
+    if (allUsers[uid]?.role === "admin" && adminCount <= 1)
+      return swalError("لا يمكن", "لا يمكن تعطيل آخر مدير");
+  }
   await update(ref(db, "users/" + uid), { active });
   showToast(active ? "✅ تم التنشيط" : "⛔ تم التعطيل", active ? "success" : "warn");
 };
@@ -932,21 +968,170 @@ window.toggleUserActive = async (uid, active) => {
 window.deleteUser = async (uid) => {
   if (!isAdmin) return;
   const u = allUsers[uid]; if (!u) return;
+  const adminCount = Object.values(allUsers).filter(x => x.role === "admin" && x.active !== false).length;
+  if (u.role === "admin" && adminCount <= 1)
+    return swalError("لا يمكن الحذف", "لا يمكن حذف آخر مدير في النظام");
   const r = await swalConfirm("حذف المستخدم؟", `@${u.username} — لا يمكن التراجع`);
   if (!r.isConfirmed) return;
-  await remove(ref(db, "users/" + uid));
-  if (u.username) await remove(ref(db, "usernames/" + u.username));
-  // حذف من الفريق
-  const teamSnap = await get(ref(db, "team"));
-  const team = teamSnap.val() || {};
-  for (const [tid, m] of Object.entries(team)) {
-    if (m.uid === uid) await remove(ref(db, "team/" + tid));
+  try {
+    await remove(ref(db, "users/" + uid));
+    if (u.username) await remove(ref(db, "usernames/" + u.username));
+    const teamSnap = await get(ref(db, "team"));
+    const team = teamSnap.val() || {};
+    for (const [tid, m] of Object.entries(team)) {
+      if (m.uid === uid) await remove(ref(db, "team/" + tid));
+    }
+    showToast("🗑️ تم الحذف", "success");
+  } catch (err) {
+    swalError("فشل الحذف", err.message);
   }
-  showToast("🗑️ تم الحذف", "success");
 };
 
 /* ============================================================
-   16) نموذج إضافة مستخدم
+   16) إعادة تعيين كلمة مرور مستخدم (من قِبل الأدمن)
+   ============================================================ */
+window.resetUserPassword = async (uid) => {
+  if (!isAdmin) return;
+  const u = allUsers[uid]; if (!u) return;
+  const { value: newPass } = await Swal.fire({
+    title: `🔑 إعادة تعيين كلمة المرور`,
+    html: `
+      <div style="text-align:right;direction:rtl;font-size:13px;line-height:1.8;">
+        <p>المستخدم: <b>${escapeHtml(u.displayName || u.username)}</b></p>
+        <p style="color:#94a3b8;font-size:12px;">كلمة المرور الجديدة (6 أحرف على الأقل)</p>
+      </div>`,
+    input: "text",
+    inputPlaceholder: "كلمة المرور الجديدة",
+    inputAttributes: { autocapitalize: "off", autocorrect: "off" },
+    showCancelButton: true,
+    confirmButtonText: "تعيين",
+    cancelButtonText: "إلغاء",
+    confirmButtonColor: "#2563eb",
+    focusConfirm: false,
+    background: themeBg(), color: themeFg(),
+    preConfirm: (val) => {
+      if (!val || val.length < 6) {
+        Swal.showValidationMessage("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
+        return false;
+      }
+      return val;
+    }
+  });
+  if (!newPass) return;
+
+  // Firebase Admin SDK غير متاح في العميل، لذا نستخدم sendPasswordResetEmail
+  // الذي يرسل رابط إعادة تعيين للإيميل الداخلي (لن يعمل لأنه @emak.local)
+  // البديل: نحفظ كلمة المرور في قاعدة البيانات كـ "resetPending" مع كلمة المرور
+  // لكن الأفضل أمنياً: نطلب من المستخدم نفسه تغيير كلمة المرور من الملف الشخصي.
+  
+  // الحل العملي: نعرض رسالة توضح للمدير أن يطلب من المستخدم تغييرها بنفسه
+  const confirmed = await Swal.fire({
+    icon: "info",
+    title: "طريقة إعادة التعيين",
+    html: `
+      <div style="text-align:right;direction:rtl;font-size:13px;line-height:1.8;">
+        <p>لأسباب أمنية، لا يمكن للمدير تغيير كلمة مرور المستخدم مباشرة.</p>
+        <p style="margin-top:8px;">اطلب من <b>${escapeHtml(u.displayName || u.username)}</b>:</p>
+        <ol style="padding-right:20px;">
+          <li>الدخول بحسابه الحالي</li>
+          <li>الضغط على اسمه في الشريط العلوي</li>
+          <li>اختيار "🔑 تغيير كلمة المرور"</li>
+        </ol>
+        <p style="margin-top:8px;color:#f59e0b;"><b>ملاحظة:</b> لو نسي كلمة المرور الحالية، احذفه وأنشئ حساباً جديداً.</p>
+      </div>`,
+    confirmButtonText: "فهمت",
+    confirmButtonColor: "#2563eb",
+    background: themeBg(), color: themeFg()
+  });
+};
+
+/* ============================================================
+   17) تغيير كلمة المرور (للمستخدم نفسه)
+   ============================================================ */
+window.openChangePasswordModal = async () => {
+  if (!currentUser) return;
+  
+  // هل المستخدم داخل بجوجل؟ (مش عنده باسورد)
+  const isGoogleUser = currentUser.providerData.some(p => p.providerId === "google.com");
+  if (isGoogleUser) {
+    return Swal.fire({
+      icon: "info",
+      title: "حساب جوجل",
+      text: "أنت مسجل دخول بحساب جوجل. كلمة المرور تُدار من جوجل مباشرة.",
+      confirmButtonText: "حسناً",
+      background: themeBg(), color: themeFg()
+    });
+  }
+
+  const { value: formValues } = await Swal.fire({
+    title: "🔑 تغيير كلمة المرور",
+    html: `
+      <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
+        <label style="font-size:12px;font-weight:700;">كلمة المرور الحالية</label>
+        <input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;">
+        <label style="font-size:12px;font-weight:700;">كلمة المرور الجديدة (6+)</label>
+        <input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;">
+        <label style="font-size:12px;font-weight:700;">تأكيد كلمة المرور الجديدة</label>
+        <input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;">
+      </div>`,
+    showCancelButton: true,
+    confirmButtonText: "تغيير",
+    cancelButtonText: "إلغاء",
+    confirmButtonColor: "#2563eb",
+    focusConfirm: false,
+    background: themeBg(), color: themeFg(),
+    preConfirm: () => {
+      const cur = document.getElementById("cp-current").value;
+      const nw = document.getElementById("cp-new").value;
+      const cf = document.getElementById("cp-confirm").value;
+      if (!cur || !nw || !cf) {
+        Swal.showValidationMessage("املأ جميع الحقول");
+        return false;
+      }
+      if (nw.length < 6) {
+        Swal.showValidationMessage("كلمة المرور الجديدة 6 أحرف على الأقل");
+        return false;
+      }
+      if (nw !== cf) {
+        Swal.showValidationMessage("كلمتا المرور الجديدتان غير متطابقتين");
+        return false;
+      }
+      if (cur === nw) {
+        Swal.showValidationMessage("كلمة المرور الجديدة يجب أن تختلف عن الحالية");
+        return false;
+      }
+      return { currentPassword: cur, newPassword: nw };
+    }
+  });
+
+  if (!formValues) return;
+
+  try {
+    // إعادة المصادقة أولاً
+    const credential = EmailAuthProvider.credential(
+      currentUser.email,
+      formValues.currentPassword
+    );
+    await reauthenticateWithCredential(currentUser, credential);
+    // تغيير كلمة المرور
+    await updatePassword(currentUser, formValues.newPassword);
+    await logActivity("password_changed", "غيّر كلمة المرور الخاصة به");
+    swalSuccess("✅ تم تغيير كلمة المرور", "استخدم كلمة المرور الجديدة في تسجيل الدخول القادم");
+  } catch (err) {
+    console.error(err);
+    const msgs = {
+      "auth/wrong-password": "كلمة المرور الحالية غير صحيحة",
+      "auth/invalid-credential": "كلمة المرور الحالية غير صحيحة",
+      "auth/weak-password": "كلمة المرور الجديدة ضعيفة",
+      "auth/requires-recent-login": "الرجاء تسجيل الخروج والدخول مرة أخرى ثم إعادة المحاولة",
+      "auth/too-many-requests": "محاولات كثيرة، حاول لاحقاً"
+    };
+    swalError("فشل التغيير", msgs[err.code] || err.message);
+  }
+};
+
+/* ============================================================
+   18) نموذج إضافة مستخدم
    ============================================================ */
 window.openAddUserModal = async () => {
   if (!isAdmin) return;
@@ -966,44 +1151,50 @@ window.openAddUserModal = async () => {
           <option value="admin">👑 مدير</option>
         </select>
       </div>`,
-    showCancelButton: true, confirmButtonText: "إنشاء", cancelButtonText: "إلغاء",
+    showCancelButton: true,
+    confirmButtonText: "إنشاء",
+    cancelButtonText: "إلغاء",
     confirmButtonColor: "#2563eb",
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim(),
-    preConfirm: () => ({
-      username: document.getElementById("nu-username").value.trim().toLowerCase(),
-      displayName: document.getElementById("nu-name").value.trim(),
-      password: document.getElementById("nu-pass").value,
-      role: document.getElementById("nu-role").value
-    })
+    focusConfirm: false,
+    background: themeBg(), color: themeFg(),
+    preConfirm: () => {
+      const username = document.getElementById("nu-username").value.trim().toLowerCase();
+      const displayName = document.getElementById("nu-name").value.trim();
+      const password = document.getElementById("nu-pass").value;
+      const role = document.getElementById("nu-role").value;
+      if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+        Swal.showValidationMessage("اسم المستخدم: 3-20 حرف (a-z, 0-9, _)");
+        return false;
+      }
+      if (!displayName) {
+        Swal.showValidationMessage("اكتب الاسم الكامل");
+        return false;
+      }
+      if (password.length < 6) {
+        Swal.showValidationMessage("كلمة المرور 6 أحرف على الأقل");
+        return false;
+      }
+      return { username, displayName, password, role };
+    }
   });
   if (!formValues) return;
 
   const { username, displayName, password, role } = formValues;
-  if (!/^[a-z0-9_]{3,20}$/.test(username)) return swalError("يوزرنيم غير صالح", "3-20 حرف (a-z, 0-9, _)");
-  if (!displayName) return swalError("اكتب الاسم الكامل");
-  if (password.length < 6) return swalError("كلمة المرور قصيرة", "6 أحرف على الأقل");
 
-  // فحص وجود اليوزرنيم
   const existing = await get(ref(db, "usernames/" + username));
   if (existing.exists()) return swalError("اسم المستخدم محجوز", "اختر اسماً آخر");
 
   const email = username + USERNAME_DOMAIN;
+  let secondaryApp = null;
+
   try {
-    // مهم: نستخدم ثانوي auth حتى لا يخرج الأدمن من جلسته
-    const { getApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-    const { initializeApp: initSecondary } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
-    const { getAuth: getAuth2, createUserWithEmailAndPassword: create2, signOut: signOut2 } =
-      await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
-
     const secondaryName = "secondary-" + Date.now();
-    const secondaryApp = initSecondary(firebaseConfig, secondaryName);
-    const secondaryAuth = getAuth2(secondaryApp);
-    const cred = await create2(secondaryAuth, email, password);
+    secondaryApp = initializeApp(firebaseConfig, secondaryName);
+    const secondaryAuth = getAuth(secondaryApp);
+    const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
     const newUid = cred.user.uid;
-    await signOut2(secondaryAuth);
+    await signOut(secondaryAuth);
 
-    // إنشاء الملف الشخصي
     await set(ref(db, "users/" + newUid), {
       username, displayName, email, role,
       active: true, createdAt: Date.now(), lastLogin: null
@@ -1013,15 +1204,37 @@ window.openAddUserModal = async () => {
       uid: newUid, username, name: displayName, createdAt: Date.now()
     });
     await logActivity("user_created", `أنشأ مستخدم: ${displayName} (@${username})`);
-    swalSuccess("✅ تم إنشاء المستخدم", `@${username} / ${password}`);
+
+    await Swal.fire({
+      icon: "success",
+      title: "✅ تم إنشاء المستخدم",
+      html: `
+        <div style="text-align:right;direction:rtl;font-size:14px;line-height:2;">
+          <p><b>اسم المستخدم:</b> <code style="background:#1e2537;padding:4px 8px;border-radius:6px;">${escapeHtml(username)}</code></p>
+          <p><b>كلمة المرور:</b> <code style="background:#1e2537;padding:4px 8px;border-radius:6px;">${escapeHtml(password)}</code></p>
+          <p style="color:#f59e0b;font-size:12px;margin-top:10px;">📋 احفظ هذه البيانات وسلّمها للموظف</p>
+        </div>`,
+      confirmButtonText: "حسناً",
+      confirmButtonColor: "#2563eb",
+      background: themeBg(), color: themeFg()
+    });
   } catch (err) {
     console.error(err);
-    swalError("فشل إنشاء المستخدم", err.message);
+    const msgs = {
+      "auth/email-already-in-use": "اسم المستخدم مستخدم بالفعل",
+      "auth/weak-password": "كلمة المرور ضعيفة جداً",
+      "auth/invalid-email": "صيغة غير صحيحة"
+    };
+    swalError("فشل إنشاء المستخدم", msgs[err.code] || err.message);
+  } finally {
+    if (secondaryApp) {
+      try { await deleteApp(secondaryApp); } catch(e){}
+    }
   }
 };
 
 /* ============================================================
-   17) إدارة الفريق (أدمن)
+   19) إدارة الفريق (أدمن)
    ============================================================ */
 window.openTeamModal = async () => {
   if (!isAdmin) return;
@@ -1029,9 +1242,9 @@ window.openTeamModal = async () => {
   const team = teamSnap.val() || {};
   const html = Object.entries(team).map(([id, m]) => `
     <div class="user-row">
-      <div class="user-avatar">${(m.name || "?").charAt(0)}</div>
+      <div class="user-avatar">${escapeHtml((m.name || "?").charAt(0))}</div>
       <div class="user-info-cell">
-        <div class="user-name">${escapeHtml(m.name)}</div>
+        <div class="user-name">${escapeHtml(m.name || "—")}</div>
         <div class="user-meta"><span>@${escapeHtml(m.username || "—")}</span></div>
       </div>
       <div class="user-actions">
@@ -1043,8 +1256,7 @@ window.openTeamModal = async () => {
     title: "👥 إدارة الفريق",
     html: `<div style="max-height:400px;overflow-y:auto;text-align:right;direction:rtl;">${html}</div>`,
     showCancelButton: true, showConfirmButton: false, cancelButtonText: "إغلاق",
-    background: getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(),
-    color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim()
+    background: themeBg(), color: themeFg()
   });
 };
 
@@ -1058,7 +1270,7 @@ window.removeTeamMember = async (id) => {
 };
 
 /* ============================================================
-   18) التقرير + PDF
+   20) التقرير + PDF
    ============================================================ */
 function openReport() {
   const entries = Object.entries(allTasks);
@@ -1094,13 +1306,13 @@ function openReport() {
   const taskRow = (id, t) => `
     <div class="r-task">
       <div class="r-task-head">
-        <span class="r-badge ${t.priority === 'عاجل' ? 'r-urgent' : t.priority === 'مهم' ? 'r-important' : 'r-normal'}">${t.priority || 'عادي'}</span>
-        <span class="r-status">${t.status}</span>
+        <span class="r-badge ${t.priority === 'عاجل' ? 'r-urgent' : t.priority === 'مهم' ? 'r-important' : 'r-normal'}">${escapeHtml(t.priority || 'عادي')}</span>
+        <span class="r-status">${escapeHtml(t.status)}</span>
       </div>
       <div class="r-title">${escapeHtml(t.title)}</div>
       <div class="r-meta">
         <span>👤 ${escapeHtml(t.assignee || "—")}</span>
-        ${t.dueDate ? `<span>📅 ${t.dueDate}</span>` : ""}
+        ${t.dueDate ? `<span>📅 ${escapeHtml(t.dueDate)}</span>` : ""}
         ${t.updatedByName ? `<span>✏️ آخر تعديل: ${escapeHtml(t.updatedByName)}</span>` : ""}
       </div>
       ${t.notes ? `<div class="r-notes">📝 ${escapeHtml(t.notes)}</div>` : ""}
@@ -1267,7 +1479,7 @@ async function downloadPDF() {
 }
 
 /* ============================================================
-   19) تصدير Excel (CSV)
+   21) تصدير CSV
    ============================================================ */
 window.exportCSV = () => {
   const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم","الوسوم","ملاحظات"]];
@@ -1288,7 +1500,7 @@ window.exportCSV = () => {
 };
 
 /* ============================================================
-   20) ربط الدوال بالـ window
+   22) ربط الدوال بالـ window
    ============================================================ */
 window.changeStatus = changeStatus;
 window.addComment = addComment;
@@ -1303,7 +1515,7 @@ window.downloadPDF = downloadPDF;
 window.togglePassword = togglePassword;
 
 /* ============================================================
-   21) إغلاق المودال + ESC
+   23) إغلاق المودال + ESC + Online/Offline
    ============================================================ */
 document.getElementById("modalOverlay").addEventListener("click", (e) => {
   if (e.target.id === "modalOverlay") closeModal();
@@ -1314,9 +1526,11 @@ document.getElementById("reportOverlay").addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") { closeModal(); closeReport(); }
 });
+window.addEventListener("online", () => showToast("✅ تم استعادة الاتصال", "success"));
+window.addEventListener("offline", () => showToast("⚠️ انقطع الاتصال", "warn"));
 
 /* ============================================================
-   22) تطبيق الثيم عند البدء
+   24) تطبيق الثيم
    ============================================================ */
 applyTheme();
 </script>
@@ -1341,7 +1555,6 @@ applyTheme();
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
 
-/* ===== شاشة الدخول ===== */
 #loginScreen{
   display:flex;align-items:center;justify-content:center;
   min-height:100vh;padding:20px;
@@ -1426,7 +1639,6 @@ body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;background:var(--bg);color
 #loginBtn img{width:20px;}
 .help-text{color:#64748b;font-size:11px;margin-top:14px;}
 
-/* ===== شاشة التحميل ===== */
 #loadingScreen{
   display:none;position:fixed;inset:0;
   background:radial-gradient(circle at top,#1e3a8a 0%,#0a0e1a 70%);
@@ -1453,7 +1665,6 @@ body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;background:var(--bg);color
   100%{width:10%;margin-right:90%;}
 }
 
-/* ===== الهيدر ===== */
 #mainScreen{display:none;}
 header{
   background:var(--bg-2);border-bottom:1px solid var(--border);
@@ -1486,6 +1697,12 @@ header{
   padding:8px 12px;border-radius:10px;cursor:pointer;font-size:15px;transition:.2s;
 }
 .icon-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.user-menu-btn{
+  background:var(--bg-3);color:var(--text);border:1px solid var(--border);
+  padding:8px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
+  font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:6px;
+}
+.user-menu-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
 .btn-report{
   background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;
   padding:9px 18px;border-radius:10px;cursor:pointer;
@@ -1499,7 +1716,6 @@ header{
 }
 #logoutBtn:hover{background:var(--urgent);color:#fff;}
 
-/* ===== التنقل ===== */
 .main-nav{
   display:flex;gap:6px;padding:10px 24px;background:var(--bg-2);
   border-bottom:1px solid var(--border);overflow-x:auto;
@@ -1516,7 +1732,6 @@ header{
 .view-section{display:none;}
 .view-section.active{display:block;}
 
-/* ===== الحاويات ===== */
 .container{max-width:1500px;margin:20px auto;padding:0 20px;}
 .card-panel{
   background:var(--bg-2);border:1px solid var(--border);
@@ -1524,7 +1739,6 @@ header{
 }
 .panel-title{font-size:15px;font-weight:700;margin-bottom:16px;color:var(--text);}
 
-/* ===== إحصائيات ===== */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
 .stat{
   background:var(--bg-3);border-radius:14px;padding:16px;
@@ -1544,7 +1758,6 @@ header{
 .stat.progress .stat-num{color:var(--important);}
 .stat.overdue .stat-num{color:var(--urgent);}
 
-/* ===== أداء الفريق ===== */
 .team-row{
   display:grid;grid-template-columns:120px 1fr 130px;
   gap:12px;align-items:center;padding:10px 0;
@@ -1556,12 +1769,10 @@ header{
 .team-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));transition:width .5s;border-radius:4px;}
 .team-pct{font-size:13px;color:var(--text-2);text-align:left;font-weight:600;}
 
-/* ===== رسوم ===== */
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .chart-box{height:280px;position:relative;}
 @media (max-width:800px){.charts-grid{grid-template-columns:1fr;}}
 
-/* ===== النماذج ===== */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .form-grid input,.form-grid select,.form-grid textarea{
   padding:12px 14px;background:var(--bg-3);color:var(--text);
@@ -1578,7 +1789,6 @@ header{
 }
 .form-grid button:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(79,142,247,.4);}
 
-/* ===== التحكم ===== */
 .controls-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
 .search-wrap{flex:1;min-width:200px;position:relative;}
 .search-wrap input{
@@ -1605,7 +1815,6 @@ header{
 }
 .view-toggle button.active{background:var(--primary);color:#fff;}
 
-/* ===== فلاتر ===== */
 .filters{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
 .filter-btn{
   background:var(--bg-2);color:var(--text);border:1px solid var(--border);
@@ -1615,7 +1824,6 @@ header{
 .filter-btn:hover{border-color:var(--primary);color:var(--primary);}
 .filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 12px rgba(79,142,247,.3);}
 
-/* ===== شبكة المهام ===== */
 #tasksList{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
 #tasksList.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 @media (max-width:800px){#tasksList.kanban-board{grid-template-columns:1fr;}}
@@ -1667,7 +1875,6 @@ header{
 .status-pill.progress{background:rgba(245,158,11,.15);color:var(--important);}
 .status-pill.done{background:rgba(34,197,94,.15);color:var(--success);}
 
-/* ===== Kanban ===== */
 .kanban-col{
   background:var(--bg-3);border:1px solid var(--border);
   border-radius:14px;padding:14px;min-height:400px;
@@ -1694,7 +1901,6 @@ header{
 .kanban-card-title{font-size:13px;font-weight:700;margin-bottom:8px;line-height:1.4;}
 .kanban-card-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11px;}
 
-/* ===== لوحة المستخدمين ===== */
 .users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
 .btn-add-user{
   background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;
@@ -1739,7 +1945,6 @@ header{
 .btn-sm.success{color:var(--success);border-color:rgba(34,197,94,.3);}
 .btn-sm.success:hover{background:var(--success);color:#fff;}
 
-/* ===== المودال ===== */
 .empty{text-align:center;padding:40px;color:var(--text-2);}
 #modalOverlay{
   position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
@@ -1789,14 +1994,13 @@ header{
 .modal-comment-form input{flex:1;padding:10px 14px;background:var(--bg-3);color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;}
 .modal-comment-form input:focus{outline:none;border-color:var(--primary);}
 .modal-comment-form button{padding:10px 20px;background:var(--primary);color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;}
-.modal-actions{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--bg-3);}
+.modal-actions{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;background:var(--bg-3);flex-wrap:wrap;}
 .modal-status-select{padding:10px 14px;background:var(--bg-2);color:var(--text);border:1px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;cursor:pointer;margin-left:auto;}
 .btn-edit,.btn-del,.btn-pin{padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;border:1px solid var(--border);background:var(--bg-2);color:var(--text);}
 .btn-edit:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
 .btn-del:hover{background:var(--urgent);color:#fff;border-color:var(--urgent);}
 .btn-pin:hover,.btn-pin.active{background:var(--accent);color:#fff;border-color:var(--accent);}
 
-/* ===== التقرير ===== */
 #reportOverlay{
   position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);
   display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;
@@ -1867,7 +2071,6 @@ header{
 .r-comments{font-size:12px;color:#2563eb;margin-top:4px;}
 .r-footer{margin-top:30px;padding-top:16px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;}
 
-/* ===== Toast ===== */
 #toast{
   position:fixed;bottom:30px;left:50%;
   transform:translateX(-50%) translateY(100px);
@@ -1883,7 +2086,6 @@ header{
 #toast.warn{border-color:var(--important);}
 #toast.error{border-color:var(--urgent);}
 
-/* ===== استجابة ===== */
 @media (max-width:700px){
   #tasksList{grid-template-columns:1fr;}
   .form-grid{grid-template-columns:1fr;}
@@ -1903,7 +2105,7 @@ header{
   .r-header{flex-direction:column;text-align:center;gap:14px;}
   .r-logo-wrap{width:80px;height:80px;}
   .r-header-text h1{font-size:24px;}
-  .r-header::after{right:50%;transform:translateX(50%);}
+  .r-header::after{right:50%;transform:translateX(-50%);}
   .user-row{flex-direction:column;text-align:center;}
   .user-actions{justify-content:center;}
   .main-nav{padding:8px 12px;}
@@ -1945,7 +2147,7 @@ header{
       الدخول بحساب جوجل
     </button>
 
-    <p class="help-text">نسيت كلمة المرور؟ تواصل مع المدير لإعادة تعيينها</p>
+    <p class="help-text">نسيت كلمة المرور؟ تواصل مع المدير</p>
   </div>
 </div>
 
@@ -1973,6 +2175,7 @@ header{
     <div class="user-info">
       <span id="userName"></span>
       <span id="userRole" class="role"></span>
+      <button class="user-menu-btn" onclick="window.openChangePasswordModal()" title="تغيير كلمة المرور">🔑 كلمة المرور</button>
       <button class="btn-report" onclick="window.openReport()">📄 تقرير PDF</button>
       <button id="themeBtn" class="icon-btn" title="تبديل الوضع">☀️</button>
       <button id="logoutBtn">خروج</button>
