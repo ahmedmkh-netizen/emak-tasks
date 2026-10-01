@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EMAK Hub - إدارة المهام</title>
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
@@ -22,7 +23,6 @@ const firebaseConfig = {
   appId: "1:752119205815:web:a96725f43555fb0c742232"
 };
 
-// ==== الإعدادات ====
 const ADMIN_EMAILS = ["ahmedmkh@gmail.com"];
 
 const app = initializeApp(firebaseConfig);
@@ -30,12 +30,14 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
-// ==== الحالة ====
 let currentUser = null;
 let isAdmin = false;
 let allTasks = {};
 let currentFilter = "all";
+let currentSearch = "";
+let currentSort = "priority";
 let currentTheme = localStorage.getItem("theme") || "dark";
+let openTaskId = null;
 
 // ==== الثيم ====
 function applyTheme() {
@@ -56,6 +58,11 @@ function formatDate(ts) {
   const d = new Date(ts);
   return d.toLocaleDateString("ar-EG", { year: "numeric", month: "short", day: "numeric" });
 }
+function formatDateTime(ts) {
+  if (!ts) return "";
+  const d = new Date(ts);
+  return d.toLocaleString("ar-EG", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+}
 function daysRemaining(dueDate) {
   if (!dueDate) return null;
   const today = new Date(); today.setHours(0,0,0,0);
@@ -67,7 +74,7 @@ function dueLabel(dueDate) {
   if (d === null) return "";
   if (d < 0) return `⚠️ متأخر ${Math.abs(d)} يوم`;
   if (d === 0) return `🔥 يستحق اليوم`;
-  if (d === 1) return `📅 يستحق غداً`;
+  if (d === 1) return `📅 غداً`;
   if (d <= 3) return `📅 باقي ${d} أيام`;
   return `📅 ${dueDate}`;
 }
@@ -77,7 +84,6 @@ document.getElementById("loginBtn").onclick = async () => {
   try { await signInWithPopup(auth, provider); }
   catch (e) { alert("فشل تسجيل الدخول: " + e.message); }
 };
-
 document.getElementById("logoutBtn").onclick = () => {
   if (confirm("متأكد إنك عايز تخرج؟")) signOut(auth);
 };
@@ -109,11 +115,15 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// ==== تحميل المهام ====
+// ==== تحميل ====
 function loadTasks() {
   onValue(ref(db, "tasks"), (snap) => {
     allTasks = snap.val() || {};
     renderAll();
+    // تحديث المودال لو مفتوح
+    if (openTaskId && allTasks[openTaskId]) {
+      renderModal(openTaskId);
+    }
   });
 }
 
@@ -132,10 +142,10 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
     title, assignee, priority, dueDate, notes,
     status: "جديدة",
     createdBy: currentUser.email,
+    createdByName: currentUser.displayName || currentUser.email.split("@")[0],
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   });
-
   e.target.reset();
   showToast("✅ تمت إضافة المهمة");
 };
@@ -150,12 +160,13 @@ async function changeStatus(taskId, newStatus) {
     updatedBy: currentUser.email,
     updatedByName: currentUser.displayName || currentUser.email.split("@")[0]
   });
-  showToast(`🔄 تم تحديث الحالة إلى "${newStatus}"`);
+  showToast(`🔄 الحالة: ${newStatus}`);
 }
 
 // ==== إضافة ملاحظة ====
-async function addComment(taskId) {
-  const input = document.getElementById("comment-" + taskId);
+async function addComment(taskId, fromModal = false) {
+  const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
+  const input = document.getElementById(inputId);
   const text = input.value.trim();
   if (!text) return;
 
@@ -166,50 +177,156 @@ async function addComment(taskId) {
     authorEmail: currentUser.email,
     createdAt: serverTimestamp()
   });
-
   await update(ref(db, "tasks/" + taskId), {
     updatedAt: serverTimestamp(),
     updatedBy: currentUser.email,
     updatedByName: currentUser.displayName || currentUser.email.split("@")[0]
   });
-
   input.value = "";
   showToast("💬 تمت إضافة الملاحظة");
 }
 
-// ==== حذف مهمة ====
+// ==== حذف ====
 async function deleteTask(taskId) {
   if (!isAdmin) return alert("غير مصرح");
-  if (confirm("متأكد من حذف المهمة دي؟ لا يمكن التراجع!")) {
+  if (confirm("متأكد من حذف المهمة؟ لا يمكن التراجع!")) {
     await remove(ref(db, "tasks/" + taskId));
-    showToast("🗑️ تم حذف المهمة");
+    closeModal();
+    showToast("🗑️ تم الحذف");
   }
 }
 
-// ==== تعديل مهمة ====
+// ==== تعديل ====
 async function editTask(taskId) {
   if (!isAdmin) return alert("غير مصرح");
   const t = allTasks[taskId];
   if (!t) return;
   const newTitle = prompt("العنوان الجديد:", t.title);
   if (newTitle === null) return;
-  const newDue = prompt("تاريخ التسليم الجديد (YYYY-MM-DD):", t.dueDate || "");
+  const newDue = prompt("تاريخ التسليم (YYYY-MM-DD):", t.dueDate || "");
   if (newDue === null) return;
   const newPriority = prompt("الأولوية (عاجل / مهم / عادي):", t.priority || "عادي");
   if (newPriority === null) return;
+  const newAssignee = prompt("المسؤول (بهاء / محمود):", t.assignee);
+  if (newAssignee === null) return;
 
   await update(ref(db, "tasks/" + taskId), {
     title: newTitle.trim() || t.title,
     dueDate: newDue.trim(),
     priority: newPriority.trim() || "عادي",
+    assignee: newAssignee.trim() || t.assignee,
     updatedAt: serverTimestamp(),
     updatedBy: currentUser.email,
     updatedByName: currentUser.displayName || currentUser.email.split("@")[0]
   });
-  showToast("✏️ تم تعديل المهمة");
+  showToast("✏️ تم التعديل");
 }
 
-// ==== فلترة ====
+// ==== المودال ====
+function openModal(taskId) {
+  openTaskId = taskId;
+  renderModal(taskId);
+  document.getElementById("modalOverlay").classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+function closeModal() {
+  openTaskId = null;
+  document.getElementById("modalOverlay").classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+function renderModal(taskId) {
+  const t = allTasks[taskId];
+  if (!t) return closeModal();
+
+  const statusClass = t.status === "مكتملة" ? "done"
+    : t.status === "جاري التنفيذ" ? "progress" : "new";
+  const priorityClass = t.priority === "عاجل" ? "urgent"
+    : t.priority === "مهم" ? "important" : "normal";
+  const isUrgent = t.priority === "عاجل" && t.status !== "مكتملة";
+  const d = daysRemaining(t.dueDate);
+  const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
+
+  const comments = t.comments ? Object.entries(t.comments).sort((a,b) =>
+    (a[1].createdAt || 0) - (b[1].createdAt || 0)
+  ) : [];
+
+  const commentsHtml = comments.length > 0 ? comments.map(([cid, c]) => `
+    <div class="modal-comment">
+      <div class="modal-comment-head">
+        <span class="modal-comment-author">${escapeHtml(c.author)}</span>
+        <span class="modal-comment-date">${formatDateTime(c.createdAt)}</span>
+      </div>
+      <div class="modal-comment-text">${escapeHtml(c.text)}</div>
+    </div>
+  `).join("") : '<p class="empty-comments">لا توجد ملاحظات بعد</p>';
+
+  document.getElementById("modalBody").innerHTML = `
+    <div class="modal-header ${priorityClass}">
+      <div class="modal-badges">
+        <span class="priority-badge ${priorityClass}">${
+          t.priority === "عاجل" ? "🔴 عاجل" :
+          t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"
+        }</span>
+        <span class="status-badge ${statusClass}">${t.status}</span>
+      </div>
+      <button class="modal-close" onclick="window.closeModal()">✕</button>
+    </div>
+
+    <h2 class="modal-title">${escapeHtml(t.title)}</h2>
+
+    <div class="modal-meta">
+      <div class="meta-item">
+        <span class="meta-label">👤 المسؤول</span>
+        <span class="meta-value">${escapeHtml(t.assignee)}</span>
+      </div>
+      ${t.dueDate ? `
+      <div class="meta-item">
+        <span class="meta-label">📅 التسليم</span>
+        <span class="meta-value ${isOverdue ? 'overdue-text' : ''}">${dueLabel(t.dueDate)}</span>
+      </div>` : ""}
+      <div class="meta-item">
+        <span class="meta-label">✏️ آخر تعديل</span>
+        <span class="meta-value">${t.updatedByName ? escapeHtml(t.updatedByName) + " — " + formatDate(t.updatedAt) : "—"}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">🆕 أُنشئت</span>
+        <span class="meta-value">${t.createdByName ? escapeHtml(t.createdByName) + " — " + formatDate(t.createdAt) : formatDate(t.createdAt)}</span>
+      </div>
+    </div>
+
+    ${t.notes ? `
+      <div class="modal-section">
+        <div class="modal-section-title">📝 ملاحظات المهمة</div>
+        <div class="modal-notes">${escapeHtml(t.notes)}</div>
+      </div>` : ""}
+
+    <div class="modal-section">
+      <div class="modal-section-title">💬 التعليقات (${comments.length})</div>
+      <div class="modal-comments-list">${commentsHtml}</div>
+      <div class="modal-comment-form">
+        <input id="modal-comment-input" type="text" placeholder="أضف تعليقاً...">
+        <button onclick="window.addComment('${taskId}', true)">إرسال</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <select onchange="window.changeStatus('${taskId}', this.value)" class="modal-status-select">
+        <option ${t.status === "جديدة" ? "selected" : ""}>جديدة</option>
+        <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
+        <option ${t.status === "مكتملة" ? "selected" : ""}>مكتملة</option>
+      </select>
+      ${isAdmin ? `
+        <button class="btn-edit" onclick="window.editTask('${taskId}')">✏️ تعديل</button>
+        <button class="btn-del" onclick="window.deleteTask('${taskId}')">🗑️ حذف</button>
+      ` : ""}
+    </div>
+  `;
+
+  document.getElementById("modalBox").className = "modal-box" + (isUrgent ? " urgent-glow" : "");
+}
+
+// ==== فلترة وبحث وترتيب ====
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -217,6 +334,16 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
     currentFilter = btn.dataset.filter;
     renderAll();
   };
+});
+
+document.getElementById("searchBox").addEventListener("input", (e) => {
+  currentSearch = e.target.value.trim().toLowerCase();
+  renderTasks();
+});
+
+document.getElementById("sortSelect").addEventListener("change", (e) => {
+  currentSort = e.target.value;
+  renderTasks();
 });
 
 document.getElementById("themeBtn").onclick = () => {
@@ -278,15 +405,31 @@ function renderTeam() {
 
 function renderTasks() {
   const list = document.getElementById("tasksList");
-  const entries = Object.entries(allTasks).sort((a, b) => {
-    const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
-    const pa = pri[a[1].priority] ?? 2;
-    const pb = pri[b[1].priority] ?? 2;
-    if (pa !== pb) return pa - pb;
-    return (b[1].createdAt || 0) - (a[1].createdAt || 0);
-  });
+  let entries = Object.entries(allTasks);
 
-  const filtered = entries.filter(([_, t]) => {
+  // ترتيب
+  if (currentSort === "priority") {
+    entries.sort((a, b) => {
+      const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
+      const pa = pri[a[1].priority] ?? 2;
+      const pb = pri[b[1].priority] ?? 2;
+      if (pa !== pb) return pa - pb;
+      return (b[1].createdAt || 0) - (a[1].createdAt || 0);
+    });
+  } else if (currentSort === "date") {
+    entries.sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+  } else if (currentSort === "due") {
+    entries.sort((a, b) => {
+      if (!a[1].dueDate) return 1;
+      if (!b[1].dueDate) return -1;
+      return new Date(a[1].dueDate) - new Date(b[1].dueDate);
+    });
+  } else if (currentSort === "title") {
+    entries.sort((a, b) => (a[1].title || "").localeCompare(b[1].title || "", "ar"));
+  }
+
+  // فلترة
+  let filtered = entries.filter(([_, t]) => {
     if (currentFilter === "all") return true;
     if (currentFilter === "بهاء") return t.assignee === "بهاء";
     if (currentFilter === "محمود") return t.assignee === "محمود";
@@ -298,6 +441,14 @@ function renderTasks() {
     }
     return true;
   });
+
+  // بحث
+  if (currentSearch) {
+    filtered = filtered.filter(([_, t]) => {
+      const haystack = `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""}`.toLowerCase();
+      return haystack.includes(currentSearch);
+    });
+  }
 
   if (filtered.length === 0) {
     list.innerHTML = '<p class="empty" style="grid-column:1/-1;">لا توجد مهام مطابقة</p>';
@@ -312,66 +463,22 @@ function renderTasks() {
     const isUrgent = t.priority === "عاجل" && t.status !== "مكتملة";
     const d = daysRemaining(t.dueDate);
     const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
-
-    const updater = t.updatedByName
-      ? `<div class="updated-by">✏️ آخر تعديل: ${escapeHtml(t.updatedByName)} — ${formatDate(t.updatedAt)}</div>`
-      : "";
-
-    const comments = t.comments ? Object.entries(t.comments).sort((a,b) =>
-      (a[1].createdAt || 0) - (b[1].createdAt || 0)
-    ) : [];
-
-    const commentsHtml = comments.length > 0 ? `
-      <div class="comments">
-        <div class="comments-title">💬 الملاحظات (${comments.length})</div>
-        ${comments.slice(-3).map(([cid, c]) => `
-          <div class="comment">
-            <div class="comment-head">
-              <strong>${escapeHtml(c.author)}</strong>
-              <span class="comment-date">${formatDate(c.createdAt)}</span>
-            </div>
-            <div class="comment-text">${escapeHtml(c.text)}</div>
-          </div>
-        `).join("")}
-      </div>
-    ` : "";
+    const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
 
     return `
-      <div class="task ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""}">
-        <div class="task-header">
-          <div class="task-badges">
-            <span class="priority-badge ${priorityClass}">${
-              t.priority === "عاجل" ? "🔴 عاجل" :
-              t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"
-            }</span>
-            <span class="status-badge ${statusClass}">${t.status}</span>
+      <div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""}" onclick="window.openModal('${id}')">
+        <div class="card-top">
+          <span class="priority-dot ${priorityClass}"></span>
+          <span class="assignee-chip">👤 ${escapeHtml(t.assignee)}</span>
+        </div>
+        <h3 class="card-title">${escapeHtml(t.title)}</h3>
+        ${t.notes ? `<p class="card-notes">${escapeHtml(t.notes)}</p>` : ""}
+        <div class="card-bottom">
+          ${t.dueDate ? `<span class="card-due ${isOverdue ? 'overdue' : ''}">${dueLabel(t.dueDate)}</span>` : "<span></span>"}
+          <div class="card-icons">
+            ${commentsCount > 0 ? `<span class="card-icon">💬 ${commentsCount}</span>` : ""}
+            <span class="status-pill ${statusClass}">${t.status}</span>
           </div>
-          <span class="assignee">👤 ${escapeHtml(t.assignee)}</span>
-        </div>
-        <h3 class="task-title">${escapeHtml(t.title)}</h3>
-        ${t.notes ? `<p class="notes">${escapeHtml(t.notes)}</p>` : ""}
-        ${t.dueDate ? `<div class="due ${isOverdue ? "overdue" : ""}">${dueLabel(t.dueDate)}</div>` : ""}
-        ${updater}
-
-        ${commentsHtml}
-
-        <div class="comment-form">
-          <input id="comment-${id}" type="text" placeholder="أضف ملاحظة...">
-          <button onclick="window.addComment('${id}')">إرسال</button>
-        </div>
-
-        <div class="task-footer">
-          <select onchange="window.changeStatus('${id}', this.value)">
-            <option ${t.status === "جديدة" ? "selected" : ""}>جديدة</option>
-            <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
-            <option ${t.status === "مكتملة" ? "selected" : ""}>مكتملة</option>
-          </select>
-          ${isAdmin ? `
-            <div class="admin-actions">
-              <button onclick="window.editTask('${id}')" title="تعديل">✏️</button>
-              <button class="del" onclick="window.deleteTask('${id}')" title="حذف">🗑️</button>
-            </div>
-          ` : ""}
         </div>
       </div>
     `;
@@ -382,75 +489,91 @@ window.changeStatus = changeStatus;
 window.addComment = addComment;
 window.deleteTask = deleteTask;
 window.editTask = editTask;
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+// إغلاق المودال بالضغط على الخلفية أو Escape
+document.getElementById("modalOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "modalOverlay") closeModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeModal();
+});
 
 applyTheme();
 </script>
 
 <style>
 :root[data-theme="dark"] {
-  --bg: #0f172a;
-  --bg-2: #1e293b;
-  --bg-3: #334155;
+  --bg: #0a0e1a;
+  --bg-2: #131826;
+  --bg-3: #1e2537;
+  --bg-4: #2a3349;
   --text: #f1f5f9;
   --text-2: #94a3b8;
-  --border: #334155;
-  --primary: #3b82f6;
-  --primary-2: #1e40af;
+  --text-3: #64748b;
+  --border: #2a3349;
+  --primary: #4f8ef7;
+  --primary-2: #2563eb;
   --accent: #f59e0b;
-  --urgent: #ef4444;
-  --success: #10b981;
-  --warning: #f59e0b;
+  --urgent: #ff4d4f;
+  --important: #f59e0b;
+  --success: #22c55e;
+  --shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 :root[data-theme="light"] {
-  --bg: #f1f5f9;
+  --bg: #f5f7fb;
   --bg-2: #ffffff;
-  --bg-3: #e2e8f0;
+  --bg-3: #f1f5f9;
+  --bg-4: #e2e8f0;
   --text: #0f172a;
   --text-2: #64748b;
-  --border: #cbd5e1;
+  --text-3: #94a3b8;
+  --border: #e2e8f0;
   --primary: #2563eb;
   --primary-2: #1e40af;
   --accent: #d97706;
   --urgent: #dc2626;
+  --important: #d97706;
   --success: #059669;
-  --warning: #d97706;
+  --shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   transition: background 0.3s, color 0.3s;
 }
 
-/* ==== شاشة تسجيل الدخول ==== */
+/* ==== شاشة الدخول ==== */
 #loginScreen {
   display: flex; align-items: center; justify-content: center;
   min-height: 100vh; padding: 20px;
-  background: radial-gradient(circle at top, #1e3a8a, #0f172a 70%);
+  background: radial-gradient(circle at top, #1e3a8a 0%, #0a0e1a 70%);
 }
 .login-card {
-  background: rgba(30, 41, 59, 0.9);
+  background: rgba(19, 24, 38, 0.95);
   backdrop-filter: blur(20px);
-  border: 1px solid #334155;
-  padding: 50px 40px; border-radius: 20px;
+  border: 1px solid #2a3349;
+  padding: 50px 40px; border-radius: 24px;
   text-align: center; max-width: 420px; width: 100%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
-.login-logo { width: 90px; margin-bottom: 20px; }
-.login-card h1 { color: #f1f5f9; margin-bottom: 8px; font-size: 26px; }
-.login-card p { color: #94a3b8; margin-bottom: 30px; font-size: 14px; }
+.login-logo { width: 100px; margin-bottom: 20px; }
+.login-card h1 { color: #f1f5f9; margin-bottom: 8px; font-size: 30px; font-weight: 900; letter-spacing: -0.5px; }
+.login-card p { color: #94a3b8; margin-bottom: 32px; font-size: 14px; }
 #loginBtn {
-  background: white; color: #333; border: none;
-  padding: 14px 24px; border-radius: 10px; cursor: pointer;
-  font-size: 15px; font-weight: 600;
+  background: white; color: #1e293b; border: none;
+  padding: 14px 24px; border-radius: 12px; cursor: pointer;
+  font-size: 15px; font-weight: 700; font-family: inherit;
   display: flex; align-items: center; gap: 12px; justify-content: center;
-  width: 100%; transition: 0.2s;
+  width: 100%; transition: 0.3s;
 }
-#loginBtn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,255,255,0.2); }
+#loginBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
 #loginBtn img { width: 22px; }
 
 /* ==== الهيدر ==== */
@@ -458,78 +581,89 @@ body {
 header {
   background: var(--bg-2);
   border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
+  padding: 12px 24px;
   display: flex; justify-content: space-between; align-items: center;
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: var(--shadow);
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .header-brand { display: flex; align-items: center; gap: 12px; }
-.header-brand img { width: 40px; height: 40px; object-fit: contain; }
-.header-brand h1 { font-size: 20px; color: var(--text); }
-.header-brand .subtitle { font-size: 11px; color: var(--text-2); }
+.header-brand img { width: 42px; height: 42px; object-fit: contain; }
+.header-brand h1 { font-size: 20px; color: var(--text); font-weight: 800; line-height: 1; }
+.header-brand .subtitle { font-size: 11px; color: var(--text-2); margin-top: 2px; }
 
-.user-info { display: flex; align-items: center; gap: 14px; font-size: 14px; }
-.role {
-  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
-}
-.role.admin { background: rgba(245,158,11,0.2); color: var(--accent); border: 1px solid var(--accent); }
-.role.user { background: rgba(59,130,246,0.2); color: var(--primary); border: 1px solid var(--primary); }
+.user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; flex-wrap: wrap; }
+.role { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.role.admin { background: rgba(245,158,11,0.15); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
+.role.user { background: rgba(79,142,247,0.15); color: var(--primary); border: 1px solid rgba(79,142,247,0.3); }
 
 .icon-btn {
   background: var(--bg-3); color: var(--text);
   border: 1px solid var(--border);
-  padding: 8px 12px; border-radius: 8px; cursor: pointer;
+  padding: 8px 12px; border-radius: 10px; cursor: pointer;
   font-size: 15px; transition: 0.2s;
 }
 .icon-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
 #logoutBtn {
-  background: rgba(239,68,68,0.15); color: var(--urgent);
-  border: 1px solid var(--urgent);
-  padding: 8px 16px; border-radius: 8px; cursor: pointer;
-  font-size: 13px; font-weight: 600;
+  background: rgba(220,38,38,0.1); color: var(--urgent);
+  border: 1px solid rgba(220,38,38,0.3);
+  padding: 8px 16px; border-radius: 10px; cursor: pointer;
+  font-size: 12px; font-weight: 600; font-family: inherit;
+  transition: 0.2s;
 }
 #logoutBtn:hover { background: var(--urgent); color: white; }
 
 /* ==== الحاوية ==== */
-.container { max-width: 1400px; margin: 24px auto; padding: 0 16px; }
+.container { max-width: 1500px; margin: 20px auto; padding: 0 20px; }
 
-/* ==== بطاقة ==== */
-.card {
+.card-panel {
   background: var(--bg-2);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow);
 }
+.panel-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
 
 /* ==== الإحصائيات ==== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
 }
 .stat {
   background: var(--bg-3);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
   text-align: center;
   border: 1px solid var(--border);
   transition: 0.2s;
+  position: relative;
+  overflow: hidden;
 }
-.stat:hover { transform: translateY(-3px); }
-.stat-num { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-.stat-label { font-size: 12px; color: var(--text-2); }
+.stat::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.stat.total::before { background: var(--primary); }
+.stat.done::before { background: var(--success); }
+.stat.progress::before { background: var(--important); }
+.stat.overdue::before { background: var(--urgent); }
+.stat:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+.stat-num { font-size: 30px; font-weight: 900; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--text-2); font-weight: 500; }
 .stat.total .stat-num { color: var(--primary); }
 .stat.done .stat-num { color: var(--success); }
-.stat.progress .stat-num { color: var(--warning); }
+.stat.progress .stat-num { color: var(--important); }
 .stat.overdue .stat-num { color: var(--urgent); }
 
-/* ==== أداء الفريق ==== */
+/* ==== الفريق ==== */
 .team-row {
   display: grid;
-  grid-template-columns: 120px 1fr 120px;
+  grid-template-columns: 120px 1fr 130px;
   gap: 12px;
   align-items: center;
   padding: 10px 0;
@@ -537,229 +671,345 @@ header {
 }
 .team-row:last-child { border-bottom: none; }
 .team-name { font-weight: 600; font-size: 14px; }
-.team-bar {
-  height: 10px; background: var(--bg-3); border-radius: 5px; overflow: hidden;
-}
+.team-bar { height: 8px; background: var(--bg-4); border-radius: 4px; overflow: hidden; }
 .team-fill {
-  height: 100%; background: linear-gradient(90deg, var(--primary), var(--success));
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--success));
   transition: width 0.5s;
+  border-radius: 4px;
 }
-.team-pct { font-size: 13px; color: var(--text-2); text-align: left; }
+.team-pct { font-size: 13px; color: var(--text-2); text-align: left; font-weight: 600; }
 
 /* ==== الفورم ==== */
-.form-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .form-grid input, .form-grid select, .form-grid textarea {
-  padding: 12px;
+  padding: 12px 14px;
   background: var(--bg-3);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 14px; font-family: inherit;
+  transition: 0.2s;
 }
 .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
   outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
 }
 .form-grid button {
   grid-column: 1 / -1;
   background: linear-gradient(135deg, var(--primary), var(--primary-2));
   color: white; border: none;
   padding: 14px; border-radius: 10px; cursor: pointer;
-  font-size: 15px; font-weight: 700;
+  font-size: 15px; font-weight: 700; font-family: inherit;
   transition: 0.2s;
 }
-.form-grid button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,130,246,0.4); }
+.form-grid button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(79,142,247,0.4); }
+
+/* ==== أدوات التحكم ==== */
+.controls-bar {
+  display: flex; gap: 12px; margin-bottom: 20px;
+  flex-wrap: wrap; align-items: center;
+}
+.search-wrap {
+  flex: 1; min-width: 200px; position: relative;
+}
+.search-wrap input {
+  width: 100%; padding: 12px 16px 12px 44px;
+  background: var(--bg-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 12px;
+  font-size: 14px; font-family: inherit;
+}
+.search-wrap input:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
+}
+.search-wrap::before {
+  content: '🔍';
+  position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%); font-size: 14px;
+  pointer-events: none;
+}
+#sortSelect {
+  padding: 12px 16px;
+  background: var(--bg-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 12px;
+  font-size: 13px; font-family: inherit; cursor: pointer;
+}
 
 /* ==== الفلاتر ==== */
-.filters {
-  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
-  align-items: center;
-}
+.filters { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
 .filter-btn {
   background: var(--bg-2);
   color: var(--text);
   border: 1px solid var(--border);
   padding: 8px 16px; border-radius: 20px; cursor: pointer;
-  font-size: 13px; transition: 0.2s;
+  font-size: 13px; font-family: inherit; font-weight: 500;
+  transition: 0.2s;
 }
-.filter-btn:hover { border-color: var(--primary); }
+.filter-btn:hover { border-color: var(--primary); color: var(--primary); }
 .filter-btn.active {
   background: var(--primary); color: white; border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(79,142,247,0.3);
 }
 
 /* ==== شبكة المهام ==== */
 #tasksList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 16px;
-  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
 }
 
-/* ==== المهمة ==== */
-.task {
+/* ==== كارت المهمة ==== */
+.task-card {
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px;
-  border-top: 4px solid var(--primary);
-  transition: 0.3s;
+  cursor: pointer;
+  transition: all 0.25s;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 280px;
+  display: flex; flex-direction: column;
+  min-height: 170px;
+  overflow: hidden;
 }
-.task.normal { border-top-color: var(--success); }
-.task.important { border-top-color: var(--warning); }
-.task.urgent { border-top-color: var(--urgent); }
-.task.done { opacity: 0.6; }
+.task-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0; left: 0; height: 3px;
+}
+.task-card.normal::before { background: var(--success); }
+.task-card.important::before { background: var(--important); }
+.task-card.urgent::before { background: var(--urgent); }
+.task-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--primary); }
+.task-card.done { opacity: 0.65; }
+.task-card.done:hover { opacity: 1; }
 
 /* ✨ الفلاشر النيون للمهام العاجلة ✨ */
 @keyframes urgentGlow {
   0%, 100% {
-    box-shadow: 0 0 5px rgba(239,68,68,0.3),
-                0 0 15px rgba(239,68,68,0.2),
-                inset 0 0 5px rgba(239,68,68,0.1);
+    box-shadow: 0 0 5px rgba(255,77,79,0.2),
+                0 0 15px rgba(255,77,79,0.15);
     border-color: var(--border);
   }
   50% {
-    box-shadow: 0 0 20px rgba(239,68,68,0.8),
-                0 0 40px rgba(239,68,68,0.5),
-                inset 0 0 15px rgba(239,68,68,0.2);
+    box-shadow: 0 0 25px rgba(255,77,79,0.7),
+                0 0 45px rgba(255,77,79,0.4);
     border-color: var(--urgent);
   }
 }
-.task.urgent-glow {
-  animation: urgentGlow 1.5s ease-in-out infinite;
+.task-card.urgent-glow {
+  animation: urgentGlow 1.8s ease-in-out infinite;
 }
 
-.task-header {
+.card-top {
   display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 10px; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 10px;
 }
-.task-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-.priority-badge {
-  padding: 3px 10px; border-radius: 20px;
-  font-size: 11px; font-weight: 700;
+.priority-dot {
+  width: 10px; height: 10px; border-radius: 50%;
 }
-.priority-badge.urgent { background: rgba(239,68,68,0.15); color: var(--urgent); border: 1px solid var(--urgent); }
-.priority-badge.important { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid var(--warning); }
-.priority-badge.normal { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid var(--success); }
+.priority-dot.urgent { background: var(--urgent); box-shadow: 0 0 10px var(--urgent); }
+.priority-dot.important { background: var(--important); }
+.priority-dot.normal { background: var(--success); }
 
-.status-badge {
-  padding: 3px 10px; border-radius: 20px;
-  font-size: 11px; font-weight: 700;
+.assignee-chip {
+  font-size: 11px; padding: 4px 10px;
+  background: var(--bg-3); border-radius: 12px;
+  color: var(--text-2); font-weight: 600;
 }
-.status-badge.new { background: rgba(59,130,246,0.15); color: var(--primary); border: 1px solid var(--primary); }
-.status-badge.progress { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid var(--warning); }
-.status-badge.done { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid var(--success); }
 
-.assignee { font-size: 12px; color: var(--text-2); }
-
-.task-title {
-  font-size: 15px;
-  margin-bottom: 8px;
-  color: var(--text);
-  line-height: 1.4;
+.card-title {
+  font-size: 15px; font-weight: 700; line-height: 1.4;
+  color: var(--text); margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 42px;
+}
+.card-notes {
+  font-size: 12px; color: var(--text-2); line-height: 1.5;
+  margin-bottom: 10px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.notes {
-  font-size: 12px; color: var(--text-2); margin-bottom: 8px; line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.due {
-  font-size: 12px; padding: 5px 10px;
-  background: var(--bg-3); border-radius: 8px;
-  display: inline-block; margin-bottom: 8px;
-  color: var(--text-2);
-}
-.due.overdue { background: rgba(239,68,68,0.15); color: var(--urgent); font-weight: 700; }
-
-.updated-by {
-  font-size: 10px; color: var(--text-2);
-  padding: 4px 8px; margin-bottom: 8px;
-  background: var(--bg-3); border-radius: 6px;
-  display: inline-block;
-}
-
-/* ==== الملاحظات ==== */
-.comments {
-  background: var(--bg-3);
-  border-radius: 10px;
-  padding: 10px;
-  margin: 8px 0;
-  max-height: 180px;
-  overflow-y: auto;
-}
-.comments-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
-.comment {
-  padding: 6px 0;
-  border-bottom: 1px dashed var(--border);
-}
-.comment:last-child { border-bottom: none; }
-.comment-head { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 11px; }
-.comment-head strong { color: var(--text); }
-.comment-date { color: var(--text-2); }
-.comment-text { font-size: 12px; color: var(--text); }
-
-/* ==== فورم الملاحظات ==== */
-.comment-form {
-  display: flex; gap: 6px; margin: 8px 0;
-}
-.comment-form input {
-  flex: 1; padding: 8px 12px;
-  background: var(--bg-3); color: var(--text);
-  border: 1px solid var(--border); border-radius: 8px;
-  font-size: 12px; font-family: inherit;
-  min-width: 0;
-}
-.comment-form input:focus { outline: none; border-color: var(--primary); }
-.comment-form button {
-  padding: 8px 14px;
-  background: var(--primary); color: white;
-  border: none; border-radius: 8px; cursor: pointer;
-  font-size: 12px; font-weight: 600;
-}
-.comment-form button:hover { background: var(--primary-2); }
-
-/* ==== الفوتر ==== */
-.task-footer {
+.card-bottom {
+  margin-top: auto;
   display: flex; justify-content: space-between; align-items: center;
-  margin-top: auto; padding-top: 10px;
-  border-top: 1px solid var(--border);
   gap: 8px; flex-wrap: wrap;
 }
-.task-footer select {
-  padding: 6px 12px;
-  background: var(--bg-3); color: var(--text);
-  border: 1px solid var(--border); border-radius: 8px;
-  font-size: 12px; cursor: pointer;
+.card-due {
+  font-size: 11px; color: var(--text-2);
+  padding: 4px 8px; background: var(--bg-3);
+  border-radius: 6px; font-weight: 600;
 }
-.admin-actions { display: flex; gap: 4px; }
-.admin-actions button {
-  background: var(--bg-3); border: 1px solid var(--border);
-  padding: 6px 10px; border-radius: 8px; cursor: pointer;
-  font-size: 13px; transition: 0.2s;
+.card-due.overdue { background: rgba(255,77,79,0.15); color: var(--urgent); }
+
+.card-icons { display: flex; gap: 6px; align-items: center; }
+.card-icon { font-size: 11px; color: var(--text-2); }
+
+.status-pill {
+  font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 12px;
 }
-.admin-actions button:hover { background: var(--primary); border-color: var(--primary); }
-.admin-actions button.del:hover { background: var(--urgent); border-color: var(--urgent); }
+.status-pill.new { background: rgba(79,142,247,0.15); color: var(--primary); }
+.status-pill.progress { background: rgba(245,158,11,0.15); color: var(--important); }
+.status-pill.done { background: rgba(34,197,94,0.15); color: var(--success); }
 
 .empty { text-align: center; padding: 40px; color: var(--text-2); }
 
+/* ==== المودال ==== */
+#modalOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s;
+}
+#modalOverlay.active { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-box {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  max-width: 650px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  animation: slideUp 0.3s;
+}
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.modal-box.urgent-glow {
+  animation: urgentGlow 1.8s ease-in-out infinite, slideUp 0.3s;
+}
+
+.modal-header {
+  padding: 20px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.modal-header::before {
+  content: '';
+  position: absolute; top: 0; right: 0; left: 0; height: 4px;
+}
+.modal-header.normal::before { background: var(--success); }
+.modal-header.important::before { background: var(--important); }
+.modal-header.urgent::before { background: var(--urgent); }
+
+.modal-badges { display: flex; gap: 8px; }
+.priority-badge, .status-badge {
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+}
+.priority-badge.urgent { background: rgba(255,77,79,0.15); color: var(--urgent); border: 1px solid rgba(255,77,79,0.3); }
+.priority-badge.important { background: rgba(245,158,11,0.15); color: var(--important); border: 1px solid rgba(245,158,11,0.3); }
+.priority-badge.normal { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+.status-badge.new { background: rgba(79,142,247,0.15); color: var(--primary); border: 1px solid rgba(79,142,247,0.3); }
+.status-badge.progress { background: rgba(245,158,11,0.15); color: var(--important); border: 1px solid rgba(245,158,11,0.3); }
+.status-badge.done { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+
+.modal-close {
+  background: var(--bg-3); color: var(--text);
+  border: none; width: 34px; height: 34px;
+  border-radius: 50%; cursor: pointer;
+  font-size: 16px; transition: 0.2s;
+}
+.modal-close:hover { background: var(--urgent); color: white; }
+
+.modal-title {
+  padding: 20px 24px 12px;
+  font-size: 22px; font-weight: 800;
+  line-height: 1.4;
+}
+
+.modal-meta {
+  padding: 0 24px 16px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.meta-item {
+  background: var(--bg-3); padding: 10px 14px;
+  border-radius: 10px; display: flex; flex-direction: column; gap: 2px;
+}
+.meta-label { font-size: 11px; color: var(--text-3); font-weight: 600; }
+.meta-value { font-size: 13px; color: var(--text); font-weight: 600; }
+.overdue-text { color: var(--urgent); }
+
+.modal-section { padding: 16px 24px; border-top: 1px solid var(--border); }
+.modal-section-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--primary); }
+
+.modal-notes {
+  background: var(--bg-3); padding: 12px 14px;
+  border-radius: 10px; font-size: 13px; line-height: 1.7;
+  color: var(--text-2);
+}
+
+.modal-comments-list { max-height: 220px; overflow-y: auto; margin-bottom: 12px; }
+.modal-comment {
+  background: var(--bg-3); padding: 10px 14px;
+  border-radius: 10px; margin-bottom: 8px;
+}
+.modal-comment-head {
+  display: flex; justify-content: space-between;
+  margin-bottom: 4px; font-size: 12px;
+}
+.modal-comment-author { color: var(--primary); font-weight: 700; }
+.modal-comment-date { color: var(--text-3); font-size: 11px; }
+.modal-comment-text { font-size: 13px; line-height: 1.6; color: var(--text); }
+.empty-comments { text-align: center; color: var(--text-3); font-size: 13px; padding: 20px; }
+
+.modal-comment-form { display: flex; gap: 8px; }
+.modal-comment-form input {
+  flex: 1; padding: 10px 14px;
+  background: var(--bg-3); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
+  font-size: 13px; font-family: inherit;
+}
+.modal-comment-form input:focus { outline: none; border-color: var(--primary); }
+.modal-comment-form button {
+  padding: 10px 20px;
+  background: var(--primary); color: white;
+  border: none; border-radius: 10px; cursor: pointer;
+  font-size: 13px; font-weight: 700; font-family: inherit;
+}
+.modal-comment-form button:hover { background: var(--primary-2); }
+
+.modal-actions {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 8px; align-items: center;
+  background: var(--bg-3);
+}
+.modal-status-select {
+  padding: 10px 14px;
+  background: var(--bg-2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px;
+  font-size: 13px; font-family: inherit; cursor: pointer;
+  margin-left: auto;
+}
+.btn-edit, .btn-del {
+  padding: 10px 18px; border-radius: 10px;
+  font-size: 13px; font-weight: 700; font-family: inherit;
+  cursor: pointer; border: 1px solid var(--border);
+  background: var(--bg-2); color: var(--text);
+  transition: 0.2s;
+}
+.btn-edit:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.btn-del:hover { background: var(--urgent); color: white; border-color: var(--urgent); }
+
 /* ==== Toast ==== */
 #toast {
-  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+  position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
   background: var(--bg-3); color: var(--text);
-  padding: 14px 24px; border-radius: 10px;
-  font-size: 14px; font-weight: 600;
+  padding: 14px 24px; border-radius: 12px;
+  font-size: 14px; font-weight: 700;
   border: 1px solid var(--primary);
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   opacity: 0; transition: 0.3s; z-index: 9999;
@@ -769,19 +1019,20 @@ header {
 /* ==== Responsive ==== */
 @media (max-width: 700px) {
   #tasksList { grid-template-columns: 1fr; }
-  .task { min-height: auto; }
   .form-grid { grid-template-columns: 1fr; }
   .header-brand h1 { font-size: 16px; }
   .header-brand .subtitle { display: none; }
   .team-row { grid-template-columns: 1fr; gap: 6px; }
-  .user-info { gap: 8px; font-size: 12px; }
+  .user-info { gap: 6px; font-size: 11px; }
   .role { padding: 3px 8px; font-size: 10px; }
+  .modal-meta { grid-template-columns: 1fr; }
+  .modal-actions { flex-wrap: wrap; }
+  .modal-status-select { margin-left: 0; width: 100%; }
 }
 </style>
 </head>
 <body>
 
-<!-- شاشة تسجيل الدخول -->
 <div id="loginScreen">
   <div class="login-card">
     <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK">
@@ -794,7 +1045,6 @@ header {
   </div>
 </div>
 
-<!-- الشاشة الرئيسية -->
 <div id="mainScreen">
   <header>
     <div class="header-brand">
@@ -814,9 +1064,8 @@ header {
 
   <div class="container">
 
-    <!-- الإحصائيات -->
-    <div class="card">
-      <h2 style="margin-bottom:14px;font-size:16px;">📊 نظرة عامة</h2>
+    <div class="card-panel">
+      <div class="panel-title">📊 نظرة عامة</div>
       <div class="stats-grid">
         <div class="stat total">
           <div class="stat-num" id="statTotal">0</div>
@@ -837,15 +1086,13 @@ header {
       </div>
     </div>
 
-    <!-- أداء الفريق -->
-    <div class="card">
-      <h2 style="margin-bottom:14px;font-size:16px;">👥 أداء الفريق</h2>
+    <div class="card-panel">
+      <div class="panel-title">👥 أداء الفريق</div>
       <div id="teamList"></div>
     </div>
 
-    <!-- إضافة مهمة -->
-    <div class="card" id="addTaskCard">
-      <h2 style="margin-bottom:14px;font-size:16px;">➕ إضافة مهمة جديدة</h2>
+    <div class="card-panel" id="addTaskCard">
+      <div class="panel-title">➕ إضافة مهمة جديدة</div>
       <form id="addTaskForm" class="form-grid">
         <input id="taskTitle" type="text" placeholder="عنوان المهمة *" required>
         <select id="taskAssignee" required>
@@ -864,7 +1111,18 @@ header {
       </form>
     </div>
 
-    <!-- الفلاتر -->
+    <div class="controls-bar">
+      <div class="search-wrap">
+        <input id="searchBox" type="text" placeholder="ابحث في المهام...">
+      </div>
+      <select id="sortSelect">
+        <option value="priority">ترتيب: الأولوية</option>
+        <option value="date">ترتيب: الأحدث</option>
+        <option value="due">ترتيب: تاريخ التسليم</option>
+        <option value="title">ترتيب: أبجدي</option>
+      </select>
+    </div>
+
     <div class="filters">
       <button class="filter-btn active" data-filter="all">الكل</button>
       <button class="filter-btn" data-filter="بهاء">بهاء</button>
@@ -875,6 +1133,12 @@ header {
     </div>
 
     <div id="tasksList"></div>
+  </div>
+</div>
+
+<div id="modalOverlay">
+  <div class="modal-box" id="modalBox">
+    <div id="modalBody"></div>
   </div>
 </div>
 
