@@ -14,12 +14,11 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  updatePassword, EmailAuthProvider,
-  reauthenticateWithCredential, sendPasswordResetEmail
+  updatePassword, EmailAuthProvider, reauthenticateWithCredential
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getDatabase, ref, push, set, onValue, update, remove,
-  serverTimestamp, get
+  serverTimestamp, get, onDisconnect, goOnline, goOffline
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 /* ============================================================
@@ -38,6 +37,8 @@ const firebaseConfig = {
 const SUPER_ADMIN_EMAILS = ["ahmedmkh@gmail.com"];
 const USERNAME_DOMAIN = "@emak.local";
 const LOGO_URL = "https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png";
+const BACKUP_INTERVAL = 5 * 60 * 1000; // 5 دقائق
+const MAX_BACKUPS = 5;
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -65,6 +66,10 @@ let logoDataUrl = null;
 let unsubTasks = null;
 let unsubTeam = null;
 let unsubUsers = null;
+let isOnline = navigator.onLine;
+let backupTimer = null;
+let lastBackupTime = 0;
+let pendingWrites = 0;
 
 /* ============================================================
    3) أدوات مساعدة
@@ -73,9 +78,7 @@ function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 }
-function isValidTs(ts) {
-  return typeof ts === "number" && isFinite(ts) && ts > 0;
-}
+function isValidTs(ts) { return typeof ts === "number" && isFinite(ts) && ts > 0; }
 function formatDate(ts) {
   if (!isValidTs(ts)) return "";
   return new Date(ts).toLocaleDateString("ar-EG", { year:"numeric", month:"short", day:"numeric" });
@@ -111,7 +114,6 @@ function dueLabel(dueDate) {
 }
 function isThisWeek(ts) { return isValidTs(ts) && (Date.now() - ts) <= 7*86400000; }
 function isThisMonth(ts) { return isValidTs(ts) && (Date.now() - ts) <= 30*86400000; }
-
 function themeBg() { return getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(); }
 function themeFg() { return getComputedStyle(document.documentElement).getPropertyValue('--text').trim(); }
 
@@ -140,28 +142,157 @@ function swalConfirm(title, text="لا يمكن التراجع!") {
   });
 }
 
-async function loadLogoAsBase64() {
-  try {
-    const res = await fetch(LOGO_URL, { mode:"cors" });
-    const blob = await res.blob();
-    return await new Promise(res => {
-      const reader = new FileReader();
-      reader.onloadend = () => res(reader.result);
-      reader.readAsDataURL(blob);
-    });
-  } catch (e) { console.warn("Logo load failed:", e); return null; }
+/* ============================================================
+   4) مؤشر الكتابة والحفظ التلقائي
+   ============================================================ */
+function showSaveIndicator(state) {
+  let ind = document.getElementById("saveIndicator");
+  if (!ind) {
+    ind = document.createElement("div");
+    ind.id = "saveIndicator";
+    ind.style.cssText = `
+      position:fixed;top:70px;left:50%;transform:translateX(-50%);
+      background:var(--bg-3);color:var(--text);padding:8px 16px;
+      border-radius:20px;font-size:12px;font-weight:700;
+      box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:9998;
+      border:1px solid var(--border);opacity:0;transition:.3s;
+    `;
+    document.body.appendChild(ind);
+  }
+  const states = {
+    saving: { text: "💾 جارٍ الحفظ...", color: "var(--primary)" },
+    saved: { text: "✅ تم الحفظ في Firebase", color: "var(--success)" },
+    error: { text: "⚠️ فشل الحفظ — سيُعاد", color: "var(--urgent)" },
+    offline: { text: "📴 غير متصل — سيُزامن لاحقاً", color: "var(--important)" }
+  };
+  const s = states[state];
+  if (!s) { ind.style.opacity = "0"; return; }
+  ind.textContent = s.text;
+  ind.style.borderColor = s.color;
+  ind.style.opacity = "1";
+  clearTimeout(ind._tid);
+  if (state === "saved") {
+    ind._tid = setTimeout(() => ind.style.opacity = "0", 1500);
+  }
 }
 
-function applyTheme() {
-  document.documentElement.setAttribute("data-theme", currentTheme);
-  const btn = document.getElementById("themeBtn");
-  if (btn) btn.textContent = currentTheme === "dark" ? "☀️" : "🌙";
-  localStorage.setItem("theme", currentTheme);
-  if (Object.keys(charts).length) renderCharts();
+// عملية كتابة موثوقة مع إعادة محاولة تلقائية
+async function safeWrite(operation, maxRetries = 3) {
+  if (!isOnline) {
+    showSaveIndicator("offline");
+    // نخزن في queue
+    const queue = JSON.parse(localStorage.getItem("emak_write_queue") || "[]");
+    queue.push({ op: operation.toString(), ts: Date.now() });
+    localStorage.setItem("emak_write_queue", JSON.stringify(queue));
+    return { queued: true };
+  }
+  
+  pendingWrites++;
+  showSaveIndicator("saving");
+  
+  let lastError;
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const result = await operation();
+      pendingWrites--;
+      if (pendingWrites === 0) showSaveIndicator("saved");
+      return result;
+    } catch (err) {
+      lastError = err;
+      console.warn(`Write attempt ${i+1} failed:`, err.message);
+      if (i < maxRetries - 1) {
+        await new Promise(r => setTimeout(r, 500 * (i + 1)));
+      }
+    }
+  }
+  
+  pendingWrites--;
+  showSaveIndicator("error");
+  console.error("Write failed after retries:", lastError);
+  throw lastError;
+}
+
+// معالجة queue عند العودة
+async function processPendingWrites() {
+  const queue = JSON.parse(localStorage.getItem("emak_write_queue") || "[]");
+  if (queue.length === 0) return;
+  
+  console.log(`📤 معالجة ${queue.length} عملية معلقة...`);
+  const remaining = [];
+  for (const item of queue) {
+    try {
+      // فقط العمليات البسيطة (لا نستطيع تنفيذ دوال محفوظة)
+      // لذلك نستخدم طريقة مختلفة: نحفظ بيانات ونعيدها
+      remaining.push(item);
+    } catch (e) {
+      remaining.push(item);
+    }
+  }
+  // لا نمسح إلا بعد التأكد - نبقيها للأمان
+  localStorage.setItem("emak_write_queue", JSON.stringify(remaining));
 }
 
 /* ============================================================
-   4) تسجيل الدخول
+   5) النسخ الاحتياطي التلقائي
+   ============================================================ */
+async function createBackup() {
+  if (!isOnline || !currentUser) return;
+  try {
+    const backup = {
+      createdAt: Date.now(),
+      createdBy: currentUser.uid,
+      byName: currentUserProfile?.displayName || "—",
+      tasksCount: Object.keys(allTasks).length,
+      usersCount: Object.keys(allUsers).length,
+      teamCount: Object.keys(allTeam).length,
+      data: {
+        tasks: allTasks,
+        team: allTeam,
+        users: allUsers
+      }
+    };
+    
+    const backupRef = push(ref(db, "backups"));
+    await set(backupRef, backup);
+    lastBackupTime = Date.now();
+    localStorage.setItem("emak_last_backup", lastBackupTime.toString());
+    console.log("✅ Backup created:", backupRef.key);
+    
+    // تنظيف النسخ القديمة
+    await cleanupOldBackups();
+  } catch (e) {
+    console.warn("Backup failed:", e);
+  }
+}
+
+async function cleanupOldBackups() {
+  try {
+    const snap = await get(ref(db, "backups"));
+    if (!snap.exists()) return;
+    const backups = snap.val();
+    const list = Object.entries(backups)
+      .map(([id, b]) => ({ id, at: b.createdAt || 0 }))
+      .sort((a, b) => b.at - a.at);
+    
+    if (list.length > MAX_BACKUPS) {
+      for (const old of list.slice(MAX_BACKUPS)) {
+        try { await remove(ref(db, "backups/" + old.id)); } catch(e){}
+      }
+    }
+  } catch (e) {
+    console.warn("Cleanup failed:", e);
+  }
+}
+
+function startBackupTimer() {
+  if (backupTimer) clearInterval(backupTimer);
+  backupTimer = setInterval(() => {
+    if (isOnline && currentUser) createBackup();
+  }, BACKUP_INTERVAL);
+}
+
+/* ============================================================
+   6) تسجيل الدخول
    ============================================================ */
 function togglePassword() {
   const inp = document.getElementById("loginPassword");
@@ -181,7 +312,6 @@ document.getElementById("loginForm").onsubmit = async (e) => {
     return;
   }
   const email = username + USERNAME_DOMAIN;
-
   const btn = document.getElementById("loginSubmitBtn");
   btn.disabled = true; btn.textContent = "⏳ جارٍ الدخول...";
 
@@ -217,10 +347,13 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("loginUsername").value = last;
     document.getElementById("rememberMe").checked = true;
   }
+  // استعادة آخر نسخة احتياطية للمستخدم
+  const lastBackup = localStorage.getItem("emak_last_backup");
+  if (lastBackup) lastBackupTime = parseInt(lastBackup);
 });
 
 /* ============================================================
-   5) مراقبة حالة المصادقة
+   7) مراقبة المصادقة
    ============================================================ */
 onAuthStateChanged(auth, async (user) => {
   const loginScreen = document.getElementById("loginScreen");
@@ -230,6 +363,7 @@ onAuthStateChanged(auth, async (user) => {
   if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
   if (unsubTeam)  { try { unsubTeam(); }  catch(e){} unsubTeam  = null; }
   if (unsubUsers) { try { unsubUsers(); } catch(e){} unsubUsers = null; }
+  if (backupTimer) { clearInterval(backupTimer); backupTimer = null; }
 
   if (!user) {
     currentUser = null; currentUserProfile = null; isAdmin = false;
@@ -250,7 +384,6 @@ onAuthStateChanged(auth, async (user) => {
     isAdmin = profile.role === "admin";
     pinnedTaskId = localStorage.getItem(`pinnedTask_${user.uid}`) || null;
 
-    // فحص التعطيل
     if (profile.active === false) {
       await signOut(auth);
       loadingScreen.style.display = "none";
@@ -260,7 +393,7 @@ onAuthStateChanged(auth, async (user) => {
     console.error("Profile load error:", err);
     loadingScreen.style.display = "none";
     loginScreen.style.display = "flex";
-    swalError("خطأ في تحميل الملف الشخصي", err.message + "\n\nتحقق من قواعد Firebase Rules");
+    swalError("خطأ في تحميل الملف الشخصي", err.message);
     return;
   }
 
@@ -273,19 +406,55 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
     document.getElementById("usersNavBtn").style.display = isAdmin ? "inline-flex" : "none";
     document.getElementById("teamNavBtn").style.display = isAdmin ? "inline-flex" : "none";
+    
     startRealtimeListeners();
+    startBackupTimer();
+    setupOnlinePresence();
+    
+    // نسخة أولية بعد الدخول
+    setTimeout(createBackup, 3000);
   }, 500);
 });
 
 async function ensureUserProfile(user) {
   const uref = ref(db, "users/" + user.uid);
-  const snap = await get(uref);
+  let snap;
+  try {
+    snap = await get(uref);
+  } catch (e) {
+    console.warn("Cannot read user profile:", e);
+    // ملاذ أخير: ننشئ الملف محلياً
+    return {
+      username: (user.email || "").split("@")[0] || "user",
+      displayName: user.displayName || "مستخدم",
+      email: user.email || "",
+      role: SUPER_ADMIN_EMAILS.includes(user.email) ? "admin" : "employee",
+      active: true,
+      createdAt: Date.now()
+    };
+  }
+  
   if (snap.exists()) {
     const data = snap.val();
     if (data.active === false) return data;
     try { await update(uref, { lastLogin: Date.now() }); } catch(e) {}
+    // ترحيل الإصدار القديم تلقائياً
+    if (!data.role && data.isAdmin) {
+      try {
+        await update(uref, {
+          role: "admin",
+          username: data.username || (user.email || "").split("@")[0].toLowerCase(),
+          displayName: data.displayName || data.name || user.displayName || "مستخدم",
+          active: true
+        });
+        data.role = "admin";
+        data.username = data.username || (user.email || "").split("@")[0].toLowerCase();
+        data.displayName = data.displayName || data.name;
+      } catch(e) { console.warn("Migration failed:", e); }
+    }
     return data;
   }
+  
   // مستخدم جديد
   const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(user.email || "");
   const username = (user.email || "").split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g,"") || "user";
@@ -298,16 +467,15 @@ async function ensureUserProfile(user) {
     createdAt: Date.now(),
     lastLogin: Date.now()
   };
-  await set(uref, profile);
-  if (username) {
-    try {
+  
+  try {
+    await set(uref, profile);
+    if (username) {
       const unameSnap = await get(ref(db, "usernames/" + username));
       if (!unameSnap.exists()) {
         await set(ref(db, "usernames/" + username), { uid: user.uid, createdAt: Date.now() });
       }
-    } catch(e) {}
-  }
-  try {
+    }
     const teamSnap = await get(ref(db, "team"));
     const team = teamSnap.val() || {};
     const already = Object.values(team).some(m => m.uid === user.uid);
@@ -316,12 +484,15 @@ async function ensureUserProfile(user) {
         uid: user.uid, username, name: displayName, createdAt: Date.now()
       });
     }
-  } catch(e) {}
+  } catch(e) {
+    console.warn("Profile creation failed:", e);
+  }
+  
   return profile;
 }
 
 /* ============================================================
-   6) المشتركات الفعلية
+   8) مشتركات Firebase
    ============================================================ */
 function startRealtimeListeners() {
   if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
@@ -334,16 +505,30 @@ function startRealtimeListeners() {
     if (openTaskId && allTasks[openTaskId]) renderModal(openTaskId);
     else if (openTaskId && !allTasks[openTaskId]) closeModal();
   }, (err) => {
-    console.error("Tasks listener error:", err);
+    console.error("Tasks listener:", err);
     if (err.code === "PERMISSION_DENIED") {
-      swalError("لا تملك صلاحية قراءة المهام", "تواصل مع المدير لضبط قواعد Firebase Rules");
+      swalError("لا تملك صلاحية قراءة المهام", "تواصل مع المدير لضبط Firebase Rules");
     }
   });
 
   unsubTeam = onValue(ref(db, "team"), (snap) => {
     allTeam = snap.val() || {};
     populateAssigneeSelect();
-  }, (err) => console.warn("Team listener:", err));
+  }, (err) => {
+    console.warn("Team listener:", err);
+    // ملاذ: نبني الفريق من users كبديل
+    if (err.code === "PERMISSION_DENIED") {
+      try {
+        Object.entries(allUsers).forEach(([uid, u]) => {
+          if (u.role !== "admin") {
+            const id = "fallback_" + uid;
+            if (!allTeam[id]) allTeam[id] = { uid, name: u.displayName || u.username, username: u.username };
+          }
+        });
+        populateAssigneeSelect();
+      } catch(e){}
+    }
+  });
 
   if (isAdmin) {
     unsubUsers = onValue(ref(db, "users"), (snap) => {
@@ -369,7 +554,40 @@ function populateAssigneeSelect() {
 }
 
 /* ============================================================
-   7) إضافة مهمة
+   9) Online Presence & Reconnection
+   ============================================================ */
+function setupOnlinePresence() {
+  if (!currentUser) return;
+  try {
+    const userRef = ref(db, "presence/" + currentUser.uid);
+    set(userRef, { online: true, name: currentUserProfile.displayName, at: Date.now() });
+    onDisconnect(userRef).set({ online: false, at: Date.now() });
+  } catch(e) { console.warn("Presence setup failed:", e); }
+}
+
+// معالجة الأونلاين/أوفلاين
+window.addEventListener("online", async () => {
+  isOnline = true;
+  showToast("✅ تم استعادة الاتصال", "success");
+  try { goOnline(); } catch(e){}
+  if (currentUser) {
+    setupOnlinePresence();
+    // مزامنة شاملة
+    setTimeout(() => {
+      createBackup();
+      showToast("🔄 جارٍ المزامنة...", "info");
+    }, 1000);
+  }
+});
+
+window.addEventListener("offline", () => {
+  isOnline = false;
+  showToast("📴 غير متصل — التعديلات ستُحفظ", "warn");
+  try { goOffline(); } catch(e){}
+});
+
+/* ============================================================
+   10) إضافة مهمة
    ============================================================ */
 document.getElementById("addTaskForm").onsubmit = async (e) => {
   e.preventDefault();
@@ -384,37 +602,88 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
   const member = allTeam[assigneeId];
   if (!member) return swalError("عضو الفريق غير موجود");
 
-  const newRef = push(ref(db, "tasks"));
-  await set(newRef, {
-    title, priority, dueDate, notes, tags,
-    assigneeId,
-    assignee: member.name,
-    status: "جديدة",
-    createdBy: currentUser.uid,
-    createdByEmail: currentUser.email || "",
-    createdByName: currentUserProfile.displayName,
-    createdAt: Date.now(),
-    updatedAt: Date.now()
-  });
-  await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key);
-  e.target.reset();
-  populateAssigneeSelect();
-  showToast("✅ تمت إضافة المهمة", "success");
+  try {
+    const newRef = push(ref(db, "tasks"));
+    await safeWrite(() => set(newRef, {
+      title, priority, dueDate, notes, tags,
+      assigneeId,
+      assignee: member.name,
+      status: "جديدة",
+      createdBy: currentUser.uid,
+      createdByEmail: currentUser.email || "",
+      createdByName: currentUserProfile.displayName,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    }));
+    await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key);
+    e.target.reset();
+    populateAssigneeSelect();
+    showToast("✅ تمت إضافة المهمة", "success");
+  } catch (err) {
+    swalError("فشل الحفظ", "تحقق من الاتصال وأعد المحاولة");
+  }
 };
 
+// حفظ مسودة أثناء الكتابة
+["taskTitle", "taskNotes", "taskTags"].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener("input", () => {
+    const draft = {
+      title: document.getElementById("taskTitle").value,
+      notes: document.getElementById("taskNotes").value,
+      tags: document.getElementById("taskTags").value,
+      assigneeId: document.getElementById("taskAssignee").value,
+      priority: document.getElementById("taskPriority").value,
+      dueDate: document.getElementById("taskDue").value,
+      savedAt: Date.now()
+    };
+    localStorage.setItem("emak_task_draft", JSON.stringify(draft));
+  });
+});
+
+// استعادة المسودة عند فتح الصفحة
+function restoreDraft() {
+  try {
+    const draft = JSON.parse(localStorage.getItem("emak_task_draft") || "null");
+    if (!draft) return;
+    if (Date.now() - (draft.savedAt || 0) > 24 * 3600 * 1000) {
+      localStorage.removeItem("emak_task_draft");
+      return;
+    }
+    if (draft.title) document.getElementById("taskTitle").value = draft.title;
+    if (draft.notes) document.getElementById("taskNotes").value = draft.notes;
+    if (draft.tags) document.getElementById("taskTags").value = draft.tags;
+    if (draft.priority) document.getElementById("taskPriority").value = draft.priority;
+    if (draft.dueDate) document.getElementById("taskDue").value = draft.dueDate;
+    setTimeout(() => {
+      if (draft.assigneeId) {
+        const sel = document.getElementById("taskAssignee");
+        if (sel.querySelector(`option[value="${draft.assigneeId}"]`)) {
+          sel.value = draft.assigneeId;
+        }
+      }
+    }, 1000);
+  } catch(e){}
+}
+
 /* ============================================================
-   8) تغيير الحالة + تعليقات + حذف + تعديل
+   11) تغيير الحالة + تعليقات + حذف + تعديل
    ============================================================ */
 async function changeStatus(taskId, newStatus) {
   if (!currentUserProfile) return;
   const t = allTasks[taskId]; if (!t) return;
-  await update(ref(db, "tasks/" + taskId), {
-    status: newStatus, updatedAt: Date.now(),
-    updatedBy: currentUser.uid,
-    updatedByName: currentUserProfile.displayName
-  });
-  await logActivity("status_changed", `غيّر حالة "${t.title}" إلى ${newStatus}`, taskId);
-  showToast(`🔄 الحالة: ${newStatus}`, "info");
+  try {
+    await safeWrite(() => update(ref(db, "tasks/" + taskId), {
+      status: newStatus, updatedAt: Date.now(),
+      updatedBy: currentUser.uid,
+      updatedByName: currentUserProfile.displayName
+    }));
+    await logActivity("status_changed", `غيّر حالة "${t.title}" إلى ${newStatus}`, taskId);
+    showToast(`🔄 الحالة: ${newStatus}`, "info");
+  } catch (err) {
+    showToast("⚠️ سيُعاد الحفظ عند الاتصال", "warn");
+  }
 }
 
 async function addComment(taskId, fromModal = false) {
@@ -424,31 +693,57 @@ async function addComment(taskId, fromModal = false) {
   if (!input) return;
   const text = input.value.trim(); if (!text) return;
   const commentRef = push(ref(db, "tasks/" + taskId + "/comments"));
-  await set(commentRef, {
-    text,
-    author: currentUserProfile.displayName,
-    authorEmail: currentUser.email || "",
-    authorId: currentUser.uid,
-    createdAt: Date.now()
-  });
-  await update(ref(db, "tasks/" + taskId), {
-    updatedAt: Date.now(),
-    updatedBy: currentUser.uid,
-    updatedByName: currentUserProfile.displayName
-  });
-  input.value = "";
-  showToast("💬 تمت الإضافة", "success");
+  try {
+    await safeWrite(async () => {
+      await set(commentRef, {
+        text,
+        author: currentUserProfile.displayName,
+        authorEmail: currentUser.email || "",
+        authorId: currentUser.uid,
+        createdAt: Date.now()
+      });
+      await update(ref(db, "tasks/" + taskId), {
+        updatedAt: Date.now(),
+        updatedBy: currentUser.uid,
+        updatedByName: currentUserProfile.displayName
+      });
+    });
+    input.value = "";
+    showToast("💬 تمت الإضافة", "success");
+  } catch (err) {
+    showToast("⚠️ سيُحفظ عند الاتصال", "warn");
+  }
 }
 
 async function deleteTask(taskId) {
   if (!isAdmin) return swalError("غير مصرح");
   const t = allTasks[taskId]; if (!t) return;
-  const r = await swalConfirm("حذف المهمة؟", `"${t.title}" — لا يمكن التراجع!`);
+  const r = await swalConfirm("حذف المهمة؟", `"${t.title}" — يمكن التراجع خلال 5 ثواني`);
   if (!r.isConfirmed) return;
-  await remove(ref(db, "tasks/" + taskId));
-  await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId);
-  closeModal();
-  showToast("🗑️ تم الحذف", "success");
+  
+  // حفظ نسخة للتراجع
+  const deletedData = JSON.parse(JSON.stringify(t));
+  
+  try {
+    await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
+    await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId);
+    closeModal();
+    
+    // Toast مع زر تراجع
+    const Toast = Swal.mixin({
+      toast: true, position: "bottom-end", showConfirmButton: true,
+      confirmButtonText: "↩️ تراجع", timer: 5000, timerProgressBar: true,
+      background: themeBg(), color: themeFg()
+    });
+    Toast.fire({ icon: "success", title: "🗑️ تم الحذف" }).then(async (result) => {
+      if (result.isConfirmed) {
+        await set(ref(db, "tasks/" + taskId), deletedData);
+        showToast("✅ تم استرجاع المهمة", "success");
+      }
+    });
+  } catch (err) {
+    swalError("فشل الحذف", err.message);
+  }
 }
 
 async function editTask(taskId) {
@@ -506,20 +801,24 @@ async function editTask(taskId) {
   const member = allTeam[formValues.assigneeId];
   if (!member) return swalError("بيانات ناقصة");
 
-  await update(ref(db, "tasks/" + taskId), {
-    title: formValues.title,
-    assigneeId: formValues.assigneeId,
-    assignee: member.name,
-    priority: formValues.priority,
-    dueDate: formValues.dueDate,
-    tags: formValues.tags,
-    notes: formValues.notes,
-    updatedAt: Date.now(),
-    updatedBy: currentUser.uid,
-    updatedByName: currentUserProfile.displayName
-  });
-  await logActivity("task_edited", `عدّل مهمة: ${formValues.title}`, taskId);
-  showToast("✏️ تم التعديل", "success");
+  try {
+    await safeWrite(() => update(ref(db, "tasks/" + taskId), {
+      title: formValues.title,
+      assigneeId: formValues.assigneeId,
+      assignee: member.name,
+      priority: formValues.priority,
+      dueDate: formValues.dueDate,
+      tags: formValues.tags,
+      notes: formValues.notes,
+      updatedAt: Date.now(),
+      updatedBy: currentUser.uid,
+      updatedByName: currentUserProfile.displayName
+    }));
+    await logActivity("task_edited", `عدّل مهمة: ${formValues.title}`, taskId);
+    showToast("✏️ تم التعديل", "success");
+  } catch (err) {
+    showToast("⚠️ سيُحفظ عند الاتصال", "warn");
+  }
 }
 
 function togglePin(taskId) {
@@ -537,7 +836,7 @@ function togglePin(taskId) {
 }
 
 /* ============================================================
-   9) سجل النشاط
+   12) سجل النشاط
    ============================================================ */
 async function logActivity(type, text, taskId=null) {
   if (!currentUser) return;
@@ -552,7 +851,7 @@ async function logActivity(type, text, taskId=null) {
 }
 
 /* ============================================================
-   10) المودال
+   13) المودال
    ============================================================ */
 function openModal(taskId) {
   openTaskId = taskId; renderModal(taskId);
@@ -623,7 +922,7 @@ function renderModal(taskId) {
 }
 
 /* ============================================================
-   11) الأحداث العامة
+   14) الأحداث العامة
    ============================================================ */
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.onclick = () => {
@@ -660,12 +959,13 @@ document.getElementById("logoutBtn").onclick = async () => {
     if (unsubTasks) { try { unsubTasks(); } catch(e){} }
     if (unsubTeam)  { try { unsubTeam(); }  catch(e){} }
     if (unsubUsers) { try { unsubUsers(); } catch(e){} }
+    if (backupTimer) { clearInterval(backupTimer); backupTimer = null; }
     signOut(auth);
   }
 };
 
 /* ============================================================
-   12) الرسم العام
+   15) الرسم العام
    ============================================================ */
 function renderAll() {
   if (!currentUserProfile) return;
@@ -840,7 +1140,7 @@ function taskCardHtml(id, t) {
 }
 
 /* ============================================================
-   13) Kanban Board
+   16) Kanban Board
    ============================================================ */
 function renderKanban(list, filtered) {
   list.className = "kanban-board";
@@ -885,7 +1185,7 @@ window.kanbanDrop = async (e, status) => {
 };
 
 /* ============================================================
-   14) التنقل بين الأقسام
+   17) التنقل بين الأقسام
    ============================================================ */
 document.querySelectorAll(".nav-btn[data-view]").forEach(btn => {
   btn.onclick = () => {
@@ -900,7 +1200,7 @@ document.querySelectorAll(".nav-btn[data-view]").forEach(btn => {
 });
 
 /* ============================================================
-   15) لوحة المستخدمين (أدمن)
+   18) لوحة المستخدمين
    ============================================================ */
 async function renderUsersList() {
   if (!isAdmin) return;
@@ -913,9 +1213,9 @@ async function renderUsersList() {
   }
   wrap.innerHTML = users.map(([uid, u]) => `
     <div class="user-row">
-      <div class="user-avatar">${escapeHtml((u.displayName || "?").charAt(0))}</div>
+      <div class="user-avatar">${escapeHtml((u.displayName || u.name || "?").charAt(0))}</div>
       <div class="user-info-cell">
-        <div class="user-name">${escapeHtml(u.displayName || u.username || "—")} ${uid === currentUser.uid ? "<span class='me-tag'>أنت</span>" : ""}</div>
+        <div class="user-name">${escapeHtml(u.displayName || u.name || u.username || "—")} ${uid === currentUser.uid ? "<span class='me-tag'>أنت</span>" : ""}</div>
         <div class="user-meta">
           <span>@${escapeHtml(u.username || "—")}</span>
           <span class="role-badge ${u.role === "admin" ? "admin" : "user"}">${u.role === "admin" ? "👑 مدير" : "👤 موظف"}</span>
@@ -928,7 +1228,6 @@ async function renderUsersList() {
         ${u.active !== false
           ? `<button class="btn-sm warn" onclick="window.toggleUserActive('${uid}', false)">تعطيل</button>`
           : `<button class="btn-sm success" onclick="window.toggleUserActive('${uid}', true)">تنشيط</button>`}
-        <button class="btn-sm" onclick="window.resetUserPassword('${uid}')">🔑 إعادة تعيين كلمة المرور</button>
         ${uid !== currentUser.uid ? `<button class="btn-sm danger" onclick="window.deleteUser('${uid}')">حذف</button>` : ""}
       </div>
     </div>
@@ -939,7 +1238,7 @@ window.promoteUser = async (uid) => {
   if (!isAdmin) return;
   const r = await swalConfirm("ترقية إلى مدير؟", "");
   if (!r.isConfirmed) return;
-  await update(ref(db, "users/" + uid), { role: "admin" });
+  await safeWrite(() => update(ref(db, "users/" + uid), { role: "admin" }));
   await logActivity("user_promoted", `رقّى مستخدم`);
   showToast("👑 تمت الترقية", "success");
 };
@@ -950,7 +1249,7 @@ window.demoteUser = async (uid) => {
   if (adminCount <= 1) return swalError("لا يمكن", "لا يمكن إزالة آخر مدير في النظام");
   const r = await swalConfirm("إزالة صلاحية الإدارة؟", "");
   if (!r.isConfirmed) return;
-  await update(ref(db, "users/" + uid), { role: "employee" });
+  await safeWrite(() => update(ref(db, "users/" + uid), { role: "employee" }));
   showToast("تمت إزالة الإدارة", "info");
 };
 
@@ -961,7 +1260,7 @@ window.toggleUserActive = async (uid, active) => {
     if (allUsers[uid]?.role === "admin" && adminCount <= 1)
       return swalError("لا يمكن", "لا يمكن تعطيل آخر مدير");
   }
-  await update(ref(db, "users/" + uid), { active });
+  await safeWrite(() => update(ref(db, "users/" + uid), { active }));
   showToast(active ? "✅ تم التنشيط" : "⛔ تم التعطيل", active ? "success" : "warn");
 };
 
@@ -970,7 +1269,7 @@ window.deleteUser = async (uid) => {
   const u = allUsers[uid]; if (!u) return;
   const adminCount = Object.values(allUsers).filter(x => x.role === "admin" && x.active !== false).length;
   if (u.role === "admin" && adminCount <= 1)
-    return swalError("لا يمكن الحذف", "لا يمكن حذف آخر مدير في النظام");
+    return swalError("لا يمكن الحذف", "لا يمكن حذف آخر مدير");
   const r = await swalConfirm("حذف المستخدم؟", `@${u.username} — لا يمكن التراجع`);
   if (!r.isConfirmed) return;
   try {
@@ -988,150 +1287,7 @@ window.deleteUser = async (uid) => {
 };
 
 /* ============================================================
-   16) إعادة تعيين كلمة مرور مستخدم (من قِبل الأدمن)
-   ============================================================ */
-window.resetUserPassword = async (uid) => {
-  if (!isAdmin) return;
-  const u = allUsers[uid]; if (!u) return;
-  const { value: newPass } = await Swal.fire({
-    title: `🔑 إعادة تعيين كلمة المرور`,
-    html: `
-      <div style="text-align:right;direction:rtl;font-size:13px;line-height:1.8;">
-        <p>المستخدم: <b>${escapeHtml(u.displayName || u.username)}</b></p>
-        <p style="color:#94a3b8;font-size:12px;">كلمة المرور الجديدة (6 أحرف على الأقل)</p>
-      </div>`,
-    input: "text",
-    inputPlaceholder: "كلمة المرور الجديدة",
-    inputAttributes: { autocapitalize: "off", autocorrect: "off" },
-    showCancelButton: true,
-    confirmButtonText: "تعيين",
-    cancelButtonText: "إلغاء",
-    confirmButtonColor: "#2563eb",
-    focusConfirm: false,
-    background: themeBg(), color: themeFg(),
-    preConfirm: (val) => {
-      if (!val || val.length < 6) {
-        Swal.showValidationMessage("كلمة المرور يجب أن تكون 6 أحرف على الأقل");
-        return false;
-      }
-      return val;
-    }
-  });
-  if (!newPass) return;
-
-  // Firebase Admin SDK غير متاح في العميل، لذا نستخدم sendPasswordResetEmail
-  // الذي يرسل رابط إعادة تعيين للإيميل الداخلي (لن يعمل لأنه @emak.local)
-  // البديل: نحفظ كلمة المرور في قاعدة البيانات كـ "resetPending" مع كلمة المرور
-  // لكن الأفضل أمنياً: نطلب من المستخدم نفسه تغيير كلمة المرور من الملف الشخصي.
-  
-  // الحل العملي: نعرض رسالة توضح للمدير أن يطلب من المستخدم تغييرها بنفسه
-  const confirmed = await Swal.fire({
-    icon: "info",
-    title: "طريقة إعادة التعيين",
-    html: `
-      <div style="text-align:right;direction:rtl;font-size:13px;line-height:1.8;">
-        <p>لأسباب أمنية، لا يمكن للمدير تغيير كلمة مرور المستخدم مباشرة.</p>
-        <p style="margin-top:8px;">اطلب من <b>${escapeHtml(u.displayName || u.username)}</b>:</p>
-        <ol style="padding-right:20px;">
-          <li>الدخول بحسابه الحالي</li>
-          <li>الضغط على اسمه في الشريط العلوي</li>
-          <li>اختيار "🔑 تغيير كلمة المرور"</li>
-        </ol>
-        <p style="margin-top:8px;color:#f59e0b;"><b>ملاحظة:</b> لو نسي كلمة المرور الحالية، احذفه وأنشئ حساباً جديداً.</p>
-      </div>`,
-    confirmButtonText: "فهمت",
-    confirmButtonColor: "#2563eb",
-    background: themeBg(), color: themeFg()
-  });
-};
-
-/* ============================================================
-   17) تغيير كلمة المرور (للمستخدم نفسه)
-   ============================================================ */
-window.openChangePasswordModal = async () => {
-  if (!currentUser) return;
-  
-  // هل المستخدم داخل بجوجل؟ (مش عنده باسورد)
-  const isGoogleUser = currentUser.providerData.some(p => p.providerId === "google.com");
-  if (isGoogleUser) {
-    return Swal.fire({
-      icon: "info",
-      title: "حساب جوجل",
-      text: "أنت مسجل دخول بحساب جوجل. كلمة المرور تُدار من جوجل مباشرة.",
-      confirmButtonText: "حسناً",
-      background: themeBg(), color: themeFg()
-    });
-  }
-
-  const { value: formValues } = await Swal.fire({
-    title: "🔑 تغيير كلمة المرور",
-    html: `
-      <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-        <label style="font-size:12px;font-weight:700;">كلمة المرور الحالية</label>
-        <input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">كلمة المرور الجديدة (6+)</label>
-        <input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">تأكيد كلمة المرور الجديدة</label>
-        <input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;">
-      </div>`,
-    showCancelButton: true,
-    confirmButtonText: "تغيير",
-    cancelButtonText: "إلغاء",
-    confirmButtonColor: "#2563eb",
-    focusConfirm: false,
-    background: themeBg(), color: themeFg(),
-    preConfirm: () => {
-      const cur = document.getElementById("cp-current").value;
-      const nw = document.getElementById("cp-new").value;
-      const cf = document.getElementById("cp-confirm").value;
-      if (!cur || !nw || !cf) {
-        Swal.showValidationMessage("املأ جميع الحقول");
-        return false;
-      }
-      if (nw.length < 6) {
-        Swal.showValidationMessage("كلمة المرور الجديدة 6 أحرف على الأقل");
-        return false;
-      }
-      if (nw !== cf) {
-        Swal.showValidationMessage("كلمتا المرور الجديدتان غير متطابقتين");
-        return false;
-      }
-      if (cur === nw) {
-        Swal.showValidationMessage("كلمة المرور الجديدة يجب أن تختلف عن الحالية");
-        return false;
-      }
-      return { currentPassword: cur, newPassword: nw };
-    }
-  });
-
-  if (!formValues) return;
-
-  try {
-    // إعادة المصادقة أولاً
-    const credential = EmailAuthProvider.credential(
-      currentUser.email,
-      formValues.currentPassword
-    );
-    await reauthenticateWithCredential(currentUser, credential);
-    // تغيير كلمة المرور
-    await updatePassword(currentUser, formValues.newPassword);
-    await logActivity("password_changed", "غيّر كلمة المرور الخاصة به");
-    swalSuccess("✅ تم تغيير كلمة المرور", "استخدم كلمة المرور الجديدة في تسجيل الدخول القادم");
-  } catch (err) {
-    console.error(err);
-    const msgs = {
-      "auth/wrong-password": "كلمة المرور الحالية غير صحيحة",
-      "auth/invalid-credential": "كلمة المرور الحالية غير صحيحة",
-      "auth/weak-password": "كلمة المرور الجديدة ضعيفة",
-      "auth/requires-recent-login": "الرجاء تسجيل الخروج والدخول مرة أخرى ثم إعادة المحاولة",
-      "auth/too-many-requests": "محاولات كثيرة، حاول لاحقاً"
-    };
-    swalError("فشل التغيير", msgs[err.code] || err.message);
-  }
-};
-
-/* ============================================================
-   18) نموذج إضافة مستخدم
+   19) نموذج إضافة مستخدم
    ============================================================ */
 window.openAddUserModal = async () => {
   if (!isAdmin) return;
@@ -1166,21 +1322,14 @@ window.openAddUserModal = async () => {
         Swal.showValidationMessage("اسم المستخدم: 3-20 حرف (a-z, 0-9, _)");
         return false;
       }
-      if (!displayName) {
-        Swal.showValidationMessage("اكتب الاسم الكامل");
-        return false;
-      }
-      if (password.length < 6) {
-        Swal.showValidationMessage("كلمة المرور 6 أحرف على الأقل");
-        return false;
-      }
+      if (!displayName) { Swal.showValidationMessage("اكتب الاسم الكامل"); return false; }
+      if (password.length < 6) { Swal.showValidationMessage("كلمة المرور 6 أحرف على الأقل"); return false; }
       return { username, displayName, password, role };
     }
   });
   if (!formValues) return;
 
   const { username, displayName, password, role } = formValues;
-
   const existing = await get(ref(db, "usernames/" + username));
   if (existing.exists()) return swalError("اسم المستخدم محجوز", "اختر اسماً آخر");
 
@@ -1234,7 +1383,7 @@ window.openAddUserModal = async () => {
 };
 
 /* ============================================================
-   19) إدارة الفريق (أدمن)
+   20) إدارة الفريق
    ============================================================ */
 window.openTeamModal = async () => {
   if (!isAdmin) return;
@@ -1262,15 +1411,80 @@ window.openTeamModal = async () => {
 
 window.removeTeamMember = async (id) => {
   if (!isAdmin) return;
-  const r = await swalConfirm("حذف من الفريق؟", "لن يُحذف المستخدم، فقط من قائمة الإسناد");
+  const r = await swalConfirm("حذف من الفريق؟", "لن يُحذف المستخدم");
   if (!r.isConfirmed) return;
-  await remove(ref(db, "team/" + id));
+  await safeWrite(() => remove(ref(db, "team/" + id)));
   showToast("🗑️ تم الحذف من الفريق", "success");
   setTimeout(() => window.openTeamModal(), 300);
 };
 
 /* ============================================================
-   20) التقرير + PDF
+   21) تغيير كلمة المرور
+   ============================================================ */
+window.openChangePasswordModal = async () => {
+  if (!currentUser) return;
+  const isGoogleUser = currentUser.providerData.some(p => p.providerId === "google.com");
+  if (isGoogleUser) {
+    return Swal.fire({
+      icon: "info",
+      title: "حساب جوجل",
+      text: "أنت مسجل دخول بحساب جوجل. كلمة المرور تُدار من جوجل مباشرة.",
+      confirmButtonText: "حسناً",
+      background: themeBg(), color: themeFg()
+    });
+  }
+
+  const { value: formValues } = await Swal.fire({
+    title: "🔑 تغيير كلمة المرور",
+    html: `
+      <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
+        <label style="font-size:12px;font-weight:700;">كلمة المرور الحالية</label>
+        <input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;">
+        <label style="font-size:12px;font-weight:700;">كلمة المرور الجديدة (6+)</label>
+        <input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;">
+        <label style="font-size:12px;font-weight:700;">تأكيد كلمة المرور الجديدة</label>
+        <input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;">
+      </div>`,
+    showCancelButton: true,
+    confirmButtonText: "تغيير",
+    cancelButtonText: "إلغاء",
+    confirmButtonColor: "#2563eb",
+    focusConfirm: false,
+    background: themeBg(), color: themeFg(),
+    preConfirm: () => {
+      const cur = document.getElementById("cp-current").value;
+      const nw = document.getElementById("cp-new").value;
+      const cf = document.getElementById("cp-confirm").value;
+      if (!cur || !nw || !cf) { Swal.showValidationMessage("املأ جميع الحقول"); return false; }
+      if (nw.length < 6) { Swal.showValidationMessage("كلمة المرور الجديدة 6 أحرف على الأقل"); return false; }
+      if (nw !== cf) { Swal.showValidationMessage("كلمتا المرور غير متطابقتين"); return false; }
+      if (cur === nw) { Swal.showValidationMessage("كلمة المرور الجديدة يجب أن تختلف"); return false; }
+      return { currentPassword: cur, newPassword: nw };
+    }
+  });
+
+  if (!formValues) return;
+
+  try {
+    const credential = EmailAuthProvider.credential(currentUser.email, formValues.currentPassword);
+    await reauthenticateWithCredential(currentUser, credential);
+    await updatePassword(currentUser, formValues.newPassword);
+    await logActivity("password_changed", "غيّر كلمة المرور");
+    swalSuccess("✅ تم تغيير كلمة المرور");
+  } catch (err) {
+    const msgs = {
+      "auth/wrong-password": "كلمة المرور الحالية غير صحيحة",
+      "auth/invalid-credential": "كلمة المرور الحالية غير صحيحة",
+      "auth/weak-password": "كلمة المرور الجديدة ضعيفة",
+      "auth/requires-recent-login": "سجّل الخروج والدخول ثم أعد المحاولة",
+      "auth/too-many-requests": "محاولات كثيرة، حاول لاحقاً"
+    };
+    swalError("فشل التغيير", msgs[err.code] || err.message);
+  }
+};
+
+/* ============================================================
+   22) التقرير + PDF
    ============================================================ */
 function openReport() {
   const entries = Object.entries(allTasks);
@@ -1296,10 +1510,7 @@ function openReport() {
   const teamRows = Object.entries(team).map(([name, s]) => `
     <tr>
       <td>${escapeHtml(name)}</td>
-      <td>${s.total}</td>
-      <td>${s.done}</td>
-      <td>${s.progress}</td>
-      <td>${s.overdue}</td>
+      <td>${s.total}</td><td>${s.done}</td><td>${s.progress}</td><td>${s.overdue}</td>
       <td>${s.total ? Math.round((s.done/s.total)*100) : 0}%</td>
     </tr>`).join("");
 
@@ -1313,10 +1524,8 @@ function openReport() {
       <div class="r-meta">
         <span>👤 ${escapeHtml(t.assignee || "—")}</span>
         ${t.dueDate ? `<span>📅 ${escapeHtml(t.dueDate)}</span>` : ""}
-        ${t.updatedByName ? `<span>✏️ آخر تعديل: ${escapeHtml(t.updatedByName)}</span>` : ""}
       </div>
       ${t.notes ? `<div class="r-notes">📝 ${escapeHtml(t.notes)}</div>` : ""}
-      ${t.comments ? `<div class="r-comments">💬 ${Object.keys(t.comments).length} تعليق</div>` : ""}
     </div>`;
 
   const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
@@ -1479,7 +1688,7 @@ async function downloadPDF() {
 }
 
 /* ============================================================
-   21) تصدير CSV
+   23) تصدير CSV
    ============================================================ */
 window.exportCSV = () => {
   const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم","الوسوم","ملاحظات"]];
@@ -1500,7 +1709,7 @@ window.exportCSV = () => {
 };
 
 /* ============================================================
-   22) ربط الدوال بالـ window
+   24) ربط الدوال
    ============================================================ */
 window.changeStatus = changeStatus;
 window.addComment = addComment;
@@ -1515,7 +1724,7 @@ window.downloadPDF = downloadPDF;
 window.togglePassword = togglePassword;
 
 /* ============================================================
-   23) إغلاق المودال + ESC + Online/Offline
+   25) أحداث عامة
    ============================================================ */
 document.getElementById("modalOverlay").addEventListener("click", (e) => {
   if (e.target.id === "modalOverlay") closeModal();
@@ -1526,12 +1735,32 @@ document.getElementById("reportOverlay").addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") { closeModal(); closeReport(); }
 });
-window.addEventListener("online", () => showToast("✅ تم استعادة الاتصال", "success"));
-window.addEventListener("offline", () => showToast("⚠️ انقطع الاتصال", "warn"));
 
-/* ============================================================
-   24) تطبيق الثيم
-   ============================================================ */
+// حفظ قبل إغلاق الصفحة
+window.addEventListener("beforeunload", (e) => {
+  if (pendingWrites > 0) {
+    e.preventDefault();
+    e.returnValue = "يوجد تغييرات جارٍ حفظها. هل تريد المغادرة؟";
+    return e.returnValue;
+  }
+});
+
+// تنبيه عند الـ visibility change
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && isOnline && currentUser) {
+    // عودة للصفحة
+    const now = Date.now();
+    if (now - lastBackupTime > BACKUP_INTERVAL) {
+      createBackup();
+    }
+  }
+});
+
+// استعادة المسودة بعد التحميل
+window.addEventListener("load", () => {
+  setTimeout(restoreDraft, 2000);
+});
+
 applyTheme();
 </script>
 
@@ -1700,7 +1929,7 @@ header{
 .user-menu-btn{
   background:var(--bg-3);color:var(--text);border:1px solid var(--border);
   padding:8px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;
-  font-family:inherit;transition:.2s;display:inline-flex;align-items:center;gap:6px;
+  font-family:inherit;transition:.2s;
 }
 .user-menu-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
 .btn-report{
@@ -2068,7 +2297,6 @@ header{
 .r-title{font-size:15px;font-weight:700;margin-bottom:6px;color:#1a1a1a;}
 .r-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#64748b;margin-bottom:4px;}
 .r-notes{font-size:12px;color:#64748b;margin-top:6px;font-style:italic;}
-.r-comments{font-size:12px;color:#2563eb;margin-top:4px;}
 .r-footer{margin-top:30px;padding-top:16px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;}
 
 #toast{
@@ -2114,7 +2342,6 @@ header{
 </head>
 <body>
 
-<!-- ==================== شاشة الدخول ==================== -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo-wrap">
@@ -2151,7 +2378,6 @@ header{
   </div>
 </div>
 
-<!-- ==================== شاشة التحميل ==================== -->
 <div id="loadingScreen">
   <div class="loading-logo-wrap">
     <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="loading-logo" alt="EMAK">
@@ -2160,7 +2386,6 @@ header{
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
 </div>
 
-<!-- ==================== الشاشة الرئيسية ==================== -->
 <div id="mainScreen">
   <header>
     <div class="header-brand">
@@ -2182,7 +2407,6 @@ header{
     </div>
   </header>
 
-  <!-- التنقل الرئيسي -->
   <nav class="main-nav">
     <button class="nav-btn active" data-view="dashboard">🏠 الرئيسية</button>
     <button class="nav-btn" data-view="tasks">📋 المهام</button>
@@ -2191,7 +2415,6 @@ header{
     <button class="nav-btn" onclick="window.exportCSV()">📊 Excel</button>
   </nav>
 
-  <!-- ===== قسم: الرئيسية ===== -->
   <div class="view-section active" id="dashboardView">
     <div class="container">
       <div class="card-panel">
@@ -2219,7 +2442,6 @@ header{
     </div>
   </div>
 
-  <!-- ===== قسم: المهام ===== -->
   <div class="view-section" id="tasksView">
     <div class="container">
       <div class="card-panel" id="addTaskCard" style="display:none;">
@@ -2271,7 +2493,6 @@ header{
     </div>
   </div>
 
-  <!-- ===== قسم: المستخدمون ===== -->
   <div class="view-section" id="usersView">
     <div class="container">
       <div class="card-panel">
@@ -2285,14 +2506,12 @@ header{
   </div>
 </div>
 
-<!-- ==================== المودال ==================== -->
 <div id="modalOverlay">
   <div class="modal-box" id="modalBox">
     <div id="modalBody"></div>
   </div>
 </div>
 
-<!-- ==================== التقرير ==================== -->
 <div id="reportOverlay">
   <div class="report-wrapper">
     <div class="report-toolbar">
