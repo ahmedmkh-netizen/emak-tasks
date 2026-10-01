@@ -44,7 +44,6 @@ let openTaskId = null;
 let pinnedTaskId = localStorage.getItem("pinnedTask") || null;
 let charts = {};
 
-// ==== أدوات ====
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
@@ -77,18 +76,13 @@ function dueLabel(dueDate) {
 }
 function isThisWeek(ts) {
   if (!ts) return false;
-  const now = Date.now();
-  const week = 7 * 24 * 60 * 60 * 1000;
-  return (now - ts) <= week;
+  return (Date.now() - ts) <= 7 * 24 * 60 * 60 * 1000;
 }
 function isThisMonth(ts) {
   if (!ts) return false;
-  const now = Date.now();
-  const month = 30 * 24 * 60 * 60 * 1000;
-  return (now - ts) <= month;
+  return (Date.now() - ts) <= 30 * 24 * 60 * 60 * 1000;
 }
 
-// ==== الثيم ====
 function applyTheme() {
   document.documentElement.setAttribute("data-theme", currentTheme);
   const btn = document.getElementById("themeBtn");
@@ -96,7 +90,6 @@ function applyTheme() {
   localStorage.setItem("theme", currentTheme);
 }
 
-// ==== الدخول ====
 document.getElementById("loginBtn").onclick = async () => {
   try { await signInWithPopup(auth, provider); }
   catch (e) { alert("فشل تسجيل الدخول: " + e.message); }
@@ -108,31 +101,37 @@ document.getElementById("logoutBtn").onclick = () => {
 onAuthStateChanged(auth, (user) => {
   const loginScreen = document.getElementById("loginScreen");
   const mainScreen = document.getElementById("mainScreen");
+  const loadingScreen = document.getElementById("loadingScreen");
   if (user) {
     currentUser = user;
     isAdmin = ADMIN_EMAILS.includes(user.email);
+    // شاشة التحميل
+    loadingScreen.style.display = "flex";
     loginScreen.style.display = "none";
-    mainScreen.style.display = "block";
-    document.getElementById("userName").textContent = user.displayName || user.email;
-    document.getElementById("userRole").textContent = isAdmin ? "👑 مدير" : "👤 موظف";
-    document.getElementById("userRole").className = isAdmin ? "role admin" : "role user";
-    document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
-    set(ref(db, "users/" + user.uid), {
-      name: user.displayName || "",
-      email: user.email || "",
-      lastLogin: serverTimestamp(),
-      isAdmin: isAdmin
-    });
-    loadTasks();
+    setTimeout(() => {
+      loadingScreen.style.display = "none";
+      mainScreen.style.display = "block";
+      document.getElementById("userName").textContent = user.displayName || user.email;
+      document.getElementById("userRole").textContent = isAdmin ? "👑 مدير" : "👤 موظف";
+      document.getElementById("userRole").className = isAdmin ? "role admin" : "role user";
+      document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
+      set(ref(db, "users/" + user.uid), {
+        name: user.displayName || "",
+        email: user.email || "",
+        lastLogin: serverTimestamp(),
+        isAdmin: isAdmin
+      });
+      loadTasks();
+    }, 1200);
   } else {
     currentUser = null;
     isAdmin = false;
     loginScreen.style.display = "flex";
     mainScreen.style.display = "none";
+    loadingScreen.style.display = "none";
   }
 });
 
-// ==== تحميل ====
 function loadTasks() {
   onValue(ref(db, "tasks"), (snap) => {
     allTasks = snap.val() || {};
@@ -141,7 +140,6 @@ function loadTasks() {
   });
 }
 
-// ==== إضافة ====
 document.getElementById("addTaskForm").onsubmit = async (e) => {
   e.preventDefault();
   if (!isAdmin) return alert("غير مصرح");
@@ -165,7 +163,6 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
   showToast("✅ تمت إضافة المهمة");
 };
 
-// ==== الحالة ====
 async function changeStatus(taskId, newStatus) {
   const t = allTasks[taskId];
   if (!t) return;
@@ -178,7 +175,6 @@ async function changeStatus(taskId, newStatus) {
   showToast(`🔄 الحالة: ${newStatus}`);
 }
 
-// ==== تعليق ====
 async function addComment(taskId, fromModal = false) {
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
   const input = document.getElementById(inputId);
@@ -200,7 +196,6 @@ async function addComment(taskId, fromModal = false) {
   showToast("💬 تمت الإضافة");
 }
 
-// ==== حذف ====
 async function deleteTask(taskId) {
   if (!isAdmin) return alert("غير مصرح");
   if (confirm("متأكد من حذف المهمة؟ لا يمكن التراجع!")) {
@@ -210,7 +205,6 @@ async function deleteTask(taskId) {
   }
 }
 
-// ==== تعديل ====
 async function editTask(taskId) {
   if (!isAdmin) return alert("غير مصرح");
   const t = allTasks[taskId];
@@ -223,7 +217,7 @@ async function editTask(taskId) {
   if (newPriority === null) return;
   const newAssignee = prompt("المسؤول (بهاء/محمود):", t.assignee);
   if (newAssignee === null) return;
-  const newTags = prompt("الوسوم (فاصلة بين كل وسم):", t.tags || "");
+  const newTags = prompt("الوسوم (فاصلة):", t.tags || "");
   if (newTags === null) return;
 
   await update(ref(db, "tasks/" + taskId), {
@@ -239,7 +233,6 @@ async function editTask(taskId) {
   showToast("✏️ تم التعديل");
 }
 
-// ==== تثبيت ====
 function togglePin(taskId) {
   if (pinnedTaskId === taskId) {
     pinnedTaskId = null;
@@ -248,12 +241,11 @@ function togglePin(taskId) {
   } else {
     pinnedTaskId = taskId;
     localStorage.setItem("pinnedTask", taskId);
-    showToast("⭐ تم التثبيت في الأعلى");
+    showToast("⭐ تم التثبيت");
   }
   renderTasks();
 }
 
-// ==== المودال ====
 function openModal(taskId) {
   openTaskId = taskId;
   renderModal(taskId);
@@ -354,7 +346,6 @@ function renderModal(taskId) {
   document.getElementById("modalBox").className = "modal-box" + (isUrgent ? " urgent-glow" : "");
 }
 
-// ==== التحكم ====
 document.querySelectorAll(".filter-btn").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
@@ -376,7 +367,6 @@ document.getElementById("themeBtn").onclick = () => {
   applyTheme();
 };
 
-// ==== Toast ====
 function showToast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg;
@@ -384,7 +374,6 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove("show"), 2500);
 }
 
-// ==== العرض ====
 function renderAll() {
   renderStats();
   renderTeam();
@@ -425,14 +414,12 @@ function renderTeam() {
   document.getElementById("teamList").innerHTML = html || '<p class="empty">لا توجد بيانات</p>';
 }
 
-// ==== الرسوم البيانية ====
 function renderCharts() {
   const entries = Object.values(allTasks);
   const done = entries.filter(t => t.status === "مكتملة").length;
   const progress = entries.filter(t => t.status === "جاري التنفيذ").length;
   const newT = entries.filter(t => t.status === "جديدة").length;
 
-  // Pie Chart - الحالات
   const ctx1 = document.getElementById("chartStatus");
   if (ctx1) {
     if (charts.status) charts.status.destroy();
@@ -443,13 +430,11 @@ function renderCharts() {
         datasets: [{
           data: [done, progress, newT],
           backgroundColor: ["#22c55e", "#f59e0b", "#4f8ef7"],
-          borderColor: "transparent",
-          borderWidth: 0
+          borderColor: "transparent", borderWidth: 0
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: {
             position: "bottom",
@@ -460,7 +445,6 @@ function renderCharts() {
     });
   }
 
-  // Bar Chart - الإنتاجية الأسبوعية
   const ctx2 = document.getElementById("chartProductivity");
   if (ctx2) {
     const days = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
@@ -480,16 +464,12 @@ function renderCharts() {
           label: "مهام مكتملة هذا الأسبوع",
           data: reordered,
           backgroundColor: "#4f8ef7",
-          borderRadius: 8,
-          borderSkipped: false
+          borderRadius: 8, borderSkipped: false
         }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
         scales: {
           y: {
             beginAtZero: true,
@@ -506,14 +486,11 @@ function renderCharts() {
   }
 }
 
-// ==== المهام ====
 function renderTasks() {
   const list = document.getElementById("tasksList");
   let entries = Object.entries(allTasks);
 
-  // ترتيب
   entries.sort((a, b) => {
-    // المثبتة فوق
     if (a[0] === pinnedTaskId) return -1;
     if (b[0] === pinnedTaskId) return 1;
 
@@ -534,7 +511,6 @@ function renderTasks() {
     return 0;
   });
 
-  // فلترة
   let filtered = entries.filter(([_, t]) => {
     if (currentFilter === "all") return true;
     if (currentFilter === "بهاء") return t.assignee === "بهاء";
@@ -599,7 +575,6 @@ function renderTasks() {
   }).join("");
 }
 
-// ==== تقرير PDF ====
 function openReport() {
   const entries = Object.entries(allTasks);
   const done = entries.filter(([_, t]) => t.status === "مكتملة");
@@ -653,7 +628,9 @@ function openReport() {
   const reportHtml = `
     <div id="reportContent" class="report-content">
       <div class="r-header">
-        <img src="${LOGO_URL}" class="r-logo">
+        <div class="r-logo-wrap">
+          <img src="${LOGO_URL}" class="r-logo" crossorigin="anonymous">
+        </div>
         <div class="r-header-text">
           <h1>EMAK Hub</h1>
           <p>تقرير المهام — قسم نظم المعلومات</p>
@@ -673,41 +650,17 @@ function openReport() {
         <table class="r-table">
           <thead>
             <tr>
-              <th>الموظف</th>
-              <th>الإجمالي</th>
-              <th>مكتملة</th>
-              <th>جارية</th>
-              <th>متأخرة</th>
-              <th>النسبة</th>
+              <th>الموظف</th><th>الإجمالي</th><th>مكتملة</th><th>جارية</th><th>متأخرة</th><th>النسبة</th>
             </tr>
           </thead>
           <tbody>${teamRows}</tbody>
         </table>
       </div>
 
-      ${overdue.length > 0 ? `
-      <div class="r-section">
-        <h2>⚠️ المهام المتأخرة (${overdue.length})</h2>
-        ${overdue.map(([id,t]) => taskRow(id,t)).join("")}
-      </div>` : ""}
-
-      ${progress.length > 0 ? `
-      <div class="r-section">
-        <h2>⏳ المهام الجارية (${progress.length})</h2>
-        ${progress.map(([id,t]) => taskRow(id,t)).join("")}
-      </div>` : ""}
-
-      ${newT.length > 0 ? `
-      <div class="r-section">
-        <h2>🆕 المهام الجديدة (${newT.length})</h2>
-        ${newT.map(([id,t]) => taskRow(id,t)).join("")}
-      </div>` : ""}
-
-      ${done.length > 0 ? `
-      <div class="r-section">
-        <h2>✅ المهام المكتملة (${done.length})</h2>
-        ${done.map(([id,t]) => taskRow(id,t)).join("")}
-      </div>` : ""}
+      ${overdue.length > 0 ? `<div class="r-section"><h2>⚠️ المهام المتأخرة (${overdue.length})</h2>${overdue.map(([id,t]) => taskRow(id,t)).join("")}</div>` : ""}
+      ${progress.length > 0 ? `<div class="r-section"><h2>⏳ المهام الجارية (${progress.length})</h2>${progress.map(([id,t]) => taskRow(id,t)).join("")}</div>` : ""}
+      ${newT.length > 0 ? `<div class="r-section"><h2>🆕 المهام الجديدة (${newT.length})</h2>${newT.map(([id,t]) => taskRow(id,t)).join("")}</div>` : ""}
+      ${done.length > 0 ? `<div class="r-section"><h2>✅ المهام المكتملة (${done.length})</h2>${done.map(([id,t]) => taskRow(id,t)).join("")}</div>` : ""}
 
       <div class="r-footer">
         تم إنشاء التقرير تلقائياً بواسطة EMAK Hub — ${today}
@@ -748,7 +701,6 @@ async function downloadPDF() {
   }
 }
 
-// ==== ربط الأزرار ====
 window.changeStatus = changeStatus;
 window.addComment = addComment;
 window.deleteTask = deleteTask;
@@ -767,10 +719,7 @@ document.getElementById("reportOverlay").addEventListener("click", (e) => {
   if (e.target.id === "reportOverlay") closeReport();
 });
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    closeModal();
-    closeReport();
-  }
+  if (e.key === "Escape") { closeModal(); closeReport(); }
 });
 
 applyTheme();
@@ -802,11 +751,21 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-/* شاشة الدخول */
+/* ==== شاشة الدخول ==== */
 #loginScreen {
   display: flex; align-items: center; justify-content: center;
   min-height: 100vh; padding: 20px;
   background: radial-gradient(circle at top, #1e3a8a 0%, #0a0e1a 70%);
+  position: relative;
+  overflow: hidden;
+}
+#loginScreen::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(79,142,247,0.15), transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(34,197,94,0.1), transparent 50%);
+  pointer-events: none;
 }
 .login-card {
   background: rgba(19, 24, 38, 0.95);
@@ -815,9 +774,56 @@ body {
   padding: 50px 40px; border-radius: 24px;
   text-align: center; max-width: 420px; width: 100%;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  position: relative;
+  z-index: 1;
 }
-.login-logo { width: 100px; margin-bottom: 20px; }
-.login-card h1 { color: #f1f5f9; margin-bottom: 8px; font-size: 30px; font-weight: 900; }
+/* ✨ اللوجو في شاشة الدخول - محسّن ✨ */
+.login-logo-wrap {
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(34,197,94,0.1));
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 0 3px rgba(79,142,247,0.3),
+    0 0 30px rgba(79,142,247,0.4),
+    inset 0 0 20px rgba(79,142,247,0.15);
+  animation: logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px rgba(79,142,247,0.3),
+      0 0 30px rgba(79,142,247,0.4),
+      inset 0 0 20px rgba(79,142,247,0.15);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(34,197,94,0.4),
+      0 0 45px rgba(34,197,94,0.5),
+      inset 0 0 25px rgba(34,197,94,0.2);
+  }
+}
+.login-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  background: rgba(10,14,26,0.5);
+  padding: 12px;
+}
+.login-card h1 {
+  color: #f1f5f9; margin-bottom: 8px; font-size: 32px;
+  font-weight: 900; letter-spacing: -1px;
+  background: linear-gradient(135deg, #4f8ef7, #22c55e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 .login-card p { color: #94a3b8; margin-bottom: 32px; font-size: 14px; }
 #loginBtn {
   background: white; color: #1e293b; border: none;
@@ -829,7 +835,56 @@ body {
 #loginBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
 #loginBtn img { width: 22px; }
 
-/* الهيدر */
+/* ==== شاشة التحميل ==== */
+#loadingScreen {
+  display: none;
+  position: fixed; inset: 0;
+  background: radial-gradient(circle at top, #1e3a8a 0%, #0a0e1a 70%);
+  align-items: center; justify-content: center;
+  z-index: 5000;
+  flex-direction: column;
+  gap: 24px;
+}
+.loading-logo-wrap {
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: rgba(19,24,38,0.9);
+  padding: 10px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 60px rgba(79,142,247,0.6);
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+.loading-logo {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+@keyframes loadingPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(79,142,247,0.4); }
+  50% { transform: scale(1.08); box-shadow: 0 0 80px rgba(79,142,247,0.8); }
+}
+.loading-text {
+  color: #f1f5f9; font-size: 18px; font-weight: 700;
+  letter-spacing: 1px;
+}
+.loading-bar {
+  width: 200px; height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px; overflow: hidden;
+}
+.loading-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f8ef7, #22c55e);
+  width: 30%;
+  animation: loadingBar 1.2s ease-in-out infinite;
+}
+@keyframes loadingBar {
+  0% { width: 10%; margin-right: 0; }
+  50% { width: 60%; margin-right: 20%; }
+  100% { width: 10%; margin-right: 90%; }
+}
+
+/* ==== الهيدر ==== */
 #mainScreen { display: none; }
 header {
   background: var(--bg-2); border-bottom: 1px solid var(--border);
@@ -839,10 +894,41 @@ header {
   box-shadow: var(--shadow);
   gap: 12px; flex-wrap: wrap;
 }
-.header-brand { display: flex; align-items: center; gap: 12px; }
-.header-brand img { width: 42px; height: 42px; object-fit: contain; }
-.header-brand h1 { font-size: 20px; color: var(--text); font-weight: 800; line-height: 1; }
+.header-brand { display: flex; align-items: center; gap: 14px; }
+/* ✨ اللوجو في الهيدر - محسّن ✨ */
+.header-logo-wrap {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(34,197,94,0.15));
+  padding: 3px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow:
+    0 0 0 2px rgba(79,142,247,0.25),
+    0 0 15px rgba(79,142,247,0.3);
+  transition: 0.3s;
+}
+.header-logo-wrap:hover {
+  box-shadow:
+    0 0 0 2px rgba(79,142,247,0.5),
+    0 0 25px rgba(79,142,247,0.5);
+  transform: scale(1.05);
+}
+.header-logo {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  background: var(--bg);
+  padding: 4px;
+}
+.header-brand h1 {
+  font-size: 20px; color: var(--text); font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg, var(--primary), var(--success));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 .header-brand .subtitle { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+
 .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; flex-wrap: wrap; }
 .role { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 .role.admin { background: rgba(245,158,11,0.15); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
@@ -878,7 +964,6 @@ header {
 }
 .panel-title { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
 
-/* الإحصائيات */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 .stat {
   background: var(--bg-3); border-radius: 14px; padding: 16px;
@@ -898,7 +983,6 @@ header {
 .stat.progress .stat-num { color: var(--important); }
 .stat.overdue .stat-num { color: var(--urgent); }
 
-/* الفريق */
 .team-row {
   display: grid; grid-template-columns: 120px 1fr 130px;
   gap: 12px; align-items: center;
@@ -910,18 +994,10 @@ header {
 .team-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); transition: width 0.5s; border-radius: 4px; }
 .team-pct { font-size: 13px; color: var(--text-2); text-align: left; font-weight: 600; }
 
-/* الرسوم البيانية */
-.charts-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .chart-box { height: 280px; position: relative; }
-@media (max-width: 800px) {
-  .charts-grid { grid-template-columns: 1fr; }
-}
+@media (max-width: 800px) { .charts-grid { grid-template-columns: 1fr; } }
 
-/* الفورم */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .form-grid input, .form-grid select, .form-grid textarea {
   padding: 12px 14px;
@@ -942,7 +1018,6 @@ header {
 }
 .form-grid button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(79,142,247,0.4); }
 
-/* التحكم */
 .controls-bar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
 .search-wrap { flex: 1; min-width: 200px; position: relative; }
 .search-wrap input {
@@ -970,7 +1045,6 @@ header {
 .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
 .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(79,142,247,0.3); }
 
-/* شبكة المهام */
 #tasksList { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
 
 .task-card {
@@ -987,20 +1061,13 @@ header {
 .task-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--primary); }
 .task-card.done { opacity: 0.65; }
 .task-card.done:hover { opacity: 1; }
-
-.task-card.pinned {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(245,158,11,0.3);
-}
+.task-card.pinned { border-color: var(--accent); box-shadow: 0 0 20px rgba(245,158,11,0.3); }
 .pin-badge {
   position: absolute; top: 10px; left: 10px;
   font-size: 16px; z-index: 2;
   animation: pulse 2s infinite;
 }
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-}
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
 @keyframes urgentGlow {
   0%, 100% { box-shadow: 0 0 5px rgba(255,77,79,0.2), 0 0 15px rgba(255,77,79,0.15); border-color: var(--border); }
@@ -1031,7 +1098,6 @@ header {
   background: rgba(79,142,247,0.15); color: var(--primary);
   border-radius: 10px; font-weight: 600;
 }
-
 .card-bottom {
   margin-top: auto; display: flex; justify-content: space-between;
   align-items: center; gap: 8px; flex-wrap: wrap;
@@ -1047,7 +1113,6 @@ header {
 
 .empty { text-align: center; padding: 40px; color: var(--text-2); }
 
-/* المودال */
 #modalOverlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
@@ -1139,7 +1204,6 @@ header {
 .btn-pin:hover { background: var(--accent); color: white; border-color: var(--accent); }
 .btn-pin.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-/* تقرير PDF */
 #reportOverlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
@@ -1178,10 +1242,9 @@ header {
   font-size: 14px; font-weight: 600; font-family: inherit;
 }
 .btn-close-report:hover { background: var(--urgent); color: white; border-color: var(--urgent); }
-
 .report-scroll { overflow-y: auto; flex: 1; padding: 24px; }
 
-/* التقرير نفسه */
+/* ==== التقرير نفسه ==== */
 .report-content {
   background: #ffffff;
   color: #1a1a1a;
@@ -1190,15 +1253,41 @@ header {
   font-family: 'Cairo', sans-serif;
   direction: rtl;
 }
+/* ✨ اللوجو في التقرير - محسّن ✨ */
 .r-header {
-  display: flex; align-items: center; gap: 20px;
-  padding-bottom: 20px; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 24px;
+  padding-bottom: 24px; margin-bottom: 28px;
   border-bottom: 3px solid #1e3a8a;
+  position: relative;
 }
-.r-logo { width: 70px; height: 70px; object-fit: contain; }
-.r-header-text h1 { color: #1e3a8a; font-size: 28px; margin-bottom: 4px; font-weight: 900; }
+.r-header::after {
+  content: '';
+  position: absolute; bottom: -3px; right: 0;
+  width: 120px; height: 3px;
+  background: linear-gradient(90deg, #22c55e, #4f8ef7);
+}
+.r-logo-wrap {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(30,58,138,0.1), rgba(34,197,94,0.1));
+  padding: 6px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 3px rgba(30,58,138,0.2), 0 0 20px rgba(30,58,138,0.15);
+  flex-shrink: 0;
+}
+.r-logo {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  background: #ffffff;
+  padding: 10px;
+}
+.r-header-text h1 {
+  color: #1e3a8a; font-size: 32px; margin-bottom: 6px; font-weight: 900;
+  letter-spacing: -1px;
+}
 .r-header-text p { color: #64748b; font-size: 14px; }
-.r-date { font-weight: 600; color: #1e3a8a !important; margin-top: 4px; }
+.r-date { font-weight: 700; color: #1e3a8a !important; margin-top: 6px; font-size: 13px !important; }
 
 .r-summary {
   display: grid; grid-template-columns: repeat(4, 1fr);
@@ -1223,9 +1312,7 @@ header {
   padding-bottom: 8px; border-bottom: 2px solid #e2e8f0;
   font-weight: 800;
 }
-.r-table {
-  width: 100%; border-collapse: collapse; font-size: 13px;
-}
+.r-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .r-table th {
   background: #1e3a8a; color: white; padding: 10px;
   text-align: right; font-weight: 700;
@@ -1241,10 +1328,7 @@ header {
   page-break-inside: avoid;
 }
 .r-task-head { display: flex; gap: 8px; margin-bottom: 6px; }
-.r-badge {
-  font-size: 11px; padding: 3px 10px; border-radius: 12px;
-  font-weight: 700;
-}
+.r-badge { font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 700; }
 .r-urgent { background: #fee2e2; color: #dc2626; }
 .r-important { background: #fef3c7; color: #d97706; }
 .r-normal { background: #d1fae5; color: #059669; }
@@ -1266,7 +1350,6 @@ header {
   text-align: center; font-size: 12px; color: #94a3b8;
 }
 
-/* Toast */
 #toast {
   position: fixed; bottom: 30px; left: 50%;
   transform: translateX(-50%) translateY(100px);
@@ -1279,12 +1362,14 @@ header {
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* Responsive */
 @media (max-width: 700px) {
   #tasksList { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .header-brand h1 { font-size: 16px; }
   .header-brand .subtitle { display: none; }
+  .header-logo-wrap { width: 42px; height: 42px; }
+  .login-logo-wrap { width: 110px; height: 110px; }
+  .login-card h1 { font-size: 26px; }
   .team-row { grid-template-columns: 1fr; gap: 6px; }
   .user-info { gap: 6px; font-size: 11px; }
   .role { padding: 3px 8px; font-size: 10px; }
@@ -1293,14 +1378,21 @@ header {
   .modal-status-select { margin-left: 0; width: 100%; }
   .r-summary { grid-template-columns: 1fr 1fr; }
   .report-content { padding: 20px; }
+  .r-header { flex-direction: column; text-align: center; gap: 14px; }
+  .r-logo-wrap { width: 80px; height: 80px; }
+  .r-header-text h1 { font-size: 24px; }
+  .r-header::after { right: 50%; transform: translateX(50%); }
 }
 </style>
 </head>
 <body>
 
+<!-- شاشة الدخول -->
 <div id="loginScreen">
   <div class="login-card">
-    <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK">
+    <div class="login-logo-wrap">
+      <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK">
+    </div>
     <h1>EMAK Hub</h1>
     <p>نظام إدارة المهام — قسم نظم المعلومات</p>
     <button id="loginBtn">
@@ -1310,10 +1402,22 @@ header {
   </div>
 </div>
 
+<!-- شاشة التحميل -->
+<div id="loadingScreen">
+  <div class="loading-logo-wrap">
+    <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="loading-logo" alt="EMAK">
+  </div>
+  <div class="loading-text">جارٍ التحميل...</div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
+<!-- الشاشة الرئيسية -->
 <div id="mainScreen">
   <header>
     <div class="header-brand">
-      <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK">
+      <div class="header-logo-wrap">
+        <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="header-logo" alt="EMAK">
+      </div>
       <div>
         <h1>EMAK Hub</h1>
         <div class="subtitle">نظم معلومات إيماك</div>
