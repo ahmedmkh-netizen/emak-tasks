@@ -24,7 +24,6 @@ const firebaseConfig = {
 
 // ==== الإعدادات ====
 const ADMIN_EMAILS = ["ahmedmkh@gmail.com"];
-const LOGO_URL = "https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -38,7 +37,7 @@ let allTasks = {};
 let currentFilter = "all";
 let currentTheme = localStorage.getItem("theme") || "dark";
 
-// ==== تطبيق الثيم ====
+// ==== الثيم ====
 function applyTheme() {
   document.documentElement.setAttribute("data-theme", currentTheme);
   const btn = document.getElementById("themeBtn");
@@ -46,26 +45,23 @@ function applyTheme() {
   localStorage.setItem("theme", currentTheme);
 }
 
-// ==== أدوات مساعدة ====
+// ==== أدوات ====
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
   );
 }
-
 function formatDate(ts) {
   if (!ts) return "";
   const d = new Date(ts);
   return d.toLocaleDateString("ar-EG", { year: "numeric", month: "short", day: "numeric" });
 }
-
 function daysRemaining(dueDate) {
   if (!dueDate) return null;
   const today = new Date(); today.setHours(0,0,0,0);
   const due = new Date(dueDate); due.setHours(0,0,0,0);
   return Math.round((due - today) / (1000 * 60 * 60 * 24));
 }
-
 function dueLabel(dueDate) {
   const d = daysRemaining(dueDate);
   if (d === null) return "";
@@ -97,9 +93,7 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById("userName").textContent = user.displayName || user.email;
     document.getElementById("userRole").textContent = isAdmin ? "👑 مدير" : "👤 موظف";
     document.getElementById("userRole").className = isAdmin ? "role admin" : "role user";
-    // إظهار فورم الإضافة لو أدمن
     document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
-    // سجل المستخدم
     set(ref(db, "users/" + user.uid), {
       name: user.displayName || "",
       email: user.email || "",
@@ -123,7 +117,7 @@ function loadTasks() {
   });
 }
 
-// ==== إضافة مهمة (Admin فقط) ====
+// ==== إضافة مهمة ====
 document.getElementById("addTaskForm").onsubmit = async (e) => {
   e.preventDefault();
   if (!isAdmin) return alert("غير مصرح");
@@ -146,7 +140,7 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
   showToast("✅ تمت إضافة المهمة");
 };
 
-// ==== تغيير الحالة (الكل) ====
+// ==== تغيير الحالة ====
 async function changeStatus(taskId, newStatus) {
   const t = allTasks[taskId];
   if (!t) return;
@@ -159,7 +153,7 @@ async function changeStatus(taskId, newStatus) {
   showToast(`🔄 تم تحديث الحالة إلى "${newStatus}"`);
 }
 
-// ==== إضافة ملاحظة (الكل) ====
+// ==== إضافة ملاحظة ====
 async function addComment(taskId) {
   const input = document.getElementById("comment-" + taskId);
   const text = input.value.trim();
@@ -173,7 +167,6 @@ async function addComment(taskId) {
     createdAt: serverTimestamp()
   });
 
-  // تحديث updatedAt
   await update(ref(db, "tasks/" + taskId), {
     updatedAt: serverTimestamp(),
     updatedBy: currentUser.email,
@@ -184,7 +177,7 @@ async function addComment(taskId) {
   showToast("💬 تمت إضافة الملاحظة");
 }
 
-// ==== حذف مهمة (Admin فقط) ====
+// ==== حذف مهمة ====
 async function deleteTask(taskId) {
   if (!isAdmin) return alert("غير مصرح");
   if (confirm("متأكد من حذف المهمة دي؟ لا يمكن التراجع!")) {
@@ -193,7 +186,7 @@ async function deleteTask(taskId) {
   }
 }
 
-// ==== تعديل مهمة (Admin فقط) ====
+// ==== تعديل مهمة ====
 async function editTask(taskId) {
   if (!isAdmin) return alert("غير مصرح");
   const t = allTasks[taskId];
@@ -239,14 +232,13 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove("show"), 2500);
 }
 
-// ==== عرض كل حاجة ====
+// ==== عرض ====
 function renderAll() {
   renderStats();
   renderTeam();
   renderTasks();
 }
 
-// ==== إحصائيات ====
 function renderStats() {
   const entries = Object.entries(allTasks);
   const total = entries.length;
@@ -263,7 +255,6 @@ function renderStats() {
   document.getElementById("statOverdue").textContent = overdue;
 }
 
-// ==== أداء الفريق ====
 function renderTeam() {
   const team = {};
   Object.values(allTasks).forEach(t => {
@@ -285,16 +276,13 @@ function renderTeam() {
   document.getElementById("teamList").innerHTML = html || '<p class="empty">لا توجد بيانات</p>';
 }
 
-// ==== المهام ====
 function renderTasks() {
   const list = document.getElementById("tasksList");
   const entries = Object.entries(allTasks).sort((a, b) => {
-    // الأولوية: عاجل أولاً
     const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
     const pa = pri[a[1].priority] ?? 2;
     const pb = pri[b[1].priority] ?? 2;
     if (pa !== pb) return pa - pb;
-    // بعدين حسب التاريخ
     return (b[1].createdAt || 0) - (a[1].createdAt || 0);
   });
 
@@ -312,7 +300,7 @@ function renderTasks() {
   });
 
   if (filtered.length === 0) {
-    list.innerHTML = '<p class="empty">لا توجد مهام مطابقة</p>';
+    list.innerHTML = '<p class="empty" style="grid-column:1/-1;">لا توجد مهام مطابقة</p>';
     return;
   }
 
@@ -325,12 +313,10 @@ function renderTasks() {
     const d = daysRemaining(t.dueDate);
     const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
 
-    // آخر تعديل
     const updater = t.updatedByName
       ? `<div class="updated-by">✏️ آخر تعديل: ${escapeHtml(t.updatedByName)} — ${formatDate(t.updatedAt)}</div>`
       : "";
 
-    // الملاحظات
     const comments = t.comments ? Object.entries(t.comments).sort((a,b) =>
       (a[1].createdAt || 0) - (b[1].createdAt || 0)
     ) : [];
@@ -338,7 +324,7 @@ function renderTasks() {
     const commentsHtml = comments.length > 0 ? `
       <div class="comments">
         <div class="comments-title">💬 الملاحظات (${comments.length})</div>
-        ${comments.map(([cid, c]) => `
+        ${comments.slice(-3).map(([cid, c]) => `
           <div class="comment">
             <div class="comment-head">
               <strong>${escapeHtml(c.author)}</strong>
@@ -397,7 +383,6 @@ window.addComment = addComment;
 window.deleteTask = deleteTask;
 window.editTask = editTask;
 
-// ==== تشغيل الثيم ====
 applyTheme();
 </script>
 
@@ -507,9 +492,9 @@ header {
 #logoutBtn:hover { background: var(--urgent); color: white; }
 
 /* ==== الحاوية ==== */
-.container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+.container { max-width: 1400px; margin: 24px auto; padding: 0 16px; }
 
-/* ==== بطاقة عامة ==== */
+/* ==== بطاقة ==== */
 .card {
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -561,7 +546,7 @@ header {
 }
 .team-pct { font-size: 13px; color: var(--text-2); text-align: left; }
 
-/* ==== فورم الإضافة ==== */
+/* ==== الفورم ==== */
 .form-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
 }
@@ -603,23 +588,33 @@ header {
   background: var(--primary); color: white; border-color: var(--primary);
 }
 
+/* ==== شبكة المهام ==== */
+#tasksList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
 /* ==== المهمة ==== */
 .task {
   background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 18px;
-  margin-bottom: 14px;
-  border-right: 5px solid var(--primary);
+  padding: 16px;
+  border-top: 4px solid var(--primary);
   transition: 0.3s;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
 }
-.task.normal { border-right-color: var(--success); }
-.task.important { border-right-color: var(--warning); }
-.task.urgent { border-right-color: var(--urgent); }
+.task.normal { border-top-color: var(--success); }
+.task.important { border-top-color: var(--warning); }
+.task.urgent { border-top-color: var(--urgent); }
 .task.done { opacity: 0.6; }
 
-/* ✨ الفلاشر للمهام العاجلة ✨ */
+/* ✨ الفلاشر النيون للمهام العاجلة ✨ */
 @keyframes urgentGlow {
   0%, 100% {
     box-shadow: 0 0 5px rgba(239,68,68,0.3),
@@ -640,40 +635,57 @@ header {
 
 .task-header {
   display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 10px; flex-wrap: wrap; gap: 6px;
 }
-.task-badges { display: flex; gap: 8px; }
+.task-badges { display: flex; gap: 6px; flex-wrap: wrap; }
 .priority-badge {
-  padding: 4px 12px; border-radius: 20px;
-  font-size: 12px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
 }
 .priority-badge.urgent { background: rgba(239,68,68,0.15); color: var(--urgent); border: 1px solid var(--urgent); }
 .priority-badge.important { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid var(--warning); }
 .priority-badge.normal { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid var(--success); }
 
 .status-badge {
-  padding: 4px 12px; border-radius: 20px;
-  font-size: 12px; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
 }
 .status-badge.new { background: rgba(59,130,246,0.15); color: var(--primary); border: 1px solid var(--primary); }
 .status-badge.progress { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid var(--warning); }
 .status-badge.done { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid var(--success); }
 
-.assignee { font-size: 13px; color: var(--text-2); }
-.task-title { font-size: 17px; margin-bottom: 8px; color: var(--text); }
-.notes { font-size: 13px; color: var(--text-2); margin-bottom: 10px; line-height: 1.6; }
+.assignee { font-size: 12px; color: var(--text-2); }
+
+.task-title {
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: var(--text);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notes {
+  font-size: 12px; color: var(--text-2); margin-bottom: 8px; line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
 .due {
-  font-size: 13px; padding: 6px 12px;
+  font-size: 12px; padding: 5px 10px;
   background: var(--bg-3); border-radius: 8px;
-  display: inline-block; margin-bottom: 10px;
+  display: inline-block; margin-bottom: 8px;
   color: var(--text-2);
 }
 .due.overdue { background: rgba(239,68,68,0.15); color: var(--urgent); font-weight: 700; }
 
 .updated-by {
-  font-size: 11px; color: var(--text-2);
-  padding: 6px 10px; margin-bottom: 10px;
+  font-size: 10px; color: var(--text-2);
+  padding: 4px 8px; margin-bottom: 8px;
   background: var(--bg-3); border-radius: 6px;
   display: inline-block;
 }
@@ -682,57 +694,60 @@ header {
 .comments {
   background: var(--bg-3);
   border-radius: 10px;
-  padding: 12px;
-  margin: 12px 0;
+  padding: 10px;
+  margin: 8px 0;
+  max-height: 180px;
+  overflow-y: auto;
 }
-.comments-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--primary); }
+.comments-title { font-size: 12px; font-weight: 700; margin-bottom: 8px; color: var(--primary); }
 .comment {
-  padding: 8px 0;
+  padding: 6px 0;
   border-bottom: 1px dashed var(--border);
 }
 .comment:last-child { border-bottom: none; }
-.comment-head { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 12px; }
+.comment-head { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 11px; }
 .comment-head strong { color: var(--text); }
 .comment-date { color: var(--text-2); }
-.comment-text { font-size: 13px; color: var(--text); }
+.comment-text { font-size: 12px; color: var(--text); }
 
 /* ==== فورم الملاحظات ==== */
 .comment-form {
-  display: flex; gap: 8px; margin: 12px 0;
+  display: flex; gap: 6px; margin: 8px 0;
 }
 .comment-form input {
-  flex: 1; padding: 10px 14px;
+  flex: 1; padding: 8px 12px;
   background: var(--bg-3); color: var(--text);
   border: 1px solid var(--border); border-radius: 8px;
-  font-size: 13px; font-family: inherit;
+  font-size: 12px; font-family: inherit;
+  min-width: 0;
 }
 .comment-form input:focus { outline: none; border-color: var(--primary); }
 .comment-form button {
-  padding: 10px 20px;
+  padding: 8px 14px;
   background: var(--primary); color: white;
   border: none; border-radius: 8px; cursor: pointer;
-  font-size: 13px; font-weight: 600;
+  font-size: 12px; font-weight: 600;
 }
 .comment-form button:hover { background: var(--primary-2); }
 
 /* ==== الفوتر ==== */
 .task-footer {
   display: flex; justify-content: space-between; align-items: center;
-  margin-top: 12px; padding-top: 12px;
+  margin-top: auto; padding-top: 10px;
   border-top: 1px solid var(--border);
-  gap: 10px; flex-wrap: wrap;
+  gap: 8px; flex-wrap: wrap;
 }
 .task-footer select {
-  padding: 8px 14px;
+  padding: 6px 12px;
   background: var(--bg-3); color: var(--text);
   border: 1px solid var(--border); border-radius: 8px;
-  font-size: 13px; cursor: pointer;
+  font-size: 12px; cursor: pointer;
 }
-.admin-actions { display: flex; gap: 6px; }
+.admin-actions { display: flex; gap: 4px; }
 .admin-actions button {
   background: var(--bg-3); border: 1px solid var(--border);
-  padding: 8px 12px; border-radius: 8px; cursor: pointer;
-  font-size: 14px; transition: 0.2s;
+  padding: 6px 10px; border-radius: 8px; cursor: pointer;
+  font-size: 13px; transition: 0.2s;
 }
 .admin-actions button:hover { background: var(--primary); border-color: var(--primary); }
 .admin-actions button.del:hover { background: var(--urgent); border-color: var(--urgent); }
@@ -753,6 +768,8 @@ header {
 
 /* ==== Responsive ==== */
 @media (max-width: 700px) {
+  #tasksList { grid-template-columns: 1fr; }
+  .task { min-height: auto; }
   .form-grid { grid-template-columns: 1fr; }
   .header-brand h1 { font-size: 16px; }
   .header-brand .subtitle { display: none; }
@@ -826,7 +843,7 @@ header {
       <div id="teamList"></div>
     </div>
 
-    <!-- إضافة مهمة (للأدمن فقط) -->
+    <!-- إضافة مهمة -->
     <div class="card" id="addTaskCard">
       <h2 style="margin-bottom:14px;font-size:16px;">➕ إضافة مهمة جديدة</h2>
       <form id="addTaskForm" class="form-grid">
