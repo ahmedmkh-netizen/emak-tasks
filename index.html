@@ -7,7 +7,7 @@
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
@@ -43,6 +43,22 @@ let currentTheme = localStorage.getItem("theme") || "dark";
 let openTaskId = null;
 let pinnedTaskId = localStorage.getItem("pinnedTask") || null;
 let charts = {};
+let logoDataUrl = null;
+
+async function loadLogoAsBase64() {
+  try {
+    const res = await fetch(LOGO_URL, { mode: "cors" });
+    const blob = await res.blob();
+    return await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  } catch (e) {
+    console.warn("تعذر تحميل اللوجو:", e);
+    return null;
+  }
+}
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c =>
@@ -68,20 +84,14 @@ function daysRemaining(dueDate) {
 function dueLabel(dueDate) {
   const d = daysRemaining(dueDate);
   if (d === null) return "";
-  if (d < 0) return `⚠️ متأخر ${Math.abs(d)} يوم`;
-  if (d === 0) return `🔥 يستحق اليوم`;
-  if (d === 1) return `📅 غداً`;
-  if (d <= 3) return `📅 باقي ${d} أيام`;
-  return `📅 ${dueDate}`;
+  if (d < 0) return `متأخر ${Math.abs(d)} يوم`;
+  if (d === 0) return `يستحق اليوم`;
+  if (d === 1) return `غداً`;
+  if (d <= 3) return `باقي ${d} أيام`;
+  return dueDate;
 }
-function isThisWeek(ts) {
-  if (!ts) return false;
-  return (Date.now() - ts) <= 7 * 24 * 60 * 60 * 1000;
-}
-function isThisMonth(ts) {
-  if (!ts) return false;
-  return (Date.now() - ts) <= 30 * 24 * 60 * 60 * 1000;
-}
+function isThisWeek(ts) { return ts && (Date.now() - ts) <= 7*24*60*60*1000; }
+function isThisMonth(ts) { return ts && (Date.now() - ts) <= 30*24*60*60*1000; }
 
 function applyTheme() {
   document.documentElement.setAttribute("data-theme", currentTheme);
@@ -98,16 +108,16 @@ document.getElementById("logoutBtn").onclick = () => {
   if (confirm("متأكد إنك عايز تخرج؟")) signOut(auth);
 };
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   const loginScreen = document.getElementById("loginScreen");
   const mainScreen = document.getElementById("mainScreen");
   const loadingScreen = document.getElementById("loadingScreen");
   if (user) {
     currentUser = user;
     isAdmin = ADMIN_EMAILS.includes(user.email);
-    // شاشة التحميل
     loadingScreen.style.display = "flex";
     loginScreen.style.display = "none";
+    if (!logoDataUrl) logoDataUrl = await loadLogoAsBase64();
     setTimeout(() => {
       loadingScreen.style.display = "none";
       mainScreen.style.display = "block";
@@ -116,16 +126,13 @@ onAuthStateChanged(auth, (user) => {
       document.getElementById("userRole").className = isAdmin ? "role admin" : "role user";
       document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
       set(ref(db, "users/" + user.uid), {
-        name: user.displayName || "",
-        email: user.email || "",
-        lastLogin: serverTimestamp(),
-        isAdmin: isAdmin
+        name: user.displayName || "", email: user.email || "",
+        lastLogin: serverTimestamp(), isAdmin: isAdmin
       });
       loadTasks();
-    }, 1200);
+    }, 1000);
   } else {
-    currentUser = null;
-    isAdmin = false;
+    currentUser = null; isAdmin = false;
     loginScreen.style.display = "flex";
     mainScreen.style.display = "none";
     loadingScreen.style.display = "none";
@@ -150,25 +157,21 @@ document.getElementById("addTaskForm").onsubmit = async (e) => {
   const notes = document.getElementById("taskNotes").value.trim();
   const tags = document.getElementById("taskTags").value.trim();
   if (!title || !assignee) return;
-
   await push(ref(db, "tasks"), {
     title, assignee, priority, dueDate, notes, tags,
     status: "جديدة",
     createdBy: currentUser.email,
     createdByName: currentUser.displayName || currentUser.email.split("@")[0],
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
+    createdAt: serverTimestamp(), updatedAt: serverTimestamp()
   });
   e.target.reset();
   showToast("✅ تمت إضافة المهمة");
 };
 
 async function changeStatus(taskId, newStatus) {
-  const t = allTasks[taskId];
-  if (!t) return;
+  const t = allTasks[taskId]; if (!t) return;
   await update(ref(db, "tasks/" + taskId), {
-    status: newStatus,
-    updatedAt: serverTimestamp(),
+    status: newStatus, updatedAt: serverTimestamp(),
     updatedBy: currentUser.email,
     updatedByName: currentUser.displayName || currentUser.email.split("@")[0]
   });
@@ -178,18 +181,14 @@ async function changeStatus(taskId, newStatus) {
 async function addComment(taskId, fromModal = false) {
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
   const input = document.getElementById(inputId);
-  const text = input.value.trim();
-  if (!text) return;
+  const text = input.value.trim(); if (!text) return;
   const commentRef = push(ref(db, "tasks/" + taskId + "/comments"));
   await set(commentRef, {
-    text,
-    author: currentUser.displayName || currentUser.email.split("@")[0],
-    authorEmail: currentUser.email,
-    createdAt: serverTimestamp()
+    text, author: currentUser.displayName || currentUser.email.split("@")[0],
+    authorEmail: currentUser.email, createdAt: serverTimestamp()
   });
   await update(ref(db, "tasks/" + taskId), {
-    updatedAt: serverTimestamp(),
-    updatedBy: currentUser.email,
+    updatedAt: serverTimestamp(), updatedBy: currentUser.email,
     updatedByName: currentUser.displayName || currentUser.email.split("@")[0]
   });
   input.value = "";
@@ -207,27 +206,16 @@ async function deleteTask(taskId) {
 
 async function editTask(taskId) {
   if (!isAdmin) return alert("غير مصرح");
-  const t = allTasks[taskId];
-  if (!t) return;
-  const newTitle = prompt("العنوان:", t.title);
-  if (newTitle === null) return;
-  const newDue = prompt("التسليم (YYYY-MM-DD):", t.dueDate || "");
-  if (newDue === null) return;
-  const newPriority = prompt("الأولوية (عاجل/مهم/عادي):", t.priority || "عادي");
-  if (newPriority === null) return;
-  const newAssignee = prompt("المسؤول (بهاء/محمود):", t.assignee);
-  if (newAssignee === null) return;
-  const newTags = prompt("الوسوم (فاصلة):", t.tags || "");
-  if (newTags === null) return;
-
+  const t = allTasks[taskId]; if (!t) return;
+  const newTitle = prompt("العنوان:", t.title); if (newTitle === null) return;
+  const newDue = prompt("التسليم (YYYY-MM-DD):", t.dueDate || ""); if (newDue === null) return;
+  const newPriority = prompt("الأولوية (عاجل/مهم/عادي):", t.priority || "عادي"); if (newPriority === null) return;
+  const newAssignee = prompt("المسؤول (بهاء/محمود):", t.assignee); if (newAssignee === null) return;
+  const newTags = prompt("الوسوم (فاصلة):", t.tags || ""); if (newTags === null) return;
   await update(ref(db, "tasks/" + taskId), {
-    title: newTitle.trim() || t.title,
-    dueDate: newDue.trim(),
-    priority: newPriority.trim() || "عادي",
-    assignee: newAssignee.trim() || t.assignee,
-    tags: newTags.trim(),
-    updatedAt: serverTimestamp(),
-    updatedBy: currentUser.email,
+    title: newTitle.trim() || t.title, dueDate: newDue.trim(),
+    priority: newPriority.trim() || "عادي", assignee: newAssignee.trim() || t.assignee,
+    tags: newTags.trim(), updatedAt: serverTimestamp(), updatedBy: currentUser.email,
     updatedByName: currentUser.displayName || currentUser.email.split("@")[0]
   });
   showToast("✏️ تم التعديل");
@@ -235,20 +223,17 @@ async function editTask(taskId) {
 
 function togglePin(taskId) {
   if (pinnedTaskId === taskId) {
-    pinnedTaskId = null;
-    localStorage.removeItem("pinnedTask");
+    pinnedTaskId = null; localStorage.removeItem("pinnedTask");
     showToast("📌 تم إلغاء التثبيت");
   } else {
-    pinnedTaskId = taskId;
-    localStorage.setItem("pinnedTask", taskId);
+    pinnedTaskId = taskId; localStorage.setItem("pinnedTask", taskId);
     showToast("⭐ تم التثبيت");
   }
   renderTasks();
 }
 
 function openModal(taskId) {
-  openTaskId = taskId;
-  renderModal(taskId);
+  openTaskId = taskId; renderModal(taskId);
   document.getElementById("modalOverlay").classList.add("active");
   document.body.style.overflow = "hidden";
 }
@@ -259,20 +244,13 @@ function closeModal() {
 }
 
 function renderModal(taskId) {
-  const t = allTasks[taskId];
-  if (!t) return closeModal();
-  const statusClass = t.status === "مكتملة" ? "done"
-    : t.status === "جاري التنفيذ" ? "progress" : "new";
-  const priorityClass = t.priority === "عاجل" ? "urgent"
-    : t.priority === "مهم" ? "important" : "normal";
+  const t = allTasks[taskId]; if (!t) return closeModal();
+  const statusClass = t.status === "مكتملة" ? "done" : t.status === "جاري التنفيذ" ? "progress" : "new";
+  const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const isUrgent = t.priority === "عاجل" && t.status !== "مكتملة";
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
-
-  const comments = t.comments ? Object.entries(t.comments).sort((a,b) =>
-    (a[1].createdAt || 0) - (b[1].createdAt || 0)
-  ) : [];
-
+  const comments = t.comments ? Object.entries(t.comments).sort((a,b) => (a[1].createdAt||0)-(b[1].createdAt||0)) : [];
   const commentsHtml = comments.length > 0 ? comments.map(([cid, c]) => `
     <div class="modal-comment">
       <div class="modal-comment-head">
@@ -280,20 +258,12 @@ function renderModal(taskId) {
         <span class="modal-comment-date">${formatDateTime(c.createdAt)}</span>
       </div>
       <div class="modal-comment-text">${escapeHtml(c.text)}</div>
-    </div>
-  `).join("") : '<p class="empty-comments">لا توجد تعليقات بعد</p>';
-
-  const tagsHtml = t.tags ? t.tags.split(",").map(tag => tag.trim()).filter(Boolean).map(tag =>
-    `<span class="tag">${escapeHtml(tag)}</span>`
-  ).join("") : "";
-
+    </div>`).join("") : '<p class="empty-comments">لا توجد تعليقات بعد</p>';
+  const tagsHtml = t.tags ? t.tags.split(",").map(tag=>tag.trim()).filter(Boolean).map(tag=>`<span class="tag">${escapeHtml(tag)}</span>`).join("") : "";
   document.getElementById("modalBody").innerHTML = `
     <div class="modal-header ${priorityClass}">
       <div class="modal-badges">
-        <span class="priority-badge ${priorityClass}">${
-          t.priority === "عاجل" ? "🔴 عاجل" :
-          t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"
-        }</span>
+        <span class="priority-badge ${priorityClass}">${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}</span>
         <span class="status-badge ${statusClass}">${t.status}</span>
       </div>
       <button class="modal-close" onclick="window.closeModal()">✕</button>
@@ -301,27 +271,12 @@ function renderModal(taskId) {
     <h2 class="modal-title">${escapeHtml(t.title)}</h2>
     ${tagsHtml ? `<div class="modal-tags">${tagsHtml}</div>` : ""}
     <div class="modal-meta">
-      <div class="meta-item">
-        <span class="meta-label">👤 المسؤول</span>
-        <span class="meta-value">${escapeHtml(t.assignee)}</span>
-      </div>
-      ${t.dueDate ? `<div class="meta-item">
-        <span class="meta-label">📅 التسليم</span>
-        <span class="meta-value ${isOverdue ? 'overdue-text' : ''}">${dueLabel(t.dueDate)}</span>
-      </div>` : ""}
-      <div class="meta-item">
-        <span class="meta-label">✏️ آخر تعديل</span>
-        <span class="meta-value">${t.updatedByName ? escapeHtml(t.updatedByName) + " — " + formatDate(t.updatedAt) : "—"}</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">🆕 أُنشئت</span>
-        <span class="meta-value">${formatDate(t.createdAt)}</span>
-      </div>
+      <div class="meta-item"><span class="meta-label">👤 المسؤول</span><span class="meta-value">${escapeHtml(t.assignee)}</span></div>
+      ${t.dueDate ? `<div class="meta-item"><span class="meta-label">📅 التسليم</span><span class="meta-value ${isOverdue?'overdue-text':''}">${dueLabel(t.dueDate)}</span></div>` : ""}
+      <div class="meta-item"><span class="meta-label">✏️ آخر تعديل</span><span class="meta-value">${t.updatedByName ? escapeHtml(t.updatedByName) + " — " + formatDate(t.updatedAt) : "—"}</span></div>
+      <div class="meta-item"><span class="meta-label">🆕 أُنشئت</span><span class="meta-value">${formatDate(t.createdAt)}</span></div>
     </div>
-    ${t.notes ? `<div class="modal-section">
-      <div class="modal-section-title">📝 ملاحظات المهمة</div>
-      <div class="modal-notes">${escapeHtml(t.notes)}</div>
-    </div>` : ""}
+    ${t.notes ? `<div class="modal-section"><div class="modal-section-title">📝 ملاحظات المهمة</div><div class="modal-notes">${escapeHtml(t.notes)}</div></div>` : ""}
     <div class="modal-section">
       <div class="modal-section-title">💬 التعليقات (${comments.length})</div>
       <div class="modal-comments-list">${commentsHtml}</div>
@@ -337,12 +292,9 @@ function renderModal(taskId) {
         <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
         <option ${t.status === "مكتملة" ? "selected" : ""}>مكتملة</option>
       </select>
-      ${isAdmin ? `
-        <button class="btn-edit" onclick="window.editTask('${taskId}')">✏️ تعديل</button>
-        <button class="btn-del" onclick="window.deleteTask('${taskId}')">🗑️ حذف</button>
-      ` : ""}
-    </div>
-  `;
+      ${isAdmin ? `<button class="btn-edit" onclick="window.editTask('${taskId}')">✏️ تعديل</button>
+        <button class="btn-del" onclick="window.deleteTask('${taskId}')">🗑️ حذف</button>` : ""}
+    </div>`;
   document.getElementById("modalBox").className = "modal-box" + (isUrgent ? " urgent-glow" : "");
 }
 
@@ -355,31 +307,22 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
   };
 });
 document.getElementById("searchBox").addEventListener("input", (e) => {
-  currentSearch = e.target.value.trim().toLowerCase();
-  renderTasks();
+  currentSearch = e.target.value.trim().toLowerCase(); renderTasks();
 });
 document.getElementById("sortSelect").addEventListener("change", (e) => {
-  currentSort = e.target.value;
-  renderTasks();
+  currentSort = e.target.value; renderTasks();
 });
 document.getElementById("themeBtn").onclick = () => {
-  currentTheme = currentTheme === "dark" ? "light" : "dark";
-  applyTheme();
+  currentTheme = currentTheme === "dark" ? "light" : "dark"; applyTheme();
 };
 
 function showToast(msg) {
   const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
+  t.textContent = msg; t.classList.add("show");
   setTimeout(() => t.classList.remove("show"), 2500);
 }
 
-function renderAll() {
-  renderStats();
-  renderTeam();
-  renderTasks();
-  renderCharts();
-}
+function renderAll() { renderStats(); renderTeam(); renderTasks(); renderCharts(); }
 
 function renderStats() {
   const entries = Object.entries(allTasks);
@@ -425,23 +368,10 @@ function renderCharts() {
     if (charts.status) charts.status.destroy();
     charts.status = new Chart(ctx1, {
       type: "doughnut",
-      data: {
-        labels: ["مكتملة", "جارية", "جديدة"],
-        datasets: [{
-          data: [done, progress, newT],
-          backgroundColor: ["#22c55e", "#f59e0b", "#4f8ef7"],
-          borderColor: "transparent", borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: "bottom",
-            labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim(), font: { family: "Cairo", size: 12 } }
-          }
-        }
-      }
+      data: { labels: ["مكتملة","جارية","جديدة"],
+        datasets: [{ data: [done, progress, newT], backgroundColor: ["#22c55e","#f59e0b","#4f8ef7"], borderColor: "transparent", borderWidth: 0 }] },
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: "bottom", labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text').trim(), font: { family: "Cairo", size: 12 } } } } }
     });
   }
 
@@ -450,38 +380,19 @@ function renderCharts() {
     const days = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
     const counts = [0,0,0,0,0,0,0];
     entries.filter(t => t.status === "مكتملة" && isThisWeek(t.updatedAt)).forEach(t => {
-      const d = new Date(t.updatedAt).getDay();
-      counts[d]++;
+      const d = new Date(t.updatedAt).getDay(); counts[d]++;
     });
     const reordered = [counts[6], counts[0], counts[1], counts[2], counts[3], counts[4], counts[5]];
-
     if (charts.productivity) charts.productivity.destroy();
     charts.productivity = new Chart(ctx2, {
       type: "bar",
-      data: {
-        labels: days,
-        datasets: [{
-          label: "مهام مكتملة هذا الأسبوع",
-          data: reordered,
-          backgroundColor: "#4f8ef7",
-          borderRadius: 8, borderSkipped: false
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
+      data: { labels: days, datasets: [{ label: "مهام مكتملة هذا الأسبوع", data: reordered, backgroundColor: "#4f8ef7", borderRadius: 8, borderSkipped: false }] },
+      options: { responsive: true, maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: {
-            beginAtZero: true,
-            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim(), stepSize: 1, font: { family: "Cairo" } },
-            grid: { color: "rgba(128,128,128,0.1)" }
-          },
-          x: {
-            ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim(), font: { family: "Cairo" } },
-            grid: { display: false }
-          }
-        }
-      }
+          y: { beginAtZero: true, ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim(), stepSize: 1, font: { family: "Cairo" } }, grid: { color: "rgba(128,128,128,0.1)" } },
+          x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-2').trim(), font: { family: "Cairo" } }, grid: { display: false } }
+        } }
     });
   }
 }
@@ -489,22 +400,18 @@ function renderCharts() {
 function renderTasks() {
   const list = document.getElementById("tasksList");
   let entries = Object.entries(allTasks);
-
   entries.sort((a, b) => {
     if (a[0] === pinnedTaskId) return -1;
     if (b[0] === pinnedTaskId) return 1;
-
     if (currentSort === "priority") {
       const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
-      const pa = pri[a[1].priority] ?? 2;
-      const pb = pri[b[1].priority] ?? 2;
+      const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
       if (pa !== pb) return pa - pb;
       return (b[1].createdAt || 0) - (a[1].createdAt || 0);
     }
     if (currentSort === "date") return (b[1].createdAt || 0) - (a[1].createdAt || 0);
     if (currentSort === "due") {
-      if (!a[1].dueDate) return 1;
-      if (!b[1].dueDate) return -1;
+      if (!a[1].dueDate) return 1; if (!b[1].dueDate) return -1;
       return new Date(a[1].dueDate) - new Date(b[1].dueDate);
     }
     if (currentSort === "title") return (a[1].title || "").localeCompare(b[1].title || "", "ar");
@@ -539,39 +446,31 @@ function renderTasks() {
   }
 
   list.innerHTML = filtered.map(([id, t]) => {
-    const statusClass = t.status === "مكتملة" ? "done"
-      : t.status === "جاري التنفيذ" ? "progress" : "new";
-    const priorityClass = t.priority === "عاجل" ? "urgent"
-      : t.priority === "مهم" ? "important" : "normal";
+    const statusClass = t.status === "مكتملة" ? "done" : t.status === "جاري التنفيذ" ? "progress" : "new";
+    const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
     const isUrgent = t.priority === "عاجل" && t.status !== "مكتملة";
     const d = daysRemaining(t.dueDate);
     const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
     const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
     const isPinned = pinnedTaskId === id;
-
-    const tagsHtml = t.tags ? t.tags.split(",").map(tag => tag.trim()).filter(Boolean).slice(0, 2).map(tag =>
-      `<span class="card-tag">${escapeHtml(tag)}</span>`
-    ).join("") : "";
-
-    return `
-      <div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""} ${isPinned ? "pinned" : ""}" onclick="window.openModal('${id}')">
-        ${isPinned ? '<div class="pin-badge">⭐</div>' : ""}
-        <div class="card-top">
-          <span class="priority-dot ${priorityClass}"></span>
-          <span class="assignee-chip">👤 ${escapeHtml(t.assignee)}</span>
-        </div>
-        <h3 class="card-title">${escapeHtml(t.title)}</h3>
-        ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
-        ${t.notes ? `<p class="card-notes">${escapeHtml(t.notes)}</p>` : ""}
-        <div class="card-bottom">
-          ${t.dueDate ? `<span class="card-due ${isOverdue ? 'overdue' : ''}">${dueLabel(t.dueDate)}</span>` : "<span></span>"}
-          <div class="card-icons">
-            ${commentsCount > 0 ? `<span class="card-icon">💬 ${commentsCount}</span>` : ""}
-            <span class="status-pill ${statusClass}">${t.status}</span>
-          </div>
+    const tagsHtml = t.tags ? t.tags.split(",").map(tag=>tag.trim()).filter(Boolean).slice(0,2).map(tag=>`<span class="card-tag">${escapeHtml(tag)}</span>`).join("") : "";
+    return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""} ${isPinned ? "pinned" : ""}" onclick="window.openModal('${id}')">
+      ${isPinned ? '<div class="pin-badge">⭐</div>' : ""}
+      <div class="card-top">
+        <span class="priority-dot ${priorityClass}"></span>
+        <span class="assignee-chip">👤 ${escapeHtml(t.assignee)}</span>
+      </div>
+      <h3 class="card-title">${escapeHtml(t.title)}</h3>
+      ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
+      ${t.notes ? `<p class="card-notes">${escapeHtml(t.notes)}</p>` : ""}
+      <div class="card-bottom">
+        ${t.dueDate ? `<span class="card-due ${isOverdue?'overdue':''}">${dueLabel(t.dueDate)}</span>` : "<span></span>"}
+        <div class="card-icons">
+          ${commentsCount > 0 ? `<span class="card-icon">💬 ${commentsCount}</span>` : ""}
+          <span class="status-pill ${statusClass}">${t.status}</span>
         </div>
       </div>
-    `;
+    </div>`;
   }).join("");
 }
 
@@ -603,8 +502,7 @@ function openReport() {
       <td>${s.progress}</td>
       <td>${s.overdue}</td>
       <td>${s.total ? Math.round((s.done/s.total)*100) : 0}%</td>
-    </tr>
-  `).join("");
+    </tr>`).join("");
 
   const taskRow = (id, t) => `
     <div class="r-task">
@@ -620,13 +518,12 @@ function openReport() {
       </div>
       ${t.notes ? `<div class="r-notes">📝 ${escapeHtml(t.notes)}</div>` : ""}
       ${t.comments ? `<div class="r-comments">💬 ${Object.keys(t.comments).length} تعليق</div>` : ""}
-    </div>
-  `;
+    </div>`;
 
   const today = new Date().toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" });
 
   const reportHtml = `
-    <div id="reportContent" class="report-content">
+    <div class="report-content">
       <div class="r-header">
         <div class="r-logo-wrap">
           <img src="${LOGO_URL}" class="r-logo" crossorigin="anonymous">
@@ -637,36 +534,25 @@ function openReport() {
           <p class="r-date">التاريخ: ${today}</p>
         </div>
       </div>
-
       <div class="r-summary">
         <div class="r-sum-item"><div class="r-sum-num">${entries.length}</div><div class="r-sum-label">إجمالي</div></div>
         <div class="r-sum-item done"><div class="r-sum-num">${done.length}</div><div class="r-sum-label">مكتملة</div></div>
         <div class="r-sum-item progress"><div class="r-sum-num">${progress.length}</div><div class="r-sum-label">جارية</div></div>
         <div class="r-sum-item overdue"><div class="r-sum-num">${overdue.length}</div><div class="r-sum-label">متأخرة</div></div>
       </div>
-
       <div class="r-section">
         <h2>👥 أداء الفريق</h2>
         <table class="r-table">
-          <thead>
-            <tr>
-              <th>الموظف</th><th>الإجمالي</th><th>مكتملة</th><th>جارية</th><th>متأخرة</th><th>النسبة</th>
-            </tr>
-          </thead>
+          <thead><tr><th>الموظف</th><th>الإجمالي</th><th>مكتملة</th><th>جارية</th><th>متأخرة</th><th>النسبة</th></tr></thead>
           <tbody>${teamRows}</tbody>
         </table>
       </div>
-
-      ${overdue.length > 0 ? `<div class="r-section"><h2>⚠️ المهام المتأخرة (${overdue.length})</h2>${overdue.map(([id,t]) => taskRow(id,t)).join("")}</div>` : ""}
-      ${progress.length > 0 ? `<div class="r-section"><h2>⏳ المهام الجارية (${progress.length})</h2>${progress.map(([id,t]) => taskRow(id,t)).join("")}</div>` : ""}
-      ${newT.length > 0 ? `<div class="r-section"><h2>🆕 المهام الجديدة (${newT.length})</h2>${newT.map(([id,t]) => taskRow(id,t)).join("")}</div>` : ""}
-      ${done.length > 0 ? `<div class="r-section"><h2>✅ المهام المكتملة (${done.length})</h2>${done.map(([id,t]) => taskRow(id,t)).join("")}</div>` : ""}
-
-      <div class="r-footer">
-        تم إنشاء التقرير تلقائياً بواسطة EMAK Hub — ${today}
-      </div>
-    </div>
-  `;
+      ${overdue.length > 0 ? `<div class="r-section"><h2>⚠️ المهام المتأخرة (${overdue.length})</h2>${overdue.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
+      ${progress.length > 0 ? `<div class="r-section"><h2>⏳ المهام الجارية (${progress.length})</h2>${progress.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
+      ${newT.length > 0 ? `<div class="r-section"><h2>🆕 المهام الجديدة (${newT.length})</h2>${newT.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
+      ${done.length > 0 ? `<div class="r-section"><h2>✅ المهام المكتملة (${done.length})</h2>${done.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
+      <div class="r-footer">تم إنشاء التقرير تلقائياً بواسطة EMAK Hub — ${today}</div>
+    </div>`;
 
   document.getElementById("reportBody").innerHTML = reportHtml;
   document.getElementById("reportOverlay").classList.add("active");
@@ -682,18 +568,167 @@ async function downloadPDF() {
   const btn = document.getElementById("downloadPdfBtn");
   btn.disabled = true;
   btn.textContent = "⏳ جاري التحميل...";
+
   try {
-    const element = document.getElementById("reportContent");
-    const opt = {
-      margin: [10, 10, 10, 10],
-      filename: `EMAK-Report-${new Date().toISOString().slice(0,10)}.pdf`,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const pageW = 210, pageH = 297, margin = 15;
+    let y = margin;
+
+    const entries = Object.entries(allTasks);
+    const done = entries.filter(([_, t]) => t.status === "مكتملة");
+    const progress = entries.filter(([_, t]) => t.status === "جاري التنفيذ");
+    const newT = entries.filter(([_, t]) => t.status === "جديدة");
+    const overdue = entries.filter(([_, t]) => {
+      const d = daysRemaining(t.dueDate);
+      return d !== null && d < 0 && t.status !== "مكتملة";
+    });
+
+    const team = {};
+    entries.forEach(([_, t]) => {
+      if (!team[t.assignee]) team[t.assignee] = { total: 0, done: 0, progress: 0, overdue: 0 };
+      team[t.assignee].total++;
+      if (t.status === "مكتملة") team[t.assignee].done++;
+      else if (t.status === "جاري التنفيذ") team[t.assignee].progress++;
+      const d = daysRemaining(t.dueDate);
+      if (d !== null && d < 0 && t.status !== "مكتملة") team[t.assignee].overdue++;
+    });
+
+    // هيدر بلون أزرق
+    pdf.setFillColor(30, 58, 138);
+    pdf.rect(0, 0, pageW, 25, "F");
+
+    if (logoDataUrl) {
+      try { pdf.addImage(logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); }
+      catch (e) { console.warn(e); }
+    }
+
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(20);
+    pdf.text("EMAK Hub", pageW - 40, 12, { align: "right" });
+    pdf.setFontSize(11);
+    pdf.text("تقرير المهام - قسم نظم المعلومات", pageW - 40, 19, { align: "right" });
+
+    y = 35;
+
+    const today = new Date().toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" });
+    pdf.setTextColor(100, 116, 139);
+    pdf.setFontSize(10);
+    pdf.text(`التاريخ: ${today}`, pageW - margin, y, { align: "right" });
+    y += 10;
+
+    // ملخص
+    pdf.setFillColor(241, 245, 249);
+    pdf.roundedRect(margin, y, pageW - 2*margin, 25, 3, 3, "F");
+    pdf.setTextColor(30, 58, 138);
+    pdf.setFontSize(13);
+    pdf.text("ملخص عام", pageW - margin - 5, y + 7, { align: "right" });
+    pdf.setFontSize(11);
+    pdf.setTextColor(15, 23, 42);
+    pdf.text(`إجمالي: ${entries.length}  |  مكتملة: ${done.length}  |  جارية: ${progress.length}  |  متأخرة: ${overdue.length}`, pageW - margin - 5, y + 18, { align: "right" });
+    y += 35;
+
+    // جدول الفريق
+    pdf.setTextColor(30, 58, 138);
+    pdf.setFontSize(14);
+    pdf.text("أداء الفريق", pageW - margin, y, { align: "right" });
+    y += 8;
+
+    pdf.setFillColor(30, 58, 138);
+    pdf.rect(margin, y, pageW - 2*margin, 8, "F");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(10);
+
+    const colWidths = [40, 22, 22, 22, 22, 22];
+    let colX = pageW - margin - 5;
+    ["الموظف", "الإجمالي", "مكتملة", "جارية", "متأخرة", "النسبة"].forEach((h, i) => {
+      pdf.text(h, colX, y + 5.5, { align: "right" });
+      colX -= colWidths[i];
+    });
+    y += 8;
+
+    pdf.setTextColor(15, 23, 42);
+    Object.entries(team).forEach(([name, s], idx) => {
+      if (y > pageH - 30) { pdf.addPage(); y = margin; }
+      if (idx % 2 === 0) {
+        pdf.setFillColor(248, 250, 252);
+        pdf.rect(margin, y, pageW - 2*margin, 7, "F");
+      }
+      colX = pageW - margin - 5;
+      const row = [name, String(s.total), String(s.done), String(s.progress), String(s.overdue), `${s.total ? Math.round((s.done/s.total)*100) : 0}%`];
+      row.forEach((cell, i) => {
+        pdf.text(cell, colX, y + 5, { align: "right" });
+        colX -= colWidths[i];
+      });
+      y += 7;
+    });
+    y += 12;
+
+    // كتابة أقسام المهام
+    const writeTaskSection = (title, tasks, color) => {
+      if (tasks.length === 0) return;
+      if (y > pageH - 40) { pdf.addPage(); y = margin; }
+
+      pdf.setTextColor(...color);
+      pdf.setFontSize(14);
+      pdf.text(title, pageW - margin, y, { align: "right" });
+      y += 9;
+
+      tasks.forEach(([id, t]) => {
+        const lines = t.notes ? pdf.splitTextToSize(t.notes, pageW - 2*margin - 20) : [];
+        const taskHeight = 22 + (lines.length * 5);
+
+        if (y + taskHeight > pageH - 20) { pdf.addPage(); y = margin; }
+
+        pdf.setFillColor(248, 250, 252);
+        pdf.roundedRect(margin, y, pageW - 2*margin, taskHeight, 2, 2, "F");
+
+        let barColor = [100, 116, 139];
+        if (t.priority === "عاجل") barColor = [220, 38, 38];
+        else if (t.priority === "مهم") barColor = [217, 119, 6];
+        else if (t.priority === "عادي") barColor = [5, 150, 105];
+        pdf.setFillColor(...barColor);
+        pdf.rect(pageW - margin - 3, y, 3, taskHeight, "F");
+
+        pdf.setTextColor(15, 23, 42);
+        pdf.setFontSize(11);
+        const title = t.title.length > 60 ? t.title.substring(0, 57) + "..." : t.title;
+        pdf.text(title, pageW - margin - 8, y + 6, { align: "right" });
+
+        pdf.setFontSize(9);
+        pdf.setTextColor(100, 116, 139);
+        const dueText = t.dueDate ? `  |  📅 ${t.dueDate}` : "";
+        pdf.text(`👤 ${t.assignee}  |  ${t.priority || "عادي"}  |  ${t.status}${dueText}`, pageW - margin - 8, y + 13, { align: "right" });
+
+        if (lines.length > 0) {
+          pdf.setTextColor(71, 85, 105);
+          pdf.setFontSize(9);
+          pdf.text(lines, pageW - margin - 8, y + 19, { align: "right" });
+        }
+
+        y += taskHeight + 3;
+      });
+      y += 5;
     };
-    await html2pdf().set(opt).from(element).save();
+
+    writeTaskSection(`المهام المتأخرة (${overdue.length})`, overdue, [220, 38, 38]);
+    writeTaskSection(`المهام الجارية (${progress.length})`, progress, [217, 119, 6]);
+    writeTaskSection(`المهام الجديدة (${newT.length})`, newT, [37, 99, 235]);
+    writeTaskSection(`المهام المكتملة (${done.length})`, done, [5, 150, 105]);
+
+    // الفوتر
+    const totalPages = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i);
+      pdf.setFontSize(8);
+      pdf.setTextColor(148, 163, 184);
+      pdf.text(`EMAK Hub — صفحة ${i} من ${totalPages}`, pageW / 2, pageH - 8, { align: "center" });
+    }
+
+    pdf.save(`EMAK-Report-${new Date().toISOString().slice(0,10)}.pdf`);
     showToast("📄 تم تحميل التقرير");
   } catch (e) {
+    console.error(e);
     alert("خطأ في التحميل: " + e.message);
   } finally {
     btn.disabled = false;
@@ -751,17 +786,14 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-/* ==== شاشة الدخول ==== */
 #loginScreen {
   display: flex; align-items: center; justify-content: center;
   min-height: 100vh; padding: 20px;
   background: radial-gradient(circle at top, #1e3a8a 0%, #0a0e1a 70%);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
 #loginScreen::before {
-  content: '';
-  position: absolute; inset: 0;
+  content: ''; position: absolute; inset: 0;
   background:
     radial-gradient(circle at 20% 30%, rgba(79,142,247,0.15), transparent 50%),
     radial-gradient(circle at 80% 70%, rgba(34,197,94,0.1), transparent 50%);
@@ -774,55 +806,30 @@ body {
   padding: 50px 40px; border-radius: 24px;
   text-align: center; max-width: 420px; width: 100%;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  position: relative;
-  z-index: 1;
+  position: relative; z-index: 1;
 }
-/* ✨ اللوجو في شاشة الدخول - محسّن ✨ */
 .login-logo-wrap {
-  width: 130px;
-  height: 130px;
-  margin: 0 auto 24px;
-  border-radius: 50%;
+  width: 130px; height: 130px;
+  margin: 0 auto 24px; border-radius: 50%;
   background: linear-gradient(135deg, rgba(79,142,247,0.15), rgba(34,197,94,0.1));
   padding: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow:
-    0 0 0 3px rgba(79,142,247,0.3),
-    0 0 30px rgba(79,142,247,0.4),
-    inset 0 0 20px rgba(79,142,247,0.15);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 3px rgba(79,142,247,0.3), 0 0 30px rgba(79,142,247,0.4), inset 0 0 20px rgba(79,142,247,0.15);
   animation: logoPulse 3s ease-in-out infinite;
 }
 @keyframes logoPulse {
-  0%, 100% {
-    box-shadow:
-      0 0 0 3px rgba(79,142,247,0.3),
-      0 0 30px rgba(79,142,247,0.4),
-      inset 0 0 20px rgba(79,142,247,0.15);
-  }
-  50% {
-    box-shadow:
-      0 0 0 3px rgba(34,197,94,0.4),
-      0 0 45px rgba(34,197,94,0.5),
-      inset 0 0 25px rgba(34,197,94,0.2);
-  }
+  0%, 100% { box-shadow: 0 0 0 3px rgba(79,142,247,0.3), 0 0 30px rgba(79,142,247,0.4), inset 0 0 20px rgba(79,142,247,0.15); }
+  50% { box-shadow: 0 0 0 3px rgba(34,197,94,0.4), 0 0 45px rgba(34,197,94,0.5), inset 0 0 25px rgba(34,197,94,0.2); }
 }
 .login-logo {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 50%;
-  background: rgba(10,14,26,0.5);
-  padding: 12px;
+  width: 100%; height: 100%; object-fit: contain;
+  border-radius: 50%; background: rgba(10,14,26,0.5); padding: 12px;
 }
 .login-card h1 {
   color: #f1f5f9; margin-bottom: 8px; font-size: 32px;
   font-weight: 900; letter-spacing: -1px;
   background: linear-gradient(135deg, #4f8ef7, #22c55e);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .login-card p { color: #94a3b8; margin-bottom: 32px; font-size: 14px; }
 #loginBtn {
@@ -835,100 +842,61 @@ body {
 #loginBtn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
 #loginBtn img { width: 22px; }
 
-/* ==== شاشة التحميل ==== */
 #loadingScreen {
-  display: none;
-  position: fixed; inset: 0;
+  display: none; position: fixed; inset: 0;
   background: radial-gradient(circle at top, #1e3a8a 0%, #0a0e1a 70%);
   align-items: center; justify-content: center;
-  z-index: 5000;
-  flex-direction: column;
-  gap: 24px;
+  z-index: 5000; flex-direction: column; gap: 24px;
 }
 .loading-logo-wrap {
-  width: 140px; height: 140px;
-  border-radius: 50%;
-  background: rgba(19,24,38,0.9);
-  padding: 10px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: rgba(19,24,38,0.9); padding: 10px;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 0 60px rgba(79,142,247,0.6);
   animation: loadingPulse 1.5s ease-in-out infinite;
 }
-.loading-logo {
-  width: 100%; height: 100%;
-  object-fit: contain;
-  border-radius: 50%;
-}
+.loading-logo { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
 @keyframes loadingPulse {
   0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(79,142,247,0.4); }
   50% { transform: scale(1.08); box-shadow: 0 0 80px rgba(79,142,247,0.8); }
 }
-.loading-text {
-  color: #f1f5f9; font-size: 18px; font-weight: 700;
-  letter-spacing: 1px;
-}
-.loading-bar {
-  width: 200px; height: 4px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 4px; overflow: hidden;
-}
-.loading-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #4f8ef7, #22c55e);
-  width: 30%;
-  animation: loadingBar 1.2s ease-in-out infinite;
-}
+.loading-text { color: #f1f5f9; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.loading-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+.loading-bar-fill { height: 100%; background: linear-gradient(90deg, #4f8ef7, #22c55e); width: 30%; animation: loadingBar 1.2s ease-in-out infinite; }
 @keyframes loadingBar {
   0% { width: 10%; margin-right: 0; }
   50% { width: 60%; margin-right: 20%; }
   100% { width: 10%; margin-right: 90%; }
 }
 
-/* ==== الهيدر ==== */
 #mainScreen { display: none; }
 header {
   background: var(--bg-2); border-bottom: 1px solid var(--border);
   padding: 12px 24px;
   display: flex; justify-content: space-between; align-items: center;
   position: sticky; top: 0; z-index: 50;
-  box-shadow: var(--shadow);
-  gap: 12px; flex-wrap: wrap;
+  box-shadow: var(--shadow); gap: 12px; flex-wrap: wrap;
 }
 .header-brand { display: flex; align-items: center; gap: 14px; }
-/* ✨ اللوجو في الهيدر - محسّن ✨ */
 .header-logo-wrap {
-  width: 52px; height: 52px;
-  border-radius: 50%;
+  width: 52px; height: 52px; border-radius: 50%;
   background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(34,197,94,0.15));
   padding: 3px;
   display: flex; align-items: center; justify-content: center;
-  box-shadow:
-    0 0 0 2px rgba(79,142,247,0.25),
-    0 0 15px rgba(79,142,247,0.3);
+  box-shadow: 0 0 0 2px rgba(79,142,247,0.25), 0 0 15px rgba(79,142,247,0.3);
   transition: 0.3s;
 }
 .header-logo-wrap:hover {
-  box-shadow:
-    0 0 0 2px rgba(79,142,247,0.5),
-    0 0 25px rgba(79,142,247,0.5);
+  box-shadow: 0 0 0 2px rgba(79,142,247,0.5), 0 0 25px rgba(79,142,247,0.5);
   transform: scale(1.05);
 }
-.header-logo {
-  width: 100%; height: 100%;
-  object-fit: contain;
-  border-radius: 50%;
-  background: var(--bg);
-  padding: 4px;
-}
+.header-logo { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; background: var(--bg); padding: 4px; }
 .header-brand h1 {
-  font-size: 20px; color: var(--text); font-weight: 800; line-height: 1;
+  font-size: 20px; font-weight: 800; line-height: 1;
   background: linear-gradient(135deg, var(--primary), var(--success));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .header-brand .subtitle { font-size: 11px; color: var(--text-2); margin-top: 2px; }
-
 .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; flex-wrap: wrap; }
 .role { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 .role.admin { background: rgba(245,158,11,0.15); color: var(--accent); border: 1px solid rgba(245,158,11,0.3); }
@@ -944,8 +912,7 @@ header {
   background: linear-gradient(135deg, #22c55e, #16a34a);
   color: white; border: none;
   padding: 9px 18px; border-radius: 10px; cursor: pointer;
-  font-size: 13px; font-weight: 700; font-family: inherit;
-  transition: 0.2s;
+  font-size: 13px; font-weight: 700; font-family: inherit; transition: 0.2s;
 }
 .btn-report:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(34,197,94,0.4); }
 #logoutBtn {
@@ -1039,8 +1006,7 @@ header {
   background: var(--bg-2); color: var(--text);
   border: 1px solid var(--border);
   padding: 8px 16px; border-radius: 20px; cursor: pointer;
-  font-size: 13px; font-family: inherit; font-weight: 500;
-  transition: 0.2s;
+  font-size: 13px; font-family: inherit; font-weight: 500; transition: 0.2s;
 }
 .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
 .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(79,142,247,0.3); }
@@ -1062,11 +1028,7 @@ header {
 .task-card.done { opacity: 0.65; }
 .task-card.done:hover { opacity: 1; }
 .task-card.pinned { border-color: var(--accent); box-shadow: 0 0 20px rgba(245,158,11,0.3); }
-.pin-badge {
-  position: absolute; top: 10px; left: 10px;
-  font-size: 16px; z-index: 2;
-  animation: pulse 2s infinite;
-}
+.pin-badge { position: absolute; top: 10px; left: 10px; font-size: 16px; z-index: 2; animation: pulse 2s infinite; }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
 @keyframes urgentGlow {
@@ -1093,15 +1055,8 @@ header {
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .card-tags { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
-.card-tag {
-  font-size: 10px; padding: 3px 8px;
-  background: rgba(79,142,247,0.15); color: var(--primary);
-  border-radius: 10px; font-weight: 600;
-}
-.card-bottom {
-  margin-top: auto; display: flex; justify-content: space-between;
-  align-items: center; gap: 8px; flex-wrap: wrap;
-}
+.card-tag { font-size: 10px; padding: 3px 8px; background: rgba(79,142,247,0.15); color: var(--primary); border-radius: 10px; font-weight: 600; }
+.card-bottom { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 .card-due { font-size: 11px; color: var(--text-2); padding: 4px 8px; background: var(--bg-3); border-radius: 6px; font-weight: 600; }
 .card-due.overdue { background: rgba(255,77,79,0.15); color: var(--urgent); }
 .card-icons { display: flex; gap: 6px; align-items: center; }
@@ -1129,10 +1084,7 @@ header {
 }
 @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-.modal-header {
-  padding: 20px 24px; display: flex; justify-content: space-between;
-  align-items: center; border-bottom: 1px solid var(--border); position: relative;
-}
+.modal-header { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: relative; }
 .modal-header::before { content: ''; position: absolute; top: 0; right: 0; left: 0; height: 4px; }
 .modal-header.normal::before { background: var(--success); }
 .modal-header.important::before { background: var(--important); }
@@ -1145,19 +1097,11 @@ header {
 .status-badge.new { background: rgba(79,142,247,0.15); color: var(--primary); border: 1px solid rgba(79,142,247,0.3); }
 .status-badge.progress { background: rgba(245,158,11,0.15); color: var(--important); border: 1px solid rgba(245,158,11,0.3); }
 .status-badge.done { background: rgba(34,197,94,0.15); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
-.modal-close {
-  background: var(--bg-3); color: var(--text); border: none;
-  width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
-  font-size: 16px;
-}
+.modal-close { background: var(--bg-3); color: var(--text); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 16px; }
 .modal-close:hover { background: var(--urgent); color: white; }
 .modal-title { padding: 20px 24px 12px; font-size: 22px; font-weight: 800; line-height: 1.4; }
 .modal-tags { padding: 0 24px 12px; display: flex; gap: 6px; flex-wrap: wrap; }
-.tag {
-  font-size: 11px; padding: 4px 12px;
-  background: rgba(79,142,247,0.15); color: var(--primary);
-  border-radius: 12px; font-weight: 600;
-}
+.tag { font-size: 11px; padding: 4px 12px; background: rgba(79,142,247,0.15); color: var(--primary); border-radius: 12px; font-weight: 600; }
 .modal-meta { padding: 0 24px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .meta-item { background: var(--bg-3); padding: 10px 14px; border-radius: 10px; display: flex; flex-direction: column; gap: 2px; }
 .meta-label { font-size: 11px; color: var(--text-3); font-weight: 600; }
@@ -1174,31 +1118,12 @@ header {
 .modal-comment-text { font-size: 13px; line-height: 1.6; color: var(--text); }
 .empty-comments { text-align: center; color: var(--text-3); font-size: 13px; padding: 20px; }
 .modal-comment-form { display: flex; gap: 8px; }
-.modal-comment-form input {
-  flex: 1; padding: 10px 14px; background: var(--bg-3); color: var(--text);
-  border: 1px solid var(--border); border-radius: 10px; font-size: 13px; font-family: inherit;
-}
+.modal-comment-form input { flex: 1; padding: 10px 14px; background: var(--bg-3); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; font-family: inherit; }
 .modal-comment-form input:focus { outline: none; border-color: var(--primary); }
-.modal-comment-form button {
-  padding: 10px 20px; background: var(--primary); color: white;
-  border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit;
-}
-.modal-actions {
-  padding: 16px 24px; border-top: 1px solid var(--border);
-  display: flex; gap: 8px; align-items: center;
-  background: var(--bg-3);
-}
-.modal-status-select {
-  padding: 10px 14px; background: var(--bg-2); color: var(--text);
-  border: 1px solid var(--border); border-radius: 10px;
-  font-size: 13px; font-family: inherit; cursor: pointer; margin-left: auto;
-}
-.btn-edit, .btn-del, .btn-pin {
-  padding: 10px 18px; border-radius: 10px;
-  font-size: 13px; font-weight: 700; font-family: inherit;
-  cursor: pointer; border: 1px solid var(--border);
-  background: var(--bg-2); color: var(--text);
-}
+.modal-comment-form button { padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 700; font-family: inherit; }
+.modal-actions { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; background: var(--bg-3); }
+.modal-status-select { padding: 10px 14px; background: var(--bg-2); color: var(--text); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; font-family: inherit; cursor: pointer; margin-left: auto; }
+.btn-edit, .btn-del, .btn-pin { padding: 10px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; border: 1px solid var(--border); background: var(--bg-2); color: var(--text); }
 .btn-edit:hover { background: var(--primary); color: white; border-color: var(--primary); }
 .btn-del:hover { background: var(--urgent); color: white; border-color: var(--urgent); }
 .btn-pin:hover { background: var(--accent); color: white; border-color: var(--accent); }
@@ -1220,8 +1145,7 @@ header {
   animation: slideUp 0.3s;
 }
 .report-toolbar {
-  padding: 16px 24px;
-  background: var(--bg-3);
+  padding: 16px 24px; background: var(--bg-3);
   display: flex; justify-content: space-between; align-items: center;
   border-bottom: 1px solid var(--border);
 }
@@ -1244,59 +1168,16 @@ header {
 .btn-close-report:hover { background: var(--urgent); color: white; border-color: var(--urgent); }
 .report-scroll { overflow-y: auto; flex: 1; padding: 24px; }
 
-/* ==== التقرير نفسه ==== */
-.report-content {
-  background: #ffffff;
-  color: #1a1a1a;
-  padding: 40px;
-  border-radius: 12px;
-  font-family: 'Cairo', sans-serif;
-  direction: rtl;
-}
-/* ✨ اللوجو في التقرير - محسّن ✨ */
-.r-header {
-  display: flex; align-items: center; gap: 24px;
-  padding-bottom: 24px; margin-bottom: 28px;
-  border-bottom: 3px solid #1e3a8a;
-  position: relative;
-}
-.r-header::after {
-  content: '';
-  position: absolute; bottom: -3px; right: 0;
-  width: 120px; height: 3px;
-  background: linear-gradient(90deg, #22c55e, #4f8ef7);
-}
-.r-logo-wrap {
-  width: 100px; height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(30,58,138,0.1), rgba(34,197,94,0.1));
-  padding: 6px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 0 3px rgba(30,58,138,0.2), 0 0 20px rgba(30,58,138,0.15);
-  flex-shrink: 0;
-}
-.r-logo {
-  width: 100%; height: 100%;
-  object-fit: contain;
-  border-radius: 50%;
-  background: #ffffff;
-  padding: 10px;
-}
-.r-header-text h1 {
-  color: #1e3a8a; font-size: 32px; margin-bottom: 6px; font-weight: 900;
-  letter-spacing: -1px;
-}
+.report-content { background: #ffffff; color: #1a1a1a; padding: 40px; border-radius: 12px; font-family: 'Cairo', sans-serif; direction: rtl; }
+.r-header { display: flex; align-items: center; gap: 24px; padding-bottom: 24px; margin-bottom: 28px; border-bottom: 3px solid #1e3a8a; position: relative; }
+.r-header::after { content: ''; position: absolute; bottom: -3px; right: 0; width: 120px; height: 3px; background: linear-gradient(90deg, #22c55e, #4f8ef7); }
+.r-logo-wrap { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, rgba(30,58,138,0.1), rgba(34,197,94,0.1)); padding: 6px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 3px rgba(30,58,138,0.2), 0 0 20px rgba(30,58,138,0.15); flex-shrink: 0; }
+.r-logo { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; background: #ffffff; padding: 10px; }
+.r-header-text h1 { color: #1e3a8a; font-size: 32px; margin-bottom: 6px; font-weight: 900; letter-spacing: -1px; }
 .r-header-text p { color: #64748b; font-size: 14px; }
 .r-date { font-weight: 700; color: #1e3a8a !important; margin-top: 6px; font-size: 13px !important; }
-
-.r-summary {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 12px; margin-bottom: 28px;
-}
-.r-sum-item {
-  background: #f1f5f9; padding: 16px; border-radius: 12px;
-  text-align: center; border-right: 4px solid #64748b;
-}
+.r-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+.r-sum-item { background: #f1f5f9; padding: 16px; border-radius: 12px; text-align: center; border-right: 4px solid #64748b; }
 .r-sum-item.done { border-right-color: #22c55e; background: rgba(34,197,94,0.08); }
 .r-sum-item.progress { border-right-color: #f59e0b; background: rgba(245,158,11,0.08); }
 .r-sum-item.overdue { border-right-color: #dc2626; background: rgba(220,38,38,0.08); }
@@ -1305,50 +1186,26 @@ header {
 .r-sum-item.progress .r-sum-num { color: #d97706; }
 .r-sum-item.overdue .r-sum-num { color: #dc2626; }
 .r-sum-label { font-size: 12px; color: #64748b; font-weight: 600; }
-
-.r-section { margin-bottom: 28px; page-break-inside: avoid; }
-.r-section h2 {
-  font-size: 18px; color: #1e3a8a; margin-bottom: 14px;
-  padding-bottom: 8px; border-bottom: 2px solid #e2e8f0;
-  font-weight: 800;
-}
+.r-section { margin-bottom: 28px; }
+.r-section h2 { font-size: 18px; color: #1e3a8a; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; font-weight: 800; }
 .r-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.r-table th {
-  background: #1e3a8a; color: white; padding: 10px;
-  text-align: right; font-weight: 700;
-}
+.r-table th { background: #1e3a8a; color: white; padding: 10px; text-align: right; font-weight: 700; }
 .r-table th:first-child { border-top-right-radius: 8px; }
 .r-table th:last-child { border-top-left-radius: 8px; }
 .r-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
 .r-table tbody tr:nth-child(even) { background: #f8fafc; }
-
-.r-task {
-  background: #f8fafc; padding: 14px; border-radius: 10px;
-  margin-bottom: 10px; border-right: 4px solid #64748b;
-  page-break-inside: avoid;
-}
+.r-task { background: #f8fafc; padding: 14px; border-radius: 10px; margin-bottom: 10px; border-right: 4px solid #64748b; }
 .r-task-head { display: flex; gap: 8px; margin-bottom: 6px; }
 .r-badge { font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 700; }
 .r-urgent { background: #fee2e2; color: #dc2626; }
 .r-important { background: #fef3c7; color: #d97706; }
 .r-normal { background: #d1fae5; color: #059669; }
-.r-status {
-  font-size: 11px; padding: 3px 10px; border-radius: 12px;
-  background: #e0e7ff; color: #3730a3; font-weight: 700;
-}
+.r-status { font-size: 11px; padding: 3px 10px; border-radius: 12px; background: #e0e7ff; color: #3730a3; font-weight: 700; }
 .r-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #1a1a1a; }
-.r-meta {
-  display: flex; gap: 12px; flex-wrap: wrap;
-  font-size: 12px; color: #64748b; margin-bottom: 4px;
-}
+.r-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: #64748b; margin-bottom: 4px; }
 .r-notes { font-size: 12px; color: #64748b; margin-top: 6px; font-style: italic; }
 .r-comments { font-size: 12px; color: #2563eb; margin-top: 4px; }
-
-.r-footer {
-  margin-top: 30px; padding-top: 16px;
-  border-top: 2px solid #e2e8f0;
-  text-align: center; font-size: 12px; color: #94a3b8;
-}
+.r-footer { margin-top: 30px; padding-top: 16px; border-top: 2px solid #e2e8f0; text-align: center; font-size: 12px; color: #94a3b8; }
 
 #toast {
   position: fixed; bottom: 30px; left: 50%;
@@ -1387,7 +1244,6 @@ header {
 </head>
 <body>
 
-<!-- شاشة الدخول -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo-wrap">
@@ -1402,7 +1258,6 @@ header {
   </div>
 </div>
 
-<!-- شاشة التحميل -->
 <div id="loadingScreen">
   <div class="loading-logo-wrap">
     <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="loading-logo" alt="EMAK">
@@ -1411,7 +1266,6 @@ header {
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
 </div>
 
-<!-- الشاشة الرئيسية -->
 <div id="mainScreen">
   <header>
     <div class="header-brand">
