@@ -9,7 +9,200 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo-wrap">
+      <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK">
+    </div>
+    <h1>EMAK Hub</h1>
+    <p>نظام إدارة المهام — قسم نظم المعلومات</p>
+
+    <form id="loginForm">
+      <div class="input-group">
+        <span class="input-icon">👤</span>
+        <input id="loginUsername" type="text" placeholder="اسم المستخدم" autocomplete="username" required>
+      </div>
+      <div class="input-group">
+        <span class="input-icon">🔒</span>
+        <input id="loginPassword" type="password" placeholder="كلمة المرور" autocomplete="current-password" required>
+        <button type="button" class="toggle-pass" onclick="window.togglePassword()">👁️</button>
+      </div>
+      <label class="remember-me">
+        <input type="checkbox" id="rememberMe"> تذكرني على هذا الجهاز
+      </label>
+      <button type="submit" id="loginSubmitBtn">تسجيل الدخول</button>
+      <div id="loginError"></div>
+    </form>
+
+    <div class="divider"><span>أو</span></div>
+
+    <button id="loginBtn" type="button">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+      الدخول بحساب جوجل
+    </button>
+
+    <p class="help-text">نسيت كلمة المرور؟ تواصل مع المدير</p>
+  </div>
+</div>
+
+<div id="loadingScreen">
+  <div class="loading-logo-wrap">
+    <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="loading-logo" alt="EMAK">
+  </div>
+  <div class="loading-text">جارٍ التحميل...</div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
+<div id="mainScreen">
+  <header>
+    <div class="header-brand">
+      <div class="header-logo-wrap">
+        <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="header-logo" alt="EMAK">
+      </div>
+      <div>
+        <h1>EMAK Hub</h1>
+        <div class="subtitle">نظم معلومات إيماك</div>
+      </div>
+    </div>
+    <div class="user-info">
+      <span id="userName"></span>
+      <span id="userRole" class="role"></span>
+      <button class="user-menu-btn" onclick="window.openChangePasswordModal()" title="تغيير كلمة المرور">🔑 كلمة المرور</button>
+      <button class="btn-report" onclick="window.openReport()">📄 تقرير PDF</button>
+      <button id="themeBtn" class="icon-btn" title="تبديل الوضع">☀️</button>
+      <button id="logoutBtn">خروج</button>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <button class="nav-btn active" data-view="dashboard">🏠 الرئيسية</button>
+    <button class="nav-btn" data-view="tasks">📋 المهام</button>
+    <button class="nav-btn" id="usersNavBtn" data-view="users" style="display:none;">👥 المستخدمون</button>
+    <button class="nav-btn" id="teamNavBtn" onclick="window.openTeamModal()" style="display:none;">🔧 الفريق</button>
+    <button class="nav-btn" onclick="window.exportCSV()">📊 Excel</button>
+  </nav>
+
+  <div class="view-section active" id="dashboardView">
+    <div class="container">
+      <div class="card-panel">
+        <div class="panel-title">📊 نظرة عامة</div>
+        <div class="stats-grid">
+          <div class="stat total"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي المهام</div></div>
+          <div class="stat done"><div class="stat-num" id="statDone">0</div><div class="stat-label">مكتملة</div></div>
+          <div class="stat progress"><div class="stat-num" id="statProgress">0</div><div class="stat-label">جارية</div></div>
+          <div class="stat overdue"><div class="stat-num" id="statOverdue">0</div><div class="stat-label">متأخرة</div></div>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-title">📈 تحليل الإنتاجية</div>
+        <div class="charts-grid">
+          <div class="chart-box"><canvas id="chartStatus"></canvas></div>
+          <div class="chart-box"><canvas id="chartProductivity"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-title">👥 أداء الفريق</div>
+        <div id="teamList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="view-section" id="tasksView">
+    <div class="container">
+      <div class="card-panel" id="addTaskCard" style="display:none;">
+        <div class="panel-title">➕ إضافة مهمة جديدة</div>
+        <form id="addTaskForm" class="form-grid">
+          <input id="taskTitle" type="text" placeholder="عنوان المهمة *" required>
+          <select id="taskAssignee" required>
+            <option value="">-- المسؤول --</option>
+          </select>
+          <select id="taskPriority" required>
+            <option value="عادي">🟢 عادي</option>
+            <option value="مهم">🟡 مهم</option>
+            <option value="عاجل">🔴 عاجل</option>
+          </select>
+          <input id="taskDue" type="date" title="تاريخ التسليم">
+          <input id="taskNotes" type="text" placeholder="ملاحظات (اختياري)">
+          <input id="taskTags" type="text" placeholder="وسوم (فاصلة: شبكات, صيانة)">
+          <button type="submit">إضافة المهمة</button>
+        </form>
+      </div>
+
+      <div class="controls-bar">
+        <div class="search-wrap">
+          <input id="searchBox" type="text" placeholder="ابحث في المهام...">
+        </div>
+        <select id="sortSelect">
+          <option value="priority">ترتيب: الأولوية</option>
+          <option value="date">ترتيب: الأحدث</option>
+          <option value="due">ترتيب: تاريخ التسليم</option>
+          <option value="title">ترتيب: أبجدي</option>
+        </select>
+        <div class="view-toggle">
+          <button class="active" data-view="grid">▦ شبكة</button>
+          <button data-view="kanban">▤ كانبان</button>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">الكل</button>
+        <button class="filter-btn" data-filter="mine">مهامي</button>
+        <button class="filter-btn" data-filter="pending">معلقة</button>
+        <button class="filter-btn" data-filter="overdue">متأخرة</button>
+        <button class="filter-btn" data-filter="done">مكتملة</button>
+        <button class="filter-btn" data-filter="week">هذا الأسبوع</button>
+        <button class="filter-btn" data-filter="month">هذا الشهر</button>
+      </div>
+
+      <div id="tasksList"></div>
+    </div>
+  </div>
+
+  <div class="view-section" id="usersView">
+    <div class="container">
+      <div class="card-panel">
+        <div class="users-toolbar">
+          <div class="panel-title" style="margin:0;">👥 إدارة المستخدمين</div>
+          <button class="btn-add-user" onclick="window.openAddUserModal()">➕ إضافة مستخدم</button>
+        </div>
+        <div id="usersList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalOverlay">
+  <div class="modal-box" id="modalBox">
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div id="reportOverlay">
+  <div class="report-wrapper">
+    <div class="report-toolbar">
+      <div class="report-toolbar-title">📄 معاينة التقرير</div>
+      <div class="report-toolbar-actions">
+        <button class="btn-download" id="downloadPdfBtn" onclick="window.downloadPDF()">📄 تحميل PDF</button>
+        <button class="btn-close-report" onclick="window.closeReport()">إغلاق</button>
+      </div>
+    </div>
+    <div class="report-scroll">
+      <div id="reportBody"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
 <script type="module">
+/* ============================================================
+   EMAK Hub v3.1 — Firebase + كل الوظائف
+   ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged,
@@ -18,11 +211,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getDatabase, ref, push, set, onValue, update, remove,
-  serverTimestamp, get, onDisconnect, goOnline, goOffline
+  get, onDisconnect, goOnline, goOffline
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 /* ============================================================
-   1) إعدادات Firebase
+   1) إعدادات
    ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyBagaYYgtQgAGyntE1go9IsGy7T85cvuSY",
@@ -37,7 +230,7 @@ const firebaseConfig = {
 const SUPER_ADMIN_EMAILS = ["ahmedmkh@gmail.com"];
 const USERNAME_DOMAIN = "@emak.local";
 const LOGO_URL = "https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png";
-const BACKUP_INTERVAL = 5 * 60 * 1000; // 5 دقائق
+const BACKUP_INTERVAL = 5 * 60 * 1000;
 const MAX_BACKUPS = 5;
 
 const app = initializeApp(firebaseConfig);
@@ -46,7 +239,7 @@ const db = getDatabase(app);
 const googleProvider = new GoogleAuthProvider();
 
 /* ============================================================
-   2) الحالة العامة
+   2) الحالة
    ============================================================ */
 let currentUser = null;
 let currentUserProfile = null;
@@ -142,8 +335,32 @@ function swalConfirm(title, text="لا يمكن التراجع!") {
   });
 }
 
+function applyTheme() {
+  try {
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    const btn = document.getElementById("themeBtn");
+    if (btn) btn.textContent = currentTheme === "dark" ? "☀️" : "🌙";
+    localStorage.setItem("theme", currentTheme);
+    if (Object.keys(charts).length) {
+      try { renderCharts(); } catch(e) {}
+    }
+  } catch(e) { console.warn("applyTheme:", e); }
+}
+
+async function loadLogoAsBase64() {
+  try {
+    const res = await fetch(LOGO_URL, { mode:"cors" });
+    const blob = await res.blob();
+    return await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
+  } catch (e) { console.warn("Logo load failed:", e); return null; }
+}
+
 /* ============================================================
-   4) مؤشر الكتابة والحفظ التلقائي
+   4) مؤشر الحفظ
    ============================================================ */
 function showSaveIndicator(state) {
   let ind = document.getElementById("saveIndicator");
@@ -161,9 +378,9 @@ function showSaveIndicator(state) {
   }
   const states = {
     saving: { text: "💾 جارٍ الحفظ...", color: "var(--primary)" },
-    saved: { text: "✅ تم الحفظ في Firebase", color: "var(--success)" },
-    error: { text: "⚠️ فشل الحفظ — سيُعاد", color: "var(--urgent)" },
-    offline: { text: "📴 غير متصل — سيُزامن لاحقاً", color: "var(--important)" }
+    saved:  { text: "✅ تم الحفظ في Firebase", color: "var(--success)" },
+    error:  { text: "⚠️ فشل الحفظ — سيُعاد", color: "var(--urgent)" },
+    offline:{ text: "📴 غير متصل — سيُزامن لاحقاً", color: "var(--important)" }
   };
   const s = states[state];
   if (!s) { ind.style.opacity = "0"; return; }
@@ -176,20 +393,13 @@ function showSaveIndicator(state) {
   }
 }
 
-// عملية كتابة موثوقة مع إعادة محاولة تلقائية
 async function safeWrite(operation, maxRetries = 3) {
   if (!isOnline) {
     showSaveIndicator("offline");
-    // نخزن في queue
-    const queue = JSON.parse(localStorage.getItem("emak_write_queue") || "[]");
-    queue.push({ op: operation.toString(), ts: Date.now() });
-    localStorage.setItem("emak_write_queue", JSON.stringify(queue));
     return { queued: true };
   }
-  
   pendingWrites++;
   showSaveIndicator("saving");
-  
   let lastError;
   for (let i = 0; i < maxRetries; i++) {
     try {
@@ -200,65 +410,34 @@ async function safeWrite(operation, maxRetries = 3) {
     } catch (err) {
       lastError = err;
       console.warn(`Write attempt ${i+1} failed:`, err.message);
-      if (i < maxRetries - 1) {
-        await new Promise(r => setTimeout(r, 500 * (i + 1)));
-      }
+      if (i < maxRetries - 1) await new Promise(r => setTimeout(r, 500 * (i + 1)));
     }
   }
-  
   pendingWrites--;
   showSaveIndicator("error");
-  console.error("Write failed after retries:", lastError);
   throw lastError;
 }
 
-// معالجة queue عند العودة
-async function processPendingWrites() {
-  const queue = JSON.parse(localStorage.getItem("emak_write_queue") || "[]");
-  if (queue.length === 0) return;
-  
-  console.log(`📤 معالجة ${queue.length} عملية معلقة...`);
-  const remaining = [];
-  for (const item of queue) {
-    try {
-      // فقط العمليات البسيطة (لا نستطيع تنفيذ دوال محفوظة)
-      // لذلك نستخدم طريقة مختلفة: نحفظ بيانات ونعيدها
-      remaining.push(item);
-    } catch (e) {
-      remaining.push(item);
-    }
-  }
-  // لا نمسح إلا بعد التأكد - نبقيها للأمان
-  localStorage.setItem("emak_write_queue", JSON.stringify(remaining));
-}
-
 /* ============================================================
-   5) النسخ الاحتياطي التلقائي
+   5) النسخ الاحتياطي
    ============================================================ */
 async function createBackup() {
-  if (!isOnline || !currentUser) return;
+  if (!isOnline || !currentUser || !currentUserProfile) return;
   try {
     const backup = {
       createdAt: Date.now(),
       createdBy: currentUser.uid,
-      byName: currentUserProfile?.displayName || "—",
+      byName: currentUserProfile.displayName || "—",
       tasksCount: Object.keys(allTasks).length,
       usersCount: Object.keys(allUsers).length,
       teamCount: Object.keys(allTeam).length,
-      data: {
-        tasks: allTasks,
-        team: allTeam,
-        users: allUsers
-      }
+      data: { tasks: allTasks, team: allTeam }
     };
-    
     const backupRef = push(ref(db, "backups"));
     await set(backupRef, backup);
     lastBackupTime = Date.now();
     localStorage.setItem("emak_last_backup", lastBackupTime.toString());
     console.log("✅ Backup created:", backupRef.key);
-    
-    // تنظيف النسخ القديمة
     await cleanupOldBackups();
   } catch (e) {
     console.warn("Backup failed:", e);
@@ -269,19 +448,15 @@ async function cleanupOldBackups() {
   try {
     const snap = await get(ref(db, "backups"));
     if (!snap.exists()) return;
-    const backups = snap.val();
-    const list = Object.entries(backups)
+    const list = Object.entries(snap.val())
       .map(([id, b]) => ({ id, at: b.createdAt || 0 }))
       .sort((a, b) => b.at - a.at);
-    
     if (list.length > MAX_BACKUPS) {
       for (const old of list.slice(MAX_BACKUPS)) {
         try { await remove(ref(db, "backups/" + old.id)); } catch(e){}
       }
     }
-  } catch (e) {
-    console.warn("Cleanup failed:", e);
-  }
+  } catch (e) { console.warn("Cleanup failed:", e); }
 }
 
 function startBackupTimer() {
@@ -294,127 +469,125 @@ function startBackupTimer() {
 /* ============================================================
    6) تسجيل الدخول
    ============================================================ */
-function togglePassword() {
+window.togglePassword = function() {
   const inp = document.getElementById("loginPassword");
   if (!inp) return;
   inp.type = inp.type === "password" ? "text" : "password";
-}
+};
 
-document.getElementById("loginForm").onsubmit = async (e) => {
-  e.preventDefault();
-  const username = document.getElementById("loginUsername").value.trim().toLowerCase();
-  const password = document.getElementById("loginPassword").value;
-  const errBox = document.getElementById("loginError");
-  errBox.textContent = "";
+function setupLoginHandlers() {
+  const form = document.getElementById("loginForm");
+  if (!form) return;
+  
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const username = document.getElementById("loginUsername").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value;
+    const errBox = document.getElementById("loginError");
+    errBox.textContent = "";
 
-  if (!/^[a-z0-9_]{3,20}$/.test(username)) {
-    errBox.textContent = "اسم المستخدم: 3-20 حرف (a-z, 0-9, _)";
-    return;
-  }
-  const email = username + USERNAME_DOMAIN;
-  const btn = document.getElementById("loginSubmitBtn");
-  btn.disabled = true; btn.textContent = "⏳ جارٍ الدخول...";
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    if (document.getElementById("rememberMe").checked) {
-      localStorage.setItem("emak_last_username", username);
-    } else {
-      localStorage.removeItem("emak_last_username");
+    if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+      errBox.textContent = "اسم المستخدم: 3-20 حرف (a-z, 0-9, _)";
+      return;
     }
-  } catch (err) {
-    const msgs = {
-      "auth/user-not-found": "اسم المستخدم غير موجود",
-      "auth/wrong-password": "كلمة المرور غير صحيحة",
-      "auth/invalid-credential": "اسم المستخدم أو كلمة المرور غير صحيحة",
-      "auth/too-many-requests": "محاولات كثيرة. حاول لاحقاً",
-      "auth/user-disabled": "هذا الحساب معطّل. تواصل مع المدير"
+    const email = username + USERNAME_DOMAIN;
+    const btn = document.getElementById("loginSubmitBtn");
+    btn.disabled = true; btn.textContent = "⏳ جارٍ الدخول...";
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      if (document.getElementById("rememberMe").checked) {
+        localStorage.setItem("emak_last_username", username);
+      } else {
+        localStorage.removeItem("emak_last_username");
+      }
+    } catch (err) {
+      const msgs = {
+        "auth/user-not-found": "اسم المستخدم غير موجود",
+        "auth/wrong-password": "كلمة المرور غير صحيحة",
+        "auth/invalid-credential": "اسم المستخدم أو كلمة المرور غير صحيحة",
+        "auth/too-many-requests": "محاولات كثيرة. حاول لاحقاً",
+        "auth/user-disabled": "هذا الحساب معطّل"
+      };
+      errBox.textContent = msgs[err.code] || "فشل تسجيل الدخول";
+    } finally {
+      btn.disabled = false; btn.textContent = "تسجيل الدخول";
+    }
+  };
+
+  const gbtn = document.getElementById("loginBtn");
+  if (gbtn) {
+    gbtn.onclick = async () => {
+      try { await signInWithPopup(auth, googleProvider); }
+      catch (e) { swalError("فشل تسجيل الدخول بجوجل", e.message); }
     };
-    errBox.textContent = msgs[err.code] || "فشل تسجيل الدخول";
-  } finally {
-    btn.disabled = false; btn.textContent = "تسجيل الدخول";
   }
-};
-
-document.getElementById("loginBtn").onclick = async () => {
-  try { await signInWithPopup(auth, googleProvider); }
-  catch (e) { swalError("فشل تسجيل الدخول بجوجل", e.message); }
-};
-
-window.addEventListener("DOMContentLoaded", () => {
-  const last = localStorage.getItem("emak_last_username");
-  if (last) {
-    document.getElementById("loginUsername").value = last;
-    document.getElementById("rememberMe").checked = true;
-  }
-  // استعادة آخر نسخة احتياطية للمستخدم
-  const lastBackup = localStorage.getItem("emak_last_backup");
-  if (lastBackup) lastBackupTime = parseInt(lastBackup);
-});
+}
 
 /* ============================================================
    7) مراقبة المصادقة
    ============================================================ */
-onAuthStateChanged(auth, async (user) => {
-  const loginScreen = document.getElementById("loginScreen");
-  const mainScreen = document.getElementById("mainScreen");
-  const loadingScreen = document.getElementById("loadingScreen");
+function setupAuthListener() {
+  onAuthStateChanged(auth, async (user) => {
+    const loginScreen = document.getElementById("loginScreen");
+    const mainScreen = document.getElementById("mainScreen");
+    const loadingScreen = document.getElementById("loadingScreen");
 
-  if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
-  if (unsubTeam)  { try { unsubTeam(); }  catch(e){} unsubTeam  = null; }
-  if (unsubUsers) { try { unsubUsers(); } catch(e){} unsubUsers = null; }
-  if (backupTimer) { clearInterval(backupTimer); backupTimer = null; }
+    if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
+    if (unsubTeam)  { try { unsubTeam(); }  catch(e){} unsubTeam  = null; }
+    if (unsubUsers) { try { unsubUsers(); } catch(e){} unsubUsers = null; }
+    if (backupTimer) { clearInterval(backupTimer); backupTimer = null; }
 
-  if (!user) {
-    currentUser = null; currentUserProfile = null; isAdmin = false;
-    loginScreen.style.display = "flex";
-    mainScreen.style.display = "none";
-    loadingScreen.style.display = "none";
-    return;
-  }
-
-  currentUser = user;
-  loadingScreen.style.display = "flex";
-  loginScreen.style.display = "none";
-
-  try {
-    if (!logoDataUrl) logoDataUrl = await loadLogoAsBase64();
-    const profile = await ensureUserProfile(user);
-    currentUserProfile = profile;
-    isAdmin = profile.role === "admin";
-    pinnedTaskId = localStorage.getItem(`pinnedTask_${user.uid}`) || null;
-
-    if (profile.active === false) {
-      await signOut(auth);
+    if (!user) {
+      currentUser = null; currentUserProfile = null; isAdmin = false;
+      loginScreen.style.display = "flex";
+      mainScreen.style.display = "none";
       loadingScreen.style.display = "none";
-      return swalError("هذا الحساب معطّل", "تواصل مع المدير لتنشيطه");
+      return;
     }
-  } catch (err) {
-    console.error("Profile load error:", err);
-    loadingScreen.style.display = "none";
-    loginScreen.style.display = "flex";
-    swalError("خطأ في تحميل الملف الشخصي", err.message);
-    return;
-  }
 
-  setTimeout(() => {
-    loadingScreen.style.display = "none";
-    mainScreen.style.display = "block";
-    document.getElementById("userName").textContent = currentUserProfile.displayName || currentUserProfile.username;
-    document.getElementById("userRole").textContent = isAdmin ? "👑 مدير" : "👤 موظف";
-    document.getElementById("userRole").className = "role " + (isAdmin ? "admin" : "user");
-    document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
-    document.getElementById("usersNavBtn").style.display = isAdmin ? "inline-flex" : "none";
-    document.getElementById("teamNavBtn").style.display = isAdmin ? "inline-flex" : "none";
-    
-    startRealtimeListeners();
-    startBackupTimer();
-    setupOnlinePresence();
-    
-    // نسخة أولية بعد الدخول
-    setTimeout(createBackup, 3000);
-  }, 500);
-});
+    currentUser = user;
+    loadingScreen.style.display = "flex";
+    loginScreen.style.display = "none";
+
+    try {
+      if (!logoDataUrl) {
+        try { logoDataUrl = await loadLogoAsBase64(); } catch(e) { console.warn(e); }
+      }
+      const profile = await ensureUserProfile(user);
+      currentUserProfile = profile;
+      isAdmin = profile.role === "admin";
+      pinnedTaskId = localStorage.getItem(`pinnedTask_${user.uid}`) || null;
+
+      if (profile.active === false) {
+        await signOut(auth);
+        loadingScreen.style.display = "none";
+        return swalError("هذا الحساب معطّل", "تواصل مع المدير لتنشيطه");
+      }
+    } catch (err) {
+      console.error("Profile load error:", err);
+      loadingScreen.style.display = "none";
+      loginScreen.style.display = "flex";
+      swalError("خطأ في تحميل الملف الشخصي", err.message);
+      return;
+    }
+
+    setTimeout(() => {
+      loadingScreen.style.display = "none";
+      mainScreen.style.display = "block";
+      document.getElementById("userName").textContent = currentUserProfile.displayName || currentUserProfile.username;
+      document.getElementById("userRole").textContent = isAdmin ? "👑 مدير" : "👤 موظف";
+      document.getElementById("userRole").className = "role " + (isAdmin ? "admin" : "user");
+      document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
+      document.getElementById("usersNavBtn").style.display = isAdmin ? "inline-flex" : "none";
+      document.getElementById("teamNavBtn").style.display = isAdmin ? "inline-flex" : "none";
+      startRealtimeListeners();
+      startBackupTimer();
+      setupOnlinePresence();
+      setTimeout(createBackup, 3000);
+    }, 500);
+  });
+}
 
 async function ensureUserProfile(user) {
   const uref = ref(db, "users/" + user.uid);
@@ -423,7 +596,6 @@ async function ensureUserProfile(user) {
     snap = await get(uref);
   } catch (e) {
     console.warn("Cannot read user profile:", e);
-    // ملاذ أخير: ننشئ الملف محلياً
     return {
       username: (user.email || "").split("@")[0] || "user",
       displayName: user.displayName || "مستخدم",
@@ -433,28 +605,29 @@ async function ensureUserProfile(user) {
       createdAt: Date.now()
     };
   }
-  
+
   if (snap.exists()) {
     const data = snap.val();
     if (data.active === false) return data;
     try { await update(uref, { lastLogin: Date.now() }); } catch(e) {}
-    // ترحيل الإصدار القديم تلقائياً
+    // ترحيل تلقائي للإصدار القديم
     if (!data.role && data.isAdmin) {
       try {
+        const uname = data.username || (user.email || "").split("@")[0].toLowerCase();
         await update(uref, {
           role: "admin",
-          username: data.username || (user.email || "").split("@")[0].toLowerCase(),
+          username: uname,
           displayName: data.displayName || data.name || user.displayName || "مستخدم",
           active: true
         });
         data.role = "admin";
-        data.username = data.username || (user.email || "").split("@")[0].toLowerCase();
+        data.username = uname;
         data.displayName = data.displayName || data.name;
-      } catch(e) { console.warn("Migration failed:", e); }
+      } catch(e) { console.warn("Migration:", e); }
     }
     return data;
   }
-  
+
   // مستخدم جديد
   const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(user.email || "");
   const username = (user.email || "").split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g,"") || "user";
@@ -467,32 +640,35 @@ async function ensureUserProfile(user) {
     createdAt: Date.now(),
     lastLogin: Date.now()
   };
-  
+
   try {
     await set(uref, profile);
     if (username) {
-      const unameSnap = await get(ref(db, "usernames/" + username));
-      if (!unameSnap.exists()) {
-        await set(ref(db, "usernames/" + username), { uid: user.uid, createdAt: Date.now() });
+      try {
+        const us = await get(ref(db, "usernames/" + username));
+        if (!us.exists()) {
+          await set(ref(db, "usernames/" + username), { uid: user.uid, createdAt: Date.now() });
+        }
+      } catch(e){}
+    }
+    try {
+      const ts = await get(ref(db, "team"));
+      const team = ts.val() || {};
+      const already = Object.values(team).some(m => m.uid === user.uid);
+      if (!already) {
+        await push(ref(db, "team"), {
+          uid: user.uid, username, name: displayName, createdAt: Date.now()
+        });
       }
-    }
-    const teamSnap = await get(ref(db, "team"));
-    const team = teamSnap.val() || {};
-    const already = Object.values(team).some(m => m.uid === user.uid);
-    if (!already && !isSuperAdmin) {
-      await push(ref(db, "team"), {
-        uid: user.uid, username, name: displayName, createdAt: Date.now()
-      });
-    }
+    } catch(e){}
   } catch(e) {
     console.warn("Profile creation failed:", e);
   }
-  
   return profile;
 }
 
 /* ============================================================
-   8) مشتركات Firebase
+   8) المشتركات
    ============================================================ */
 function startRealtimeListeners() {
   if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
@@ -516,7 +692,6 @@ function startRealtimeListeners() {
     populateAssigneeSelect();
   }, (err) => {
     console.warn("Team listener:", err);
-    // ملاذ: نبني الفريق من users كبديل
     if (err.code === "PERMISSION_DENIED") {
       try {
         Object.entries(allUsers).forEach(([uid, u]) => {
@@ -554,7 +729,7 @@ function populateAssigneeSelect() {
 }
 
 /* ============================================================
-   9) Online Presence & Reconnection
+   9) Presence
    ============================================================ */
 function setupOnlinePresence() {
   if (!currentUser) return;
@@ -562,17 +737,15 @@ function setupOnlinePresence() {
     const userRef = ref(db, "presence/" + currentUser.uid);
     set(userRef, { online: true, name: currentUserProfile.displayName, at: Date.now() });
     onDisconnect(userRef).set({ online: false, at: Date.now() });
-  } catch(e) { console.warn("Presence setup failed:", e); }
+  } catch(e) { console.warn("Presence:", e); }
 }
 
-// معالجة الأونلاين/أوفلاين
-window.addEventListener("online", async () => {
+window.addEventListener("online", () => {
   isOnline = true;
   showToast("✅ تم استعادة الاتصال", "success");
   try { goOnline(); } catch(e){}
   if (currentUser) {
     setupOnlinePresence();
-    // مزامنة شاملة
     setTimeout(() => {
       createBackup();
       showToast("🔄 جارٍ المزامنة...", "info");
@@ -589,60 +762,65 @@ window.addEventListener("offline", () => {
 /* ============================================================
    10) إضافة مهمة
    ============================================================ */
-document.getElementById("addTaskForm").onsubmit = async (e) => {
-  e.preventDefault();
-  if (!isAdmin || !currentUserProfile) return swalError("غير مصرح");
-  const title = document.getElementById("taskTitle").value.trim();
-  const assigneeId = document.getElementById("taskAssignee").value;
-  const priority = document.getElementById("taskPriority").value;
-  const dueDate = document.getElementById("taskDue").value;
-  const notes = document.getElementById("taskNotes").value.trim();
-  const tags = document.getElementById("taskTags").value.trim();
-  if (!title || !assigneeId) return swalError("أكمل البيانات المطلوبة");
-  const member = allTeam[assigneeId];
-  if (!member) return swalError("عضو الفريق غير موجود");
+function setupAddTaskForm() {
+  const form = document.getElementById("addTaskForm");
+  if (!form) return;
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    if (!isAdmin || !currentUserProfile) return swalError("غير مصرح");
+    const title = document.getElementById("taskTitle").value.trim();
+    const assigneeId = document.getElementById("taskAssignee").value;
+    const priority = document.getElementById("taskPriority").value;
+    const dueDate = document.getElementById("taskDue").value;
+    const notes = document.getElementById("taskNotes").value.trim();
+    const tags = document.getElementById("taskTags").value.trim();
+    if (!title || !assigneeId) return swalError("أكمل البيانات المطلوبة");
+    const member = allTeam[assigneeId];
+    if (!member) return swalError("عضو الفريق غير موجود");
 
-  try {
-    const newRef = push(ref(db, "tasks"));
-    await safeWrite(() => set(newRef, {
-      title, priority, dueDate, notes, tags,
-      assigneeId,
-      assignee: member.name,
-      status: "جديدة",
-      createdBy: currentUser.uid,
-      createdByEmail: currentUser.email || "",
-      createdByName: currentUserProfile.displayName,
-      createdAt: Date.now(),
-      updatedAt: Date.now()
-    }));
-    await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key);
-    e.target.reset();
-    populateAssigneeSelect();
-    showToast("✅ تمت إضافة المهمة", "success");
-  } catch (err) {
-    swalError("فشل الحفظ", "تحقق من الاتصال وأعد المحاولة");
-  }
-};
+    try {
+      const newRef = push(ref(db, "tasks"));
+      await safeWrite(() => set(newRef, {
+        title, priority, dueDate, notes, tags,
+        assigneeId,
+        assignee: member.name,
+        status: "جديدة",
+        createdBy: currentUser.uid,
+        createdByEmail: currentUser.email || "",
+        createdByName: currentUserProfile.displayName,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }));
+      await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key);
+      e.target.reset();
+      populateAssigneeSelect();
+      localStorage.removeItem("emak_task_draft");
+      showToast("✅ تمت إضافة المهمة", "success");
+    } catch (err) {
+      swalError("فشل الحفظ", "تحقق من الاتصال وأعد المحاولة");
+    }
+  };
+}
 
-// حفظ مسودة أثناء الكتابة
-["taskTitle", "taskNotes", "taskTags"].forEach(id => {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.addEventListener("input", () => {
-    const draft = {
-      title: document.getElementById("taskTitle").value,
-      notes: document.getElementById("taskNotes").value,
-      tags: document.getElementById("taskTags").value,
-      assigneeId: document.getElementById("taskAssignee").value,
-      priority: document.getElementById("taskPriority").value,
-      dueDate: document.getElementById("taskDue").value,
-      savedAt: Date.now()
-    };
-    localStorage.setItem("emak_task_draft", JSON.stringify(draft));
+function setupDraft() {
+  ["taskTitle", "taskNotes", "taskTags"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("input", () => {
+      const draft = {
+        title: document.getElementById("taskTitle").value,
+        notes: document.getElementById("taskNotes").value,
+        tags: document.getElementById("taskTags").value,
+        assigneeId: document.getElementById("taskAssignee").value,
+        priority: document.getElementById("taskPriority").value,
+        dueDate: document.getElementById("taskDue").value,
+        savedAt: Date.now()
+      };
+      try { localStorage.setItem("emak_task_draft", JSON.stringify(draft)); } catch(e){}
+    });
   });
-});
+}
 
-// استعادة المسودة عند فتح الصفحة
 function restoreDraft() {
   try {
     const draft = JSON.parse(localStorage.getItem("emak_task_draft") || "null");
@@ -659,16 +837,16 @@ function restoreDraft() {
     setTimeout(() => {
       if (draft.assigneeId) {
         const sel = document.getElementById("taskAssignee");
-        if (sel.querySelector(`option[value="${draft.assigneeId}"]`)) {
+        if (sel && sel.querySelector(`option[value="${draft.assigneeId}"]`)) {
           sel.value = draft.assigneeId;
         }
       }
-    }, 1000);
+    }, 800);
   } catch(e){}
 }
 
 /* ============================================================
-   11) تغيير الحالة + تعليقات + حذف + تعديل
+   11) عمليات المهام
    ============================================================ */
 async function changeStatus(taskId, newStatus) {
   if (!currentUserProfile) return;
@@ -720,16 +898,13 @@ async function deleteTask(taskId) {
   const t = allTasks[taskId]; if (!t) return;
   const r = await swalConfirm("حذف المهمة؟", `"${t.title}" — يمكن التراجع خلال 5 ثواني`);
   if (!r.isConfirmed) return;
-  
-  // حفظ نسخة للتراجع
+
   const deletedData = JSON.parse(JSON.stringify(t));
-  
+
   try {
     await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
     await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId);
     closeModal();
-    
-    // Toast مع زر تراجع
     const Toast = Swal.mixin({
       toast: true, position: "bottom-end", showConfirmButton: true,
       confirmButtonText: "↩️ تراجع", timer: 5000, timerProgressBar: true,
@@ -783,10 +958,7 @@ async function editTask(taskId) {
     background: themeBg(), color: themeFg(),
     preConfirm: () => {
       const title = document.getElementById("swal-title").value.trim();
-      if (!title) {
-        Swal.showValidationMessage("العنوان مطلوب");
-        return false;
-      }
+      if (!title) { Swal.showValidationMessage("العنوان مطلوب"); return false; }
       return {
         title,
         assigneeId: document.getElementById("swal-assignee").value,
@@ -835,9 +1007,6 @@ function togglePin(taskId) {
   if (openTaskId === taskId) renderModal(taskId);
 }
 
-/* ============================================================
-   12) سجل النشاط
-   ============================================================ */
 async function logActivity(type, text, taskId=null) {
   if (!currentUser) return;
   try {
@@ -847,11 +1016,11 @@ async function logActivity(type, text, taskId=null) {
       byName: currentUserProfile?.displayName || "—",
       at: Date.now()
     });
-  } catch(e) { console.warn("log failed", e); }
+  } catch(e) { console.warn("log:", e); }
 }
 
 /* ============================================================
-   13) المودال
+   12) المودال
    ============================================================ */
 function openModal(taskId) {
   openTaskId = taskId; renderModal(taskId);
@@ -922,50 +1091,7 @@ function renderModal(taskId) {
 }
 
 /* ============================================================
-   14) الأحداث العامة
-   ============================================================ */
-document.querySelectorAll(".filter-btn").forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentFilter = btn.dataset.filter;
-    renderAll();
-  };
-});
-document.getElementById("searchBox").addEventListener("input", (e) => {
-  clearTimeout(window._st);
-  window._st = setTimeout(() => {
-    currentSearch = e.target.value.trim().toLowerCase();
-    renderTasks();
-  }, 250);
-});
-document.getElementById("sortSelect").addEventListener("change", (e) => {
-  currentSort = e.target.value; renderTasks();
-});
-document.getElementById("themeBtn").onclick = () => {
-  currentTheme = currentTheme === "dark" ? "light" : "dark"; applyTheme();
-};
-document.querySelectorAll(".view-toggle button").forEach(b => {
-  b.onclick = () => {
-    document.querySelectorAll(".view-toggle button").forEach(x => x.classList.remove("active"));
-    b.classList.add("active");
-    currentView = b.dataset.view;
-    renderTasks();
-  };
-});
-document.getElementById("logoutBtn").onclick = async () => {
-  const r = await swalConfirm("تسجيل الخروج؟", "");
-  if (r.isConfirmed) {
-    if (unsubTasks) { try { unsubTasks(); } catch(e){} }
-    if (unsubTeam)  { try { unsubTeam(); }  catch(e){} }
-    if (unsubUsers) { try { unsubUsers(); } catch(e){} }
-    if (backupTimer) { clearInterval(backupTimer); backupTimer = null; }
-    signOut(auth);
-  }
-};
-
-/* ============================================================
-   15) الرسم العام
+   13) الرسم
    ============================================================ */
 function renderAll() {
   if (!currentUserProfile) return;
@@ -1139,9 +1265,6 @@ function taskCardHtml(id, t) {
   </div>`;
 }
 
-/* ============================================================
-   16) Kanban Board
-   ============================================================ */
 function renderKanban(list, filtered) {
   list.className = "kanban-board";
   const cols = { "جديدة": [], "جاري التنفيذ": [], "مكتملة": [] };
@@ -1173,6 +1296,7 @@ function renderKanban(list, filtered) {
     </div>
   `).join("");
 }
+
 let _draggingId = null;
 window.kanbanDrag = (e, id) => { _draggingId = id; e.dataTransfer.effectAllowed = "move"; };
 window.kanbanDrop = async (e, status) => {
@@ -1185,22 +1309,7 @@ window.kanbanDrop = async (e, status) => {
 };
 
 /* ============================================================
-   17) التنقل بين الأقسام
-   ============================================================ */
-document.querySelectorAll(".nav-btn[data-view]").forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
-    const view = btn.dataset.view;
-    const el = document.getElementById(view + "View");
-    if (el) el.classList.add("active");
-    if (view === "users") renderUsersList();
-  };
-});
-
-/* ============================================================
-   18) لوحة المستخدمين
+   14) المستخدمون
    ============================================================ */
 async function renderUsersList() {
   if (!isAdmin) return;
@@ -1239,14 +1348,14 @@ window.promoteUser = async (uid) => {
   const r = await swalConfirm("ترقية إلى مدير؟", "");
   if (!r.isConfirmed) return;
   await safeWrite(() => update(ref(db, "users/" + uid), { role: "admin" }));
-  await logActivity("user_promoted", `رقّى مستخدم`);
+  await logActivity("user_promoted", "رقّى مستخدم");
   showToast("👑 تمت الترقية", "success");
 };
 
 window.demoteUser = async (uid) => {
   if (!isAdmin) return;
   const adminCount = Object.values(allUsers).filter(x => x.role === "admin" && x.active !== false).length;
-  if (adminCount <= 1) return swalError("لا يمكن", "لا يمكن إزالة آخر مدير في النظام");
+  if (adminCount <= 1) return swalError("لا يمكن", "لا يمكن إزالة آخر مدير");
   const r = await swalConfirm("إزالة صلاحية الإدارة؟", "");
   if (!r.isConfirmed) return;
   await safeWrite(() => update(ref(db, "users/" + uid), { role: "employee" }));
@@ -1286,9 +1395,6 @@ window.deleteUser = async (uid) => {
   }
 };
 
-/* ============================================================
-   19) نموذج إضافة مستخدم
-   ============================================================ */
 window.openAddUserModal = async () => {
   if (!isAdmin) return;
   const { value: formValues } = await Swal.fire({
@@ -1319,8 +1425,7 @@ window.openAddUserModal = async () => {
       const password = document.getElementById("nu-pass").value;
       const role = document.getElementById("nu-role").value;
       if (!/^[a-z0-9_]{3,20}$/.test(username)) {
-        Swal.showValidationMessage("اسم المستخدم: 3-20 حرف (a-z, 0-9, _)");
-        return false;
+        Swal.showValidationMessage("اسم المستخدم: 3-20 حرف (a-z, 0-9, _)"); return false;
       }
       if (!displayName) { Swal.showValidationMessage("اكتب الاسم الكامل"); return false; }
       if (password.length < 6) { Swal.showValidationMessage("كلمة المرور 6 أحرف على الأقل"); return false; }
@@ -1371,8 +1476,7 @@ window.openAddUserModal = async () => {
     console.error(err);
     const msgs = {
       "auth/email-already-in-use": "اسم المستخدم مستخدم بالفعل",
-      "auth/weak-password": "كلمة المرور ضعيفة جداً",
-      "auth/invalid-email": "صيغة غير صحيحة"
+      "auth/weak-password": "كلمة المرور ضعيفة جداً"
     };
     swalError("فشل إنشاء المستخدم", msgs[err.code] || err.message);
   } finally {
@@ -1382,9 +1486,6 @@ window.openAddUserModal = async () => {
   }
 };
 
-/* ============================================================
-   20) إدارة الفريق
-   ============================================================ */
 window.openTeamModal = async () => {
   if (!isAdmin) return;
   const teamSnap = await get(ref(db, "team"));
@@ -1411,26 +1512,21 @@ window.openTeamModal = async () => {
 
 window.removeTeamMember = async (id) => {
   if (!isAdmin) return;
-  const r = await swalConfirm("حذف من الفريق؟", "لن يُحذف المستخدم");
+  const r = await swalConfirm("حذف من الفريق؟", "");
   if (!r.isConfirmed) return;
   await safeWrite(() => remove(ref(db, "team/" + id)));
-  showToast("🗑️ تم الحذف من الفريق", "success");
+  showToast("🗑️ تم الحذف", "success");
   setTimeout(() => window.openTeamModal(), 300);
 };
 
-/* ============================================================
-   21) تغيير كلمة المرور
-   ============================================================ */
 window.openChangePasswordModal = async () => {
   if (!currentUser) return;
   const isGoogleUser = currentUser.providerData.some(p => p.providerId === "google.com");
   if (isGoogleUser) {
     return Swal.fire({
-      icon: "info",
-      title: "حساب جوجل",
+      icon: "info", title: "حساب جوجل",
       text: "أنت مسجل دخول بحساب جوجل. كلمة المرور تُدار من جوجل مباشرة.",
-      confirmButtonText: "حسناً",
-      background: themeBg(), color: themeFg()
+      confirmButtonText: "حسناً", background: themeBg(), color: themeFg()
     });
   }
 
@@ -1484,7 +1580,7 @@ window.openChangePasswordModal = async () => {
 };
 
 /* ============================================================
-   22) التقرير + PDF
+   15) التقرير
    ============================================================ */
 function openReport() {
   const entries = Object.entries(allTasks);
@@ -1597,9 +1693,7 @@ async function downloadPDF() {
 
     pdf.setFillColor(30, 58, 138);
     pdf.rect(0, 0, pageW, 25, "F");
-    if (logoDataUrl) {
-      try { pdf.addImage(logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); } catch(e){}
-    }
+    if (logoDataUrl) { try { pdf.addImage(logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); } catch(e){} }
     pdf.setTextColor(255,255,255);
     pdf.setFontSize(20); pdf.text("EMAK Hub", pageW - 40, 12, { align:"right" });
     pdf.setFontSize(11); pdf.text("تقرير المهام - قسم نظم المعلومات", pageW - 40, 19, { align:"right" });
@@ -1654,8 +1748,8 @@ async function downloadPDF() {
         pdf.setFillColor(...barColor);
         pdf.rect(pageW - margin - 3, y, 3, taskHeight, "F");
         pdf.setTextColor(15,23,42); pdf.setFontSize(11);
-        const title = t.title.length > 60 ? t.title.substring(0,57) + "..." : t.title;
-        pdf.text(title, pageW - margin - 8, y + 6, { align:"right" });
+        const title2 = t.title.length > 60 ? t.title.substring(0,57) + "..." : t.title;
+        pdf.text(title2, pageW - margin - 8, y + 6, { align:"right" });
         pdf.setFontSize(9); pdf.setTextColor(100,116,139);
         const dueText = t.dueDate ? `  |  📅 ${t.dueDate}` : "";
         pdf.text(`👤 ${t.assignee || "—"}  |  ${t.priority || "عادي"}  |  ${t.status}${dueText}`,
@@ -1687,9 +1781,6 @@ async function downloadPDF() {
   }
 }
 
-/* ============================================================
-   23) تصدير CSV
-   ============================================================ */
 window.exportCSV = () => {
   const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم","الوسوم","ملاحظات"]];
   Object.values(allTasks).forEach(t => {
@@ -1709,7 +1800,7 @@ window.exportCSV = () => {
 };
 
 /* ============================================================
-   24) ربط الدوال
+   16) ربط الدوال
    ============================================================ */
 window.changeStatus = changeStatus;
 window.addComment = addComment;
@@ -1721,47 +1812,135 @@ window.togglePin = togglePin;
 window.openReport = openReport;
 window.closeReport = closeReport;
 window.downloadPDF = downloadPDF;
-window.togglePassword = togglePassword;
 
 /* ============================================================
-   25) أحداث عامة
+   17) التهيئة النهائية
    ============================================================ */
-document.getElementById("modalOverlay").addEventListener("click", (e) => {
-  if (e.target.id === "modalOverlay") closeModal();
-});
-document.getElementById("reportOverlay").addEventListener("click", (e) => {
-  if (e.target.id === "reportOverlay") closeReport();
-});
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") { closeModal(); closeReport(); }
-});
-
-// حفظ قبل إغلاق الصفحة
-window.addEventListener("beforeunload", (e) => {
-  if (pendingWrites > 0) {
-    e.preventDefault();
-    e.returnValue = "يوجد تغييرات جارٍ حفظها. هل تريد المغادرة؟";
-    return e.returnValue;
+function initializeApp_() {
+  console.log("🚀 EMAK Hub v3.1 — بدء التهيئة");
+  
+  applyTheme();
+  setupLoginHandlers();
+  setupAuthListener();
+  setupAddTaskForm();
+  setupDraft();
+  
+  // استعادة آخر يوزرنيم
+  const last = localStorage.getItem("emak_last_username");
+  if (last) {
+    const el = document.getElementById("loginUsername");
+    if (el) el.value = last;
+    const rm = document.getElementById("rememberMe");
+    if (rm) rm.checked = true;
   }
-});
+  
+  // استعادة آخر وقت backup
+  const lb = localStorage.getItem("emak_last_backup");
+  if (lb) lastBackupTime = parseInt(lb);
 
-// تنبيه عند الـ visibility change
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && isOnline && currentUser) {
-    // عودة للصفحة
-    const now = Date.now();
-    if (now - lastBackupTime > BACKUP_INTERVAL) {
-      createBackup();
+  // التنقل
+  document.querySelectorAll(".nav-btn[data-view]").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.querySelectorAll(".view-section").forEach(s => s.classList.remove("active"));
+      const view = btn.dataset.view;
+      const el = document.getElementById(view + "View");
+      if (el) el.classList.add("active");
+      if (view === "users") renderUsersList();
+    };
+  });
+
+  // الفلاتر
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentFilter = btn.dataset.filter;
+      renderAll();
+    };
+  });
+
+  // البحث
+  const sb = document.getElementById("searchBox");
+  if (sb) sb.addEventListener("input", (e) => {
+    clearTimeout(window._st);
+    window._st = setTimeout(() => {
+      currentSearch = e.target.value.trim().toLowerCase();
+      renderTasks();
+    }, 250);
+  });
+
+  // الفرز
+  const ss = document.getElementById("sortSelect");
+  if (ss) ss.addEventListener("change", (e) => { currentSort = e.target.value; renderTasks(); });
+
+  // الثيم
+  const tb = document.getElementById("themeBtn");
+  if (tb) tb.onclick = () => { currentTheme = currentTheme === "dark" ? "light" : "dark"; applyTheme(); };
+
+  // عرض شبكة/كانبان
+  document.querySelectorAll(".view-toggle button").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll(".view-toggle button").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+      currentView = b.dataset.view;
+      renderTasks();
+    };
+  });
+
+  // خروج
+  const lb2 = document.getElementById("logoutBtn");
+  if (lb2) lb2.onclick = async () => {
+    const r = await swalConfirm("تسجيل الخروج؟", "");
+    if (r.isConfirmed) {
+      if (unsubTasks) { try { unsubTasks(); } catch(e){} }
+      if (unsubTeam)  { try { unsubTeam(); }  catch(e){} }
+      if (unsubUsers) { try { unsubUsers(); } catch(e){} }
+      if (backupTimer) { clearInterval(backupTimer); backupTimer = null; }
+      signOut(auth);
     }
-  }
-});
+  };
 
-// استعادة المسودة بعد التحميل
-window.addEventListener("load", () => {
+  // إغلاق المودال
+  const mo = document.getElementById("modalOverlay");
+  if (mo) mo.addEventListener("click", (e) => { if (e.target.id === "modalOverlay") closeModal(); });
+  const ro = document.getElementById("reportOverlay");
+  if (ro) ro.addEventListener("click", (e) => { if (e.target.id === "reportOverlay") closeReport(); });
+  
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { closeModal(); closeReport(); }
+  });
+
+  // beforeunload
+  window.addEventListener("beforeunload", (e) => {
+    if (pendingWrites > 0) {
+      e.preventDefault();
+      e.returnValue = "يوجد تغييرات جارٍ حفظها. هل تريد المغادرة؟";
+      return e.returnValue;
+    }
+  });
+
+  // visibilitychange
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && isOnline && currentUser) {
+      const now = Date.now();
+      if (now - lastBackupTime > BACKUP_INTERVAL) createBackup();
+    }
+  });
+
+  // استعادة المسودة
   setTimeout(restoreDraft, 2000);
-});
 
-applyTheme();
+  console.log("✅ EMAK Hub v3.1 — جاهز");
+}
+
+// تشغيل التهيئة
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeApp_);
+} else {
+  initializeApp_();
+}
 </script>
 
 <style>
@@ -2339,195 +2518,5 @@ header{
   .main-nav{padding:8px 12px;}
 }
 </style>
-</head>
-<body>
-
-<div id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo-wrap">
-      <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK">
-    </div>
-    <h1>EMAK Hub</h1>
-    <p>نظام إدارة المهام — قسم نظم المعلومات</p>
-
-    <form id="loginForm">
-      <div class="input-group">
-        <span class="input-icon">👤</span>
-        <input id="loginUsername" type="text" placeholder="اسم المستخدم" autocomplete="username" required>
-      </div>
-      <div class="input-group">
-        <span class="input-icon">🔒</span>
-        <input id="loginPassword" type="password" placeholder="كلمة المرور" autocomplete="current-password" required>
-        <button type="button" class="toggle-pass" onclick="window.togglePassword()">👁️</button>
-      </div>
-      <label class="remember-me">
-        <input type="checkbox" id="rememberMe"> تذكرني على هذا الجهاز
-      </label>
-      <button type="submit" id="loginSubmitBtn">تسجيل الدخول</button>
-      <div id="loginError"></div>
-    </form>
-
-    <div class="divider"><span>أو</span></div>
-
-    <button id="loginBtn" type="button">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
-      الدخول بحساب جوجل
-    </button>
-
-    <p class="help-text">نسيت كلمة المرور؟ تواصل مع المدير</p>
-  </div>
-</div>
-
-<div id="loadingScreen">
-  <div class="loading-logo-wrap">
-    <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="loading-logo" alt="EMAK">
-  </div>
-  <div class="loading-text">جارٍ التحميل...</div>
-  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
-</div>
-
-<div id="mainScreen">
-  <header>
-    <div class="header-brand">
-      <div class="header-logo-wrap">
-        <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="header-logo" alt="EMAK">
-      </div>
-      <div>
-        <h1>EMAK Hub</h1>
-        <div class="subtitle">نظم معلومات إيماك</div>
-      </div>
-    </div>
-    <div class="user-info">
-      <span id="userName"></span>
-      <span id="userRole" class="role"></span>
-      <button class="user-menu-btn" onclick="window.openChangePasswordModal()" title="تغيير كلمة المرور">🔑 كلمة المرور</button>
-      <button class="btn-report" onclick="window.openReport()">📄 تقرير PDF</button>
-      <button id="themeBtn" class="icon-btn" title="تبديل الوضع">☀️</button>
-      <button id="logoutBtn">خروج</button>
-    </div>
-  </header>
-
-  <nav class="main-nav">
-    <button class="nav-btn active" data-view="dashboard">🏠 الرئيسية</button>
-    <button class="nav-btn" data-view="tasks">📋 المهام</button>
-    <button class="nav-btn" id="usersNavBtn" data-view="users" style="display:none;">👥 المستخدمون</button>
-    <button class="nav-btn" id="teamNavBtn" onclick="window.openTeamModal()" style="display:none;">🔧 الفريق</button>
-    <button class="nav-btn" onclick="window.exportCSV()">📊 Excel</button>
-  </nav>
-
-  <div class="view-section active" id="dashboardView">
-    <div class="container">
-      <div class="card-panel">
-        <div class="panel-title">📊 نظرة عامة</div>
-        <div class="stats-grid">
-          <div class="stat total"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي المهام</div></div>
-          <div class="stat done"><div class="stat-num" id="statDone">0</div><div class="stat-label">مكتملة</div></div>
-          <div class="stat progress"><div class="stat-num" id="statProgress">0</div><div class="stat-label">جارية</div></div>
-          <div class="stat overdue"><div class="stat-num" id="statOverdue">0</div><div class="stat-label">متأخرة</div></div>
-        </div>
-      </div>
-
-      <div class="card-panel">
-        <div class="panel-title">📈 تحليل الإنتاجية</div>
-        <div class="charts-grid">
-          <div class="chart-box"><canvas id="chartStatus"></canvas></div>
-          <div class="chart-box"><canvas id="chartProductivity"></canvas></div>
-        </div>
-      </div>
-
-      <div class="card-panel">
-        <div class="panel-title">👥 أداء الفريق</div>
-        <div id="teamList"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="view-section" id="tasksView">
-    <div class="container">
-      <div class="card-panel" id="addTaskCard" style="display:none;">
-        <div class="panel-title">➕ إضافة مهمة جديدة</div>
-        <form id="addTaskForm" class="form-grid">
-          <input id="taskTitle" type="text" placeholder="عنوان المهمة *" required>
-          <select id="taskAssignee" required>
-            <option value="">-- المسؤول --</option>
-          </select>
-          <select id="taskPriority" required>
-            <option value="عادي">🟢 عادي</option>
-            <option value="مهم">🟡 مهم</option>
-            <option value="عاجل">🔴 عاجل</option>
-          </select>
-          <input id="taskDue" type="date" title="تاريخ التسليم">
-          <input id="taskNotes" type="text" placeholder="ملاحظات (اختياري)">
-          <input id="taskTags" type="text" placeholder="وسوم (فاصلة: شبكات, صيانة)">
-          <button type="submit">إضافة المهمة</button>
-        </form>
-      </div>
-
-      <div class="controls-bar">
-        <div class="search-wrap">
-          <input id="searchBox" type="text" placeholder="ابحث في المهام...">
-        </div>
-        <select id="sortSelect">
-          <option value="priority">ترتيب: الأولوية</option>
-          <option value="date">ترتيب: الأحدث</option>
-          <option value="due">ترتيب: تاريخ التسليم</option>
-          <option value="title">ترتيب: أبجدي</option>
-        </select>
-        <div class="view-toggle">
-          <button class="active" data-view="grid">▦ شبكة</button>
-          <button data-view="kanban">▤ كانبان</button>
-        </div>
-      </div>
-
-      <div class="filters">
-        <button class="filter-btn active" data-filter="all">الكل</button>
-        <button class="filter-btn" data-filter="mine">مهامي</button>
-        <button class="filter-btn" data-filter="pending">معلقة</button>
-        <button class="filter-btn" data-filter="overdue">متأخرة</button>
-        <button class="filter-btn" data-filter="done">مكتملة</button>
-        <button class="filter-btn" data-filter="week">هذا الأسبوع</button>
-        <button class="filter-btn" data-filter="month">هذا الشهر</button>
-      </div>
-
-      <div id="tasksList"></div>
-    </div>
-  </div>
-
-  <div class="view-section" id="usersView">
-    <div class="container">
-      <div class="card-panel">
-        <div class="users-toolbar">
-          <div class="panel-title" style="margin:0;">👥 إدارة المستخدمين</div>
-          <button class="btn-add-user" onclick="window.openAddUserModal()">➕ إضافة مستخدم</button>
-        </div>
-        <div id="usersList"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="modalOverlay">
-  <div class="modal-box" id="modalBox">
-    <div id="modalBody"></div>
-  </div>
-</div>
-
-<div id="reportOverlay">
-  <div class="report-wrapper">
-    <div class="report-toolbar">
-      <div class="report-toolbar-title">📄 معاينة التقرير</div>
-      <div class="report-toolbar-actions">
-        <button class="btn-download" id="downloadPdfBtn" onclick="window.downloadPDF()">📄 تحميل PDF</button>
-        <button class="btn-close-report" onclick="window.closeReport()">إغلاق</button>
-      </div>
-    </div>
-    <div class="report-scroll">
-      <div id="reportBody"></div>
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
-
 </body>
 </html>
