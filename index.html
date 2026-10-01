@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMAK - إدارة المهام</title>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, push, set, onValue, update, remove, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBagaYYgtQgAGyntE1go9IsGy7T85cvuSY",
+  authDomain: "emak-tasks.firebaseapp.com",
+  databaseURL: "https://emak-tasks-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "emak-tasks",
+  storageBucket: "emak-tasks.firebasestorage.app",
+  messagingSenderId: "752119205815",
+  appId: "1:752119205815:web:a96725f43555fb0c742232"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
+
+// ==== الحالة ====
+let currentUser = null;
+let allTasks = {};
+let currentFilter = "all";
+
+// ==== تسجيل الدخول ====
+document.getElementById("loginBtn").onclick = async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    alert("فشل تسجيل الدخول: " + e.message);
+  }
+};
+
+document.getElementById("logoutBtn").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, (user) => {
+  const loginScreen = document.getElementById("loginScreen");
+  const mainScreen = document.getElementById("mainScreen");
+  if (user) {
+    currentUser = user;
+    loginScreen.style.display = "none";
+    mainScreen.style.display = "block";
+    document.getElementById("userName").textContent = user.displayName || user.email;
+    // سجل بيانات المستخدم
+    set(ref(db, "users/" + user.uid), {
+      name: user.displayName || "",
+      email: user.email || "",
+      lastLogin: serverTimestamp()
+    });
+    loadTasks();
+  } else {
+    currentUser = null;
+    loginScreen.style.display = "flex";
+    mainScreen.style.display = "none";
+  }
+});
+
+// ==== تحميل المهام ====
+function loadTasks() {
+  onValue(ref(db, "tasks"), (snap) => {
+    allTasks = snap.val() || {};
+    renderTasks();
+  });
+}
+
+// ==== إضافة مهمة ====
+document.getElementById("addTaskForm").onsubmit = async (e) => {
+  e.preventDefault();
+  const title = document.getElementById("taskTitle").value.trim();
+  const assignee = document.getElementById("taskAssignee").value;
+  const dueDate = document.getElementById("taskDue").value;
+  const notes = document.getElementById("taskNotes").value.trim();
+  if (!title || !assignee) return;
+
+  await push(ref(db, "tasks"), {
+    title, assignee, dueDate, notes,
+    status: "جديدة",
+    createdBy: currentUser.email,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp()
+  });
+
+  e.target.reset();
+};
+
+// ==== تغيير الحالة ====
+async function changeStatus(taskId, newStatus) {
+  await update(ref(db, "tasks/" + taskId), {
+    status: newStatus,
+    updatedAt: serverTimestamp(),
+    updatedBy: currentUser.email
+  });
+}
+
+// ==== حذف مهمة ====
+async function deleteTask(taskId) {
+  if (confirm("متأكد من حذف المهمة دي؟")) {
+    await remove(ref(db, "tasks/" + taskId));
+  }
+}
+
+// ==== فلترة ====
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.filter;
+    renderTasks();
+  };
+});
+
+// ==== عرض المهام ====
+function renderTasks() {
+  const list = document.getElementById("tasksList");
+  const entries = Object.entries(allTasks).sort((a, b) =>
+    (b[1].createdAt || 0) - (a[1].createdAt || 0)
+  );
+
+  const filtered = entries.filter(([_, t]) => {
+    if (currentFilter === "all") return true;
+    if (currentFilter === "بهاء") return t.assignee === "بهاء";
+    if (currentFilter === "محمود") return t.assignee === "محمود";
+    if (currentFilter === "pending") return t.status !== "مكتملة";
+    if (currentFilter === "done") return t.status === "مكتملة";
+    return true;
+  });
+
+  // إحصائيات
+  const total = entries.length;
+  const pending = entries.filter(([_, t]) => t.status !== "مكتملة").length;
+  const done = entries.filter(([_, t]) => t.status === "مكتملة").length;
+  document.getElementById("stats").textContent =
+    `الإجمالي: ${total} | معلقة: ${pending} | مكتملة: ${done}`;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<p class="empty">لا توجد مهام</p>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(([id, t]) => {
+    const statusClass = t.status === "مكتملة" ? "done"
+      : t.status === "جاري التنفيذ" ? "progress" : "new";
+    const due = t.dueDate ? `📅 ${t.dueDate}` : "";
+    return `
+      <div class="task ${statusClass}">
+        <div class="task-header">
+          <span class="assignee">${t.assignee}</span>
+          <span class="status-badge ${statusClass}">${t.status}</span>
+        </div>
+        <h3>${escapeHtml(t.title)}</h3>
+        ${t.notes ? `<p class="notes">${escapeHtml(t.notes)}</p>` : ""}
+        <div class="task-footer">
+          <span class="due">${due}</span>
+          <div class="actions">
+            <select onchange="window.changeStatus('${id}', this.value)">
+              <option ${t.status === "جديدة" ? "selected" : ""}>جديدة</option>
+              <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
+              <option ${t.status === "مكتملة" ? "selected" : ""}>مكتملة</option>
+            </select>
+            <button class="del" onclick="window.deleteTask('${id}')">🗑️</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+  );
+}
+
+window.changeStatus = changeStatus;
+window.deleteTask = deleteTask;
+</script>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f0f2f5;
+  color: #1a1a1a;
+  min-height: 100vh;
+}
+
+/* شاشة تسجيل الدخول */
+#loginScreen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 20px;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+}
+.login-card {
+  background: white; padding: 40px; border-radius: 16px;
+  text-align: center; max-width: 400px; width: 100%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.login-card h1 { color: #1e3a8a; margin-bottom: 8px; }
+.login-card p { color: #666; margin-bottom: 24px; }
+#loginBtn {
+  background: white; color: #333; border: 1px solid #ddd;
+  padding: 12px 24px; border-radius: 8px; cursor: pointer;
+  font-size: 15px; font-weight: 600;
+  display: flex; align-items: center; gap: 10px; justify-content: center;
+  width: 100%; transition: 0.2s;
+}
+#loginBtn:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+#loginBtn img { width: 20px; }
+
+/* الشاشة الرئيسية */
+#mainScreen { display: none; }
+header {
+  background: #1e3a8a; color: white; padding: 16px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+header h1 { font-size: 20px; }
+header .user-info { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+#logoutBtn {
+  background: rgba(255,255,255,0.15); color: white; border: none;
+  padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px;
+}
+#logoutBtn:hover { background: rgba(255,255,255,0.25); }
+
+.container { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+
+.form-card {
+  background: white; border-radius: 12px; padding: 20px;
+  margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.form-card h2 { font-size: 16px; margin-bottom: 14px; color: #1e3a8a; }
+.form-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.form-grid input, .form-grid select, .form-grid textarea {
+  padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px;
+  font-size: 14px; font-family: inherit;
+}
+.form-grid textarea { grid-column: 1 / -1; resize: vertical; min-height: 60px; }
+.form-grid button {
+  grid-column: 1 / -1; background: #1e3a8a; color: white; border: none;
+  padding: 12px; border-radius: 8px; cursor: pointer;
+  font-size: 15px; font-weight: 600;
+}
+.form-grid button:hover { background: #152c6b; }
+
+.filters {
+  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+  align-items: center;
+}
+.filter-btn {
+  background: white; border: 1px solid #ddd; padding: 6px 14px;
+  border-radius: 20px; cursor: pointer; font-size: 13px;
+}
+.filter-btn.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+#stats { margin-right: auto; font-size: 13px; color: #666; }
+
+.task {
+  background: white; border-radius: 12px; padding: 16px;
+  margin-bottom: 12px; border-right: 4px solid #3b82f6;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.task.done { border-right-color: #10b981; opacity: 0.75; }
+.task.progress { border-right-color: #f59e0b; }
+.task.new { border-right-color: #3b82f6; }
+
+.task-header {
+  display: flex; justify-content: space-between; margin-bottom: 8px;
+  font-size: 13px;
+}
+.assignee { color: #666; }
+.status-badge {
+  padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600;
+}
+.status-badge.new { background: #dbeafe; color: #1e40af; }
+.status-badge.progress { background: #fef3c7; color: #92400e; }
+.status-badge.done { background: #d1fae5; color: #065f46; }
+
+.task h3 { font-size: 16px; margin-bottom: 6px; }
+.task .notes { font-size: 13px; color: #666; margin-bottom: 8px; }
+
+.task-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0;
+}
+.due { font-size: 13px; color: #666; }
+.actions { display: flex; gap: 8px; }
+.actions select {
+  padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px;
+  font-size: 13px; cursor: pointer;
+}
+.actions .del {
+  background: none; border: none; cursor: pointer; font-size: 16px;
+  padding: 4px 8px; border-radius: 6px;
+}
+.actions .del:hover { background: #fee; }
+
+.empty {
+  text-align: center; padding: 40px; color: #999;
+}
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  header h1 { font-size: 16px; }
+  header .user-info { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- شاشة تسجيل الدخول -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>🏗️ EMAK Tasks</h1>
+    <p>نظام إدارة المهام - قسم نظم المعلومات</p>
+    <button id="loginBtn">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+      تسجيل الدخول بجوجل
+    </button>
+  </div>
+</div>
+
+<!-- الشاشة الرئيسية -->
+<div id="mainScreen">
+  <header>
+    <h1>🏗️ EMAK Tasks</h1>
+    <div class="user-info">
+      <span id="userName"></span>
+      <button id="logoutBtn">خروج</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="form-card">
+      <h2>➕ إضافة مهمة جديدة</h2>
+      <form id="addTaskForm" class="form-grid">
+        <input id="taskTitle" type="text" placeholder="عنوان المهمة *" required>
+        <select id="taskAssignee" required>
+          <option value="">-- المسؤول --</option>
+          <option value="بهاء">بهاء محمد</option>
+          <option value="محمود">محمود عادل</option>
+        </select>
+        <input id="taskDue" type="date" title="تاريخ التسليم">
+        <input id="taskNotes" type="text" placeholder="ملاحظات">
+        <button type="submit">إضافة المهمة</button>
+      </form>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">الكل</button>
+      <button class="filter-btn" data-filter="بهاء">بهاء</button>
+      <button class="filter-btn" data-filter="محمود">محمود</button>
+      <button class="filter-btn" data-filter="pending">معلقة</button>
+      <button class="filter-btn" data-filter="done">مكتملة</button>
+      <span id="stats"></span>
+    </div>
+
+    <div id="tasksList"></div>
+  </div>
+</div>
+
+</body>
+</html>
