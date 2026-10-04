@@ -12,6 +12,7 @@
 </head>
 <body>
 
+<!-- ============ شاشة الدخول ============ -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo-wrap">
@@ -48,6 +49,7 @@
   </div>
 </div>
 
+<!-- ============ شاشة التحميل ============ -->
 <div id="loadingScreen">
   <div class="loading-logo-wrap">
     <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="loading-logo" alt="EMAK">
@@ -56,6 +58,7 @@
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
 </div>
 
+<!-- ============ الشاشة الرئيسية ============ -->
 <div id="mainScreen">
   <header>
     <div class="header-brand">
@@ -80,11 +83,14 @@
   <nav class="main-nav">
     <button class="nav-btn active" data-view="dashboard">🏠 الرئيسية</button>
     <button class="nav-btn" data-view="tasks">📋 المهام</button>
+    <button class="nav-btn" data-view="watch">👁️ متابعة</button>
     <button class="nav-btn" id="usersNavBtn" data-view="users" style="display:none;">👥 المستخدمون</button>
     <button class="nav-btn" id="teamNavBtn" onclick="window.openTeamModal()" style="display:none;">🔧 الفريق</button>
+    <button class="nav-btn" id="activityNavBtn" data-view="activity">📜 السجل</button>
     <button class="nav-btn" onclick="window.exportCSV()">📊 Excel</button>
   </nav>
 
+  <!-- ============ الرئيسية ============ -->
   <div class="view-section active" id="dashboardView">
     <div class="container">
       <div class="card-panel">
@@ -112,6 +118,7 @@
     </div>
   </div>
 
+  <!-- ============ المهام ============ -->
   <div class="view-section" id="tasksView">
     <div class="container">
       <div class="card-panel" id="addTaskCard" style="display:none;">
@@ -135,7 +142,7 @@
 
       <div class="controls-bar">
         <div class="search-wrap">
-          <input id="searchBox" type="text" placeholder="ابحث في المهام...">
+          <input id="searchBox" type="text" placeholder="ابحث في المهام... (Ctrl+K)">
         </div>
         <select id="sortSelect">
           <option value="priority">ترتيب: الأولوية</option>
@@ -163,25 +170,89 @@
     </div>
   </div>
 
+  <!-- ============ المتابعة ============ -->
+  <div class="view-section" id="watchView">
+    <div class="container">
+      <div class="card-panel">
+        <div class="panel-title">👁️ متابعة المهام — تحديثات حيّة</div>
+        <p class="watch-subtitle">آخر التحديثات على المهام من جميع أعضاء الفريق</p>
+        <div class="watch-filters">
+          <button class="watch-filter active" data-watch="all">الكل</button>
+          <button class="watch-filter" data-watch="mine">مهامي</button>
+          <button class="watch-filter" data-watch="comments">💬 التعليقات</button>
+          <button class="watch-filter" data-watch="status">🔄 تغييرات الحالة</button>
+          <button class="watch-filter" data-watch="overdue">⚠️ متأخرة</button>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="watch-timeline" id="watchTimeline"></div>
+      </div>
+
+      <div class="card-panel">
+        <div class="panel-title">🔥 المهام النشطة الآن</div>
+        <div id="activeTasksList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ المستخدمون ============ -->
   <div class="view-section" id="usersView">
     <div class="container">
       <div class="card-panel">
+        <div class="panel-title">📊 إحصائيات المستخدمين</div>
+        <div class="stats-grid">
+          <div class="stat total"><div class="stat-num" id="usersStatTotal">0</div><div class="stat-label">إجمالي</div></div>
+          <div class="stat done"><div class="stat-num" id="usersStatActive">0</div><div class="stat-label">نشط</div></div>
+          <div class="stat progress"><div class="stat-num" id="usersStatAdmin">0</div><div class="stat-label">مدير</div></div>
+          <div class="stat overdue"><div class="stat-num" id="usersStatInactive">0</div><div class="stat-label">معطّل</div></div>
+        </div>
+      </div>
+
+      <div class="card-panel">
         <div class="users-toolbar">
           <div class="panel-title" style="margin:0;">👥 إدارة المستخدمين</div>
-          <button class="btn-add-user" onclick="window.openAddUserModal()">➕ إضافة مستخدم</button>
+          <div class="users-toolbar-actions">
+            <div class="search-wrap" style="max-width:220px;">
+              <input id="usersSearchBox" type="text" placeholder="ابحث عن مستخدم...">
+            </div>
+            <select id="usersRoleFilter" class="filter-select">
+              <option value="all">كل الأدوار</option>
+              <option value="admin">👑 مدير</option>
+              <option value="employee">👤 موظف</option>
+            </select>
+            <select id="usersStatusFilter" class="filter-select">
+              <option value="all">كل الحالات</option>
+              <option value="active">نشط</option>
+              <option value="inactive">معطّل</option>
+            </select>
+            <button class="btn-add-user" onclick="window.openAddUserModal()">➕ إضافة مستخدم</button>
+          </div>
         </div>
         <div id="usersList"></div>
       </div>
     </div>
   </div>
+
+  <!-- ============ السجل ============ -->
+  <div class="view-section" id="activityView">
+    <div class="container">
+      <div class="card-panel">
+        <div class="panel-title">📜 سجل النشاطات</div>
+        <div id="activityList"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- ============ المودال ============ -->
 <div id="modalOverlay">
   <div class="modal-box" id="modalBox">
     <div id="modalBody"></div>
   </div>
 </div>
 
+<!-- ============ التقرير ============ -->
 <div id="reportOverlay">
   <div class="report-wrapper">
     <div class="report-toolbar">
@@ -199,9 +270,16 @@
 
 <div id="toast"></div>
 
+<div class="shortcuts-hint">
+  <span><kbd>Ctrl</kbd>+<kbd>K</kbd> بحث</span>
+  <span><kbd>Ctrl</kbd>+<kbd>N</kbd> مهمة جديدة</span>
+  <span><kbd>T</kbd> تبديل الثيم</span>
+  <span><kbd>Esc</kbd> إغلاق</span>
+</div>
+
 <script type="module">
 /* ============================================================
-   EMAK Hub v3.1 — Firebase + كل الوظائف
+   EMAK Hub v4.0 — الكود الكامل
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -210,12 +288,11 @@ import {
   updatePassword, EmailAuthProvider, reauthenticateWithCredential
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
-  getDatabase, ref, push, set, onValue, update, remove,
-  get, onDisconnect, goOnline, goOffline
+  getDatabase, ref, push, set, onValue, update, remove, get, onDisconnect
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 /* ============================================================
-   1) إعدادات
+   1) الإعدادات
    ============================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyBagaYYgtQgAGyntE1go9IsGy7T85cvuSY",
@@ -239,30 +316,36 @@ const db = getDatabase(app);
 const googleProvider = new GoogleAuthProvider();
 
 /* ============================================================
-   2) الحالة
+   2) الحالة المركزية
    ============================================================ */
-let currentUser = null;
-let currentUserProfile = null;
-let isAdmin = false;
-let allTasks = {};
-let allTeam = {};
-let allUsers = {};
-let currentFilter = "all";
-let currentSearch = "";
-let currentSort = "priority";
-let currentView = "grid";
-let currentTheme = localStorage.getItem("theme") || "dark";
-let openTaskId = null;
-let pinnedTaskId = null;
-let charts = {};
-let logoDataUrl = null;
-let unsubTasks = null;
-let unsubTeam = null;
-let unsubUsers = null;
-let isOnline = navigator.onLine;
-let backupTimer = null;
-let lastBackupTime = 0;
-let pendingWrites = 0;
+const state = {
+  currentUser: null,
+  currentUserProfile: null,
+  isAdmin: false,
+  allTasks: {},
+  allTeam: {},
+  allUsers: {},
+  allActivity: [],
+  currentFilter: "all",
+  currentSearch: "",
+  currentSort: "priority",
+  currentView: "grid",
+  currentTheme: localStorage.getItem("theme") || "dark",
+  openTaskId: null,
+  pinnedTaskId: null,
+  currentWatch: "all",
+  usersSearch: "",
+  usersRoleFilter: "all",
+  usersStatusFilter: "all",
+  charts: {},
+  logoDataUrl: null,
+  unsubs: { tasks: null, team: null, users: null, activity: null },
+  isOnline: navigator.onLine,
+  backupTimer: null,
+  lastBackupTime: 0,
+  pendingWrites: 0,
+  renderScheduled: false
+};
 
 /* ============================================================
    3) أدوات مساعدة
@@ -270,6 +353,17 @@ let pendingWrites = 0;
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+function escapeRegex(str) {
+  return String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+function highlight(text, query) {
+  const safe = escapeHtml(text);
+  if (!query) return safe;
+  try {
+    const re = new RegExp(`(${escapeRegex(query)})`, "gi");
+    return safe.replace(re, '<mark class="hl">$1</mark>');
+  } catch (e) { return safe; }
 }
 function isValidTs(ts) { return typeof ts === "number" && isFinite(ts) && ts > 0; }
 function formatDate(ts) {
@@ -291,10 +385,12 @@ function timeAgo(ts) {
 }
 function daysRemaining(dueDate) {
   if (!dueDate) return null;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const due = new Date(dueDate); due.setHours(0,0,0,0);
-  if (isNaN(due.getTime())) return null;
-  return Math.round((due - today) / 86400000);
+  const [y, m, d] = String(dueDate).split("-").map(Number);
+  if (!y || !m || !d) return null;
+  const dueUTC = Date.UTC(y, m - 1, d);
+  const now = new Date();
+  const todayUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.round((dueUTC - todayUTC) / 86400000);
 }
 function dueLabel(dueDate) {
   const d = daysRemaining(dueDate);
@@ -307,9 +403,12 @@ function dueLabel(dueDate) {
 }
 function isThisWeek(ts) { return isValidTs(ts) && (Date.now() - ts) <= 7*86400000; }
 function isThisMonth(ts) { return isValidTs(ts) && (Date.now() - ts) <= 30*86400000; }
-function themeBg() { return getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim(); }
-function themeFg() { return getComputedStyle(document.documentElement).getPropertyValue('--text').trim(); }
+function themeBg() { return getComputedStyle(document.documentElement).getPropertyValue('--bg-2').trim() || "#131826"; }
+function themeFg() { return getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || "#f1f5f9"; }
 
+/* ============================================================
+   4) Toast + Swal
+   ============================================================ */
 function showToast(msg, type = "info") {
   const t = document.getElementById("toast");
   if (!t) return;
@@ -335,13 +434,16 @@ function swalConfirm(title, text="لا يمكن التراجع!") {
   });
 }
 
+/* ============================================================
+   5) الثيم
+   ============================================================ */
 function applyTheme() {
   try {
-    document.documentElement.setAttribute("data-theme", currentTheme);
+    document.documentElement.setAttribute("data-theme", state.currentTheme);
     const btn = document.getElementById("themeBtn");
-    if (btn) btn.textContent = currentTheme === "dark" ? "☀️" : "🌙";
-    localStorage.setItem("theme", currentTheme);
-    if (Object.keys(charts).length) {
+    if (btn) btn.textContent = state.currentTheme === "dark" ? "☀️" : "🌙";
+    localStorage.setItem("theme", state.currentTheme);
+    if (Object.keys(state.charts).length) {
       try { renderCharts(); } catch(e) {}
     }
   } catch(e) { console.warn("applyTheme:", e); }
@@ -360,52 +462,43 @@ async function loadLogoAsBase64() {
 }
 
 /* ============================================================
-   4) مؤشر الحفظ
+   6) مؤشر الحفظ
    ============================================================ */
-function showSaveIndicator(state) {
+function showSaveIndicator(s) {
   let ind = document.getElementById("saveIndicator");
   if (!ind) {
     ind = document.createElement("div");
     ind.id = "saveIndicator";
-    ind.style.cssText = `
-      position:fixed;top:70px;left:50%;transform:translateX(-50%);
-      background:var(--bg-3);color:var(--text);padding:8px 16px;
-      border-radius:20px;font-size:12px;font-weight:700;
-      box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:9998;
-      border:1px solid var(--border);opacity:0;transition:.3s;
-    `;
     document.body.appendChild(ind);
   }
   const states = {
     saving: { text: "💾 جارٍ الحفظ...", color: "var(--primary)" },
-    saved:  { text: "✅ تم الحفظ في Firebase", color: "var(--success)" },
+    saved:  { text: "✅ تم الحفظ", color: "var(--success)" },
     error:  { text: "⚠️ فشل الحفظ — سيُعاد", color: "var(--urgent)" },
     offline:{ text: "📴 غير متصل — سيُزامن لاحقاً", color: "var(--important)" }
   };
-  const s = states[state];
-  if (!s) { ind.style.opacity = "0"; return; }
-  ind.textContent = s.text;
-  ind.style.borderColor = s.color;
+  const v = states[s];
+  if (!v) { ind.style.opacity = "0"; return; }
+  ind.textContent = v.text;
+  ind.style.borderColor = v.color;
   ind.style.opacity = "1";
   clearTimeout(ind._tid);
-  if (state === "saved") {
-    ind._tid = setTimeout(() => ind.style.opacity = "0", 1500);
-  }
+  if (s === "saved") ind._tid = setTimeout(() => ind.style.opacity = "0", 1500);
 }
 
 async function safeWrite(operation, maxRetries = 3) {
-  if (!isOnline) {
+  if (!state.isOnline) {
     showSaveIndicator("offline");
     return { queued: true };
   }
-  pendingWrites++;
+  state.pendingWrites++;
   showSaveIndicator("saving");
   let lastError;
   for (let i = 0; i < maxRetries; i++) {
     try {
       const result = await operation();
-      pendingWrites--;
-      if (pendingWrites === 0) showSaveIndicator("saved");
+      state.pendingWrites--;
+      if (state.pendingWrites === 0) showSaveIndicator("saved");
       return result;
     } catch (err) {
       lastError = err;
@@ -413,35 +506,31 @@ async function safeWrite(operation, maxRetries = 3) {
       if (i < maxRetries - 1) await new Promise(r => setTimeout(r, 500 * (i + 1)));
     }
   }
-  pendingWrites--;
+  state.pendingWrites--;
   showSaveIndicator("error");
   throw lastError;
 }
 
 /* ============================================================
-   5) النسخ الاحتياطي
+   7) النسخ الاحتياطي
    ============================================================ */
 async function createBackup() {
-  if (!isOnline || !currentUser || !currentUserProfile) return;
+  if (!state.isOnline || !state.currentUser || !state.currentUserProfile) return;
   try {
     const backup = {
       createdAt: Date.now(),
-      createdBy: currentUser.uid,
-      byName: currentUserProfile.displayName || "—",
-      tasksCount: Object.keys(allTasks).length,
-      usersCount: Object.keys(allUsers).length,
-      teamCount: Object.keys(allTeam).length,
-      data: { tasks: allTasks, team: allTeam }
+      createdBy: state.currentUser.uid,
+      byName: state.currentUserProfile.displayName || "—",
+      tasksCount: Object.keys(state.allTasks).length,
+      usersCount: Object.keys(state.allUsers).length,
+      data: { tasks: state.allTasks, team: state.allTeam }
     };
     const backupRef = push(ref(db, "backups"));
     await set(backupRef, backup);
-    lastBackupTime = Date.now();
-    localStorage.setItem("emak_last_backup", lastBackupTime.toString());
-    console.log("✅ Backup created:", backupRef.key);
+    state.lastBackupTime = Date.now();
+    localStorage.setItem("emak_last_backup", state.lastBackupTime.toString());
     await cleanupOldBackups();
-  } catch (e) {
-    console.warn("Backup failed:", e);
-  }
+  } catch (e) { console.warn("Backup failed:", e); }
 }
 
 async function cleanupOldBackups() {
@@ -460,14 +549,14 @@ async function cleanupOldBackups() {
 }
 
 function startBackupTimer() {
-  if (backupTimer) clearInterval(backupTimer);
-  backupTimer = setInterval(() => {
-    if (isOnline && currentUser) createBackup();
+  if (state.backupTimer) clearInterval(state.backupTimer);
+  state.backupTimer = setInterval(() => {
+    if (state.isOnline && state.currentUser) createBackup();
   }, BACKUP_INTERVAL);
 }
 
 /* ============================================================
-   6) تسجيل الدخول
+   8) تسجيل الدخول
    ============================================================ */
 window.togglePassword = function() {
   const inp = document.getElementById("loginPassword");
@@ -478,14 +567,12 @@ window.togglePassword = function() {
 function setupLoginHandlers() {
   const form = document.getElementById("loginForm");
   if (!form) return;
-  
   form.onsubmit = async (e) => {
     e.preventDefault();
     const username = document.getElementById("loginUsername").value.trim().toLowerCase();
     const password = document.getElementById("loginPassword").value;
     const errBox = document.getElementById("loginError");
     errBox.textContent = "";
-
     if (!/^[a-z0-9_]{3,20}$/.test(username)) {
       errBox.textContent = "اسم المستخدم: 3-20 حرف (a-z, 0-9, _)";
       return;
@@ -493,7 +580,6 @@ function setupLoginHandlers() {
     const email = username + USERNAME_DOMAIN;
     const btn = document.getElementById("loginSubmitBtn");
     btn.disabled = true; btn.textContent = "⏳ جارٍ الدخول...";
-
     try {
       await signInWithEmailAndPassword(auth, email, password);
       if (document.getElementById("rememberMe").checked) {
@@ -514,7 +600,6 @@ function setupLoginHandlers() {
       btn.disabled = false; btn.textContent = "تسجيل الدخول";
     }
   };
-
   const gbtn = document.getElementById("loginBtn");
   if (gbtn) {
     gbtn.onclick = async () => {
@@ -525,39 +610,46 @@ function setupLoginHandlers() {
 }
 
 /* ============================================================
-   7) مراقبة المصادقة
+   9) مراقبة المصادقة
    ============================================================ */
+function clearAllListeners() {
+  Object.keys(state.unsubs).forEach(k => {
+    if (state.unsubs[k]) {
+      try { state.unsubs[k](); } catch(e){}
+      state.unsubs[k] = null;
+    }
+  });
+  if (state.backupTimer) { clearInterval(state.backupTimer); state.backupTimer = null; }
+}
+
 function setupAuthListener() {
   onAuthStateChanged(auth, async (user) => {
     const loginScreen = document.getElementById("loginScreen");
     const mainScreen = document.getElementById("mainScreen");
     const loadingScreen = document.getElementById("loadingScreen");
 
-    if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
-    if (unsubTeam)  { try { unsubTeam(); }  catch(e){} unsubTeam  = null; }
-    if (unsubUsers) { try { unsubUsers(); } catch(e){} unsubUsers = null; }
-    if (backupTimer) { clearInterval(backupTimer); backupTimer = null; }
+    clearAllListeners();
 
     if (!user) {
-      currentUser = null; currentUserProfile = null; isAdmin = false;
+      state.currentUser = null; state.currentUserProfile = null; state.isAdmin = false;
       loginScreen.style.display = "flex";
       mainScreen.style.display = "none";
       loadingScreen.style.display = "none";
       return;
     }
 
-    currentUser = user;
+    state.currentUser = user;
     loadingScreen.style.display = "flex";
     loginScreen.style.display = "none";
 
     try {
-      if (!logoDataUrl) {
-        try { logoDataUrl = await loadLogoAsBase64(); } catch(e) { console.warn(e); }
+      if (!state.logoDataUrl) {
+        try { state.logoDataUrl = await loadLogoAsBase64(); } catch(e) {}
       }
       const profile = await ensureUserProfile(user);
-      currentUserProfile = profile;
-      isAdmin = profile.role === "admin";
-      pinnedTaskId = localStorage.getItem(`pinnedTask_${user.uid}`) || null;
+      state.currentUserProfile = profile;
+      state.isAdmin = profile.role === "admin";
+      state.pinnedTaskId = localStorage.getItem(`pinnedTask_${user.uid}`) || null;
 
       if (profile.active === false) {
         await signOut(auth);
@@ -575,15 +667,16 @@ function setupAuthListener() {
     setTimeout(() => {
       loadingScreen.style.display = "none";
       mainScreen.style.display = "block";
-      document.getElementById("userName").textContent = currentUserProfile.displayName || currentUserProfile.username;
-      document.getElementById("userRole").textContent = isAdmin ? "👑 مدير" : "👤 موظف";
-      document.getElementById("userRole").className = "role " + (isAdmin ? "admin" : "user");
-      document.getElementById("addTaskCard").style.display = isAdmin ? "block" : "none";
-      document.getElementById("usersNavBtn").style.display = isAdmin ? "inline-flex" : "none";
-      document.getElementById("teamNavBtn").style.display = isAdmin ? "inline-flex" : "none";
+      document.getElementById("userName").textContent = state.currentUserProfile.displayName || state.currentUserProfile.username;
+      document.getElementById("userRole").textContent = state.isAdmin ? "👑 مدير" : "👤 موظف";
+      document.getElementById("userRole").className = "role " + (state.isAdmin ? "admin" : "user");
+      document.getElementById("addTaskCard").style.display = state.isAdmin ? "block" : "none";
+      document.getElementById("usersNavBtn").style.display = state.isAdmin ? "inline-flex" : "none";
+      document.getElementById("teamNavBtn").style.display = state.isAdmin ? "inline-flex" : "none";
       startRealtimeListeners();
       startBackupTimer();
       setupOnlinePresence();
+      setupNotifications();
       setTimeout(createBackup, 3000);
     }, 500);
   });
@@ -610,7 +703,6 @@ async function ensureUserProfile(user) {
     const data = snap.val();
     if (data.active === false) return data;
     try { await update(uref, { lastLogin: Date.now() }); } catch(e) {}
-    // ترحيل تلقائي للإصدار القديم
     if (!data.role && data.isAdmin) {
       try {
         const uname = data.username || (user.email || "").split("@")[0].toLowerCase();
@@ -628,7 +720,6 @@ async function ensureUserProfile(user) {
     return data;
   }
 
-  // مستخدم جديد
   const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(user.email || "");
   const username = (user.email || "").split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g,"") || "user";
   const displayName = user.displayName || username;
@@ -668,36 +759,34 @@ async function ensureUserProfile(user) {
 }
 
 /* ============================================================
-   8) المشتركات
+   10) المستمعات الحية
    ============================================================ */
 function startRealtimeListeners() {
-  if (unsubTasks) { try { unsubTasks(); } catch(e){} unsubTasks = null; }
-  if (unsubTeam)  { try { unsubTeam(); }  catch(e){} unsubTeam  = null; }
-  if (unsubUsers) { try { unsubUsers(); } catch(e){} unsubUsers = null; }
+  clearAllListeners();
 
-  unsubTasks = onValue(ref(db, "tasks"), (snap) => {
-    allTasks = snap.val() || {};
-    try { renderAll(); } catch(e) { console.warn("renderAll:", e); }
-    if (openTaskId && allTasks[openTaskId]) renderModal(openTaskId);
-    else if (openTaskId && !allTasks[openTaskId]) closeModal();
+  state.unsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
+    state.allTasks = snap.val() || {};
+    scheduleRender();
+    if (state.openTaskId && state.allTasks[state.openTaskId]) renderModal(state.openTaskId);
+    else if (state.openTaskId && !state.allTasks[state.openTaskId]) closeModal();
   }, (err) => {
     console.error("Tasks listener:", err);
     if (err.code === "PERMISSION_DENIED") {
-      swalError("لا تملك صلاحية قراءة المهام", "تواصل مع المدير لضبط Firebase Rules");
+      swalError("لا تملك صلاحية قراءة المهام", "تواصل مع المدير");
     }
   });
 
-  unsubTeam = onValue(ref(db, "team"), (snap) => {
-    allTeam = snap.val() || {};
+  state.unsubs.team = onValue(ref(db, "team"), (snap) => {
+    state.allTeam = snap.val() || {};
     populateAssigneeSelect();
   }, (err) => {
     console.warn("Team listener:", err);
     if (err.code === "PERMISSION_DENIED") {
       try {
-        Object.entries(allUsers).forEach(([uid, u]) => {
+        Object.entries(state.allUsers).forEach(([uid, u]) => {
           if (u.role !== "admin") {
             const id = "fallback_" + uid;
-            if (!allTeam[id]) allTeam[id] = { uid, name: u.displayName || u.username, username: u.username };
+            if (!state.allTeam[id]) state.allTeam[id] = { uid, name: u.displayName || u.username, username: u.username };
           }
         });
         populateAssigneeSelect();
@@ -705,12 +794,22 @@ function startRealtimeListeners() {
     }
   });
 
-  if (isAdmin) {
-    unsubUsers = onValue(ref(db, "users"), (snap) => {
-      allUsers = snap.val() || {};
+  if (state.isAdmin) {
+    state.unsubs.users = onValue(ref(db, "users"), (snap) => {
+      state.allUsers = snap.val() || {};
       if (document.getElementById("usersView").classList.contains("active")) renderUsersList();
     }, (err) => console.warn("Users listener:", err));
   }
+
+  state.unsubs.activity = onValue(ref(db, "activity"), (snap) => {
+    const raw = snap.val() || {};
+    state.allActivity = Object.entries(raw)
+      .map(([id, a]) => ({ id, ...a }))
+      .sort((a, b) => (b.at || 0) - (a.at || 0))
+      .slice(0, 100);
+    if (document.getElementById("activityView").classList.contains("active")) renderActivity();
+    if (document.getElementById("watchView").classList.contains("active")) renderWatch();
+  }, (err) => console.warn("Activity listener:", err));
 }
 
 function populateAssigneeSelect() {
@@ -718,7 +817,7 @@ function populateAssigneeSelect() {
   if (!sel) return;
   const current = sel.value;
   const options = ['<option value="">-- المسؤول --</option>'];
-  Object.entries(allTeam)
+  Object.entries(state.allTeam)
     .filter(([id, m]) => m && m.name)
     .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .forEach(([id, m]) => {
@@ -729,22 +828,21 @@ function populateAssigneeSelect() {
 }
 
 /* ============================================================
-   9) Presence
+   11) Presence
    ============================================================ */
 function setupOnlinePresence() {
-  if (!currentUser) return;
+  if (!state.currentUser) return;
   try {
-    const userRef = ref(db, "presence/" + currentUser.uid);
-    set(userRef, { online: true, name: currentUserProfile.displayName, at: Date.now() });
+    const userRef = ref(db, "presence/" + state.currentUser.uid);
+    set(userRef, { online: true, name: state.currentUserProfile.displayName, at: Date.now() });
     onDisconnect(userRef).set({ online: false, at: Date.now() });
   } catch(e) { console.warn("Presence:", e); }
 }
 
 window.addEventListener("online", () => {
-  isOnline = true;
+  state.isOnline = true;
   showToast("✅ تم استعادة الاتصال", "success");
-  try { goOnline(); } catch(e){}
-  if (currentUser) {
+  if (state.currentUser) {
     setupOnlinePresence();
     setTimeout(() => {
       createBackup();
@@ -752,22 +850,59 @@ window.addEventListener("online", () => {
     }, 1000);
   }
 });
-
 window.addEventListener("offline", () => {
-  isOnline = false;
-  showToast("📴 غير متصل — التعديلات ستُحفظ", "warn");
-  try { goOffline(); } catch(e){}
+  state.isOnline = false;
+  showToast("📴 غير متصل — التعديلات ستُزامن تلقائياً", "warn");
 });
 
 /* ============================================================
-   10) إضافة مهمة
+   12) الإشعارات
+   ============================================================ */
+async function setupNotifications() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "default") {
+    try { await Notification.requestPermission(); } catch(e){}
+  }
+  checkOverdueTasks();
+  setInterval(checkOverdueTasks, 5 * 60 * 1000);
+}
+
+function checkOverdueTasks() {
+  if (Notification.permission !== "granted" || !state.currentUser) return;
+  const notified = JSON.parse(localStorage.getItem("notified_tasks") || "{}");
+  let updated = false;
+
+  Object.entries(state.allTasks).forEach(([id, t]) => {
+    if (t.status === "مكتملة") return;
+    const d = daysRemaining(t.dueDate);
+    if (d === null || d > 0) return;
+    if (!state.isAdmin && t.assigneeId !== state.currentUser.uid) return;
+
+    const key = `${id}_${d}`;
+    if (notified[key]) return;
+
+    try {
+      new Notification("⏰ مهمة متأخرة", {
+        body: `${t.title} — ${d < 0 ? `متأخر ${Math.abs(d)} يوم` : "يستحق اليوم"}`,
+        icon: LOGO_URL,
+        tag: id
+      });
+    } catch(e) {}
+    notified[key] = true;
+    updated = true;
+  });
+  if (updated) localStorage.setItem("notified_tasks", JSON.stringify(notified));
+}
+
+/* ============================================================
+   13) إضافة مهمة
    ============================================================ */
 function setupAddTaskForm() {
   const form = document.getElementById("addTaskForm");
   if (!form) return;
   form.onsubmit = async (e) => {
     e.preventDefault();
-    if (!isAdmin || !currentUserProfile) return swalError("غير مصرح");
+    if (!state.isAdmin || !state.currentUserProfile) return swalError("غير مصرح");
     const title = document.getElementById("taskTitle").value.trim();
     const assigneeId = document.getElementById("taskAssignee").value;
     const priority = document.getElementById("taskPriority").value;
@@ -775,7 +910,7 @@ function setupAddTaskForm() {
     const notes = document.getElementById("taskNotes").value.trim();
     const tags = document.getElementById("taskTags").value.trim();
     if (!title || !assigneeId) return swalError("أكمل البيانات المطلوبة");
-    const member = allTeam[assigneeId];
+    const member = state.allTeam[assigneeId];
     if (!member) return swalError("عضو الفريق غير موجود");
 
     try {
@@ -785,13 +920,13 @@ function setupAddTaskForm() {
         assigneeId,
         assignee: member.name,
         status: "جديدة",
-        createdBy: currentUser.uid,
-        createdByEmail: currentUser.email || "",
-        createdByName: currentUserProfile.displayName,
+        createdBy: state.currentUser.uid,
+        createdByEmail: state.currentUser.email || "",
+        createdByName: state.currentUserProfile.displayName,
         createdAt: Date.now(),
         updatedAt: Date.now()
       }));
-      await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key);
+      await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key, title);
       e.target.reset();
       populateAssigneeSelect();
       localStorage.removeItem("emak_task_draft");
@@ -837,27 +972,25 @@ function restoreDraft() {
     setTimeout(() => {
       if (draft.assigneeId) {
         const sel = document.getElementById("taskAssignee");
-        if (sel && sel.querySelector(`option[value="${draft.assigneeId}"]`)) {
-          sel.value = draft.assigneeId;
-        }
+        if (sel && sel.querySelector(`option[value="${draft.assigneeId}"]`)) sel.value = draft.assigneeId;
       }
     }, 800);
   } catch(e){}
 }
 
 /* ============================================================
-   11) عمليات المهام
+   14) عمليات المهام
    ============================================================ */
 async function changeStatus(taskId, newStatus) {
-  if (!currentUserProfile) return;
-  const t = allTasks[taskId]; if (!t) return;
+  if (!state.currentUserProfile) return;
+  const t = state.allTasks[taskId]; if (!t) return;
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), {
       status: newStatus, updatedAt: Date.now(),
-      updatedBy: currentUser.uid,
-      updatedByName: currentUserProfile.displayName
+      updatedBy: state.currentUser.uid,
+      updatedByName: state.currentUserProfile.displayName
     }));
-    await logActivity("status_changed", `غيّر حالة "${t.title}" إلى ${newStatus}`, taskId);
+    await logActivity("status_changed", `غيّر حالة "${t.title}" إلى ${newStatus}`, taskId, t.title);
     showToast(`🔄 الحالة: ${newStatus}`, "info");
   } catch (err) {
     showToast("⚠️ سيُعاد الحفظ عند الاتصال", "warn");
@@ -865,7 +998,7 @@ async function changeStatus(taskId, newStatus) {
 }
 
 async function addComment(taskId, fromModal = false) {
-  if (!currentUserProfile) return;
+  if (!state.currentUserProfile) return;
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -875,17 +1008,19 @@ async function addComment(taskId, fromModal = false) {
     await safeWrite(async () => {
       await set(commentRef, {
         text,
-        author: currentUserProfile.displayName,
-        authorEmail: currentUser.email || "",
-        authorId: currentUser.uid,
+        author: state.currentUserProfile.displayName,
+        authorEmail: state.currentUser.email || "",
+        authorId: state.currentUser.uid,
         createdAt: Date.now()
       });
       await update(ref(db, "tasks/" + taskId), {
         updatedAt: Date.now(),
-        updatedBy: currentUser.uid,
-        updatedByName: currentUserProfile.displayName
+        updatedBy: state.currentUser.uid,
+        updatedByName: state.currentUserProfile.displayName
       });
     });
+    const t = state.allTasks[taskId];
+    await logActivity("comment_added", `علّق على "${t?.title || "مهمة"}": ${text.slice(0, 50)}`, taskId, t?.title);
     input.value = "";
     showToast("💬 تمت الإضافة", "success");
   } catch (err) {
@@ -894,16 +1029,14 @@ async function addComment(taskId, fromModal = false) {
 }
 
 async function deleteTask(taskId) {
-  if (!isAdmin) return swalError("غير مصرح");
-  const t = allTasks[taskId]; if (!t) return;
+  if (!state.isAdmin) return swalError("غير مصرح");
+  const t = state.allTasks[taskId]; if (!t) return;
   const r = await swalConfirm("حذف المهمة؟", `"${t.title}" — يمكن التراجع خلال 5 ثواني`);
   if (!r.isConfirmed) return;
-
   const deletedData = JSON.parse(JSON.stringify(t));
-
   try {
     await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
-    await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId);
+    await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId, t.title);
     closeModal();
     const Toast = Swal.mixin({
       toast: true, position: "bottom-end", showConfirmButton: true,
@@ -922,10 +1055,9 @@ async function deleteTask(taskId) {
 }
 
 async function editTask(taskId) {
-  if (!isAdmin) return swalError("غير مصرح");
-  const t = allTasks[taskId]; if (!t) return;
-
-  const teamOptions = Object.entries(allTeam)
+  if (!state.isAdmin) return swalError("غير مصرح");
+  const t = state.allTasks[taskId]; if (!t) return;
+  const teamOptions = Object.entries(state.allTeam)
     .filter(([id, m]) => m && m.name)
     .map(([id, m]) => `<option value="${escapeHtml(id)}" ${t.assigneeId===id?"selected":""}>${escapeHtml(m.name)}</option>`).join("");
 
@@ -933,26 +1065,25 @@ async function editTask(taskId) {
     title: "✏️ تعديل المهمة",
     html: `
       <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-        <label style="font-size:12px;font-weight:700;">العنوان</label>
+        <label class="swal-label">العنوان</label>
         <input id="swal-title" class="swal2-input" value="${escapeHtml(t.title)}" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">المسؤول</label>
+        <label class="swal-label">المسؤول</label>
         <select id="swal-assignee" class="swal2-select" style="margin:0;width:100%;">${teamOptions}</select>
-        <label style="font-size:12px;font-weight:700;">الأولوية</label>
+        <label class="swal-label">الأولوية</label>
         <select id="swal-priority" class="swal2-select" style="margin:0;width:100%;">
           <option value="عادي" ${t.priority==="عادي"?"selected":""}>🟢 عادي</option>
           <option value="مهم"  ${t.priority==="مهم"?"selected":""}>🟡 مهم</option>
           <option value="عاجل" ${t.priority==="عاجل"?"selected":""}>🔴 عاجل</option>
         </select>
-        <label style="font-size:12px;font-weight:700;">تاريخ التسليم</label>
+        <label class="swal-label">تاريخ التسليم</label>
         <input id="swal-due" type="date" class="swal2-input" value="${t.dueDate||""}" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">الوسوم (فاصلة)</label>
+        <label class="swal-label">الوسوم (فاصلة)</label>
         <input id="swal-tags" class="swal2-input" value="${escapeHtml(t.tags||"")}" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">ملاحظات</label>
+        <label class="swal-label">ملاحظات</label>
         <textarea id="swal-notes" class="swal2-textarea" style="margin:0;width:100%;">${escapeHtml(t.notes||"")}</textarea>
       </div>`,
     showCancelButton: true,
-    confirmButtonText: "حفظ",
-    cancelButtonText: "إلغاء",
+    confirmButtonText: "حفظ", cancelButtonText: "إلغاء",
     confirmButtonColor: "#2563eb",
     focusConfirm: false,
     background: themeBg(), color: themeFg(),
@@ -970,9 +1101,8 @@ async function editTask(taskId) {
     }
   });
   if (!formValues) return;
-  const member = allTeam[formValues.assigneeId];
+  const member = state.allTeam[formValues.assigneeId];
   if (!member) return swalError("بيانات ناقصة");
-
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), {
       title: formValues.title,
@@ -983,10 +1113,10 @@ async function editTask(taskId) {
       tags: formValues.tags,
       notes: formValues.notes,
       updatedAt: Date.now(),
-      updatedBy: currentUser.uid,
-      updatedByName: currentUserProfile.displayName
+      updatedBy: state.currentUser.uid,
+      updatedByName: state.currentUserProfile.displayName
     }));
-    await logActivity("task_edited", `عدّل مهمة: ${formValues.title}`, taskId);
+    await logActivity("task_edited", `عدّل مهمة: ${formValues.title}`, taskId, formValues.title);
     showToast("✏️ تم التعديل", "success");
   } catch (err) {
     showToast("⚠️ سيُحفظ عند الاتصال", "warn");
@@ -994,47 +1124,48 @@ async function editTask(taskId) {
 }
 
 function togglePin(taskId) {
-  if (pinnedTaskId === taskId) {
-    pinnedTaskId = null;
-    localStorage.removeItem(`pinnedTask_${currentUser.uid}`);
+  if (state.pinnedTaskId === taskId) {
+    state.pinnedTaskId = null;
+    localStorage.removeItem(`pinnedTask_${state.currentUser.uid}`);
     showToast("📌 تم إلغاء التثبيت", "info");
   } else {
-    pinnedTaskId = taskId;
-    localStorage.setItem(`pinnedTask_${currentUser.uid}`, taskId);
+    state.pinnedTaskId = taskId;
+    localStorage.setItem(`pinnedTask_${state.currentUser.uid}`, taskId);
     showToast("⭐ تم التثبيت", "success");
   }
   renderTasks();
-  if (openTaskId === taskId) renderModal(taskId);
+  if (state.openTaskId === taskId) renderModal(taskId);
 }
 
-async function logActivity(type, text, taskId=null) {
-  if (!currentUser) return;
+async function logActivity(type, text, taskId=null, taskTitle="") {
+  if (!state.currentUser) return;
   try {
     await push(ref(db, "activity"), {
-      type, text, taskId,
-      uid: currentUser.uid,
-      byName: currentUserProfile?.displayName || "—",
+      type, text, taskId, taskTitle,
+      uid: state.currentUser.uid,
+      byName: state.currentUserProfile?.displayName || "—",
       at: Date.now()
     });
   } catch(e) { console.warn("log:", e); }
 }
 
 /* ============================================================
-   12) المودال
+   15) المودال
    ============================================================ */
 function openModal(taskId) {
-  openTaskId = taskId; renderModal(taskId);
+  state.openTaskId = taskId;
+  renderModal(taskId);
   document.getElementById("modalOverlay").classList.add("active");
   document.body.style.overflow = "hidden";
 }
 function closeModal() {
-  openTaskId = null;
+  state.openTaskId = null;
   document.getElementById("modalOverlay").classList.remove("active");
   document.body.style.overflow = "";
 }
 
 function renderModal(taskId) {
-  const t = allTasks[taskId]; if (!t) return closeModal();
+  const t = state.allTasks[taskId]; if (!t) return closeModal();
   const statusClass = t.status === "مكتملة" ? "done" : t.status === "جاري التنفيذ" ? "progress" : "new";
   const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const isUrgent = t.priority === "عاجل" && t.status !== "مكتملة";
@@ -1078,31 +1209,46 @@ function renderModal(taskId) {
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn-pin ${pinnedTaskId === taskId ? 'active' : ''}" onclick="window.togglePin('${taskId}')">${pinnedTaskId === taskId ? '⭐ مثبتة' : '☆ تثبيت'}</button>
+      <button class="btn-pin ${state.pinnedTaskId === taskId ? 'active' : ''}" onclick="window.togglePin('${taskId}')">${state.pinnedTaskId === taskId ? '⭐ مثبتة' : '☆ تثبيت'}</button>
       <select onchange="window.changeStatus('${taskId}', this.value)" class="modal-status-select">
         <option ${t.status === "جديدة" ? "selected" : ""}>جديدة</option>
         <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
         <option ${t.status === "مكتملة" ? "selected" : ""}>مكتملة</option>
       </select>
-      ${isAdmin ? `<button class="btn-edit" onclick="window.editTask('${taskId}')">✏️ تعديل</button>
+      ${state.isAdmin ? `<button class="btn-edit" onclick="window.editTask('${taskId}')">✏️ تعديل</button>
         <button class="btn-del" onclick="window.deleteTask('${taskId}')">🗑️ حذف</button>` : ""}
     </div>`;
   document.getElementById("modalBox").className = "modal-box" + (isUrgent ? " urgent-glow" : "");
 }
 
 /* ============================================================
-   13) الرسم
+   16) الرسم
    ============================================================ */
+function scheduleRender() {
+  if (state.renderScheduled) return;
+  state.renderScheduled = true;
+  requestAnimationFrame(() => {
+    state.renderScheduled = false;
+    renderAll();
+  });
+}
+
 function renderAll() {
-  if (!currentUserProfile) return;
+  if (!state.currentUserProfile) return;
   try { renderStats(); } catch(e) { console.warn("stats:", e); }
   try { renderTeamProgress(); } catch(e) { console.warn("team:", e); }
   try { renderTasks(); } catch(e) { console.warn("tasks:", e); }
   try { renderCharts(); } catch(e) { console.warn("charts:", e); }
+  if (document.getElementById("watchView").classList.contains("active")) {
+    try { renderWatch(); } catch(e) { console.warn("watch:", e); }
+  }
+  if (document.getElementById("activityView").classList.contains("active")) {
+    try { renderActivity(); } catch(e) { console.warn("activity:", e); }
+  }
 }
 
 function renderStats() {
-  const entries = Object.entries(allTasks);
+  const entries = Object.entries(state.allTasks);
   const total = entries.length;
   const done = entries.filter(([_, t]) => t.status === "مكتملة").length;
   const progress = entries.filter(([_, t]) => t.status === "جاري التنفيذ").length;
@@ -1118,7 +1264,7 @@ function renderStats() {
 
 function renderTeamProgress() {
   const team = {};
-  Object.values(allTasks).forEach(t => {
+  Object.values(state.allTasks).forEach(t => {
     const k = t.assignee || "غير محدد";
     if (!team[k]) team[k] = { total: 0, done: 0 };
     team[k].total++;
@@ -1136,7 +1282,7 @@ function renderTeamProgress() {
 }
 
 function renderCharts() {
-  const entries = Object.values(allTasks);
+  const entries = Object.values(state.allTasks);
   const done = entries.filter(t => t.status === "مكتملة").length;
   const progress = entries.filter(t => t.status === "جاري التنفيذ").length;
   const newT = entries.filter(t => t.status === "جديدة").length;
@@ -1145,8 +1291,8 @@ function renderCharts() {
 
   const ctx1 = document.getElementById("chartStatus");
   if (ctx1) {
-    if (charts.status) { try { charts.status.destroy(); } catch(e){} }
-    charts.status = new Chart(ctx1, {
+    if (state.charts.status) { try { state.charts.status.destroy(); } catch(e){} }
+    state.charts.status = new Chart(ctx1, {
       type:"doughnut",
       data:{ labels:["مكتملة","جارية","جديدة"],
         datasets:[{ data:[done, progress, newT], backgroundColor:["#22c55e","#f59e0b","#4f8ef7"], borderColor:"transparent", borderWidth:0 }] },
@@ -1163,8 +1309,8 @@ function renderCharts() {
       const d = new Date(t.updatedAt).getDay(); counts[d]++;
     });
     const reordered = [counts[6], counts[0], counts[1], counts[2], counts[3], counts[4], counts[5]];
-    if (charts.productivity) { try { charts.productivity.destroy(); } catch(e){} }
-    charts.productivity = new Chart(ctx2, {
+    if (state.charts.productivity) { try { state.charts.productivity.destroy(); } catch(e){} }
+    state.charts.productivity = new Chart(ctx2, {
       type:"bar",
       data:{ labels:days, datasets:[{ label:"مهام مكتملة هذا الأسبوع", data:reordered, backgroundColor:"#4f8ef7", borderRadius:8, borderSkipped:false }] },
       options:{ responsive:true, maintainAspectRatio:false,
@@ -1178,53 +1324,51 @@ function renderCharts() {
 }
 
 function renderTasks() {
-  if (!currentUserProfile) return;
+  if (!state.currentUserProfile) return;
   const list = document.getElementById("tasksList");
   if (!list) return;
-  let entries = Object.entries(allTasks);
 
+  let entries = Object.entries(state.allTasks);
   entries.sort((a, b) => {
-    if (a[0] === pinnedTaskId) return -1;
-    if (b[0] === pinnedTaskId) return 1;
-    if (currentSort === "priority") {
+    if (a[0] === state.pinnedTaskId) return -1;
+    if (b[0] === state.pinnedTaskId) return 1;
+    if (state.currentSort === "priority") {
       const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
       const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
       if (pa !== pb) return pa - pb;
       return (b[1].createdAt || 0) - (a[1].createdAt || 0);
     }
-    if (currentSort === "date") return (b[1].createdAt || 0) - (a[1].createdAt || 0);
-    if (currentSort === "due") {
+    if (state.currentSort === "date") return (b[1].createdAt || 0) - (a[1].createdAt || 0);
+    if (state.currentSort === "due") {
       if (!a[1].dueDate) return 1; if (!b[1].dueDate) return -1;
       return new Date(a[1].dueDate) - new Date(b[1].dueDate);
     }
-    if (currentSort === "title") return (a[1].title || "").localeCompare(b[1].title || "", "ar");
+    if (state.currentSort === "title") return (a[1].title || "").localeCompare(b[1].title || "", "ar");
     return 0;
   });
 
   let filtered = entries.filter(([_, t]) => {
-    if (currentFilter === "all") return true;
-    if (currentFilter === "pending") return t.status !== "مكتملة";
-    if (currentFilter === "done") return t.status === "مكتملة";
-    if (currentFilter === "overdue") {
+    if (state.currentFilter === "all") return true;
+    if (state.currentFilter === "pending") return t.status !== "مكتملة";
+    if (state.currentFilter === "done") return t.status === "مكتملة";
+    if (state.currentFilter === "overdue") {
       const d = daysRemaining(t.dueDate);
       return d !== null && d < 0 && t.status !== "مكتملة";
     }
-    if (currentFilter === "week") return isThisWeek(t.createdAt);
-    if (currentFilter === "month") return isThisMonth(t.createdAt);
-    if (currentFilter === "mine") return t.assigneeId && currentUser && t.assigneeId === currentUser.uid;
-    const member = Object.values(allTeam).find(m => m.name === currentFilter);
-    if (member) return t.assigneeId === Object.keys(allTeam).find(k => allTeam[k].name === currentFilter);
+    if (state.currentFilter === "week") return isThisWeek(t.createdAt);
+    if (state.currentFilter === "month") return isThisMonth(t.createdAt);
+    if (state.currentFilter === "mine") return t.assigneeId && state.currentUser && t.assigneeId === state.currentUser.uid;
     return true;
   });
 
-  if (currentSearch) {
+  if (state.currentSearch) {
     filtered = filtered.filter(([_, t]) => {
       const hay = `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""} ${t.tags || ""}`.toLowerCase();
-      return hay.includes(currentSearch);
+      return hay.includes(state.currentSearch);
     });
   }
 
-  if (currentView === "kanban") {
+  if (state.currentView === "kanban") {
     renderKanban(list, filtered);
   } else {
     list.className = "";
@@ -1243,7 +1387,7 @@ function taskCardHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
   const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
-  const isPinned = pinnedTaskId === id;
+  const isPinned = state.pinnedTaskId === id;
   const tagsHtml = t.tags ? t.tags.split(",").map(x=>x.trim()).filter(Boolean).slice(0,2)
     .map(x=>`<span class="card-tag">${escapeHtml(x)}</span>`).join("") : "";
   return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""} ${isPinned ? "pinned" : ""}" onclick="window.openModal('${id}')">
@@ -1252,7 +1396,7 @@ function taskCardHtml(id, t) {
       <span class="priority-dot ${priorityClass}"></span>
       <span class="assignee-chip">👤 ${escapeHtml(t.assignee || "—")}</span>
     </div>
-    <h3 class="card-title">${escapeHtml(t.title)}</h3>
+    <h3 class="card-title">${highlight(t.title, state.currentSearch)}</h3>
     ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
     ${t.notes ? `<p class="card-notes">${escapeHtml(t.notes)}</p>` : ""}
     <div class="card-bottom">
@@ -1272,7 +1416,6 @@ function renderKanban(list, filtered) {
     const key = cols[t.status] !== undefined ? t.status : "جديدة";
     cols[key].push([id, t]);
   });
-
   list.innerHTML = Object.entries(cols).map(([status, items]) => `
     <div class="kanban-col" data-status="${escapeHtml(status)}"
          ondragover="event.preventDefault();this.classList.add('dragover')"
@@ -1302,59 +1445,258 @@ window.kanbanDrag = (e, id) => { _draggingId = id; e.dataTransfer.effectAllowed 
 window.kanbanDrop = async (e, status) => {
   e.preventDefault(); e.currentTarget.classList.remove("dragover");
   if (!_draggingId) return;
-  const t = allTasks[_draggingId];
+  const t = state.allTasks[_draggingId];
   if (!t || t.status === status) { _draggingId = null; return; }
   await changeStatus(_draggingId, status);
   _draggingId = null;
 };
 
 /* ============================================================
-   14) المستخدمون
+   17) شاشة المتابعة
    ============================================================ */
-async function renderUsersList() {
-  if (!isAdmin) return;
-  const wrap = document.getElementById("usersList");
-  if (!wrap) return;
-  const users = Object.entries(allUsers);
-  if (users.length === 0) {
-    wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون</p>';
+function renderWatch() {
+  const timeline = document.getElementById("watchTimeline");
+  if (!timeline) return;
+
+  let events = [...state.allActivity];
+
+  if (state.currentWatch === "mine" && state.currentUser) {
+    events = events.filter(e => e.uid === state.currentUser.uid);
+  } else if (state.currentWatch === "comments") {
+    events = events.filter(e => e.type === "comment_added");
+  } else if (state.currentWatch === "status") {
+    events = events.filter(e => e.type === "status_changed" || e.type === "task_edited");
+  } else if (state.currentWatch === "overdue") {
+    events = events.filter(e => {
+      const t = state.allTasks[e.taskId];
+      if (!t) return false;
+      const d = daysRemaining(t.dueDate);
+      return d !== null && d < 0 && t.status !== "مكتملة";
+    });
+  }
+
+  if (!state.isAdmin && state.currentUser) {
+    const myTasks = new Set(
+      Object.entries(state.allTasks)
+        .filter(([_, t]) => t.assigneeId === state.currentUser.uid)
+        .map(([id]) => id)
+    );
+    events = events.filter(e => 
+      e.uid === state.currentUser.uid || 
+      myTasks.has(e.taskId) ||
+      e.type === "task_created"
+    );
+  }
+
+  events = events.slice(0, 50);
+
+  if (events.length === 0) {
+    timeline.innerHTML = '<p class="empty">لا توجد تحديثات بعد</p>';
     return;
   }
-  wrap.innerHTML = users.map(([uid, u]) => `
-    <div class="user-row">
-      <div class="user-avatar">${escapeHtml((u.displayName || u.name || "?").charAt(0))}</div>
-      <div class="user-info-cell">
-        <div class="user-name">${escapeHtml(u.displayName || u.name || u.username || "—")} ${uid === currentUser.uid ? "<span class='me-tag'>أنت</span>" : ""}</div>
-        <div class="user-meta">
-          <span>@${escapeHtml(u.username || "—")}</span>
-          <span class="role-badge ${u.role === "admin" ? "admin" : "user"}">${u.role === "admin" ? "👑 مدير" : "👤 موظف"}</span>
-          <span class="status-badge ${u.active !== false ? "active" : "inactive"}">${u.active !== false ? "نشط" : "معطّل"}</span>
+
+  const typeIcons = {
+    task_created: "➕", task_edited: "✏️", task_deleted: "🗑️",
+    status_changed: "🔄", comment_added: "💬", user_created: "👤",
+    user_promoted: "👑", password_changed: "🔑"
+  };
+
+  timeline.innerHTML = events.map(e => {
+    const icon = typeIcons[e.type] || "•";
+    const task = e.taskId ? state.allTasks[e.taskId] : null;
+    const taskLink = task 
+      ? `<a href="#" onclick="event.preventDefault();window.openModal('${e.taskId}')" class="watch-task-link">${escapeHtml(e.taskTitle || task.title)}</a>`
+      : e.taskTitle ? `<span class="watch-task-link">${escapeHtml(e.taskTitle)}</span>` : "";
+    return `
+      <div class="watch-event type-${escapeHtml(e.type || "info")}">
+        <div class="watch-event-icon">${icon}</div>
+        <div class="watch-event-body">
+          <div class="watch-event-text">${escapeHtml(e.text)}</div>
+          <div class="watch-event-meta">
+            <span class="watch-event-author">${escapeHtml(e.byName || "—")}</span>
+            <span class="watch-event-dot">•</span>
+            <span class="watch-event-time">${timeAgo(e.at)}</span>
+            ${taskLink ? `<span class="watch-event-dot">•</span>${taskLink}` : ""}
+          </div>
         </div>
-      </div>
-      <div class="user-actions">
-        ${u.role !== "admin" ? `<button class="btn-sm primary" onclick="window.promoteUser('${uid}')">ترقية</button>` : ""}
-        ${u.role === "admin" && uid !== currentUser.uid ? `<button class="btn-sm" onclick="window.demoteUser('${uid}')">إزالة إدارة</button>` : ""}
-        ${u.active !== false
-          ? `<button class="btn-sm warn" onclick="window.toggleUserActive('${uid}', false)">تعطيل</button>`
-          : `<button class="btn-sm success" onclick="window.toggleUserActive('${uid}', true)">تنشيط</button>`}
-        ${uid !== currentUser.uid ? `<button class="btn-sm danger" onclick="window.deleteUser('${uid}')">حذف</button>` : ""}
+      </div>`;
+  }).join("");
+
+  renderActiveTasks();
+}
+
+function renderActiveTasks() {
+  const wrap = document.getElementById("activeTasksList");
+  if (!wrap) return;
+  let active = Object.entries(state.allTasks)
+    .filter(([_, t]) => t.status !== "مكتملة")
+    .sort((a, b) => {
+      const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
+      const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
+      if (pa !== pb) return pa - pb;
+      const da = daysRemaining(a[1].dueDate) ?? 999;
+      const dbb = daysRemaining(b[1].dueDate) ?? 999;
+      return da - dbb;
+    })
+    .slice(0, 8);
+
+  if (active.length === 0) {
+    wrap.innerHTML = '<p class="empty">لا توجد مهام نشطة 🎉</p>';
+    return;
+  }
+
+  wrap.innerHTML = '<div class="active-tasks-grid">' + active.map(([id, t]) => {
+    const isOverdue = daysRemaining(t.dueDate) < 0 && t.status !== "مكتملة";
+    const isUrgent = t.priority === "عاجل";
+    return `
+      <div class="active-task-card ${isUrgent ? 'urgent' : ''} ${isOverdue ? 'overdue' : ''}" onclick="window.openModal('${id}')">
+        <div class="active-task-priority ${isUrgent ? 'urgent' : t.priority === 'مهم' ? 'important' : 'normal'}"></div>
+        <div class="active-task-title">${escapeHtml(t.title)}</div>
+        <div class="active-task-meta">
+          <span>👤 ${escapeHtml(t.assignee || "—")}</span>
+          ${t.dueDate ? `<span class="${isOverdue ? 'overdue-text' : ''}">${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
+        </div>
+      </div>`;
+  }).join("") + '</div>';
+}
+
+/* ============================================================
+   18) السجل
+   ============================================================ */
+function renderActivity() {
+  const wrap = document.getElementById("activityList");
+  if (!wrap) return;
+  const events = state.allActivity.slice(0, 100);
+  if (events.length === 0) {
+    wrap.innerHTML = '<p class="empty">لا يوجد نشاط بعد</p>';
+    return;
+  }
+  const typeIcons = {
+    task_created: "➕", task_edited: "✏️", task_deleted: "🗑️",
+    status_changed: "🔄", comment_added: "💬", user_created: "👤",
+    user_promoted: "👑", password_changed: "🔑"
+  };
+  wrap.innerHTML = events.map(e => `
+    <div class="activity-row">
+      <div class="activity-icon">${typeIcons[e.type] || "•"}</div>
+      <div class="activity-body">
+        <div class="activity-text">${escapeHtml(e.text)}</div>
+        <div class="activity-meta">
+          <span>${escapeHtml(e.byName || "—")}</span>
+          <span>•</span>
+          <span>${formatDateTime(e.at)}</span>
+        </div>
       </div>
     </div>
   `).join("");
 }
 
+/* ============================================================
+   19) المستخدمون
+   ============================================================ */
+function renderUsersStats() {
+  const users = Object.values(state.allUsers);
+  const total = users.length;
+  const active = users.filter(u => u.active !== false).length;
+  const admin = users.filter(u => u.role === "admin").length;
+  const inactive = total - active;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set("usersStatTotal", total);
+  set("usersStatActive", active);
+  set("usersStatAdmin", admin);
+  set("usersStatInactive", inactive);
+}
+
+function renderUsersList() {
+  if (!state.isAdmin) return;
+  const wrap = document.getElementById("usersList");
+  if (!wrap) return;
+  renderUsersStats();
+
+  let users = Object.entries(state.allUsers);
+
+  if (state.usersSearch) {
+    users = users.filter(([uid, u]) => {
+      const hay = `${u.displayName || ""} ${u.name || ""} ${u.username || ""} ${u.email || ""}`.toLowerCase();
+      return hay.includes(state.usersSearch);
+    });
+  }
+  if (state.usersRoleFilter !== "all") {
+    users = users.filter(([_, u]) => u.role === state.usersRoleFilter);
+  }
+  if (state.usersStatusFilter !== "all") {
+    users = users.filter(([_, u]) => 
+      state.usersStatusFilter === "active" ? u.active !== false : u.active === false
+    );
+  }
+
+  users.sort((a, b) => {
+    const ra = a[1].role === "admin" ? 0 : 1;
+    const rb = b[1].role === "admin" ? 0 : 1;
+    if (ra !== rb) return ra - rb;
+    const aa = a[1].active !== false ? 0 : 1;
+    const ab = b[1].active !== false ? 0 : 1;
+    if (aa !== ab) return aa - ab;
+    return (a[1].displayName || a[1].username || "").localeCompare(b[1].displayName || b[1].username || "", "ar");
+  });
+
+  if (users.length === 0) {
+    wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون مطابقون</p>';
+    return;
+  }
+
+  wrap.innerHTML = users.map(([uid, u]) => {
+    const isMe = uid === state.currentUser.uid;
+    const tasks = Object.values(state.allTasks).filter(t => t.assigneeId === uid);
+    const doneTasks = tasks.filter(t => t.status === "مكتملة").length;
+    const activeTasks = tasks.filter(t => t.status !== "مكتملة").length;
+    const displayName = u.displayName || u.name || u.username || "—";
+    const initial = escapeHtml(displayName.charAt(0));
+    const lastLogin = u.lastLogin ? timeAgo(u.lastLogin) : "لم يسجل بعد";
+    return `
+    <div class="user-row ${isMe ? 'is-me' : ''}">
+      <div class="user-avatar ${u.role === 'admin' ? 'admin-avatar' : ''}">${initial}</div>
+      <div class="user-info-cell">
+        <div class="user-name">
+          ${escapeHtml(displayName)}
+          ${isMe ? "<span class='me-tag'>أنت</span>" : ""}
+        </div>
+        <div class="user-meta">
+          <span class="user-email">@${escapeHtml(u.username || "—")}</span>
+          <span class="role-badge ${u.role === "admin" ? "admin" : "user"}">${u.role === "admin" ? "👑 مدير" : "👤 موظف"}</span>
+          <span class="status-badge ${u.active !== false ? "active" : "inactive"}">${u.active !== false ? "● نشط" : "○ معطّل"}</span>
+        </div>
+        <div class="user-stats-row">
+          <span class="ustat"><b>${tasks.length}</b> مهمة</span>
+          <span class="ustat success"><b>${doneTasks}</b> مكتملة</span>
+          <span class="ustat progress"><b>${activeTasks}</b> جارية</span>
+          <span class="ustat muted">🕐 ${lastLogin}</span>
+        </div>
+      </div>
+      <div class="user-actions">
+        ${u.role !== "admin" ? `<button class="btn-sm primary" onclick="window.promoteUser('${uid}')" title="ترقية">⬆️</button>` : ""}
+        ${u.role === "admin" && !isMe ? `<button class="btn-sm" onclick="window.demoteUser('${uid}')" title="إزالة إدارة">⬇️</button>` : ""}
+        ${u.active !== false
+          ? `<button class="btn-sm warn" onclick="window.toggleUserActive('${uid}', false)" title="تعطيل">⛔</button>`
+          : `<button class="btn-sm success" onclick="window.toggleUserActive('${uid}', true)" title="تنشيط">✅</button>`}
+        ${!isMe ? `<button class="btn-sm danger" onclick="window.deleteUser('${uid}')" title="حذف">🗑️</button>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+}
+
 window.promoteUser = async (uid) => {
-  if (!isAdmin) return;
+  if (!state.isAdmin) return;
   const r = await swalConfirm("ترقية إلى مدير؟", "");
   if (!r.isConfirmed) return;
   await safeWrite(() => update(ref(db, "users/" + uid), { role: "admin" }));
-  await logActivity("user_promoted", "رقّى مستخدم");
+  await logActivity("user_promoted", `رقّى مستخدم @${state.allUsers[uid]?.username || uid}`);
   showToast("👑 تمت الترقية", "success");
 };
 
 window.demoteUser = async (uid) => {
-  if (!isAdmin) return;
-  const adminCount = Object.values(allUsers).filter(x => x.role === "admin" && x.active !== false).length;
+  if (!state.isAdmin) return;
+  const adminCount = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length;
   if (adminCount <= 1) return swalError("لا يمكن", "لا يمكن إزالة آخر مدير");
   const r = await swalConfirm("إزالة صلاحية الإدارة؟", "");
   if (!r.isConfirmed) return;
@@ -1363,10 +1705,10 @@ window.demoteUser = async (uid) => {
 };
 
 window.toggleUserActive = async (uid, active) => {
-  if (!isAdmin) return;
+  if (!state.isAdmin) return;
   if (!active) {
-    const adminCount = Object.values(allUsers).filter(x => x.role === "admin" && x.active !== false).length;
-    if (allUsers[uid]?.role === "admin" && adminCount <= 1)
+    const adminCount = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length;
+    if (state.allUsers[uid]?.role === "admin" && adminCount <= 1)
       return swalError("لا يمكن", "لا يمكن تعطيل آخر مدير");
   }
   await safeWrite(() => update(ref(db, "users/" + uid), { active }));
@@ -1374,9 +1716,9 @@ window.toggleUserActive = async (uid, active) => {
 };
 
 window.deleteUser = async (uid) => {
-  if (!isAdmin) return;
-  const u = allUsers[uid]; if (!u) return;
-  const adminCount = Object.values(allUsers).filter(x => x.role === "admin" && x.active !== false).length;
+  if (!state.isAdmin) return;
+  const u = state.allUsers[uid]; if (!u) return;
+  const adminCount = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length;
   if (u.role === "admin" && adminCount <= 1)
     return swalError("لا يمكن الحذف", "لا يمكن حذف آخر مدير");
   const r = await swalConfirm("حذف المستخدم؟", `@${u.username} — لا يمكن التراجع`);
@@ -1396,26 +1738,25 @@ window.deleteUser = async (uid) => {
 };
 
 window.openAddUserModal = async () => {
-  if (!isAdmin) return;
+  if (!state.isAdmin) return;
   const { value: formValues } = await Swal.fire({
     title: "➕ إضافة مستخدم جديد",
     html: `
       <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-        <label style="font-size:12px;font-weight:700;">اسم المستخدم (a-z, 0-9, _)</label>
+        <label class="swal-label">اسم المستخدم (a-z, 0-9, _)</label>
         <input id="nu-username" class="swal2-input" placeholder="bahaa" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">الاسم الكامل</label>
+        <label class="swal-label">الاسم الكامل</label>
         <input id="nu-name" class="swal2-input" placeholder="بهاء محمد" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">كلمة المرور (6+)</label>
+        <label class="swal-label">كلمة المرور (6+)</label>
         <input id="nu-pass" type="text" class="swal2-input" placeholder="مؤقتة" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">الدور</label>
+        <label class="swal-label">الدور</label>
         <select id="nu-role" class="swal2-select" style="margin:0;width:100%;">
           <option value="employee">👤 موظف</option>
           <option value="admin">👑 مدير</option>
         </select>
       </div>`,
     showCancelButton: true,
-    confirmButtonText: "إنشاء",
-    cancelButtonText: "إلغاء",
+    confirmButtonText: "إنشاء", cancelButtonText: "إلغاء",
     confirmButtonColor: "#2563eb",
     focusConfirm: false,
     background: themeBg(), color: themeFg(),
@@ -1465,7 +1806,10 @@ window.openAddUserModal = async () => {
       html: `
         <div style="text-align:right;direction:rtl;font-size:14px;line-height:2;">
           <p><b>اسم المستخدم:</b> <code style="background:#1e2537;padding:4px 8px;border-radius:6px;">${escapeHtml(username)}</code></p>
-          <p><b>كلمة المرور:</b> <code style="background:#1e2537;padding:4px 8px;border-radius:6px;">${escapeHtml(password)}</code></p>
+          <p><b>كلمة المرور:</b> 
+            <code id="pwd-display" style="background:#1e2537;padding:4px 8px;border-radius:6px;filter:blur(4px);">${escapeHtml(password)}</code>
+            <button onclick="document.getElementById('pwd-display').style.filter='none'" style="margin-right:6px;padding:4px 10px;border-radius:6px;cursor:pointer;background:#2563eb;color:#fff;border:none;">👁️</button>
+          </p>
           <p style="color:#f59e0b;font-size:12px;margin-top:10px;">📋 احفظ هذه البيانات وسلّمها للموظف</p>
         </div>`,
       confirmButtonText: "حسناً",
@@ -1487,7 +1831,7 @@ window.openAddUserModal = async () => {
 };
 
 window.openTeamModal = async () => {
-  if (!isAdmin) return;
+  if (!state.isAdmin) return;
   const teamSnap = await get(ref(db, "team"));
   const team = teamSnap.val() || {};
   const html = Object.entries(team).map(([id, m]) => `
@@ -1511,7 +1855,7 @@ window.openTeamModal = async () => {
 };
 
 window.removeTeamMember = async (id) => {
-  if (!isAdmin) return;
+  if (!state.isAdmin) return;
   const r = await swalConfirm("حذف من الفريق؟", "");
   if (!r.isConfirmed) return;
   await safeWrite(() => remove(ref(db, "team/" + id)));
@@ -1520,8 +1864,8 @@ window.removeTeamMember = async (id) => {
 };
 
 window.openChangePasswordModal = async () => {
-  if (!currentUser) return;
-  const isGoogleUser = currentUser.providerData.some(p => p.providerId === "google.com");
+  if (!state.currentUser) return;
+  const isGoogleUser = state.currentUser.providerData.some(p => p.providerId === "google.com");
   if (isGoogleUser) {
     return Swal.fire({
       icon: "info", title: "حساب جوجل",
@@ -1529,21 +1873,19 @@ window.openChangePasswordModal = async () => {
       confirmButtonText: "حسناً", background: themeBg(), color: themeFg()
     });
   }
-
   const { value: formValues } = await Swal.fire({
     title: "🔑 تغيير كلمة المرور",
     html: `
       <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-        <label style="font-size:12px;font-weight:700;">كلمة المرور الحالية</label>
+        <label class="swal-label">كلمة المرور الحالية</label>
         <input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">كلمة المرور الجديدة (6+)</label>
+        <label class="swal-label">كلمة المرور الجديدة (6+)</label>
         <input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;">
-        <label style="font-size:12px;font-weight:700;">تأكيد كلمة المرور الجديدة</label>
+        <label class="swal-label">تأكيد كلمة المرور الجديدة</label>
         <input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;">
       </div>`,
     showCancelButton: true,
-    confirmButtonText: "تغيير",
-    cancelButtonText: "إلغاء",
+    confirmButtonText: "تغيير", cancelButtonText: "إلغاء",
     confirmButtonColor: "#2563eb",
     focusConfirm: false,
     background: themeBg(), color: themeFg(),
@@ -1558,13 +1900,11 @@ window.openChangePasswordModal = async () => {
       return { currentPassword: cur, newPassword: nw };
     }
   });
-
   if (!formValues) return;
-
   try {
-    const credential = EmailAuthProvider.credential(currentUser.email, formValues.currentPassword);
-    await reauthenticateWithCredential(currentUser, credential);
-    await updatePassword(currentUser, formValues.newPassword);
+    const credential = EmailAuthProvider.credential(state.currentUser.email, formValues.currentPassword);
+    await reauthenticateWithCredential(state.currentUser, credential);
+    await updatePassword(state.currentUser, formValues.newPassword);
     await logActivity("password_changed", "غيّر كلمة المرور");
     swalSuccess("✅ تم تغيير كلمة المرور");
   } catch (err) {
@@ -1580,10 +1920,10 @@ window.openChangePasswordModal = async () => {
 };
 
 /* ============================================================
-   15) التقرير
+   20) التقرير
    ============================================================ */
 function openReport() {
-  const entries = Object.entries(allTasks);
+  const entries = Object.entries(state.allTasks);
   const done = entries.filter(([_, t]) => t.status === "مكتملة");
   const progress = entries.filter(([_, t]) => t.status === "جاري التنفيذ");
   const newT = entries.filter(([_, t]) => t.status === "جديدة");
@@ -1672,7 +2012,7 @@ async function downloadPDF() {
     const pdf = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
     const pageW = 210, pageH = 297, margin = 15;
     let y = margin;
-    const entries = Object.entries(allTasks);
+    const entries = Object.entries(state.allTasks);
     const done = entries.filter(([_, t]) => t.status === "مكتملة");
     const progress = entries.filter(([_, t]) => t.status === "جاري التنفيذ");
     const newT = entries.filter(([_, t]) => t.status === "جديدة");
@@ -1693,7 +2033,7 @@ async function downloadPDF() {
 
     pdf.setFillColor(30, 58, 138);
     pdf.rect(0, 0, pageW, 25, "F");
-    if (logoDataUrl) { try { pdf.addImage(logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); } catch(e){} }
+    if (state.logoDataUrl) { try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); } catch(e){} }
     pdf.setTextColor(255,255,255);
     pdf.setFontSize(20); pdf.text("EMAK Hub", pageW - 40, 12, { align:"right" });
     pdf.setFontSize(11); pdf.text("تقرير المهام - قسم نظم المعلومات", pageW - 40, 19, { align:"right" });
@@ -1783,7 +2123,7 @@ async function downloadPDF() {
 
 window.exportCSV = () => {
   const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم","الوسوم","ملاحظات"]];
-  Object.values(allTasks).forEach(t => {
+  Object.values(state.allTasks).forEach(t => {
     rows.push([
       t.title || "", t.assignee || "", t.status || "", t.priority || "",
       t.dueDate || "", t.tags || "", (t.notes || "").replace(/[\n\r,]/g," ")
@@ -1800,7 +2140,7 @@ window.exportCSV = () => {
 };
 
 /* ============================================================
-   16) ربط الدوال
+   21) ربط الدوال
    ============================================================ */
 window.changeStatus = changeStatus;
 window.addComment = addComment;
@@ -1814,18 +2154,17 @@ window.closeReport = closeReport;
 window.downloadPDF = downloadPDF;
 
 /* ============================================================
-   17) التهيئة النهائية
+   22) التهيئة النهائية
    ============================================================ */
 function initializeApp_() {
-  console.log("🚀 EMAK Hub v3.1 — بدء التهيئة");
-  
+  console.log("🚀 EMAK Hub v4.0 — بدء التهيئة");
+
   applyTheme();
   setupLoginHandlers();
   setupAuthListener();
   setupAddTaskForm();
   setupDraft();
-  
-  // استعادة آخر يوزرنيم
+
   const last = localStorage.getItem("emak_last_username");
   if (last) {
     const el = document.getElementById("loginUsername");
@@ -1833,12 +2172,10 @@ function initializeApp_() {
     const rm = document.getElementById("rememberMe");
     if (rm) rm.checked = true;
   }
-  
-  // استعادة آخر وقت backup
-  const lb = localStorage.getItem("emak_last_backup");
-  if (lb) lastBackupTime = parseInt(lb);
 
-  // التنقل
+  const lb = localStorage.getItem("emak_last_backup");
+  if (lb) state.lastBackupTime = parseInt(lb);
+
   document.querySelectorAll(".nav-btn[data-view]").forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
@@ -1848,94 +2185,124 @@ function initializeApp_() {
       const el = document.getElementById(view + "View");
       if (el) el.classList.add("active");
       if (view === "users") renderUsersList();
+      if (view === "activity") renderActivity();
+      if (view === "watch") renderWatch();
+      if (view === "tasks") renderTasks();
     };
   });
 
-  // الفلاتر
   document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.onclick = () => {
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      currentFilter = btn.dataset.filter;
+      state.currentFilter = btn.dataset.filter;
       renderAll();
     };
   });
 
-  // البحث
+  document.querySelectorAll(".watch-filter").forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll(".watch-filter").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.currentWatch = btn.dataset.watch;
+      renderWatch();
+    };
+  });
+
   const sb = document.getElementById("searchBox");
   if (sb) sb.addEventListener("input", (e) => {
     clearTimeout(window._st);
     window._st = setTimeout(() => {
-      currentSearch = e.target.value.trim().toLowerCase();
+      state.currentSearch = e.target.value.trim().toLowerCase();
       renderTasks();
     }, 250);
   });
 
-  // الفرز
+  const usb = document.getElementById("usersSearchBox");
+  if (usb) usb.addEventListener("input", (e) => {
+    clearTimeout(window._ust);
+    window._ust = setTimeout(() => {
+      state.usersSearch = e.target.value.trim().toLowerCase();
+      renderUsersList();
+    }, 200);
+  });
+  const urf = document.getElementById("usersRoleFilter");
+  if (urf) urf.addEventListener("change", (e) => {
+    state.usersRoleFilter = e.target.value;
+    renderUsersList();
+  });
+  const usf = document.getElementById("usersStatusFilter");
+  if (usf) usf.addEventListener("change", (e) => {
+    state.usersStatusFilter = e.target.value;
+    renderUsersList();
+  });
+
   const ss = document.getElementById("sortSelect");
-  if (ss) ss.addEventListener("change", (e) => { currentSort = e.target.value; renderTasks(); });
+  if (ss) ss.addEventListener("change", (e) => { state.currentSort = e.target.value; renderTasks(); });
 
-  // الثيم
   const tb = document.getElementById("themeBtn");
-  if (tb) tb.onclick = () => { currentTheme = currentTheme === "dark" ? "light" : "dark"; applyTheme(); };
+  if (tb) tb.onclick = () => { state.currentTheme = state.currentTheme === "dark" ? "light" : "dark"; applyTheme(); };
 
-  // عرض شبكة/كانبان
   document.querySelectorAll(".view-toggle button").forEach(b => {
     b.onclick = () => {
       document.querySelectorAll(".view-toggle button").forEach(x => x.classList.remove("active"));
       b.classList.add("active");
-      currentView = b.dataset.view;
+      state.currentView = b.dataset.view;
       renderTasks();
     };
   });
 
-  // خروج
   const lb2 = document.getElementById("logoutBtn");
   if (lb2) lb2.onclick = async () => {
     const r = await swalConfirm("تسجيل الخروج؟", "");
     if (r.isConfirmed) {
-      if (unsubTasks) { try { unsubTasks(); } catch(e){} }
-      if (unsubTeam)  { try { unsubTeam(); }  catch(e){} }
-      if (unsubUsers) { try { unsubUsers(); } catch(e){} }
-      if (backupTimer) { clearInterval(backupTimer); backupTimer = null; }
+      clearAllListeners();
       signOut(auth);
     }
   };
 
-  // إغلاق المودال
   const mo = document.getElementById("modalOverlay");
   if (mo) mo.addEventListener("click", (e) => { if (e.target.id === "modalOverlay") closeModal(); });
   const ro = document.getElementById("reportOverlay");
   if (ro) ro.addEventListener("click", (e) => { if (e.target.id === "reportOverlay") closeReport(); });
-  
+
   document.addEventListener("keydown", (e) => {
+    if (e.target.matches("input, textarea, select")) return;
+    if (e.ctrlKey && e.key === "k") {
+      e.preventDefault();
+      document.getElementById("searchBox")?.focus();
+    }
+    if (e.ctrlKey && e.key === "n" && state.isAdmin) {
+      e.preventDefault();
+      document.getElementById("taskTitle")?.focus();
+    }
     if (e.key === "Escape") { closeModal(); closeReport(); }
+    if (e.key === "t" && !e.ctrlKey && !e.metaKey) {
+      state.currentTheme = state.currentTheme === "dark" ? "light" : "dark";
+      applyTheme();
+    }
   });
 
-  // beforeunload
   window.addEventListener("beforeunload", (e) => {
-    if (pendingWrites > 0) {
+    if (state.pendingWrites > 0) {
       e.preventDefault();
       e.returnValue = "يوجد تغييرات جارٍ حفظها. هل تريد المغادرة؟";
       return e.returnValue;
     }
   });
 
-  // visibilitychange
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && isOnline && currentUser) {
+    if (!document.hidden && state.isOnline && state.currentUser) {
       const now = Date.now();
-      if (now - lastBackupTime > BACKUP_INTERVAL) createBackup();
+      if (now - state.lastBackupTime > BACKUP_INTERVAL) createBackup();
     }
   });
 
-  // استعادة المسودة
   setTimeout(restoreDraft, 2000);
 
-  console.log("✅ EMAK Hub v3.1 — جاهز");
+  console.log("✅ EMAK Hub v4.0 — جاهز");
 }
 
-// تشغيل التهيئة
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initializeApp_);
 } else {
@@ -1962,6 +2329,7 @@ if (document.readyState === "loading") {
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
+mark.hl{background:rgba(245,158,11,.35);color:inherit;padding:0 2px;border-radius:3px;}
 
 #loginScreen{
   display:flex;align-items:center;justify-content:center;
@@ -2207,7 +2575,7 @@ header{
 }
 .search-wrap input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,142,247,.15);}
 .search-wrap::before{content:'🔍';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
-#sortSelect{
+#sortSelect,.filter-select{
   padding:12px 16px;background:var(--bg-2);color:var(--text);
   border:1px solid var(--border);border-radius:12px;
   font-size:13px;font-family:inherit;cursor:pointer;
@@ -2309,7 +2677,74 @@ header{
 .kanban-card-title{font-size:13px;font-weight:700;margin-bottom:8px;line-height:1.4;}
 .kanban-card-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11px;}
 
+/* ============ Watch ============ */
+.watch-subtitle{font-size:13px;color:var(--text-2);margin-bottom:16px;}
+.watch-filters{display:flex;gap:8px;flex-wrap:wrap;}
+.watch-filter{
+  background:var(--bg-3);color:var(--text-2);border:1px solid var(--border);
+  padding:8px 16px;border-radius:20px;cursor:pointer;
+  font-size:13px;font-family:inherit;font-weight:600;transition:.2s;
+}
+.watch-filter:hover{border-color:var(--primary);color:var(--primary);}
+.watch-filter.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.watch-timeline{display:flex;flex-direction:column;gap:4px;max-height:600px;overflow-y:auto;padding-left:8px;}
+.watch-event{
+  display:flex;gap:12px;padding:12px;border-radius:10px;
+  background:var(--bg-3);transition:.2s;position:relative;
+}
+.watch-event:hover{background:var(--bg-4);transform:translateX(-3px);}
+.watch-event-icon{
+  width:36px;height:36px;border-radius:50%;background:var(--bg-2);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  flex-shrink:0;border:2px solid var(--border);
+}
+.watch-event.type-task_created .watch-event-icon{border-color:var(--success);}
+.watch-event.type-task_deleted .watch-event-icon{border-color:var(--urgent);}
+.watch-event.type-status_changed .watch-event-icon{border-color:var(--important);}
+.watch-event.type-comment_added .watch-event-icon{border-color:var(--primary);}
+.watch-event-body{flex:1;min-width:0;}
+.watch-event-text{font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.5;}
+.watch-event-meta{display:flex;gap:6px;font-size:11px;color:var(--text-2);align-items:center;flex-wrap:wrap;}
+.watch-event-author{font-weight:700;color:var(--primary);}
+.watch-event-time{color:var(--text-3);}
+.watch-event-dot{color:var(--text-3);}
+.watch-task-link{color:var(--primary);text-decoration:none;font-weight:600;}
+.watch-task-link:hover{text-decoration:underline;}
+
+.active-tasks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.active-task-card{
+  background:var(--bg-3);border:1px solid var(--border);
+  border-radius:12px;padding:12px;cursor:pointer;transition:.2s;
+  position:relative;overflow:hidden;
+}
+.active-task-card::before{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:4px;
+  background:var(--success);
+}
+.active-task-card.urgent::before{background:var(--urgent);}
+.active-task-card.overdue{border-color:rgba(220,38,38,.4);background:rgba(220,38,38,.05);}
+.active-task-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--primary);}
+.active-task-title{font-size:13px;font-weight:700;margin-bottom:8px;padding-right:8px;line-height:1.4;}
+.active-task-meta{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--text-2);padding-right:8px;flex-wrap:wrap;}
+.active-task-meta .overdue-text{color:var(--urgent);font-weight:700;}
+
+/* ============ Activity ============ */
+.activity-row{
+  display:flex;gap:12px;padding:12px;
+  border-bottom:1px solid var(--border);
+}
+.activity-row:last-child{border-bottom:none;}
+.activity-icon{
+  width:36px;height:36px;border-radius:50%;background:var(--bg-3);
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;
+}
+.activity-body{flex:1;}
+.activity-text{font-size:13px;font-weight:600;margin-bottom:4px;}
+.activity-meta{display:flex;gap:6px;font-size:11px;color:var(--text-2);}
+
+/* ============ Users ============ */
 .users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
+.users-toolbar-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
 .btn-add-user{
   background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;
   border:none;padding:10px 20px;border-radius:10px;cursor:pointer;
@@ -2321,28 +2756,40 @@ header{
   background:var(--bg-3);border:1px solid var(--border);
   border-radius:12px;margin-bottom:10px;transition:.2s;
 }
-.user-row:hover{border-color:var(--primary);}
+.user-row:hover{border-color:var(--primary);transform:translateX(-3px);}
+.user-row.is-me{border-color:var(--accent);background:rgba(245,158,11,.05);}
 .user-avatar{
-  width:44px;height:44px;border-radius:50%;flex-shrink:0;
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,var(--primary),var(--success));
   display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:800;font-size:18px;
+  color:#fff;font-weight:800;font-size:20px;
+}
+.user-avatar.admin-avatar{
+  background:linear-gradient(135deg,var(--accent),#d97706);
+  box-shadow:0 0 0 3px rgba(245,158,11,.3);
 }
 .user-info-cell{flex:1;min-width:0;}
 .user-name{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
-.me-tag{font-size:10px;padding:2px 8px;background:var(--bg-4);border-radius:8px;color:var(--text-2);font-weight:600;}
-.user-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--text-2);align-items:center;}
+.me-tag{font-size:10px;padding:2px 8px;background:var(--accent);color:#fff;border-radius:8px;font-weight:700;}
+.user-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--text-2);align-items:center;margin-bottom:6px;}
+.user-email{color:var(--text-3);font-family:monospace;}
 .role-badge{padding:2px 10px;border-radius:10px;font-weight:700;}
 .role-badge.admin{background:rgba(245,158,11,.15);color:var(--accent);}
 .role-badge.user{background:rgba(79,142,247,.15);color:var(--primary);}
 .status-badge{padding:2px 10px;border-radius:10px;font-weight:700;}
 .status-badge.active{background:rgba(34,197,94,.15);color:var(--success);}
 .status-badge.inactive{background:rgba(100,116,139,.15);color:var(--text-3);}
+.user-stats-row{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text-2);}
+.ustat b{color:var(--text);font-weight:800;}
+.ustat.success b{color:var(--success);}
+.ustat.progress b{color:var(--important);}
+.ustat.muted{color:var(--text-3);}
 .user-actions{display:flex;gap:6px;flex-wrap:wrap;}
 .btn-sm{
-  padding:6px 12px;border-radius:8px;border:1px solid var(--border);
+  padding:8px 12px;border-radius:8px;border:1px solid var(--border);
   background:var(--bg-2);color:var(--text);cursor:pointer;
-  font-family:inherit;font-size:12px;font-weight:600;transition:.2s;
+  font-family:inherit;font-size:14px;font-weight:600;transition:.2s;
+  min-width:38px;text-align:center;
 }
 .btn-sm:hover{transform:translateY(-1px);}
 .btn-sm.primary{background:var(--primary);color:#fff;border-color:var(--primary);}
@@ -2354,6 +2801,7 @@ header{
 .btn-sm.success:hover{background:var(--success);color:#fff;}
 
 .empty{text-align:center;padding:40px;color:var(--text-2);}
+
 #modalOverlay{
   position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
   display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;
@@ -2408,6 +2856,7 @@ header{
 .btn-edit:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
 .btn-del:hover{background:var(--urgent);color:#fff;border-color:var(--urgent);}
 .btn-pin:hover,.btn-pin.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.swal-label{font-size:12px;font-weight:700;color:var(--text-2);text-align:right;display:block;}
 
 #reportOverlay{
   position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);
@@ -2493,6 +2942,26 @@ header{
 #toast.warn{border-color:var(--important);}
 #toast.error{border-color:var(--urgent);}
 
+#saveIndicator{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%);
+  background:var(--bg-3);color:var(--text);padding:8px 16px;
+  border-radius:20px;font-size:12px;font-weight:700;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);z-index:9998;
+  border:1px solid var(--border);opacity:0;transition:.3s;
+}
+
+.shortcuts-hint{
+  position:fixed;bottom:12px;right:12px;display:flex;gap:12px;
+  padding:8px 12px;background:var(--bg-2);border:1px solid var(--border);
+  border-radius:20px;font-size:10px;color:var(--text-3);z-index:40;
+  opacity:.6;transition:.2s;
+}
+.shortcuts-hint:hover{opacity:1;}
+.shortcuts-hint kbd{
+  background:var(--bg-3);border:1px solid var(--border);
+  padding:1px 5px;border-radius:4px;font-family:monospace;font-size:10px;color:var(--text-2);
+}
+
 @media (max-width:700px){
   #tasksList{grid-template-columns:1fr;}
   .form-grid{grid-template-columns:1fr;}
@@ -2516,6 +2985,10 @@ header{
   .user-row{flex-direction:column;text-align:center;}
   .user-actions{justify-content:center;}
   .main-nav{padding:8px 12px;}
+  .shortcuts-hint{display:none;}
+  .users-toolbar-actions{width:100%;}
+  .users-toolbar-actions .search-wrap{max-width:100% !important;width:100%;}
+  .active-tasks-grid{grid-template-columns:1fr;}
 }
 </style>
 </body>
