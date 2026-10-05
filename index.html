@@ -73,25 +73,24 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 .divider{display:flex;align-items:center;gap:12px;margin:10px 0;color:#5b6580;font-size:12px;font-weight:600;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
 #loginBtn{background:rgba(255,255,255,.95);color:#1a2e4e;border:none;padding:14px 20px;border-radius:14px;cursor:pointer;font-size:14px;font-weight:800;font-family:inherit;display:flex;align-items:center;gap:10px;justify-content:center;width:100%;transition:all .25s;}
-#loginBtn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,255,255,.25);}
+#loginBtn:hover{transform:translateY(-2px);}
 #loginBtn img{width:20px;}
 .help-text{color:#5b6580;font-size:11px;margin-top:16px;font-weight:500;}
 .login-watch-section{margin-top:24px;padding-top:20px;border-top:1px dashed rgba(255,255,255,.08);}
 .login-divider{display:flex;align-items:center;gap:12px;margin:0 0 16px;color:#5b6580;font-size:11px;font-weight:600;}
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.3),transparent);}
-.login-watch-btn{width:100%;background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:16px 20px;border-radius:14px;cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(168,85,247,.35);animation:watchLoginPulse 2.5s ease-in-out infinite;}
-@keyframes watchLoginPulse{0%,100%{box-shadow:0 8px 24px rgba(168,85,247,.35),0 0 0 0 rgba(168,85,247,.5);}50%{box-shadow:0 8px 32px rgba(168,85,247,.6),0 0 0 12px rgba(168,85,247,0);}}
-.login-watch-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 15px 40px rgba(168,85,247,.7);animation:none;}
+.login-watch-btn{width:100%;background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:16px 20px;border-radius:14px;cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s;position:relative;overflow:hidden;}
+.login-watch-btn:hover{transform:translateY(-3px) scale(1.02);}
 .watch-btn-icon{font-size:20px;display:inline-block;animation:watchIconFloat 2.5s ease-in-out infinite;}
 @keyframes watchIconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
-.watch-btn-pin{background:rgba(255,255,255,.25);font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;letter-spacing:.8px;}
+.watch-btn-pin{background:rgba(255,255,255,.25);font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;}
 .login-watch-hint{color:#5b6580;font-size:11px;margin-top:12px;text-align:center;font-weight:500;line-height:1.6;}
 
 #loadingScreen{display:none;position:fixed;inset:0;background:radial-gradient(ellipse at top,#1a3a7a 0%,#0a1020 55%,#070a13 100%);align-items:center;justify-content:center;z-index:5000;flex-direction:column;gap:24px;}
 .loading-logo-wrap{width:140px;height:140px;border-radius:50%;background:rgba(15,20,32,.9);padding:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 80px rgba(91,141,239,.7);animation:loadingPulse 1.6s ease-in-out infinite;}
 .loading-logo{width:100%;height:100%;object-fit:contain;border-radius:50%;}
 @keyframes loadingPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
-.loading-text{color:#eef2f9;font-size:16px;font-weight:700;letter-spacing:1.5px;}
+.loading-text{color:#eef2f9;font-size:16px;font-weight:700;}
 .loading-bar{width:220px;height:4px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
 .loading-bar-fill{height:100%;width:30%;background:linear-gradient(90deg,#5b8def,#2dd4a3);border-radius:4px;animation:loadingBar 1.4s ease-in-out infinite;}
 @keyframes loadingBar{0%{width:10%;margin-right:0;}50%{width:60%;margin-right:20%;}100%{width:10%;margin-right:90%;}}
@@ -99,7 +98,7 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 #mainScreen{display:none;}
 header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap;}
 .header-brand{display:flex;align-items:center;gap:16px;}
-.header-logo-wrap{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(91,141,239,.2),rgba(45,212,163,.1));padding:4px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--border-strong),0 0 20px var(--primary-glow);}
+.header-logo-wrap{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(91,141,239,.2),rgba(45,212,163,.1));padding:4px;display:flex;align-items:center;justify-content:center;}
 .header-logo{width:100%;height:100%;object-fit:contain;border-radius:12px;background:var(--bg);padding:5px;}
 .header-brand h1{font-size:21px;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--primary),var(--success));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .header-brand .subtitle{font-size:11px;color:var(--text-2);margin-top:4px;font-weight:600;}
@@ -110,21 +109,16 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .role.user{background:rgba(91,141,239,.18);color:var(--primary);border:1px solid rgba(91,141,239,.3);}
 .icon-btn,.user-menu-btn{background:var(--bg-3);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:all .2s;}
 .icon-btn:hover,.user-menu-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
-.btn-report{background:linear-gradient(135deg,var(--success),var(--success-2));color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;transition:all .25s;}
-.btn-report:hover{transform:translateY(-2px);}
-#logoutBtn{background:rgba(240,75,92,.1);color:var(--urgent);border:1px solid rgba(240,75,92,.3);padding:9px 16px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s;}
+.btn-report{background:linear-gradient(135deg,var(--success),var(--success-2));color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;}
+#logoutBtn{background:rgba(240,75,92,.1);color:var(--urgent);border:1px solid rgba(240,75,92,.3);padding:9px 16px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;}
 #logoutBtn:hover{background:var(--urgent);color:#fff;}
-.btn-watch-screen{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;transition:all .25s;box-shadow:0 6px 20px rgba(168,85,247,.4);}
-.btn-watch-screen:hover{transform:translateY(-2px);}
+.btn-watch-screen{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;}
 
 .main-nav{display:flex;gap:6px;padding:12px 28px;background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);overflow-x:auto;}
 .nav-btn{background:transparent;color:var(--text-2);border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;white-space:nowrap;transition:all .25s;display:inline-flex;align-items:center;gap:6px;}
 .nav-btn:hover{background:var(--bg-3);color:var(--text);}
-.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 6px 20px var(--primary-glow);}
-.nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff !important;animation:watchBtnPulse 2.5s ease-in-out infinite;margin-right:auto;}
-@keyframes watchBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.7);}50%{box-shadow:0 0 0 10px rgba(168,85,247,0);}}
-.watch-icon-pulse{display:inline-block;animation:iconFloat 2s ease-in-out infinite;}
-@keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;}
+.nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff !important;margin-right:auto;}
 .watch-badge{background:rgba(255,255,255,.25);color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:8px;margin-right:4px;}
 
 .view-section{display:none;animation:fadeIn .35s ease-out;}
@@ -135,9 +129,8 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .card-panel{background:var(--bg-2);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow);}
 .panel-title{font-size:16px;font-weight:800;margin-bottom:18px;color:var(--text);}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;}
-.stat{background:var(--bg-3);border-radius:16px;padding:20px 18px;text-align:center;border:1px solid var(--border);transition:all .3s;position:relative;overflow:hidden;}
+.stat{background:var(--bg-3);border-radius:16px;padding:20px 18px;text-align:center;border:1px solid var(--border);position:relative;overflow:hidden;}
 .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
-.stat:hover{transform:translateY(-4px);}
 .stat.total::before{background:linear-gradient(90deg,var(--primary),var(--primary-2));}
 .stat.done::before{background:linear-gradient(90deg,var(--success),var(--success-2));}
 .stat.progress::before{background:linear-gradient(90deg,var(--warning),#d97706);}
@@ -149,10 +142,9 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .stat.progress .stat-num{color:var(--warning);}
 .stat.overdue .stat-num{color:var(--urgent);}
 .team-row{display:grid;grid-template-columns:150px 1fr 140px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
-.team-row:last-child{border-bottom:none;}
 .team-name{font-weight:700;font-size:14px;}
 .team-bar{height:10px;background:var(--bg-4);border-radius:5px;overflow:hidden;}
-.team-fill{height:100%;border-radius:5px;transition:width .8s;background:linear-gradient(90deg,var(--primary),var(--success));}
+.team-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--primary),var(--success));}
 .team-pct{font-size:13px;color:var(--text-2);text-align:left;font-weight:700;}
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .chart-box{height:300px;position:relative;}
@@ -247,7 +239,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
 #modalOverlay.active{display:flex;}
-.modal-box{background:var(--bg-2);border:1.5px solid var(--border-strong);border-radius:24px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+.modal-box{background:var(--bg-2);border:1.5px solid var(--border-strong);border-radius:24px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;}
 .modal-header{padding:22px 26px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:relative;}
 .modal-header::before{content:'';position:absolute;top:0;right:0;left:0;height:5px;border-radius:24px 24px 0 0;}
 .modal-header.normal::before{background:linear-gradient(90deg,var(--success),var(--success-2));}
@@ -303,7 +295,147 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 #toast.warn{border-color:var(--warning);}
 
 /* ============================================================
-   ✅ WATCH SCREEN — تصميم Dashboard احترافي جديد
+   ✅ إشعار فرعي منبثق (Sub Notification)
+   ============================================================ */
+#subNotifications{
+  position:fixed;
+  top:20px;
+  left:20px;
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-width:380px;
+  pointer-events:none;
+}
+.sub-notification{
+  background:linear-gradient(135deg,rgba(15,20,32,.98),rgba(23,29,46,.95));
+  backdrop-filter:blur(30px);
+  border:1.5px solid rgba(91,141,239,.5);
+  border-radius:16px;
+  padding:16px 18px;
+  box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 0 1px rgba(91,141,239,.2),0 0 30px rgba(91,141,239,.3);
+  pointer-events:auto;
+  animation:subNotifIn .5s cubic-bezier(.16,1,.3,1);
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+.sub-notification::before{
+  content:'';
+  position:absolute;
+  top:0;right:0;left:0;height:3px;
+  background:linear-gradient(90deg,#5b8def,#2dd4a3);
+  animation:subNotifProgress 20s linear forwards;
+  transform-origin:right;
+}
+@keyframes subNotifProgress{
+  from{transform:scaleX(1);}
+  to{transform:scaleX(0);}
+}
+.sub-notification.urgent{border-color:rgba(240,75,92,.5);box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 0 1px rgba(240,75,92,.2),0 0 30px rgba(240,75,92,.4);}
+.sub-notification.urgent::before{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
+.sub-notification.important{border-color:rgba(245,165,36,.5);box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 0 1px rgba(245,165,36,.2),0 0 30px rgba(245,165,36,.4);}
+.sub-notification.important::before{background:linear-gradient(90deg,#f5a524,#ffc043);}
+.sub-notification.success{border-color:rgba(45,212,163,.5);}
+.sub-notification.success::before{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+
+@keyframes subNotifIn{
+  from{opacity:0;transform:translateX(-100%) scale(.9);}
+  to{opacity:1;transform:translateX(0) scale(1);}
+}
+@keyframes subNotifOut{
+  from{opacity:1;transform:translateX(0) scale(1);max-height:200px;margin-bottom:10px;}
+  to{opacity:0;transform:translateX(-100%) scale(.9);max-height:0;margin-bottom:0;padding:0;}
+}
+.sub-notification.closing{
+  animation:subNotifOut .4s ease-in forwards;
+}
+
+.sub-notif-icon{
+  width:44px;height:44px;
+  border-radius:12px;
+  background:rgba(35,43,66,.9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  flex-shrink:0;
+  border:1.5px solid rgba(255,255,255,.08);
+}
+.sub-notification.urgent .sub-notif-icon{border-color:rgba(240,75,92,.4);}
+.sub-notification.important .sub-notif-icon{border-color:rgba(245,165,36,.4);}
+.sub-notification.success .sub-notif-icon{border-color:rgba(45,212,163,.4);}
+
+.sub-notif-body{flex:1;min-width:0;}
+.sub-notif-title{
+  font-size:14px;
+  font-weight:900;
+  color:#eef2f9;
+  margin-bottom:5px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.sub-notif-badge{
+  font-size:9px;
+  padding:2px 7px;
+  border-radius:6px;
+  font-weight:900;
+  letter-spacing:.5px;
+}
+.sub-notif-badge.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
+.sub-notif-badge.important{background:rgba(245,165,36,.25);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
+.sub-notif-badge.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
+.sub-notif-message{
+  font-size:12.5px;
+  color:#8892ab;
+  line-height:1.5;
+  font-weight:600;
+  margin-bottom:6px;
+}
+.sub-notif-meta{
+  display:flex;
+  gap:10px;
+  font-size:10.5px;
+  color:#5b6580;
+  font-weight:700;
+  flex-wrap:wrap;
+}
+.sub-notif-meta span{display:inline-flex;align-items:center;gap:3px;}
+
+.sub-notif-close{
+  background:transparent;
+  border:none;
+  color:#5b6580;
+  cursor:pointer;
+  font-size:14px;
+  padding:2px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all .2s;
+  flex-shrink:0;
+}
+.sub-notif-close:hover{background:rgba(240,75,92,.15);color:#f04b5c;}
+
+.sub-notif-progress-text{
+  position:absolute;
+  bottom:6px;
+  left:14px;
+  font-size:9px;
+  color:#5b6580;
+  font-weight:700;
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ============================================================
+   ✅ WATCH SCREEN — Dashboard احترافي (v2)
    ============================================================ */
 #watchScreen{display:none;position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;}
 #watchScreen.active{display:block;}
@@ -329,19 +461,18 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 #watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto;gap:10px;padding:10px;}
 #watchMainContent.active{display:grid;}
 
-/* ============================================================
-   ✅ الصف 1: الشريط العلوي النظيف
-   ============================================================ */
+/* ============ الشريط العلوي — شعار بالمنتصف + مباشر + متصل ============ */
 .w-bar-top{
-  display:flex;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
   align-items:center;
-  justify-content:space-between;
-  padding:10px 20px;
+  gap:20px;
+  padding:12px 20px;
   background:linear-gradient(135deg,rgba(15,20,32,.9),rgba(23,29,46,.8));
   backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.08);
   border-radius:14px;
-  min-height:60px;
+  min-height:80px;
   position:relative;
   overflow:hidden;
 }
@@ -351,101 +482,154 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   top:0;right:0;left:0;height:2px;
   background:linear-gradient(90deg,transparent,#5b8def,#2dd4a3,transparent);
 }
-.w-brand{
+
+/* يمين — العنوان */
+.w-bar-title{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:2px;
+  justify-self:start;
+}
+.w-bar-title h1{
+  font-size:20px;
+  font-weight:900;
+  line-height:1;
+  letter-spacing:-.3px;
+  background:linear-gradient(135deg,#5b8def,#2dd4a3);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.w-bar-title p{
+  font-size:11px;
+  color:#8892ab;
+  font-weight:600;
+}
+
+/* وسط — الشعار الكبير */
+.w-bar-center{
   display:flex;
   align-items:center;
-  gap:12px;
+  justify-content:center;
+  gap:20px;
+  justify-self:center;
 }
-.w-brand-logo{
-  width:45px;height:45px;
-  border-radius:12px;
-  padding:3px;
-  background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.2));
-  box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 20px rgba(91,141,239,.5);
+.w-bar-logo-big{
+  width:90px;
+  height:90px;
+  border-radius:22px;
+  padding:5px;
+  background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));
+  box-shadow:0 0 0 3px rgba(91,141,239,.4),0 0 40px rgba(91,141,239,.6);
+  animation:wLogoPulse 3s ease-in-out infinite;
 }
-.w-brand-logo img{
-  width:100%;height:100%;
+@keyframes wLogoPulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(91,141,239,.4),0 0 40px rgba(91,141,239,.6);}
+  50%{box-shadow:0 0 0 3px rgba(91,141,239,.7),0 0 60px rgba(91,141,239,.9);}
+}
+.w-bar-logo-big img{
+  width:100%;
+  height:100%;
   object-fit:contain;
-  border-radius:9px;
+  border-radius:18px;
   background:#050810;
-  padding:4px;
+  padding:8px;
   display:block;
 }
-.w-brand-text h1{
-  font-size:18px;font-weight:900;line-height:1;
-  background:linear-gradient(135deg,#5b8def,#2dd4a3);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+.w-bar-clock-big{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:10px 20px;
+  background:rgba(23,29,46,.6);
+  border:1.5px solid rgba(91,141,239,.3);
+  border-radius:14px;
+  min-width:180px;
 }
-.w-brand-text p{font-size:10px;color:#8892ab;margin-top:3px;font-weight:600;}
+.w-clock-time{
+  font-family:'JetBrains Mono',monospace;
+  font-size:26px;
+  font-weight:800;
+  color:#5b8def;
+  letter-spacing:2px;
+  line-height:1;
+  text-shadow:0 0 20px rgba(91,141,239,.6);
+  font-variant-numeric:tabular-nums;
+}
+.w-clock-date{
+  font-size:10.5px;
+  color:#8892ab;
+  font-weight:600;
+  letter-spacing:.5px;
+}
 
-.w-bar-top-center{
+/* يسار — مباشر + متصل + إغلاق */
+.w-bar-actions{
   display:flex;
   align-items:center;
-  gap:16px;
-  flex:1;
-  justify-content:center;
+  gap:10px;
+  justify-self:end;
 }
 .w-live-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:6px 14px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 16px;
   background:rgba(240,75,92,.15);
-  border:1px solid rgba(240,75,92,.4);
+  border:1.5px solid rgba(240,75,92,.4);
   border-radius:20px;
-  font-size:11px;font-weight:900;color:#f04b5c;letter-spacing:1.5px;
+  font-size:11.5px;
+  font-weight:900;
+  color:#f04b5c;
+  letter-spacing:1.5px;
 }
 .w-live-pill .w-live-dot{
-  width:7px;height:7px;border-radius:50%;
+  width:8px;height:8px;border-radius:50%;
   background:#f04b5c;
   box-shadow:0 0 12px #f04b5c;
   animation:wLivePulse 1.5s ease-in-out infinite;
 }
 @keyframes wLivePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.4);}}
 
-.w-clock-big{
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-}
-.w-clock-time{
-  font-family:'JetBrains Mono',monospace;
-  font-size:22px;font-weight:800;color:#5b8def;letter-spacing:2px;line-height:1;
-  text-shadow:0 0 20px rgba(91,141,239,.6);
-  font-variant-numeric:tabular-nums;
-}
-.w-clock-date{
-  font-size:10px;color:#8892ab;font-weight:600;letter-spacing:.5px;
-}
-
-.w-bar-top-actions{
-  display:flex;align-items:center;gap:8px;
-}
 .w-status-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:6px 12px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 14px;
   background:rgba(45,212,163,.1);
-  border:1px solid rgba(45,212,163,.3);
-  border-radius:16px;
-  font-size:10.5px;font-weight:800;color:#2dd4a3;
+  border:1.5px solid rgba(45,212,163,.3);
+  border-radius:20px;
+  font-size:11.5px;
+  font-weight:800;
+  color:#2dd4a3;
 }
 .w-status-pill.offline{background:rgba(240,75,92,.1);border-color:rgba(240,75,92,.3);color:#f04b5c;}
-.w-status-dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;animation:wLivePulse 2s ease-in-out infinite;}
+.w-status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;animation:wLivePulse 2s ease-in-out infinite;}
 
 .w-close-btn{
-  width:34px;height:34px;border-radius:50%;
+  width:40px;
+  height:40px;
+  border-radius:50%;
   border:1.5px solid rgba(255,255,255,.1);
   background:rgba(255,255,255,.05);
-  color:#eef2f9;font-size:13px;font-weight:700;
-  cursor:pointer;transition:all .25s;
-  display:flex;align-items:center;justify-content:center;
+  color:#eef2f9;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .25s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .w-close-btn:hover{background:#f04b5c;color:#fff;border-color:#f04b5c;transform:rotate(90deg);}
 
-/* ============================================================
-   ✅ الصف 2: 6 بطاقات KPI بارزة
-   ============================================================ */
+/* ============ 6 بطاقات KPI ============ */
 .w-kpi-row{
   display:grid;
   grid-template-columns:repeat(6,1fr);
   gap:10px;
-  min-height:0;
 }
 .w-kpi-card{
   display:flex;
@@ -453,7 +637,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   align-items:center;
   justify-content:center;
   gap:4px;
-  padding:12px 10px;
+  padding:14px 10px;
   background:linear-gradient(180deg,rgba(23,29,46,.9),rgba(15,20,32,.85));
   border:1px solid rgba(255,255,255,.08);
   border-radius:14px;
@@ -461,23 +645,15 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   overflow:hidden;
   transition:all .3s;
 }
-.w-kpi-card::before{
-  content:'';
-  position:absolute;
-  top:0;right:0;left:0;height:3px;
-}
-.w-kpi-card:hover{
-  transform:translateY(-2px);
-  border-color:rgba(255,255,255,.15);
-}
+.w-kpi-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;}
+.w-kpi-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.15);}
 .w-kpi-card.total::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
 .w-kpi-card.active::before{background:linear-gradient(90deg,#7c8ef8,#5b8def);}
 .w-kpi-card.working::before{background:linear-gradient(90deg,#f5a524,#ffc043);}
 .w-kpi-card.overdue::before{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
 .w-kpi-card.done::before{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
 .w-kpi-card.team::before{background:linear-gradient(90deg,#06b6d4,#22d3ee);}
-
-.w-kpi-icon{font-size:22px;line-height:1;margin-bottom:2px;}
+.w-kpi-icon{font-size:22px;line-height:1;}
 .w-kpi-num{
   font-family:'JetBrains Mono',monospace;
   font-size:28px;font-weight:800;line-height:1;letter-spacing:-1px;
@@ -489,11 +665,9 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .w-kpi-card.overdue .w-kpi-num{color:#f04b5c;}
 .w-kpi-card.done .w-kpi-num{color:#2dd4a3;}
 .w-kpi-card.team .w-kpi-num{color:#06b6d4;}
-.w-kpi-label{font-size:11px;color:#8892ab;font-weight:700;letter-spacing:.2px;}
+.w-kpi-label{font-size:11px;color:#8892ab;font-weight:700;}
 
-/* ============================================================
-   ✅ الصف 3: التقسيم 70/30
-   ============================================================ */
+/* ============ التقسيم 70/30 ============ */
 .w-content-split{
   display:grid;
   grid-template-columns:minmax(0,1fr) 340px;
@@ -516,7 +690,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   display:flex;
   justify-content:space-between;
   align-items:center;
-  padding:12px 16px;
+  padding:14px 18px;
   border-bottom:1px solid rgba(255,255,255,.06);
   background:rgba(35,43,66,.35);
   flex-shrink:0;
@@ -525,7 +699,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 }
 .w-main-title{
   display:flex;align-items:center;gap:8px;
-  font-size:14px;font-weight:900;color:#eef2f9;
+  font-size:15px;font-weight:900;color:#eef2f9;
 }
 .w-tabs{
   display:flex;gap:4px;
@@ -534,13 +708,13 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   border-radius:10px;
 }
 .w-tab{
-  padding:6px 14px;
+  padding:7px 16px;
   border:none;
   background:transparent;
   color:#8892ab;
   border-radius:8px;
   cursor:pointer;
-  font-size:11.5px;
+  font-size:12px;
   font-weight:800;
   font-family:inherit;
   transition:all .25s;
@@ -555,10 +729,10 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .w-tab.active.done-tab{background:linear-gradient(135deg,#2dd4a3,#22b388);}
 .w-tab-count{
   background:rgba(255,255,255,.2);
-  padding:1px 6px;
+  padding:1px 7px;
   border-radius:6px;
-  font-size:9.5px;
-  min-width:16px;
+  font-size:10px;
+  min-width:18px;
   text-align:center;
 }
 
@@ -566,7 +740,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   flex:1;
   overflow:hidden;
   position:relative;
-  padding:8px;
+  padding:10px;
   min-height:0;
 }
 .w-main-body.auto-scroll{
@@ -576,7 +750,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .w-main-body .w-scroll-track{
   display:flex;
   flex-direction:column;
-  gap:6px;
+  gap:8px;
   animation:wAutoScroll 40s linear infinite;
   will-change:transform;
   padding-bottom:16px;
@@ -585,49 +759,51 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 @keyframes wAutoScroll{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
 
 /* ============================================================
-   ✅ بطاقة مهمة أفقية (Table Row Style)
+   ✅ بطاقة مهمة أفقية أكبر (Bigger Row)
    ============================================================ */
 .w-task-row{
   display:grid;
-  grid-template-columns:4px 70px minmax(0,1fr) 100px 110px minmax(120px,140px) 60px;
+  grid-template-columns:6px 90px minmax(0,1fr) 130px 130px minmax(140px,180px) 90px;
   align-items:center;
-  gap:10px;
-  padding:10px 12px;
+  gap:14px;
+  padding:16px 18px;
   background:rgba(23,29,46,.85);
   border:1px solid rgba(255,255,255,.06);
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
   transition:all .25s;
   position:relative;
+  min-height:72px;
 }
 .w-task-row:hover{
   background:rgba(35,43,66,.9);
   border-color:rgba(91,141,239,.3);
   transform:translateX(-3px);
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
 }
 .w-task-bar{
-  width:4px;
+  width:6px;
   height:100%;
-  min-height:36px;
-  border-radius:2px;
+  min-height:44px;
+  border-radius:3px;
   background:#5b8def;
 }
-.w-task-row.urgent .w-task-bar{background:#f04b5c;box-shadow:0 0 12px rgba(240,75,92,.6);}
-.w-task-row.important .w-task-bar{background:#f5a524;box-shadow:0 0 10px rgba(245,165,36,.5);}
-.w-task-row.normal .w-task-bar{background:#2dd4a3;box-shadow:0 0 10px rgba(45,212,163,.5);}
+.w-task-row.urgent .w-task-bar{background:#f04b5c;box-shadow:0 0 14px rgba(240,75,92,.7);}
+.w-task-row.important .w-task-bar{background:#f5a524;box-shadow:0 0 12px rgba(245,165,36,.6);}
+.w-task-row.normal .w-task-bar{background:#2dd4a3;box-shadow:0 0 12px rgba(45,212,163,.6);}
 .w-task-row.done-task{opacity:.7;}
 .w-task-row.done-task .w-task-bar{background:#2dd4a3;}
 .w-task-row.overdue{background:linear-gradient(90deg,rgba(240,75,92,.08),rgba(23,29,46,.85) 30%);}
 .w-task-row.urgent.urgent-flash{animation:wUrgentPulse 2s ease-in-out infinite;}
 @keyframes wUrgentPulse{
   0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,0);}
-  50%{box-shadow:0 0 0 3px rgba(240,75,92,.15),0 0 20px rgba(240,75,92,.3);}
+  50%{box-shadow:0 0 0 4px rgba(240,75,92,.15),0 0 25px rgba(240,75,92,.4);}
 }
 
 .w-task-priority{
-  font-size:10px;
-  padding:3px 9px;
-  border-radius:8px;
+  font-size:12px;
+  padding:6px 12px;
+  border-radius:10px;
   font-weight:900;
   text-align:center;
   white-space:nowrap;
@@ -637,7 +813,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .w-task-priority.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
 
 .w-task-title{
-  font-size:13px;
+  font-size:15px;
   font-weight:800;
   color:#eef2f9;
   overflow:hidden;
@@ -647,24 +823,24 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 }
 
 .w-task-assignee{
-  font-size:11px;
+  font-size:12.5px;
   color:#8892ab;
   font-weight:700;
   display:inline-flex;
   align-items:center;
-  gap:4px;
+  gap:5px;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
 
 .w-task-due{
-  font-size:11px;
+  font-size:12.5px;
   color:#8892ab;
   font-weight:700;
   display:inline-flex;
   align-items:center;
-  gap:4px;
+  gap:5px;
   white-space:nowrap;
 }
 .w-task-due.overdue{color:#ff6b7d;font-weight:800;}
@@ -672,20 +848,20 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .w-task-progress-wrap{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:10px;
   min-width:0;
 }
 .w-task-progress-bar{
   flex:1;
-  height:5px;
+  height:7px;
   background:rgba(35,43,66,.9);
-  border-radius:3px;
+  border-radius:4px;
   overflow:hidden;
   min-width:0;
 }
 .w-task-progress-fill{
   height:100%;
-  border-radius:3px;
+  border-radius:4px;
   transition:width .5s ease;
   background:linear-gradient(90deg,#5b8def,#7c8ef8);
 }
@@ -694,37 +870,34 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .w-task-row.normal .w-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
 .w-task-row.done-task .w-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
 .w-task-progress-text{
-  font-size:10.5px;
+  font-size:12px;
   font-weight:800;
   color:#8892ab;
   font-family:'JetBrains Mono',monospace;
-  min-width:32px;
+  min-width:40px;
   text-align:left;
 }
 
 .w-task-status{
-  font-size:10px;
-  padding:3px 8px;
-  border-radius:8px;
+  font-size:11.5px;
+  padding:6px 12px;
+  border-radius:10px;
   font-weight:800;
   text-align:center;
   white-space:nowrap;
 }
-.w-task-status.new{background:rgba(91,141,239,.15);color:#5b8def;}
-.w-task-status.progress{background:rgba(245,165,36,.15);color:#f5a524;}
-.w-task-status.done{background:rgba(45,212,163,.15);color:#2dd4a3;}
+.w-task-status.new{background:rgba(91,141,239,.15);color:#5b8def;border:1px solid rgba(91,141,239,.3);}
+.w-task-status.progress{background:rgba(245,165,36,.15);color:#f5a524;border:1px solid rgba(245,165,36,.3);}
+.w-task-status.done{background:rgba(45,212,163,.15);color:#2dd4a3;border:1px solid rgba(45,212,163,.3);}
 
 .w-empty-state{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:60px 20px;color:#5b6580;gap:12px;text-align:center;
-  height:100%;
+  padding:60px 20px;color:#5b6580;gap:12px;text-align:center;height:100%;
 }
 .w-empty-icon{font-size:48px;opacity:.4;}
 .w-empty-text{font-size:14px;font-weight:700;color:#8892ab;}
 
-/* ============================================================
-   ✅ Sidebar اليمين: أفضل المنجزين + النشاطات
-   ============================================================ */
+/* ============ Sidebar ============ */
 .w-side{
   display:flex;
   flex-direction:column;
@@ -742,52 +915,37 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   overflow:hidden;
   min-height:0;
 }
-.w-side-panel.top-performers{
-  flex:0 0 auto;
-  max-height:42%;
-}
-.w-side-panel.recent-activities{
-  flex:1;
-  min-height:0;
-}
+.w-side-panel.top-performers{flex:0 0 auto;max-height:42%;}
+.w-side-panel.recent-activities{flex:1;min-height:0;}
 .w-side-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 16px;
   border-bottom:1px solid rgba(255,255,255,.06);
   background:rgba(35,43,66,.35);
   flex-shrink:0;
 }
 .w-side-title{
-  font-size:12.5px;
-  font-weight:900;
-  color:#eef2f9;
+  font-size:13px;font-weight:900;color:#eef2f9;
   display:flex;align-items:center;gap:6px;
 }
 .w-side-badge{
   background:rgba(91,141,239,.15);
   color:#5b8def;
-  padding:2px 8px;
+  padding:3px 10px;
   border-radius:10px;
-  font-size:10px;
+  font-size:10.5px;
   font-weight:900;
   border:1px solid rgba(91,141,239,.3);
 }
 .w-side-body{
-  flex:1;
-  overflow-y:auto;
-  padding:8px;
-  min-height:0;
+  flex:1;overflow-y:auto;padding:10px;min-height:0;
 }
 .w-side-body::-webkit-scrollbar{width:4px;}
 .w-side-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px;}
 
 .w-performer{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:8px 10px;
+  display:flex;align-items:center;gap:10px;
+  padding:9px 11px;
   border-radius:10px;
   transition:all .25s;
   background:rgba(23,29,46,.5);
@@ -795,30 +953,25 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 }
 .w-performer:hover{background:rgba(35,43,66,.9);}
 .w-performer-rank{
-  width:24px;height:24px;
-  border-radius:50%;
+  width:26px;height:26px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:900;
-  flex-shrink:0;
+  font-size:12px;font-weight:900;flex-shrink:0;
 }
 .w-performer-rank.r1{background:linear-gradient(135deg,#ffd700,#ffb300);color:#000;}
 .w-performer-rank.r2{background:linear-gradient(135deg,#c0c0c0,#a0a0a0);color:#000;}
 .w-performer-rank.r3{background:linear-gradient(135deg,#cd7f32,#a0651e);color:#fff;}
 .w-performer-rank.rx{background:rgba(91,141,239,.15);color:#5b8def;}
 .w-performer-info{flex:1;min-width:0;}
-.w-performer-name{font-size:12px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.w-performer-count{font-size:10px;color:#8892ab;font-weight:700;}
+.w-performer-name{font-size:12.5px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.w-performer-count{font-size:10.5px;color:#8892ab;font-weight:700;}
 .w-performer-score{
-  font-size:13px;
-  font-weight:900;
-  color:#2dd4a3;
+  font-size:14px;font-weight:900;color:#2dd4a3;
   font-family:'JetBrains Mono',monospace;
 }
 
 .w-activity{
-  display:flex;
-  gap:10px;
-  padding:8px 10px;
+  display:flex;gap:10px;
+  padding:9px 11px;
   border-radius:10px;
   transition:all .25s;
   background:rgba(23,29,46,.5);
@@ -826,11 +979,9 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 }
 .w-activity:hover{background:rgba(35,43,66,.9);}
 .w-activity-icon{
-  width:28px;height:28px;
-  border-radius:8px;
+  width:30px;height:30px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;
-  flex-shrink:0;
+  font-size:14px;flex-shrink:0;
   background:rgba(35,43,66,.9);
   border:1.5px solid rgba(255,255,255,.08);
 }
@@ -839,118 +990,97 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .w-activity.comment .w-activity-icon{border-color:rgba(91,141,239,.4);}
 .w-activity-body{flex:1;min-width:0;}
 .w-activity-text{
-  font-size:11.5px;
-  color:#eef2f9;
-  font-weight:600;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  line-height:1.5;
-  margin-bottom:2px;
+  font-size:12px;color:#eef2f9;font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  line-height:1.5;margin-bottom:3px;
 }
 .w-activity-meta{
-  display:flex;
-  justify-content:space-between;
-  gap:6px;
-  font-size:9.5px;
-  color:#5b6580;
-  font-weight:700;
+  display:flex;justify-content:space-between;gap:6px;
+  font-size:10px;color:#5b6580;font-weight:700;
 }
 .w-activity-author{color:#8892ab;}
 
-/* ============================================================
-   ✅ الصف 4: شريط أخبار موحد
-   ============================================================ */
+/* ============ شريط الإشعارات السفلي ============ */
 .w-news-ticker{
-  display:flex;
-  align-items:center;
+  display:flex;align-items:center;
   background:linear-gradient(135deg,rgba(15,20,32,.9),rgba(23,29,46,.8));
   backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.08);
   border-radius:12px;
   overflow:hidden;
-  height:40px;
-  position:relative;
+  height:44px;
 }
 .w-news-label{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:0 16px;
-  height:100%;
-  background:linear-gradient(135deg,#f04b5c,#c81e3c);
-  color:#fff;
-  font-weight:900;
-  font-size:11px;
-  flex-shrink:0;
-  letter-spacing:.5px;
+  display:flex;align-items:center;gap:6px;
+  padding:0 18px;height:100%;
+  background:linear-gradient(135deg,#5b8def,#3b6fd4);
+  color:#fff;font-weight:900;font-size:12px;
+  flex-shrink:0;letter-spacing:.5px;
 }
 .w-news-label::before{
-  content:'';
-  width:6px;height:6px;
-  border-radius:50%;
-  background:#fff;
-  box-shadow:0 0 8px #fff;
+  content:'';width:7px;height:7px;border-radius:50%;
+  background:#fff;box-shadow:0 0 8px #fff;
   animation:wLivePulse 1.5s ease-in-out infinite;
 }
 .w-news-track-wrap{flex:1;overflow:hidden;position:relative;}
 .w-news-track{
-  display:inline-block;
-  white-space:nowrap;
-  padding-right:100%;
+  display:inline-block;white-space:nowrap;padding-right:100%;
   animation:wNewsScroll 60s linear infinite;
-  color:#eef2f9;
-  font-size:12px;
-  font-weight:600;
-  line-height:40px;
+  color:#eef2f9;font-size:13px;font-weight:600;line-height:44px;
 }
 .w-news-track:hover{animation-play-state:paused;}
 .w-news-track span{padding-left:60px;}
-.w-news-track span::before{content:'◆';color:#5b8def;margin-left:18px;font-size:9px;}
+.w-news-track span::before{content:'◆';color:#5b8def;margin-left:18px;font-size:10px;}
 @keyframes wNewsScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
 
-/* ============================================================
-   ✅ استجابة الشاشات
-   ============================================================ */
+/* ============ استجابة الشاشات ============ */
 @media (max-width:1400px){
   .w-content-split{grid-template-columns:minmax(0,1fr) 300px;}
   .w-kpi-num{font-size:24px;}
   .w-kpi-icon{font-size:20px;}
+  .w-task-row{grid-template-columns:6px 80px minmax(0,1fr) 110px 110px minmax(120px,150px) 80px;gap:12px;padding:14px 16px;font-size:14px;}
+  .w-task-title{font-size:14px;}
+  .w-task-bar{min-height:40px;}
+  .w-bar-logo-big{width:76px;height:76px;}
+  .w-clock-time{font-size:22px;}
 }
 @media (max-width:1200px){
   .w-content-split{grid-template-columns:minmax(0,1fr) 280px;}
   .w-kpi-row{grid-template-columns:repeat(3,1fr);}
-  .w-task-row{grid-template-columns:4px 65px minmax(0,1fr) 90px 100px minmax(100px,120px) 55px;font-size:11px;}
+  .w-task-row{grid-template-columns:5px 75px minmax(0,1fr) 100px 100px minmax(100px,130px) 75px;gap:10px;padding:12px 14px;}
+  .w-task-title{font-size:13.5px;}
+  .w-bar-logo-big{width:68px;height:68px;}
+  .w-bar-title h1{font-size:17px;}
 }
 @media (max-width:900px){
   .w-content-split{grid-template-columns:1fr;grid-template-rows:1fr auto;}
   .w-side{flex-direction:row;gap:10px;max-height:200px;}
   .w-side-panel{flex:1;max-height:none;}
-  .w-task-row{grid-template-columns:4px 1fr 90px;gap:8px;padding:10px;}
+  .w-task-row{grid-template-columns:5px 1fr 90px;gap:10px;padding:14px 16px;}
   .w-task-row > .w-task-assignee,
   .w-task-row > .w-task-progress-wrap{display:none;}
+  .w-bar-logo-big{width:60px;height:60px;}
+  .w-clock-time{font-size:18px;}
+  .w-bar-title h1{font-size:15px;}
+  .w-bar-title p{font-size:9px;}
+  .w-live-pill,.w-status-pill{padding:6px 10px;font-size:10px;}
 }
 @media (max-width:700px){
   #watchMainContent{padding:6px;gap:8px;}
   .w-kpi-row{grid-template-columns:repeat(2,1fr);gap:6px;}
-  .w-kpi-card{padding:8px;}
-  .w-kpi-num{font-size:20px;}
-  .w-kpi-icon{font-size:16px;}
-  .w-kpi-label{font-size:9.5px;}
-  .w-bar-top{padding:8px 12px;min-height:52px;}
-  .w-brand-logo{width:38px;height:38px;}
-  .w-brand-text h1{font-size:15px;}
-  .w-brand-text p{font-size:9px;}
-  .w-clock-time{font-size:16px;}
-  .w-clock-date{font-size:9px;}
-  .w-live-pill{padding:4px 10px;font-size:9px;}
-  .w-main-header{padding:10px 12px;}
-  .w-tab{padding:5px 10px;font-size:10px;}
-  .w-task-row{grid-template-columns:4px 55px minmax(0,1fr) 70px;font-size:10.5px;padding:8px;}
+  .w-kpi-card{padding:10px;}
+  .w-kpi-num{font-size:22px;}
+  .w-kpi-icon{font-size:18px;}
+  .w-kpi-label{font-size:10px;}
+  .w-bar-top{padding:10px;min-height:auto;grid-template-columns:1fr;gap:10px;justify-items:center;}
+  .w-bar-center{width:100%;justify-content:center;}
+  .w-bar-title{align-items:center;width:100%;}
+  .w-bar-actions{width:100%;justify-content:center;}
+  .w-task-row{grid-template-columns:5px 65px minmax(0,1fr) 70px;font-size:12px;padding:12px 14px;gap:8px;}
   .w-task-row > .w-task-due{display:none;}
-  .w-news-track{font-size:11px;}
+  .w-news-track{font-size:11.5px;}
+  #subNotifications{left:10px;right:10px;max-width:none;}
 }
 </style>
 </head>
@@ -1186,8 +1316,11 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 </div>
 
+<!-- ============ Sub Notifications Container ============ -->
+<div id="subNotifications"></div>
+
 <!-- ============================================================
-     ✅ WATCH SCREEN — Dashboard احترافي
+     ✅ WATCH SCREEN — Dashboard
      ============================================================ -->
 <div id="watchScreen">
   <div class="watch-bg">
@@ -1212,30 +1345,31 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
   <div id="watchMainContent">
 
-    <!-- ============ الصف 1: الشريط العلوي النظيف ============ -->
+    <!-- ============ الشريط العلوي: عنوان | شعار بالمنتصف + ساعة | مباشر+متصل+إغلاق ============ -->
     <div class="w-bar-top">
-      <div class="w-brand">
-        <div class="w-brand-logo">
-          <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK">
-        </div>
-        <div class="w-brand-text">
-          <h1>Hub to IT Dep.</h1>
-          <p>EMAK — نظام المتابعة</p>
-        </div>
+      <!-- يمين: العنوان -->
+      <div class="w-bar-title">
+        <h1>Hub to IT Dep.</h1>
+        <p>EMAK — نظام المتابعة</p>
       </div>
 
-      <div class="w-bar-top-center">
-        <div class="w-live-pill">
-          <span class="w-live-dot"></span>
-          <span>مباشر</span>
+      <!-- منتصف: الشعار الكبير + الساعة -->
+      <div class="w-bar-center">
+        <div class="w-bar-logo-big">
+          <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK">
         </div>
-        <div class="w-clock-big">
+        <div class="w-bar-clock-big">
           <div class="w-clock-time" id="watchClock">--:--:--</div>
           <div class="w-clock-date" id="watchDate">---</div>
         </div>
       </div>
 
-      <div class="w-bar-top-actions">
+      <!-- يسار: مباشر + متصل + إغلاق -->
+      <div class="w-bar-actions">
+        <div class="w-live-pill">
+          <span class="w-live-dot"></span>
+          <span>مباشر</span>
+        </div>
         <div class="w-status-pill" id="watchConnStatus">
           <span class="w-status-dot"></span>
           <span>متصل</span>
@@ -1244,7 +1378,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
       </div>
     </div>
 
-    <!-- ============ الصف 2: 6 بطاقات KPI ============ -->
+    <!-- ============ 6 بطاقات KPI ============ -->
     <div class="w-kpi-row">
       <div class="w-kpi-card total">
         <div class="w-kpi-icon">📋</div>
@@ -1278,10 +1412,10 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
       </div>
     </div>
 
-    <!-- ============ الصف 3: التقسيم 70/30 ============ -->
+    <!-- ============ التقسيم 70/30 ============ -->
     <div class="w-content-split">
 
-      <!-- عمود المهام الرئيسي -->
+      <!-- عمود المهام -->
       <div class="w-main-panel">
         <div class="w-main-header">
           <div class="w-main-title">
@@ -1290,20 +1424,16 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
           </div>
           <div class="w-tabs" id="wTabs">
             <button class="w-tab active" data-tab="all">
-              الكل
-              <span class="w-tab-count" id="wTabAllCount">0</span>
+              الكل <span class="w-tab-count" id="wTabAllCount">0</span>
             </button>
             <button class="w-tab urgent-tab" data-tab="urgent">
-              🔴 عاجلة
-              <span class="w-tab-count" id="wTabUrgentCount">0</span>
+              🔴 عاجلة <span class="w-tab-count" id="wTabUrgentCount">0</span>
             </button>
             <button class="w-tab" data-tab="working">
-              ⏳ جارية
-              <span class="w-tab-count" id="wTabWorkingCount">0</span>
+              ⏳ جارية <span class="w-tab-count" id="wTabWorkingCount">0</span>
             </button>
             <button class="w-tab done-tab" data-tab="done">
-              ✅ مكتملة
-              <span class="w-tab-count" id="wTabDoneCount">0</span>
+              ✅ مكتملة <span class="w-tab-count" id="wTabDoneCount">0</span>
             </button>
           </div>
         </div>
@@ -1319,14 +1449,9 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
       <!-- Sidebar -->
       <div class="w-side">
-
-        <!-- أفضل المنجزين -->
         <div class="w-side-panel top-performers">
           <div class="w-side-header">
-            <div class="w-side-title">
-              <span>🏆</span>
-              <span>أفضل المنجزين</span>
-            </div>
+            <div class="w-side-title"><span>🏆</span><span>أفضل المنجزين</span></div>
             <span class="w-side-badge">Top 5</span>
           </div>
           <div class="w-side-body" id="wTopPerformers">
@@ -1336,14 +1461,9 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
             </div>
           </div>
         </div>
-
-        <!-- آخر النشاطات -->
         <div class="w-side-panel recent-activities">
           <div class="w-side-header">
-            <div class="w-side-title">
-              <span>⏱️</span>
-              <span>آخر النشاطات</span>
-            </div>
+            <div class="w-side-title"><span>⏱️</span><span>آخر النشاطات</span></div>
             <span class="w-side-badge" id="wActivitiesCount">0</span>
           </div>
           <div class="w-side-body" id="wRecentActivities">
@@ -1353,17 +1473,15 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- ============ الصف 4: شريط أخبار موحد ============ -->
+    <!-- ============ شريط الإشعارات السفلي ============ -->
     <div class="w-news-ticker">
-      <div class="w-news-label">LIVE</div>
+      <div class="w-news-label">🔔 إشعارات</div>
       <div class="w-news-track-wrap">
         <div class="w-news-track" id="wNewsTrack">
           <span>مرحباً بكم في لوحة المتابعة — Hub to IT Dep.</span>
-          <span>يتم التحديث تلقائياً كل لحظة</span>
         </div>
       </div>
     </div>
@@ -1375,7 +1493,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v9.0 — Dashboard احترافي
+   EMAK Hub v9.1 — Dashboard v2 + Sub Notifications
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1406,6 +1524,7 @@ const MAX_BACKUPS = 5;
 const WATCH_PASSWORD = "watch2024";
 const WATCH_SESSION_DURATION = 12 * 60 * 60 * 1000;
 const SCROLL_SECONDS_PER_TASK = 10;
+const NOTIFICATION_DURATION = 20000; // 20 ثانية
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -1425,7 +1544,10 @@ const state = {
   isOnline: navigator.onLine, backupTimer: null, lastBackupTime: 0,
   pendingWrites: 0, renderScheduled: false,
   watchMode: false, watchClockTimer: null,
-  watchUnsubs: { tasks: null, team: null, activity: null }
+  watchUnsubs: { tasks: null, team: null, activity: null },
+  knownTaskIds: new Set(),
+  notifications: [],
+  audioContext: null
 };
 
 /* ============ Utils ============ */
@@ -1489,6 +1611,121 @@ function swalConfirm(title, text="لا يمكن التراجع!") {
   return Swal.fire({ icon:"warning", title, text, showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580", background: themeBg(), color: themeFg() });
 }
 
+/* ============ ✅ Sub Notification System ============ */
+function playNotificationSound(priority = "normal") {
+  try {
+    if (!state.audioContext) {
+      state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const ctx = state.audioContext;
+    const now = ctx.currentTime;
+    
+    // نغمة بسيطة حسب الأولوية
+    const notes = priority === "urgent" 
+      ? [{ f: 880, t: 0 }, { f: 660, t: 0.15 }, { f: 880, t: 0.3 }]  // عاجل - 3 نغمات
+      : priority === "important"
+      ? [{ f: 660, t: 0 }, { f: 880, t: 0.15 }]  // مهم - نغمتان
+      : [{ f: 523, t: 0 }, { f: 659, t: 0.1 }]; // عادي - نغمتان هادئتان
+    
+    notes.forEach(({ f, t }) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime(0.08, now + t);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + t + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + t);
+      osc.stop(now + t + 0.3);
+    });
+  } catch (e) {
+    // تجاهل الأخطاء الصامتة
+  }
+}
+
+function showSubNotification(task, type = "task_created") {
+  const container = document.getElementById("subNotifications");
+  if (!container) return;
+  
+  const priority = task.priority === "عاجل" ? "urgent" : task.priority === "مهم" ? "important" : "normal";
+  const notifId = "notif-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7);
+  
+  const iconMap = {
+    urgent: "🔴",
+    important: "🟡",
+    normal: "🟢"
+  };
+  const badgeMap = {
+    urgent: "عاجل",
+    important: "مهم",
+    normal: "عادي"
+  };
+  
+  const notif = document.createElement("div");
+  notif.className = `sub-notification ${priority}`;
+  notif.id = notifId;
+  notif.innerHTML = `
+    <div class="sub-notif-icon">${iconMap[priority]}</div>
+    <div class="sub-notif-body">
+      <div class="sub-notif-title">
+        <span>📌 مهمة جديدة</span>
+        <span class="sub-notif-badge ${priority}">${badgeMap[priority]}</span>
+      </div>
+      <div class="sub-notif-message">${escapeHtml(task.title)}</div>
+      <div class="sub-notif-meta">
+        <span>👤 ${escapeHtml(task.assignee || "—")}</span>
+        ${task.dueDate ? `<span>📅 ${escapeHtml(dueLabel(task.dueDate))}</span>` : ""}
+      </div>
+    </div>
+    <button class="sub-notif-close" onclick="closeSubNotification('${notifId}')">✕</button>
+    <div class="sub-notif-progress-text">20s</div>
+  `;
+  
+  container.appendChild(notif);
+  
+  // تشغيل الصوت
+  playNotificationSound(priority);
+  
+  // العد التنازلي
+  let remaining = NOTIFICATION_DURATION / 1000;
+  const progressEl = notif.querySelector(".sub-notif-progress-text");
+  const countdown = setInterval(() => {
+    remaining--;
+    if (progressEl) progressEl.textContent = remaining + "s";
+    if (remaining <= 0) clearInterval(countdown);
+  }, 1000);
+  
+  // إزالة تلقائية بعد 20 ثانية
+  const timeoutId = setTimeout(() => {
+    clearInterval(countdown);
+    closeSubNotification(notifId);
+  }, NOTIFICATION_DURATION);
+  
+  // تخزين المؤقت
+  notif._timeoutId = timeoutId;
+  notif._countdown = countdown;
+  
+  // حد أقصى 5 إشعارات
+  const notifs = container.querySelectorAll(".sub-notification");
+  if (notifs.length > 5) {
+    const oldest = notifs[0];
+    if (oldest._timeoutId) clearTimeout(oldest._timeoutId);
+    if (oldest._countdown) clearInterval(oldest._countdown);
+    oldest.remove();
+  }
+}
+
+window.closeSubNotification = function(notifId) {
+  const notif = document.getElementById(notifId);
+  if (!notif) return;
+  if (notif._timeoutId) clearTimeout(notif._timeoutId);
+  if (notif._countdown) clearInterval(notif._countdown);
+  notif.classList.add("closing");
+  setTimeout(() => notif.remove(), 400);
+};
+
+/* ============ Theme ============ */
 function applyTheme() {
   try {
     document.documentElement.setAttribute("data-theme", state.currentTheme);
@@ -1579,6 +1816,7 @@ function startBackupTimer() {
   state.backupTimer = setInterval(() => { if (state.isOnline && state.currentUser) createBackup(); }, BACKUP_INTERVAL);
 }
 
+/* ============ Login ============ */
 window.togglePassword = function() {
   const inp = document.getElementById("loginPassword");
   if (!inp) return;
@@ -1697,15 +1935,13 @@ async function cleanupTeamDuplicates() {
         if (currentAt < existingAt) {
           toDelete.push(existing.id);
           seen.set(m.uid, { id, createdAt: currentAt, name: m.name });
-        } else {
-          toDelete.push(id);
-        }
+        } else { toDelete.push(id); }
       } else {
         seen.set(m.uid, { id, createdAt: m.createdAt || 0, name: m.name });
       }
     }
     for (const id of toDelete) { try { await remove(ref(db, "team/" + id)); } catch(e){} }
-  } catch(e) { console.error("cleanupTeamDuplicates:", e); }
+  } catch(e) {}
 }
 
 async function ensureUserProfile(user) {
@@ -1734,8 +1970,7 @@ async function ensureUserProfile(user) {
         await push(ref(db, "team"), {
           uid: user.uid,
           username: data.username || (user.email || "").split("@")[0],
-          name: officialName,
-          createdAt: Date.now()
+          name: officialName, createdAt: Date.now()
         });
       } else {
         for (let i = 0; i < myTeamEntries.length; i++) {
@@ -1783,7 +2018,20 @@ async function ensureUserProfile(user) {
 function startRealtimeListeners() {
   clearAllListeners();
   state.unsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
+    const prevTasks = { ...state.allTasks };
     state.allTasks = snap.val() || {};
+    const isFirstLoad = Object.keys(prevTasks).length === 0;
+    
+    // ✅ إشعار المهام الجديدة (فقط بعد أول تحميل وليس المستخدم نفسه)
+    if (!isFirstLoad) {
+      Object.entries(state.allTasks).forEach(([id, task]) => {
+        if (!prevTasks[id] && task.createdBy !== state.currentUser?.uid) {
+          // مهمة جديدة أضافها شخص آخر
+          showSubNotification(task, "task_created");
+        }
+      });
+    }
+    
     scheduleRender();
     if (state.openTaskId && state.allTasks[state.openTaskId]) renderModal(state.openTaskId);
     else if (state.openTaskId && !state.allTasks[state.openTaskId]) closeModal();
@@ -1872,6 +2120,7 @@ function checkOverdueTasks() {
   if (updated) localStorage.setItem("notified_tasks", JSON.stringify(notified));
 }
 
+/* ============ Add Task ============ */
 function setupAddTaskForm() {
   const form = document.getElementById("addTaskForm");
   if (!form) return;
@@ -1900,6 +2149,11 @@ function setupAddTaskForm() {
       e.target.reset(); populateAssigneeSelect();
       localStorage.removeItem("emak_task_draft");
       showToast("✅ تمت الإضافة", "success");
+      
+      // ✅ إشعار محلي فوري (حتى للمستخدم نفسه كتأكيد)
+      showSubNotification({
+        title, assignee: member.name, priority, dueDate
+      }, "task_created");
     } catch (err) { swalError("فشل الحفظ"); }
   };
 }
@@ -1941,6 +2195,7 @@ function restoreDraft() {
   } catch(e){}
 }
 
+/* ============ Task Ops ============ */
 async function changeStatus(taskId, newStatus) {
   if (!state.currentUserProfile) return;
   const t = state.allTasks[taskId]; if (!t) return;
@@ -2161,6 +2416,7 @@ async function logActivity(type, text, taskId=null, taskTitle="") {
   } catch(e) {}
 }
 
+/* ============ Modal ============ */
 function openModal(taskId) {
   state.openTaskId = taskId;
   renderModal(taskId);
@@ -2230,6 +2486,7 @@ function renderModal(taskId) {
   document.getElementById("modalBox").className = "modal-box" + (isUrgent ? " urgent-glow" : "");
 }
 
+/* ============ Main App Render ============ */
 function scheduleRender() {
   if (state.renderScheduled) return;
   state.renderScheduled = true;
@@ -2375,7 +2632,6 @@ function taskCardHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
   const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
-  const isPinned = state.pinnedTaskId === id;
   const tagsHtml = t.tags ? t.tags.split(",").map(x=>x.trim()).filter(Boolean).slice(0,2).map(x=>`<span class="card-tag">${escapeHtml(x)}</span>`).join("") : "";
   const quickActions = state.isAdmin ? `
     <div class="card-quick-actions">
@@ -2383,7 +2639,6 @@ function taskCardHtml(id, t) {
       <button class="quick-action-btn" onclick="quickReassign('${id}', event);" title="تغيير المسؤول">👤</button>
       <button class="quick-action-btn" onclick="deleteTask('${id}');event.stopPropagation();" title="حذف">🗑️</button>
     </div>` : "";
-
   return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""}" onclick="openModal('${id}')">
     ${quickActions}
     <div class="card-top">
@@ -2859,7 +3114,6 @@ async function startWatchData() {
   state.watchClockTimer = setInterval(updateWatchClock, 1000);
   watchUpdateConnection();
 
-  // شريط التبويبات
   document.querySelectorAll(".w-tab").forEach(tab => {
     tab.onclick = () => {
       document.querySelectorAll(".w-tab").forEach(t => t.classList.remove("active"));
@@ -2927,9 +3181,6 @@ function getTaskProgress(t) {
   return Math.min(30, 10 + c * 5);
 }
 
-/* ============================================================
-   ✅ KPI Row
-   ============================================================ */
 function wRenderKPI() {
   const tasks = Object.values(state.allTasks);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -2946,7 +3197,6 @@ function wRenderKPI() {
   set("wDone", done);
   set("wTeam", seenUids.size);
 
-  // عدد التبويبات
   const setTab = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   setTab("wTabAllCount", tasks.length);
   setTab("wTabUrgentCount", tasks.filter(t => t.status !== "مكتملة" && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)).length);
@@ -2954,9 +3204,7 @@ function wRenderKPI() {
   setTab("wTabDoneCount", done);
 }
 
-/* ============================================================
-   ✅ بطاقة مهمة أفقية
-   ============================================================ */
+/* ✅ بطاقة مهمة أفقية كبيرة */
 function wTaskRowHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
@@ -2983,19 +3231,14 @@ function wTaskRowHtml(id, t) {
   </div>`;
 }
 
-/* ============================================================
-   ✅ عرض قائمة المهام
-   ============================================================ */
 function wRenderTasks() {
   const body = document.getElementById("wMainBody");
   if (!body) return;
-  
   const allTasks = Object.entries(state.allTasks);
   let filtered = [];
   const tab = state.currentWatchTab;
   
   if (tab === "all") {
-    // ترتيب: العاجل → المهم → المتأخر → الجاري → جديد
     filtered = allTasks.sort((a, b) => {
       const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
       const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
@@ -3025,8 +3268,7 @@ function wRenderTasks() {
 
   const html = filtered.map(([id, t]) => wTaskRowHtml(id, t)).join("");
   
-  // إذا المهام أكثر من 5، نفعّل التمرير التلقائي
-  if (filtered.length > 5) {
+  if (filtered.length > 4) {
     body.classList.add("auto-scroll");
     body.innerHTML = `<div class="w-scroll-track">${html}${html}</div>`;
     const duration = filtered.length * SCROLL_SECONDS_PER_TASK;
@@ -3038,33 +3280,21 @@ function wRenderTasks() {
   }
 }
 
-/* ============================================================
-   ✅ أفضل المنجزين
-   ============================================================ */
 function wRenderTopPerformers() {
   const wrap = document.getElementById("wTopPerformers");
   if (!wrap) return;
-  
   const performers = {};
   Object.values(state.allTasks).forEach(t => {
     if (t.status === "مكتملة" && t.assigneeId) {
-      if (!performers[t.assigneeId]) {
-        performers[t.assigneeId] = { name: t.assignee || "—", count: 0 };
-      }
+      if (!performers[t.assigneeId]) performers[t.assigneeId] = { name: t.assignee || "—", count: 0 };
       performers[t.assigneeId].count++;
     }
   });
-  
   const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 5);
-  
   if (sorted.length === 0) {
-    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;">
-      <div class="w-empty-icon" style="font-size:32px;">🏆</div>
-      <div class="w-empty-text" style="font-size:12px;">لا توجد إنجازات بعد</div>
-    </div>`;
+    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;"><div class="w-empty-icon" style="font-size:32px;">🏆</div><div class="w-empty-text" style="font-size:12px;">لا توجد إنجازات بعد</div></div>`;
     return;
   }
-  
   wrap.innerHTML = sorted.map(([uid, p], i) => {
     const rankClass = i === 0 ? "r1" : i === 1 ? "r2" : i === 2 ? "r3" : "rx";
     const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
@@ -3079,34 +3309,21 @@ function wRenderTopPerformers() {
   }).join("");
 }
 
-/* ============================================================
-   ✅ آخر النشاطات
-   ============================================================ */
 function wRenderActivities() {
   const wrap = document.getElementById("wRecentActivities");
   const countEl = document.getElementById("wActivitiesCount");
   if (!wrap) return;
-  
   const activities = state.allActivity.slice(0, 15);
   if (countEl) countEl.textContent = activities.length;
-  
   if (activities.length === 0) {
-    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;">
-      <div class="w-empty-icon" style="font-size:32px;">📋</div>
-      <div class="w-empty-text" style="font-size:12px;">لا توجد نشاطات</div>
-    </div>`;
+    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;"><div class="w-empty-icon" style="font-size:32px;">📋</div><div class="w-empty-text" style="font-size:12px;">لا توجد نشاطات</div></div>`;
     return;
   }
-  
   const typeMap = {
-    task_created: { icon: "➕", class: "creator" },
-    task_edited: { icon: "✏️", class: "creator" },
-    task_deleted: { icon: "🗑️", class: "creator" },
-    status_changed: { icon: "🔄", class: "status" },
-    comment_added: { icon: "💬", class: "comment" },
-    task_reassigned: { icon: "👤", class: "status" }
+    task_created: { icon: "➕", class: "creator" }, task_edited: { icon: "✏️", class: "creator" },
+    task_deleted: { icon: "🗑️", class: "creator" }, status_changed: { icon: "🔄", class: "status" },
+    comment_added: { icon: "💬", class: "comment" }, task_reassigned: { icon: "👤", class: "status" }
   };
-  
   wrap.innerHTML = activities.map(a => {
     const meta = typeMap[a.type] || { icon: "•", class: "" };
     return `<div class="w-activity ${meta.class}">
@@ -3122,42 +3339,27 @@ function wRenderActivities() {
   }).join("");
 }
 
-/* ============================================================
-   ✅ شريط الأخبار
-   ============================================================ */
 function wRenderNewsTicker() {
   const track = document.getElementById("wNewsTrack");
   if (!track) return;
-  
   const items = [];
   const tasks = Object.values(state.allTasks);
-  
   const urgent = tasks.filter(t => t.status !== "مكتملة" && t.priority === "عاجل").length;
   const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
   const today = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== "مكتملة"; }).length;
   const doneToday = tasks.filter(t => t.status === "مكتملة" && isThisWeek(t.updatedAt)).length;
-  
   if (urgent > 0) items.push(`⚠️ ${urgent} مهمة عاجلة تحتاج انتباه فوري`);
   if (overdue > 0) items.push(`🔴 ${overdue} مهمة متأخرة عن موعدها`);
   if (today > 0) items.push(`🔥 ${today} مهمة تستحق اليوم`);
   if (doneToday > 0) items.push(`✅ ${doneToday} مهمة أُنجزت هذا الأسبوع`);
-  
-  // آخر النشاطات
-  state.allActivity.slice(0, 5).forEach(a => {
-    items.push(`📌 ${a.byName || "—"}: ${a.text}`);
-  });
-  
+  state.allActivity.slice(0, 5).forEach(a => { items.push(`📌 ${a.byName || "—"}: ${a.text}`); });
   if (items.length === 0) {
     items.push("مرحباً بكم في لوحة المتابعة — Hub to IT Dep.");
     items.push("📊 يتم التحديث تلقائياً كل لحظة");
   }
-  
   track.innerHTML = items.map(t => `<span>${escapeHtml(t)}</span>`).join("");
 }
 
-/* ============================================================
-   ✅ دالة موحدة لعرض كل شيء
-   ============================================================ */
 function wRenderAll() {
   wRenderKPI();
   wRenderTasks();
