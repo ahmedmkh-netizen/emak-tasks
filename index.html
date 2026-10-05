@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EMAK Hub — إدارة المهام</title>
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -38,18 +38,15 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
   0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,0),0 0 10px rgba(240,75,92,.3);border-color:rgba(240,75,92,.5);}
   50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 35px rgba(240,75,92,.9),0 0 60px rgba(240,75,92,.5);border-color:var(--urgent);}
 }
-@keyframes urgentPulseTop{0%,100%{opacity:1;}50%{opacity:.4;}}
-@keyframes urgentBadgeBlink{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:.7;}}
 .task-card.urgent-glow{animation:urgentFlash 1.4s ease-in-out infinite;}
-.task-card.urgent-glow::before{background:linear-gradient(90deg,var(--urgent),#ff6b7d,var(--urgent)) !important;animation:urgentPulseTop 1.4s ease-in-out infinite;}
-.watch-task.urgent-flash{animation:urgentFlash 1.4s ease-in-out infinite;border-right-color:var(--urgent) !important;}
-.watch-task.urgent-flash .watch-task-priority.urgent{animation:urgentBadgeBlink 1.4s ease-in-out infinite;}
+.task-card.urgent-glow::before{background:linear-gradient(90deg,var(--urgent),#ff6b7d,var(--urgent)) !important;}
 
 ::-webkit-scrollbar{width:10px;height:10px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--bg-4);border-radius:5px;border:2px solid transparent;background-clip:padding-box;}
 ::-webkit-scrollbar-thumb:hover{background:var(--primary);background-clip:padding-box;}
 
+/* ============ LOGIN & MAIN ============ */
 #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at top,#1a3a7a 0%,#0a1020 55%,#070a13 100%);position:relative;overflow:hidden;}
 #loginScreen::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 25%,rgba(91,141,239,.2),transparent 45%),radial-gradient(circle at 85% 75%,rgba(45,212,163,.15),transparent 45%);}
 .login-card{background:rgba(15,20,32,.92);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);padding:48px 40px 40px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 30px 100px rgba(0,0,0,.7);position:relative;z-index:1;animation:cardIn .6s cubic-bezier(.16,1,.3,1);}
@@ -84,13 +81,10 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.3),transparent);}
 .login-watch-btn{width:100%;background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:16px 20px;border-radius:14px;cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(168,85,247,.35);animation:watchLoginPulse 2.5s ease-in-out infinite;}
 @keyframes watchLoginPulse{0%,100%{box-shadow:0 8px 24px rgba(168,85,247,.35),0 0 0 0 rgba(168,85,247,.5);}50%{box-shadow:0 8px 32px rgba(168,85,247,.6),0 0 0 12px rgba(168,85,247,0);}}
-.login-watch-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shine 3.5s ease-in-out infinite;}
 .login-watch-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 15px 40px rgba(168,85,247,.7);animation:none;}
-.login-watch-btn:active{transform:translateY(-1px) scale(.99);}
 .watch-btn-icon{font-size:20px;display:inline-block;animation:watchIconFloat 2.5s ease-in-out infinite;}
 @keyframes watchIconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
-.watch-btn-pin{background:rgba(255,255,255,.25);font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;letter-spacing:.8px;animation:pinBlink 2s ease-in-out infinite;}
-@keyframes pinBlink{0%,100%{opacity:1;}50%{opacity:.55;}}
+.watch-btn-pin{background:rgba(255,255,255,.25);font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;letter-spacing:.8px;}
 .login-watch-hint{color:#5b6580;font-size:11px;margin-top:12px;text-align:center;font-weight:500;line-height:1.6;}
 
 #loadingScreen{display:none;position:fixed;inset:0;background:radial-gradient(ellipse at top,#1a3a7a 0%,#0a1020 55%,#070a13 100%);align-items:center;justify-content:center;z-index:5000;flex-direction:column;gap:24px;}
@@ -116,27 +110,22 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .role.user{background:rgba(91,141,239,.18);color:var(--primary);border:1px solid rgba(91,141,239,.3);}
 .icon-btn,.user-menu-btn{background:var(--bg-3);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:all .2s;}
 .icon-btn:hover,.user-menu-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
-.btn-report{background:linear-gradient(135deg,var(--success),var(--success-2));color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;transition:all .25s;box-shadow:0 4px 12px rgba(45,212,163,.3);}
-.btn-report:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(45,212,163,.5);}
+.btn-report{background:linear-gradient(135deg,var(--success),var(--success-2));color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;transition:all .25s;}
+.btn-report:hover{transform:translateY(-2px);}
 #logoutBtn{background:rgba(240,75,92,.1);color:var(--urgent);border:1px solid rgba(240,75,92,.3);padding:9px 16px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s;}
 #logoutBtn:hover{background:var(--urgent);color:#fff;}
-
-.btn-watch-screen{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;transition:all .25s;box-shadow:0 6px 20px rgba(168,85,247,.4);position:relative;overflow:hidden;}
-.btn-watch-screen::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shine 3s ease-in-out infinite;}
-@keyframes shine{0%{left:-100%;}50%,100%{left:100%;}}
-.btn-watch-screen:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(168,85,247,.7);}
+.btn-watch-screen{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;transition:all .25s;box-shadow:0 6px 20px rgba(168,85,247,.4);}
+.btn-watch-screen:hover{transform:translateY(-2px);}
 
 .main-nav{display:flex;gap:6px;padding:12px 28px;background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);overflow-x:auto;}
 .nav-btn{background:transparent;color:var(--text-2);border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;white-space:nowrap;transition:all .25s;display:inline-flex;align-items:center;gap:6px;}
 .nav-btn:hover{background:var(--bg-3);color:var(--text);}
 .nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 6px 20px var(--primary-glow);}
-.nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff !important;border:1px solid rgba(168,85,247,.6) !important;box-shadow:0 0 0 0 rgba(168,85,247,.7),0 4px 16px rgba(168,85,247,.4);animation:watchBtnPulse 2.5s ease-in-out infinite;position:relative;padding-left:16px;font-weight:800;margin-right:auto;}
-@keyframes watchBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.7),0 4px 16px rgba(168,85,247,.4);}50%{box-shadow:0 0 0 10px rgba(168,85,247,0),0 4px 24px rgba(168,85,247,.6);}}
-.nav-btn.watch-highlight:hover{background:linear-gradient(135deg,#9333ea 0%,#6d28d9 100%);transform:translateY(-2px) scale(1.03);animation:none;box-shadow:0 0 25px rgba(168,85,247,.8),0 8px 30px rgba(168,85,247,.5);}
+.nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff !important;animation:watchBtnPulse 2.5s ease-in-out infinite;margin-right:auto;}
+@keyframes watchBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.7);}50%{box-shadow:0 0 0 10px rgba(168,85,247,0);}}
 .watch-icon-pulse{display:inline-block;animation:iconFloat 2s ease-in-out infinite;}
 @keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
-.watch-badge{background:rgba(255,255,255,.25);color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:8px;margin-right:4px;letter-spacing:.5px;animation:badgeBlink 2s ease-in-out infinite;}
-@keyframes badgeBlink{0%,100%{opacity:1;}50%{opacity:.6;}}
+.watch-badge{background:rgba(255,255,255,.25);color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:8px;margin-right:4px;}
 
 .view-section{display:none;animation:fadeIn .35s ease-out;}
 .view-section.active{display:block;}
@@ -145,163 +134,101 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 .card-panel{background:var(--bg-2);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow);}
 .panel-title{font-size:16px;font-weight:800;margin-bottom:18px;color:var(--text);}
-
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;}
 .stat{background:var(--bg-3);border-radius:16px;padding:20px 18px;text-align:center;border:1px solid var(--border);transition:all .3s;position:relative;overflow:hidden;}
-.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:16px 16px 0 0;}
-.stat:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+.stat::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;}
+.stat:hover{transform:translateY(-4px);}
 .stat.total::before{background:linear-gradient(90deg,var(--primary),var(--primary-2));}
 .stat.done::before{background:linear-gradient(90deg,var(--success),var(--success-2));}
 .stat.progress::before{background:linear-gradient(90deg,var(--warning),#d97706);}
 .stat.overdue::before{background:linear-gradient(90deg,var(--urgent),#c81e3c);}
-.stat-num{font-size:34px;font-weight:900;margin-bottom:6px;letter-spacing:-1.5px;}
+.stat-num{font-size:34px;font-weight:900;margin-bottom:6px;}
 .stat-label{font-size:12px;color:var(--text-2);font-weight:600;}
 .stat.total .stat-num{color:var(--primary);}
 .stat.done .stat-num{color:var(--success);}
 .stat.progress .stat-num{color:var(--warning);}
 .stat.overdue .stat-num{color:var(--urgent);}
-
 .team-row{display:grid;grid-template-columns:150px 1fr 140px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
 .team-row:last-child{border-bottom:none;}
 .team-name{font-weight:700;font-size:14px;}
 .team-bar{height:10px;background:var(--bg-4);border-radius:5px;overflow:hidden;}
-.team-fill{height:100%;border-radius:5px;transition:width .8s cubic-bezier(.16,1,.3,1);background:linear-gradient(90deg,var(--primary),var(--success));}
+.team-fill{height:100%;border-radius:5px;transition:width .8s;background:linear-gradient(90deg,var(--primary),var(--success));}
 .team-pct{font-size:13px;color:var(--text-2);text-align:left;font-weight:700;}
-
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 .chart-box{height:300px;position:relative;}
-@media (max-width:800px){.charts-grid{grid-template-columns:1fr;}}
-
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.form-grid input,.form-grid select{padding:13px 16px;background:var(--bg-3);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;font-weight:500;transition:all .25s;}
-.form-grid input:focus,.form-grid select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-glow);}
-.form-grid button{grid-column:1/-1;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:15px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;transition:all .25s;box-shadow:0 6px 20px var(--primary-glow);}
-.form-grid button:hover{transform:translateY(-2px);box-shadow:0 10px 30px var(--primary-glow);}
-
+.form-grid input,.form-grid select{padding:13px 16px;background:var(--bg-3);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;}
+.form-grid button{grid-column:1/-1;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:15px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;}
 .controls-bar{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap;align-items:center;}
 .search-wrap{flex:1;min-width:220px;position:relative;}
-.search-wrap input{width:100%;padding:13px 16px 13px 46px;background:var(--bg-2);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;font-weight:500;}
-.search-wrap input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px var(--primary-glow);}
-.search-wrap::before{content:'🔍';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:.6;}
-#sortSelect,.filter-select{padding:13px 16px;background:var(--bg-2);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;cursor:pointer;font-weight:600;}
-.view-toggle{display:flex;background:var(--bg-2);border:1.5px solid var(--border);border-radius:12px;padding:4px;gap:2px;}
-.view-toggle button{background:transparent;border:none;color:var(--text-2);padding:9px 16px;border-radius:9px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:700;transition:all .2s;}
+.search-wrap input{width:100%;padding:13px 16px 13px 46px;background:var(--bg-2);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;}
+.search-wrap::before{content:'🔍';position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.6;}
+#sortSelect,.filter-select{padding:13px 16px;background:var(--bg-2);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;font-weight:600;}
+.view-toggle{display:flex;background:var(--bg-2);border:1.5px solid var(--border);border-radius:12px;padding:4px;}
+.view-toggle button{background:transparent;border:none;color:var(--text-2);padding:9px 16px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:700;}
 .view-toggle button.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;}
-
 .filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-.filter-btn{background:var(--bg-2);color:var(--text-2);border:1.5px solid var(--border);padding:9px 18px;border-radius:22px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:700;transition:all .25s;}
-.filter-btn:hover{border-color:var(--primary);color:var(--primary);}
-.filter-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);box-shadow:0 4px 16px var(--primary-glow);}
-
+.filter-btn{background:var(--bg-2);color:var(--text-2);border:1.5px solid var(--border);padding:9px 18px;border-radius:22px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;}
+.filter-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;}
 #tasksList{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
 #tasksList.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-@media (max-width:900px){#tasksList.kanban-board{grid-template-columns:1fr;}}
 
-.task-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:18px;padding:18px;cursor:pointer;transition:all .35s cubic-bezier(.16,1,.3,1);position:relative;display:flex;flex-direction:column;min-height:190px;overflow:hidden;}
-.task-card::before{content:'';position:absolute;top:0;right:0;left:0;height:4px;border-radius:18px 18px 0 0;}
+.task-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:18px;padding:18px;cursor:pointer;transition:all .35s;position:relative;display:flex;flex-direction:column;min-height:190px;overflow:hidden;}
+.task-card::before{content:'';position:absolute;top:0;right:0;left:0;height:4px;}
 .task-card.normal::before{background:linear-gradient(90deg,var(--success),var(--success-2));}
 .task-card.important::before{background:linear-gradient(90deg,var(--warning),#d97706);}
 .task-card.urgent::before{background:linear-gradient(90deg,var(--urgent),#c81e3c);}
-.task-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 20px 40px rgba(0,0,0,.3);border-color:var(--primary);}
-.task-card.done{opacity:.55;}
-.task-card.pinned{border-color:var(--warning);box-shadow:0 0 30px rgba(245,165,36,.3);}
-.pin-badge{position:absolute;top:12px;left:12px;font-size:18px;z-index:2;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
-
-.card-quick-actions{position:absolute;top:10px;left:10px;display:flex;gap:4px;z-index:5;opacity:0;transform:translateY(-6px);transition:all .25s;}
-.task-card:hover .card-quick-actions{opacity:1;transform:translateY(0);}
-.task-card.pinned .card-quick-actions{left:38px;}
-.quick-action-btn{width:30px;height:30px;border-radius:9px;border:1.5px solid var(--border-strong);background:var(--bg-glass);backdrop-filter:blur(10px);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--text);padding:0;}
-.quick-action-btn:hover{transform:scale(1.12);}
-.quick-action-btn.edit:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
-.quick-action-btn.reassign:hover{background:var(--warning);color:#fff;border-color:var(--warning);}
-.quick-action-btn.delete:hover{background:var(--urgent);color:#fff;border-color:var(--urgent);}
-.quick-action-btn.status-toggle:hover{background:var(--success);color:#fff;border-color:var(--success);}
-
+.task-card:hover{transform:translateY(-6px);border-color:var(--primary);}
+.card-quick-actions{position:absolute;top:10px;left:10px;display:flex;gap:4px;opacity:0;transition:all .25s;}
+.task-card:hover .card-quick-actions{opacity:1;}
+.quick-action-btn{width:30px;height:30px;border-radius:9px;border:1.5px solid var(--border-strong);background:var(--bg-glass);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
 .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .priority-dot{width:11px;height:11px;border-radius:50%;}
 .priority-dot.urgent{background:var(--urgent);box-shadow:0 0 12px var(--urgent);}
 .priority-dot.important{background:var(--warning);box-shadow:0 0 10px var(--warning);}
 .priority-dot.normal{background:var(--success);box-shadow:0 0 10px var(--success);}
-.assignee-chip{font-size:11px;padding:5px 12px;background:var(--bg-3);border-radius:14px;color:var(--text-2);font-weight:700;display:inline-flex;align-items:center;gap:4px;transition:all .2s;}
-.assignee-chip.clickable{cursor:pointer;}
-.assignee-chip.clickable:hover{background:var(--warning);color:#fff;}
-.card-title{font-size:16px;font-weight:800;line-height:1.4;color:var(--text);margin-bottom:10px;min-height:45px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.assignee-chip{font-size:11px;padding:5px 12px;background:var(--bg-3);border-radius:14px;color:var(--text-2);font-weight:700;}
+.card-title{font-size:16px;font-weight:800;margin-bottom:10px;min-height:45px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .card-notes{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .card-tags{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
-.card-tag{font-size:10px;padding:4px 10px;background:rgba(91,141,239,.18);color:var(--primary);border-radius:12px;font-weight:800;border:1px solid rgba(91,141,239,.2);}
+.card-tag{font-size:10px;padding:4px 10px;background:rgba(91,141,239,.18);color:var(--primary);border-radius:12px;font-weight:800;}
 .card-bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
-.card-due{font-size:11px;color:var(--text-2);padding:5px 10px;background:var(--bg-3);border-radius:8px;font-weight:700;display:inline-flex;align-items:center;gap:4px;}
-.card-due.overdue{background:rgba(240,75,92,.15);color:var(--urgent);border:1px solid rgba(240,75,92,.3);}
-.card-icons{display:flex;gap:8px;align-items:center;}
-.card-icon{font-size:11px;color:var(--text-2);font-weight:700;}
-.status-pill{font-size:10px;font-weight:800;padding:5px 12px;border-radius:14px;cursor:pointer;transition:all .2s;}
+.card-due{font-size:11px;color:var(--text-2);padding:5px 10px;background:var(--bg-3);border-radius:8px;font-weight:700;}
+.card-due.overdue{background:rgba(240,75,92,.15);color:var(--urgent);}
+.status-pill{font-size:10px;font-weight:800;padding:5px 12px;border-radius:14px;}
 .status-pill.new{background:rgba(91,141,239,.2);color:var(--primary);}
 .status-pill.progress{background:rgba(245,165,36,.2);color:var(--warning);}
 .status-pill.done{background:rgba(45,212,163,.2);color:var(--success);}
-.status-pill:hover{transform:scale(1.08);}
 
 .kanban-col{background:var(--bg-3);border:1.5px solid var(--border);border-radius:18px;padding:16px;min-height:450px;display:flex;flex-direction:column;gap:12px;}
-.kanban-col.dragover{border-color:var(--primary);background:rgba(91,141,239,.05);}
 .kanban-col-header{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
 .kanban-count{background:var(--bg-4);padding:3px 12px;border-radius:10px;font-size:12px;color:var(--text-2);font-weight:800;}
 .kanban-col-body{display:flex;flex-direction:column;gap:10px;flex:1;}
-.kanban-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:12px;padding:14px;cursor:grab;border-right:4px solid var(--primary);position:relative;transition:all .2s;}
-.kanban-card:hover{border-color:var(--primary);transform:translateX(-4px);}
-.kanban-card-title{font-size:13.5px;font-weight:800;margin-bottom:10px;padding-left:60px;}
-.kanban-card-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11px;}
-.kanban-quick-actions{position:absolute;top:8px;left:8px;display:flex;gap:4px;opacity:0;transition:all .2s;}
-.kanban-card:hover .kanban-quick-actions{opacity:1;}
-.kanban-quick-actions .quick-action-btn{width:26px;height:26px;font-size:11px;border-radius:7px;}
+.kanban-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:12px;padding:14px;cursor:grab;border-right:4px solid var(--primary);}
+.kanban-card-title{font-size:13.5px;font-weight:800;margin-bottom:10px;}
 
 .watch-subtitle{font-size:13px;color:var(--text-2);margin-bottom:18px;}
 .watch-filters{display:flex;gap:8px;flex-wrap:wrap;}
-.watch-filter{background:var(--bg-3);color:var(--text-2);border:1.5px solid var(--border);padding:9px 18px;border-radius:22px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:700;transition:all .25s;}
-.watch-filter:hover{border-color:var(--primary);color:var(--primary);}
-.watch-filter.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
-.watch-timeline{display:flex;flex-direction:column;gap:6px;max-height:600px;overflow-y:auto;padding:4px;}
-.watch-event{display:flex;gap:14px;padding:14px;border-radius:14px;background:var(--bg-3);transition:all .25s;border:1px solid transparent;}
-.watch-event:hover{background:var(--bg-4);border-color:var(--border-strong);}
-.watch-event-icon{width:40px;height:40px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:2px solid var(--border);}
-.watch-event.type-task_created .watch-event-icon{border-color:var(--success);}
-.watch-event.type-task_deleted .watch-event-icon{border-color:var(--urgent);}
-.watch-event.type-status_changed .watch-event-icon{border-color:var(--warning);}
-.watch-event.type-comment_added .watch-event-icon{border-color:var(--primary);}
-.watch-event-body{flex:1;min-width:0;}
+.watch-filter{background:var(--bg-3);color:var(--text-2);border:1.5px solid var(--border);padding:9px 18px;border-radius:22px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;}
+.watch-filter.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;}
+.watch-timeline{display:flex;flex-direction:column;gap:6px;max-height:600px;overflow-y:auto;}
+.watch-event{display:flex;gap:14px;padding:14px;border-radius:14px;background:var(--bg-3);}
+.watch-event-icon{width:40px;height:40px;border-radius:12px;background:var(--bg-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.watch-event-body{flex:1;}
 .watch-event-text{font-size:13.5px;font-weight:700;margin-bottom:5px;}
-.watch-event-meta{display:flex;gap:8px;font-size:11.5px;color:var(--text-2);align-items:center;flex-wrap:wrap;font-weight:600;}
+.watch-event-meta{display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;}
 .watch-event-author{font-weight:800;color:var(--primary);}
-.watch-task-link{color:var(--primary);text-decoration:none;font-weight:700;}
 .active-tasks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
-.active-task-card{background:var(--bg-3);border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
-.active-task-card::before{content:'';position:absolute;top:0;right:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--success),var(--success-2));}
-.active-task-card.urgent::before{background:linear-gradient(180deg,var(--urgent),#c81e3c);}
-.active-task-card.overdue{border-color:rgba(240,75,92,.4);}
-.active-task-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--primary);}
-.active-task-title{font-size:14px;font-weight:800;margin-bottom:10px;padding-right:10px;}
-.active-task-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--text-2);padding-right:10px;flex-wrap:wrap;font-weight:600;}
-.active-task-meta .overdue-text{color:var(--urgent);font-weight:800;}
-
-.activity-row{display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);}
-.activity-icon{width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.activity-body{flex:1;}
-.activity-text{font-size:13.5px;font-weight:700;margin-bottom:5px;}
-.activity-meta{display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;}
+.active-task-card{background:var(--bg-3);border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;}
 
 .users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
 .users-toolbar-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.btn-add-user{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:800;transition:all .25s;box-shadow:0 6px 20px var(--primary-glow);}
-.btn-add-user:hover{transform:translateY(-2px);}
-.user-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg-3);border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;transition:all .25s;}
-.user-row:hover{border-color:var(--primary);transform:translateX(-4px);}
-.user-row.is-me{border-color:var(--warning);background:linear-gradient(135deg,rgba(245,165,36,.05),transparent);}
-.user-avatar{width:52px;height:52px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,var(--primary),var(--success));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:22px;}
-.user-avatar.admin-avatar{background:linear-gradient(135deg,var(--warning),#d97706);}
+.btn-add-user{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:800;}
+.user-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg-3);border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;}
+.user-avatar{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--primary),var(--success));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:22px;}
 .user-info-cell{flex:1;min-width:0;}
 .user-name{font-weight:800;font-size:15px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.me-tag{font-size:10px;padding:3px 10px;background:linear-gradient(135deg,var(--warning),#d97706);color:#fff;border-radius:10px;font-weight:800;}
 .user-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);align-items:center;margin-bottom:8px;font-weight:600;}
-.user-email{color:var(--text-3);font-family:monospace;}
 .role-badge{padding:3px 12px;border-radius:12px;font-weight:800;}
 .role-badge.admin{background:rgba(245,165,36,.15);color:var(--warning);}
 .role-badge.user{background:rgba(91,141,239,.15);color:var(--primary);}
@@ -310,25 +237,17 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .status-badge.inactive{background:rgba(91,101,128,.15);color:var(--text-3);}
 .user-stats-row{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);font-weight:600;}
 .ustat b{color:var(--text);font-weight:900;}
-.ustat.success b{color:var(--success);}
-.ustat.progress b{color:var(--warning);}
-.ustat.muted{color:var(--text-3);}
 .user-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.btn-sm{padding:9px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-2);color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;transition:all .2s;min-width:42px;}
-.btn-sm:hover{transform:translateY(-2px);}
+.btn-sm{padding:9px 14px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg-2);color:var(--text);cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;}
 .btn-sm.primary{background:var(--primary);color:#fff;border-color:var(--primary);}
 .btn-sm.danger{color:var(--urgent);border-color:rgba(240,75,92,.3);}
-.btn-sm.danger:hover{background:var(--urgent);color:#fff;}
 .btn-sm.warn{color:var(--warning);border-color:rgba(245,165,36,.3);}
-.btn-sm.warn:hover{background:var(--warning);color:#fff;}
 .btn-sm.success{color:var(--success);border-color:rgba(45,212,163,.3);}
-.btn-sm.success:hover{background:var(--success);color:#fff;}
 .empty{text-align:center;padding:50px 20px;color:var(--text-2);font-weight:600;font-size:14px;}
 
 #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
-#modalOverlay.active{display:flex;animation:fadeIn .25s;}
-.modal-box{background:var(--bg-2);border:1.5px solid var(--border-strong);border-radius:24px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:slideUp .4s cubic-bezier(.16,1,.3,1);}
-@keyframes slideUp{from{transform:translateY(40px) scale(.96);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+#modalOverlay.active{display:flex;}
+.modal-box{background:var(--bg-2);border:1.5px solid var(--border-strong);border-radius:24px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
 .modal-header{padding:22px 26px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:relative;}
 .modal-header::before{content:'';position:absolute;top:0;right:0;left:0;height:5px;border-radius:24px 24px 0 0;}
 .modal-header.normal::before{background:linear-gradient(90deg,var(--success),var(--success-2));}
@@ -336,546 +255,702 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .modal-header.urgent::before{background:linear-gradient(90deg,var(--urgent),#c81e3c);}
 .modal-badges{display:flex;gap:10px;}
 .priority-badge,.status-badge{padding:6px 14px;border-radius:22px;font-size:12px;font-weight:800;}
-.priority-badge.urgent{background:rgba(240,75,92,.15);color:var(--urgent);border:1.5px solid rgba(240,75,92,.3);}
-.priority-badge.important{background:rgba(245,165,36,.15);color:var(--warning);border:1.5px solid rgba(245,165,36,.3);}
-.priority-badge.normal{background:rgba(45,212,163,.15);color:var(--success);border:1.5px solid rgba(45,212,163,.3);}
-.status-badge.new{background:rgba(91,141,239,.15);color:var(--primary);border:1.5px solid rgba(91,141,239,.3);}
-.status-badge.progress{background:rgba(245,165,36,.15);color:var(--warning);border:1.5px solid rgba(245,165,36,.3);}
-.status-badge.done{background:rgba(45,212,163,.15);color:var(--success);border:1.5px solid rgba(45,212,163,.3);}
-.modal-close{background:var(--bg-3);color:var(--text);border:none;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:16px;transition:all .25s;}
-.modal-close:hover{background:var(--urgent);color:#fff;transform:rotate(90deg);}
-.modal-title{padding:22px 26px 14px;font-size:24px;font-weight:900;line-height:1.4;}
+.priority-badge.urgent{background:rgba(240,75,92,.15);color:var(--urgent);}
+.priority-badge.important{background:rgba(245,165,36,.15);color:var(--warning);}
+.priority-badge.normal{background:rgba(45,212,163,.15);color:var(--success);}
+.status-badge.new{background:rgba(91,141,239,.15);color:var(--primary);}
+.status-badge.progress{background:rgba(245,165,36,.15);color:var(--warning);}
+.status-badge.done{background:rgba(45,212,163,.15);color:var(--success);}
+.modal-close{background:var(--bg-3);color:var(--text);border:none;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:16px;}
+.modal-title{padding:22px 26px 14px;font-size:24px;font-weight:900;}
 .modal-tags{padding:0 26px 14px;display:flex;gap:8px;flex-wrap:wrap;}
-.tag{font-size:11.5px;padding:5px 14px;background:rgba(91,141,239,.15);color:var(--primary);border-radius:14px;font-weight:800;border:1px solid rgba(91,141,239,.2);}
+.tag{font-size:11.5px;padding:5px 14px;background:rgba(91,141,239,.15);color:var(--primary);border-radius:14px;font-weight:800;}
 .modal-meta{padding:0 26px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.meta-item{background:var(--bg-3);padding:14px 16px;border-radius:12px;display:flex;flex-direction:column;gap:4px;border:1px solid var(--border);}
+.meta-item{background:var(--bg-3);padding:14px 16px;border-radius:12px;display:flex;flex-direction:column;gap:4px;}
 .meta-label{font-size:11px;color:var(--text-3);font-weight:700;}
-.meta-value{font-size:13.5px;color:var(--text);font-weight:700;}
-.overdue-text{color:var(--urgent);}
+.meta-value{font-size:13.5px;font-weight:700;}
 .modal-section{padding:18px 26px;border-top:1px solid var(--border);}
 .modal-section-title{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--primary);}
-.modal-notes{background:var(--bg-3);padding:14px 16px;border-radius:12px;font-size:13.5px;line-height:1.8;color:var(--text-2);font-weight:500;}
+.modal-notes{background:var(--bg-3);padding:14px 16px;border-radius:12px;font-size:13.5px;line-height:1.8;color:var(--text-2);}
 .modal-comments-list{max-height:240px;overflow-y:auto;margin-bottom:14px;}
-.modal-comment{background:var(--bg-3);padding:12px 16px;border-radius:12px;margin-bottom:10px;border:1px solid var(--border);}
+.modal-comment{background:var(--bg-3);padding:12px 16px;border-radius:12px;margin-bottom:10px;}
 .modal-comment-head{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;}
 .modal-comment-author{color:var(--primary);font-weight:800;}
 .modal-comment-date{color:var(--text-3);font-size:11px;}
 .modal-comment-text{font-size:13.5px;line-height:1.7;}
-.empty-comments{text-align:center;color:var(--text-3);font-size:13px;padding:24px;}
 .modal-comment-form{display:flex;gap:10px;}
 .modal-comment-form input{flex:1;padding:12px 16px;background:var(--bg-3);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:13.5px;font-family:inherit;}
-.modal-comment-form input:focus{outline:none;border-color:var(--primary);}
 .modal-comment-form button{padding:12px 24px;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:13.5px;font-weight:800;font-family:inherit;}
 .modal-actions{padding:18px 26px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:center;background:var(--bg-3);flex-wrap:wrap;border-radius:0 0 24px 24px;}
-.modal-status-select{padding:12px 16px;background:var(--bg-2);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;cursor:pointer;margin-left:auto;font-weight:700;}
-.btn-edit,.btn-del,.btn-pin{padding:12px 20px;border-radius:12px;font-size:13.5px;font-weight:800;font-family:inherit;cursor:pointer;border:1.5px solid var(--border);background:var(--bg-2);color:var(--text);transition:all .25s;}
-.btn-edit:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
-.btn-del:hover{background:var(--urgent);color:#fff;border-color:var(--urgent);}
-.btn-pin:hover,.btn-pin.active{background:var(--warning);color:#fff;border-color:var(--warning);}
-.swal-label{font-size:12px;font-weight:800;color:var(--text-2);text-align:right;display:block;margin-bottom:4px;}
+.modal-status-select{padding:12px 16px;background:var(--bg-2);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;margin-left:auto;font-weight:700;}
+.btn-edit,.btn-del,.btn-pin{padding:12px 20px;border-radius:12px;font-size:13.5px;font-weight:800;font-family:inherit;cursor:pointer;border:1.5px solid var(--border);background:var(--bg-2);color:var(--text);}
+.btn-del:hover{background:var(--urgent);color:#fff;}
+.btn-pin.active{background:var(--warning);color:#fff;}
+.swal-label{font-size:12px;font-weight:800;color:var(--text-2);display:block;margin-bottom:4px;}
 
-#reportOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;}
+#reportOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;}
 #reportOverlay.active{display:flex;}
-.report-wrapper{background:var(--bg-2);border-radius:24px;max-width:900px;width:100%;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);}
-.report-toolbar{padding:18px 26px;background:var(--bg-3);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap;}
-.report-toolbar-title{font-size:16px;font-weight:800;}
-.report-toolbar-actions{display:flex;gap:12px;}
-.btn-download{background:linear-gradient(135deg,var(--success),var(--success-2));color:#fff;border:none;padding:12px 22px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:800;font-family:inherit;transition:.25s;}
-.btn-download:hover{transform:translateY(-2px);}
-.btn-download:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.report-wrapper{background:var(--bg-2);border-radius:24px;max-width:900px;width:100%;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;}
+.report-toolbar{padding:18px 26px;background:var(--bg-3);display:flex;justify-content:space-between;align-items:center;}
+.btn-download{background:linear-gradient(135deg,var(--success),var(--success-2));color:#fff;border:none;padding:12px 22px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:800;font-family:inherit;}
 .btn-close-report{background:var(--bg-2);color:var(--text);border:1.5px solid var(--border);padding:12px 22px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;}
-.btn-close-report:hover{background:var(--urgent);color:#fff;}
 .report-scroll{overflow-y:auto;flex:1;padding:26px;}
-.report-content{background:#fff;color:#1a1a1a;padding:44px;border-radius:16px;font-family:'Cairo',sans-serif;}
-.r-header{display:flex;align-items:center;gap:26px;padding-bottom:26px;margin-bottom:30px;border-bottom:3px solid #1e3a8a;position:relative;}
-.r-header::after{content:'';position:absolute;bottom:-3px;right:0;width:130px;height:3px;background:linear-gradient(90deg,#22c55e,#4f8ef7);}
-.r-logo-wrap{width:110px;height:110px;border-radius:50%;padding:6px;background:linear-gradient(135deg,rgba(30,58,138,.1),rgba(34,197,94,.1));display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(30,58,138,.2);flex-shrink:0;}
-.r-logo{width:100%;height:100%;object-fit:contain;border-radius:50%;background:#fff;padding:12px;}
-.r-header-text h1{color:#1e3a8a;font-size:34px;margin-bottom:6px;font-weight:900;}
-.r-header-text p{color:#64748b;font-size:14px;}
-.r-date{font-weight:800;color:#1e3a8a !important;margin-top:8px;font-size:13px !important;}
-.r-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px;}
-.r-sum-item{background:#f1f5f9;padding:18px;border-radius:14px;text-align:center;border-right:4px solid #64748b;}
-.r-sum-item.done{border-right-color:#22c55e;background:rgba(34,197,94,.08);}
-.r-sum-item.progress{border-right-color:#f59e0b;background:rgba(245,158,11,.08);}
-.r-sum-item.overdue{border-right-color:#dc2626;background:rgba(220,38,38,.08);}
-.r-sum-num{font-size:28px;font-weight:900;margin-bottom:6px;color:#1e3a8a;}
-.r-sum-item.done .r-sum-num{color:#16a34a;}
-.r-sum-item.progress .r-sum-num{color:#d97706;}
-.r-sum-item.overdue .r-sum-num{color:#dc2626;}
-.r-sum-label{font-size:12px;color:#64748b;font-weight:700;}
-.r-section{margin-bottom:30px;}
-.r-section h2{font-size:19px;color:#1e3a8a;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #e2e8f0;font-weight:900;}
-.r-table{width:100%;border-collapse:collapse;font-size:13px;}
-.r-table th{background:#1e3a8a;color:#fff;padding:12px;text-align:right;font-weight:800;}
-.r-table th:first-child{border-top-right-radius:10px;}
-.r-table th:last-child{border-top-left-radius:10px;}
-.r-table td{padding:12px;border-bottom:1px solid #e2e8f0;font-weight:600;}
-.r-table tbody tr:nth-child(even){background:#f8fafc;}
-.r-task{background:#f8fafc;padding:16px;border-radius:12px;margin-bottom:12px;border-right:4px solid #64748b;}
-.r-task-head{display:flex;gap:10px;margin-bottom:8px;}
-.r-badge{font-size:11px;padding:4px 12px;border-radius:12px;font-weight:800;}
-.r-urgent{background:#fee2e2;color:#dc2626;}
-.r-important{background:#fef3c7;color:#d97706;}
-.r-normal{background:#d1fae5;color:#059669;}
-.r-status{font-size:11px;padding:4px 12px;border-radius:12px;background:#e0e7ff;color:#3730a3;font-weight:800;}
-.r-title{font-size:15px;font-weight:800;margin-bottom:8px;}
-.r-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#64748b;font-weight:600;}
-.r-notes{font-size:12px;color:#64748b;margin-top:8px;font-style:italic;}
-.r-footer{margin-top:34px;padding-top:18px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;font-weight:600;}
+.report-content{background:#fff;color:#1a1a1a;padding:44px;border-radius:16px;}
 
-#toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--bg-2);color:var(--text);padding:16px 28px;border-radius:16px;font-size:14px;font-weight:800;border:1.5px solid var(--primary);box-shadow:var(--shadow-lg);opacity:0;transition:all .35s cubic-bezier(.16,1,.3,1);z-index:9999;}
+#toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--bg-2);color:var(--text);padding:16px 28px;border-radius:16px;font-size:14px;font-weight:800;border:1.5px solid var(--primary);opacity:0;transition:all .35s;z-index:9999;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.success{border-color:var(--success);}
 #toast.warn{border-color:var(--warning);}
 
-#saveIndicator{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--bg-glass);backdrop-filter:blur(20px);color:var(--text);padding:10px 20px;border-radius:24px;font-size:12px;font-weight:800;box-shadow:var(--shadow);z-index:9998;border:1.5px solid var(--border);opacity:0;transition:.3s;}
-
 /* ============================================================
-   WATCH SCREEN — Glass Bar Minimal
+   ✅ WATCH SCREEN — تصميم Dashboard احترافي جديد
    ============================================================ */
 #watchScreen{display:none;position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;}
-#watchScreen.active{display:block;animation:fadeIn .5s;}
+#watchScreen.active{display:block;}
 
 .watch-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
-.watch-orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.25;animation:orbFloat 22s ease-in-out infinite;}
-.watch-orb.o1{width:600px;height:600px;background:radial-gradient(circle,#5b8def 0%,transparent 70%);top:-150px;right:-150px;}
-.watch-orb.o2{width:700px;height:700px;background:radial-gradient(circle,#2dd4a3 0%,transparent 70%);bottom:-200px;left:-200px;animation-delay:-8s;}
-.watch-orb.o3{width:500px;height:500px;background:radial-gradient(circle,#f04b5c 0%,transparent 70%);top:40%;left:40%;animation-delay:-16s;}
-@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(80px,-50px) scale(1.15);}66%{transform:translate(-50px,70px) scale(.9);}}
-.watch-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(91,141,239,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(91,141,239,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(circle at center,black 25%,transparent 75%);-webkit-mask-image:radial-gradient(circle at center,black 25%,transparent 75%);}
+.watch-orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.2;}
+.watch-orb.o1{width:700px;height:700px;background:radial-gradient(circle,#5b8def 0%,transparent 70%);top:-200px;right:-200px;}
+.watch-orb.o2{width:800px;height:800px;background:radial-gradient(circle,#2dd4a3 0%,transparent 70%);bottom:-250px;left:-250px;}
+.watch-orb.o3{width:500px;height:500px;background:radial-gradient(circle,#f04b5c 0%,transparent 70%);top:40%;left:40%;opacity:.15;}
 
 #watchPinScreen{position:fixed;inset:0;z-index:2100;display:flex;align-items:center;justify-content:center;background:#050810;padding:20px;}
-.watch-pin-card{background:rgba(15,20,32,.95);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);padding:48px 40px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 30px 100px rgba(0,0,0,.7);animation:cardIn .6s;}
+.watch-pin-card{background:rgba(15,20,32,.95);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);padding:48px 40px;border-radius:28px;text-align:center;max-width:440px;width:100%;}
 .watch-pin-logo{width:120px;height:120px;margin:0 auto 24px;border-radius:50%;padding:6px;background:linear-gradient(135deg,rgba(91,141,239,.25),rgba(45,212,163,.15));box-shadow:0 0 0 4px rgba(91,141,239,.25),0 0 40px rgba(91,141,239,.5);}
 .watch-pin-logo img{width:100%;height:100%;object-fit:contain;border-radius:50%;background:#050810;padding:14px;}
 .watch-pin-card h1{font-size:32px;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,#a855f7,#5b8def);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .watch-pin-card > p{color:#8892ab;font-size:13px;margin-bottom:28px;font-weight:600;}
 #watchPinForm{display:flex;flex-direction:column;gap:14px;}
-#watchPinInput{width:100%;padding:18px;background:rgba(35,43,66,.6);color:#eef2f9;border:1.5px solid rgba(255,255,255,.08);border-radius:14px;font-size:22px;text-align:center;letter-spacing:8px;font-family:monospace;font-weight:700;outline:none;transition:.25s;}
-#watchPinInput:focus{border-color:#a855f7;box-shadow:0 0 0 4px rgba(168,85,247,.25);}
-#watchPinForm button{padding:16px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;transition:.25s;box-shadow:0 8px 24px rgba(168,85,247,.4);}
-#watchPinForm button:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(168,85,247,.6);}
+#watchPinInput{width:100%;padding:18px;background:rgba(35,43,66,.6);color:#eef2f9;border:1.5px solid rgba(255,255,255,.08);border-radius:14px;font-size:22px;text-align:center;letter-spacing:8px;font-family:monospace;font-weight:700;outline:none;}
+#watchPinForm button{padding:16px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;}
 #watchPinError{color:#f04b5c;font-size:13px;min-height:20px;font-weight:700;}
 .watch-pin-hint{color:#5b6580;font-size:12px;margin-top:18px;font-weight:600;}
 
-#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto 1fr auto auto;gap:12px;padding:12px;}
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto;gap:10px;padding:10px;}
 #watchMainContent.active{display:grid;}
 
 /* ============================================================
-   ✅ GLASS BAR MINIMAL — الشريط الواحد الأنيق
+   ✅ الصف 1: الشريط العلوي النظيف
    ============================================================ */
-.watch-glass-bar{
+.w-bar-top{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:20px;
-  padding:12px 24px;
-  background:linear-gradient(135deg,rgba(15,20,32,.85),rgba(23,29,46,.75));
-  backdrop-filter:blur(30px);
-  -webkit-backdrop-filter:blur(30px);
+  padding:10px 20px;
+  background:linear-gradient(135deg,rgba(15,20,32,.9),rgba(23,29,46,.8));
+  backdrop-filter:blur(20px);
   border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;
-  box-shadow:0 8px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);
+  border-radius:14px;
+  min-height:60px;
   position:relative;
   overflow:hidden;
-  min-height:72px;
-  flex-shrink:0;
 }
-.watch-glass-bar::before{
+.w-bar-top::before{
   content:'';
   position:absolute;
   top:0;right:0;left:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(91,141,239,.6),rgba(45,212,163,.4),transparent);
-  opacity:.8;
+  background:linear-gradient(90deg,transparent,#5b8def,#2dd4a3,transparent);
 }
-
-/* ✅ يمين — الشعار + العنوان */
-.wg-brand{
+.w-brand{
   display:flex;
   align-items:center;
-  gap:14px;
-  flex-shrink:0;
+  gap:12px;
 }
-.wg-logo{
-  width:50px;
-  height:50px;
-  border-radius:14px;
+.w-brand-logo{
+  width:45px;height:45px;
+  border-radius:12px;
   padding:3px;
-  background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));
-  box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 24px rgba(91,141,239,.5);
-  flex-shrink:0;
-  transition:all .3s;
+  background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.2));
+  box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 20px rgba(91,141,239,.5);
 }
-.wg-logo:hover{
-  box-shadow:0 0 0 2px rgba(91,141,239,.6),0 0 32px rgba(91,141,239,.8);
-}
-.wg-logo img{
-  width:100%;
-  height:100%;
+.w-brand-logo img{
+  width:100%;height:100%;
   object-fit:contain;
-  border-radius:11px;
+  border-radius:9px;
   background:#050810;
-  padding:5px;
+  padding:4px;
   display:block;
 }
-.wg-title{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
-.wg-title h1{
-  font-size:19px;
-  font-weight:900;
-  line-height:1;
-  letter-spacing:-.3px;
+.w-brand-text h1{
+  font-size:18px;font-weight:900;line-height:1;
   background:linear-gradient(135deg,#5b8def,#2dd4a3);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.wg-title p{
-  font-size:10.5px;
-  color:#8892ab;
-  font-weight:600;
-  letter-spacing:.2px;
-}
+.w-brand-text p{font-size:10px;color:#8892ab;margin-top:3px;font-weight:600;}
 
-/* ✅ وسط — مباشر + الساعة */
-.wg-center{
+.w-bar-top-center{
   display:flex;
   align-items:center;
-  gap:20px;
+  gap:16px;
   flex:1;
   justify-content:center;
 }
-.wg-live{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:6px 12px;
+.w-live-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;
   background:rgba(240,75,92,.15);
-  border:1px solid rgba(240,75,92,.35);
-  border-radius:18px;
-  font-size:10.5px;
-  font-weight:900;
-  color:#f04b5c;
-  letter-spacing:1px;
-  flex-shrink:0;
+  border:1px solid rgba(240,75,92,.4);
+  border-radius:20px;
+  font-size:11px;font-weight:900;color:#f04b5c;letter-spacing:1.5px;
 }
-.wg-live-dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
+.w-live-pill .w-live-dot{
+  width:7px;height:7px;border-radius:50%;
   background:#f04b5c;
   box-shadow:0 0 12px #f04b5c;
-  animation:livePulse 1.5s ease-in-out infinite;
+  animation:wLivePulse 1.5s ease-in-out infinite;
 }
-@keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.4);}}
+@keyframes wLivePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.4);}}
 
-.wg-clock-wrap{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:1px;
-  padding:0 6px;
+.w-clock-big{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
 }
-.wg-clock{
-  font-size:22px;
-  font-weight:900;
-  font-family:'Courier New',monospace;
-  color:#5b8def;
-  letter-spacing:2px;
-  line-height:1;
-  text-shadow:0 0 20px rgba(91,141,239,.7);
+.w-clock-time{
+  font-family:'JetBrains Mono',monospace;
+  font-size:22px;font-weight:800;color:#5b8def;letter-spacing:2px;line-height:1;
+  text-shadow:0 0 20px rgba(91,141,239,.6);
   font-variant-numeric:tabular-nums;
 }
-.wg-date{
-  font-size:10px;
-  color:#8892ab;
-  font-weight:600;
-  letter-spacing:.2px;
+.w-clock-date{
+  font-size:10px;color:#8892ab;font-weight:600;letter-spacing:.5px;
 }
 
-/* ✅ يسار — 6 KPIs */
-.wg-kpis{
-  display:flex;
-  align-items:center;
-  gap:0;
-  padding:6px 8px;
-  background:rgba(23,29,46,.6);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:12px;
-  flex-shrink:0;
+.w-bar-top-actions{
+  display:flex;align-items:center;gap:8px;
 }
-.wg-kpi{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:1px;
+.w-status-pill{
+  display:inline-flex;align-items:center;gap:6px;
   padding:6px 12px;
-  min-width:52px;
-  position:relative;
-  transition:all .25s;
-  cursor:default;
-  border-radius:8px;
-}
-.wg-kpi:hover{
-  background:rgba(91,141,239,.1);
-}
-.wg-kpi:not(:last-child)::after{
-  content:'';
-  position:absolute;
-  top:20%;
-  bottom:20%;
-  left:0;
-  width:1px;
-  background:linear-gradient(180deg,transparent,rgba(255,255,255,.1),transparent);
-}
-.wg-kpi-icon{
-  font-size:14px;
-  line-height:1;
-  margin-bottom:1px;
-  opacity:.9;
-}
-.wg-kpi-num{
-  font-size:19px;
-  font-weight:900;
-  line-height:1;
-  letter-spacing:-.5px;
-  font-variant-numeric:tabular-nums;
-}
-.wg-kpi-label{
-  font-size:9px;
-  color:#8892ab;
-  font-weight:700;
-  letter-spacing:.1px;
-}
-
-/* ✅ ألوان KPIs */
-.wg-kpi.total .wg-kpi-num{color:#5b8def;}
-.wg-kpi.active-kpi .wg-kpi-num{color:#7c8ef8;}
-.wg-kpi.progress-kpi .wg-kpi-num{color:#f5a524;}
-.wg-kpi.overdue-kpi .wg-kpi-num{color:#f04b5c;}
-.wg-kpi.done-kpi .wg-kpi-num{color:#2dd4a3;}
-.wg-kpi.team-kpi .wg-kpi-num{color:#06b6d4;}
-
-/* ✅ يسار أقصى — متصل + إغلاق */
-.wg-actions{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-shrink:0;
-}
-.wg-conn{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:6px 10px;
   background:rgba(45,212,163,.1);
   border:1px solid rgba(45,212,163,.3);
   border-radius:16px;
-  font-size:10.5px;
-  font-weight:800;
-  color:#2dd4a3;
+  font-size:10.5px;font-weight:800;color:#2dd4a3;
 }
-.wg-conn.offline{
-  background:rgba(240,75,92,.1);
-  border-color:rgba(240,75,92,.35);
-  color:#f04b5c;
-}
-.wg-conn-dot{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:currentColor;
-  box-shadow:0 0 8px currentColor;
-  animation:livePulse 2s ease-in-out infinite;
-}
+.w-status-pill.offline{background:rgba(240,75,92,.1);border-color:rgba(240,75,92,.3);color:#f04b5c;}
+.w-status-dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;animation:wLivePulse 2s ease-in-out infinite;}
 
-.wg-close{
-  width:36px;
-  height:36px;
-  border-radius:50%;
+.w-close-btn{
+  width:34px;height:34px;border-radius:50%;
   border:1.5px solid rgba(255,255,255,.1);
   background:rgba(255,255,255,.05);
-  color:#eef2f9;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
-  transition:all .25s;
+  color:#eef2f9;font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .25s;
+  display:flex;align-items:center;justify-content:center;
+}
+.w-close-btn:hover{background:#f04b5c;color:#fff;border-color:#f04b5c;transform:rotate(90deg);}
+
+/* ============================================================
+   ✅ الصف 2: 6 بطاقات KPI بارزة
+   ============================================================ */
+.w-kpi-row{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
+  min-height:0;
+}
+.w-kpi-card{
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:0;
-  font-family:inherit;
+  gap:4px;
+  padding:12px 10px;
+  background:linear-gradient(180deg,rgba(23,29,46,.9),rgba(15,20,32,.85));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  position:relative;
+  overflow:hidden;
+  transition:all .3s;
 }
-.wg-close:hover{
-  background:#f04b5c;
-  color:#fff;
-  border-color:#f04b5c;
-  transform:rotate(90deg);
+.w-kpi-card::before{
+  content:'';
+  position:absolute;
+  top:0;right:0;left:0;height:3px;
+}
+.w-kpi-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(255,255,255,.15);
+}
+.w-kpi-card.total::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
+.w-kpi-card.active::before{background:linear-gradient(90deg,#7c8ef8,#5b8def);}
+.w-kpi-card.working::before{background:linear-gradient(90deg,#f5a524,#ffc043);}
+.w-kpi-card.overdue::before{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
+.w-kpi-card.done::before{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+.w-kpi-card.team::before{background:linear-gradient(90deg,#06b6d4,#22d3ee);}
+
+.w-kpi-icon{font-size:22px;line-height:1;margin-bottom:2px;}
+.w-kpi-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:28px;font-weight:800;line-height:1;letter-spacing:-1px;
+  font-variant-numeric:tabular-nums;
+}
+.w-kpi-card.total .w-kpi-num{color:#5b8def;}
+.w-kpi-card.active .w-kpi-num{color:#7c8ef8;}
+.w-kpi-card.working .w-kpi-num{color:#f5a524;}
+.w-kpi-card.overdue .w-kpi-num{color:#f04b5c;}
+.w-kpi-card.done .w-kpi-num{color:#2dd4a3;}
+.w-kpi-card.team .w-kpi-num{color:#06b6d4;}
+.w-kpi-label{font-size:11px;color:#8892ab;font-weight:700;letter-spacing:.2px;}
+
+/* ============================================================
+   ✅ الصف 3: التقسيم 70/30
+   ============================================================ */
+.w-content-split{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 340px;
+  gap:10px;
+  min-height:0;
 }
 
-/* Grid + Panels */
-.watch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;min-height:0;}
-.watch-panel{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:16px;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
-
-.watch-panel-header{
-  display:flex;justify-content:space-between;align-items:center;
+/* عمود المهام الرئيسي */
+.w-main-panel{
+  display:flex;
+  flex-direction:column;
+  background:linear-gradient(180deg,rgba(15,20,32,.85),rgba(23,29,46,.75));
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  overflow:hidden;
+  min-height:0;
+}
+.w-main-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   padding:12px 16px;
   border-bottom:1px solid rgba(255,255,255,.06);
   background:rgba(35,43,66,.35);
-  position:relative;
   flex-shrink:0;
+  flex-wrap:wrap;
+  gap:10px;
 }
-.watch-panel-header::before{
-  content:'';position:absolute;top:0;right:0;left:0;height:3px;border-radius:16px 16px 0 0;
+.w-main-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:900;color:#eef2f9;
 }
-.watch-panel[data-type="active"] .watch-panel-header::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
-.watch-panel[data-type="urgent"] .watch-panel-header::before{background:linear-gradient(90deg,#f04b5c,#c81e3c);}
-.watch-panel[data-type="done"] .watch-panel-header::before{background:linear-gradient(90deg,#2dd4a3,#22b388);}
-.watch-panel-header h2{font-size:14px;font-weight:900;color:#eef2f9;display:flex;align-items:center;gap:6px;}
-.watch-panel-count{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:900;min-width:28px;text-align:center;}
-.watch-panel[data-type="active"] .watch-panel-count{background:rgba(91,141,239,.15);color:#5b8def;border:1px solid rgba(91,141,239,.3);}
-.watch-panel[data-type="urgent"] .watch-panel-count{background:rgba(240,75,92,.15);color:#f04b5c;border:1px solid rgba(240,75,92,.3);}
-.watch-panel[data-type="done"] .watch-panel-count{background:rgba(45,212,163,.15);color:#2dd4a3;border:1px solid rgba(45,212,163,.3);}
+.w-tabs{
+  display:flex;gap:4px;
+  background:rgba(15,20,32,.6);
+  padding:3px;
+  border-radius:10px;
+}
+.w-tab{
+  padding:6px 14px;
+  border:none;
+  background:transparent;
+  color:#8892ab;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:11.5px;
+  font-weight:800;
+  font-family:inherit;
+  transition:all .25s;
+  white-space:nowrap;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+.w-tab:hover{color:#eef2f9;background:rgba(255,255,255,.05);}
+.w-tab.active{color:#fff;background:linear-gradient(135deg,#5b8def,#3b6fd4);}
+.w-tab.active.urgent-tab{background:linear-gradient(135deg,#f04b5c,#c81e3c);}
+.w-tab.active.done-tab{background:linear-gradient(135deg,#2dd4a3,#22b388);}
+.w-tab-count{
+  background:rgba(255,255,255,.2);
+  padding:1px 6px;
+  border-radius:6px;
+  font-size:9.5px;
+  min-width:16px;
+  text-align:center;
+}
 
-.watch-panel-body{flex:1;overflow:hidden;padding:10px;position:relative;min-height:0;}
-.watch-panel-body.auto-scroll{
-  mask-image:linear-gradient(180deg,transparent 0%,black 30px,black calc(100% - 30px),transparent 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 30px,black calc(100% - 30px),transparent 100%);
+.w-main-body{
+  flex:1;
+  overflow:hidden;
+  position:relative;
+  padding:8px;
+  min-height:0;
 }
-.watch-panel-body.auto-scroll .scroll-content{
-  display:flex;flex-direction:column;gap:8px;
-  animation:autoScrollVertical 40s linear infinite;
+.w-main-body.auto-scroll{
+  mask-image:linear-gradient(180deg,transparent 0%,black 20px,black calc(100% - 20px),transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 20px,black calc(100% - 20px),transparent 100%);
+}
+.w-main-body .w-scroll-track{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  animation:wAutoScroll 40s linear infinite;
   will-change:transform;
-  padding-bottom:20px;
+  padding-bottom:16px;
 }
-.watch-panel-body.auto-scroll:hover .scroll-content{animation-play-state:paused;}
-@keyframes autoScrollVertical{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
-.watch-panel-body.no-scroll{overflow-y:auto;}
-.watch-panel-body.no-scroll::-webkit-scrollbar{width:5px;}
-.watch-panel-body.no-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
-.watch-panel-body.no-scroll .scroll-content{display:flex;flex-direction:column;gap:8px;}
+.w-main-body.auto-scroll:hover .w-scroll-track{animation-play-state:paused;}
+@keyframes wAutoScroll{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
 
-.watch-task{
-  background:rgba(23,29,46,.95);
-  border:1.5px solid rgba(255,255,255,.08);
-  border-radius:12px;
-  padding:12px 14px;
+/* ============================================================
+   ✅ بطاقة مهمة أفقية (Table Row Style)
+   ============================================================ */
+.w-task-row{
+  display:grid;
+  grid-template-columns:4px 70px minmax(0,1fr) 100px 110px minmax(120px,140px) 60px;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  background:rgba(23,29,46,.85);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;
+  cursor:pointer;
   transition:all .25s;
   position:relative;
+}
+.w-task-row:hover{
+  background:rgba(35,43,66,.9);
+  border-color:rgba(91,141,239,.3);
+  transform:translateX(-3px);
+}
+.w-task-bar{
+  width:4px;
+  height:100%;
+  min-height:36px;
+  border-radius:2px;
+  background:#5b8def;
+}
+.w-task-row.urgent .w-task-bar{background:#f04b5c;box-shadow:0 0 12px rgba(240,75,92,.6);}
+.w-task-row.important .w-task-bar{background:#f5a524;box-shadow:0 0 10px rgba(245,165,36,.5);}
+.w-task-row.normal .w-task-bar{background:#2dd4a3;box-shadow:0 0 10px rgba(45,212,163,.5);}
+.w-task-row.done-task{opacity:.7;}
+.w-task-row.done-task .w-task-bar{background:#2dd4a3;}
+.w-task-row.overdue{background:linear-gradient(90deg,rgba(240,75,92,.08),rgba(23,29,46,.85) 30%);}
+.w-task-row.urgent.urgent-flash{animation:wUrgentPulse 2s ease-in-out infinite;}
+@keyframes wUrgentPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,0);}
+  50%{box-shadow:0 0 0 3px rgba(240,75,92,.15),0 0 20px rgba(240,75,92,.3);}
+}
+
+.w-task-priority{
+  font-size:10px;
+  padding:3px 9px;
+  border-radius:8px;
+  font-weight:900;
+  text-align:center;
+  white-space:nowrap;
+}
+.w-task-priority.urgent{background:rgba(240,75,92,.2);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
+.w-task-priority.important{background:rgba(245,165,36,.2);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
+.w-task-priority.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
+
+.w-task-title{
+  font-size:13px;
+  font-weight:800;
+  color:#eef2f9;
   overflow:hidden;
-  border-right:4px solid #5b8def;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  min-width:0;
 }
-.watch-task:hover{transform:translateX(-4px);border-color:rgba(255,255,255,.2);box-shadow:0 8px 20px rgba(0,0,0,.4);}
-.watch-task.urgent{border-right-color:#f04b5c;background:linear-gradient(90deg,rgba(240,75,92,.12),rgba(23,29,46,.95) 60%);}
-.watch-task.important{border-right-color:#f5a524;background:linear-gradient(90deg,rgba(245,165,36,.10),rgba(23,29,46,.95) 60%);}
-.watch-task.normal{border-right-color:#2dd4a3;background:linear-gradient(90deg,rgba(45,212,163,.06),rgba(23,29,46,.95) 60%);}
-.watch-task.done-task{border-right-color:#2dd4a3;background:linear-gradient(90deg,rgba(45,212,163,.10),rgba(23,29,46,.95) 60%);opacity:.85;}
-.watch-task.overdue{border-right-color:#f04b5c;}
 
-.watch-task-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;gap:8px;}
-.watch-task-priority{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:900;}
-.watch-task-priority.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
-.watch-task-priority.important{background:rgba(245,165,36,.25);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
-.watch-task-priority.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
-.watch-task-status{font-size:9.5px;padding:3px 9px;border-radius:9px;font-weight:800;background:rgba(35,43,66,.9);color:#8892ab;border:1px solid rgba(255,255,255,.05);}
-.watch-task-status.progress{background:rgba(245,165,36,.2);color:#f5a524;}
-.watch-task-status.done{background:rgba(45,212,163,.2);color:#2dd4a3;}
+.w-task-assignee{
+  font-size:11px;
+  color:#8892ab;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 
-.watch-task-title{font-size:13.5px;font-weight:800;line-height:1.5;margin-bottom:8px;color:#eef2f9;word-break:break-word;}
-.watch-task-meta{display:flex;gap:12px;font-size:11px;color:#8892ab;flex-wrap:wrap;font-weight:600;margin-bottom:7px;}
-.watch-task-meta span{display:inline-flex;align-items:center;gap:4px;}
+.w-task-due{
+  font-size:11px;
+  color:#8892ab;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+}
+.w-task-due.overdue{color:#ff6b7d;font-weight:800;}
 
-.watch-task-progress{height:3px;background:rgba(35,43,66,.9);border-radius:2px;overflow:hidden;margin-top:6px;}
-.watch-task-progress-fill{height:100%;border-radius:2px;transition:width .5s ease;}
-.watch-task.urgent .watch-task-progress-fill{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
-.watch-task.important .watch-task-progress-fill{background:linear-gradient(90deg,#f5a524,#ffc043);}
-.watch-task.normal .watch-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
-.watch-task.done-task .watch-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+.w-task-progress-wrap{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+.w-task-progress-bar{
+  flex:1;
+  height:5px;
+  background:rgba(35,43,66,.9);
+  border-radius:3px;
+  overflow:hidden;
+  min-width:0;
+}
+.w-task-progress-fill{
+  height:100%;
+  border-radius:3px;
+  transition:width .5s ease;
+  background:linear-gradient(90deg,#5b8def,#7c8ef8);
+}
+.w-task-row.urgent .w-task-progress-fill{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
+.w-task-row.important .w-task-progress-fill{background:linear-gradient(90deg,#f5a524,#ffc043);}
+.w-task-row.normal .w-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+.w-task-row.done-task .w-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+.w-task-progress-text{
+  font-size:10.5px;
+  font-weight:800;
+  color:#8892ab;
+  font-family:'JetBrains Mono',monospace;
+  min-width:32px;
+  text-align:left;
+}
 
-.watch-empty{
+.w-task-status{
+  font-size:10px;
+  padding:3px 8px;
+  border-radius:8px;
+  font-weight:800;
+  text-align:center;
+  white-space:nowrap;
+}
+.w-task-status.new{background:rgba(91,141,239,.15);color:#5b8def;}
+.w-task-status.progress{background:rgba(245,165,36,.15);color:#f5a524;}
+.w-task-status.done{background:rgba(45,212,163,.15);color:#2dd4a3;}
+
+.w-empty-state{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:40px 20px;color:#5b6580;font-size:13px;font-weight:700;
-  text-align:center;gap:10px;height:100%;
+  padding:60px 20px;color:#5b6580;gap:12px;text-align:center;
+  height:100%;
 }
-.watch-empty-icon{font-size:44px;opacity:.4;margin-bottom:6px;}
-.watch-empty-text{font-size:13px;color:#8892ab;}
-.watch-empty-hint{font-size:11px;color:#5b6580;font-weight:500;}
+.w-empty-icon{font-size:48px;opacity:.4;}
+.w-empty-text{font-size:14px;font-weight:700;color:#8892ab;}
 
-.watch-tasks-ticker-section{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:8px 0;overflow:hidden;position:relative;display:flex;align-items:center;gap:0;flex-shrink:0;min-height:66px;}
-.watch-tasks-ticker-label{display:flex;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;font-weight:900;font-size:11.5px;flex-shrink:0;border-radius:0 12px 12px 0;margin-right:0;height:100%;white-space:nowrap;align-self:stretch;}
-.watch-tasks-ticker-label .ticker-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:livePulse 1.5s ease-in-out infinite;}
-.watch-tasks-ticker-viewport{flex:1;overflow:hidden;position:relative;height:50px;mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);}
-.watch-tasks-ticker-track{display:flex;align-items:center;gap:10px;height:100%;width:max-content;animation:tasksTickerScroll 60s linear infinite;padding:0 12px;}
-.watch-tasks-ticker-track:hover{animation-play-state:paused;}
-@keyframes tasksTickerScroll{0%{transform:translateX(0);}100%{transform:translateX(50%);}}
-.watch-ticker-task{display:flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(23,29,46,.95);border:1.5px solid rgba(255,255,255,.08);border-radius:11px;white-space:nowrap;flex-shrink:0;transition:all .25s;border-right:3px solid #2dd4a3;min-width:240px;}
-.watch-ticker-task:hover{background:rgba(35,43,66,.95);transform:scale(1.03);border-color:rgba(45,212,163,.5);}
-.watch-ticker-task .task-priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor;}
-.watch-ticker-task .task-priority-dot.normal{background:#2dd4a3;color:#2dd4a3;}
-.watch-ticker-task .task-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
-.watch-ticker-task .task-title{font-size:12.5px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;max-width:280px;white-space:nowrap;}
-.watch-ticker-task .task-meta{font-size:10px;color:#8892ab;display:flex;gap:8px;font-weight:600;}
-.watch-ticker-task .task-meta span{display:inline-flex;align-items:center;gap:3px;}
-.watch-ticker-task .task-status-badge{font-size:9px;padding:3px 8px;border-radius:8px;font-weight:800;background:rgba(91,141,239,.2);color:#5b8def;flex-shrink:0;}
-.watch-ticker-task .task-status-badge.progress{background:rgba(245,165,36,.2);color:#f5a524;}
-.watch-tasks-ticker-empty{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#5b6580;font-size:12px;font-weight:700;}
+/* ============================================================
+   ✅ Sidebar اليمين: أفضل المنجزين + النشاطات
+   ============================================================ */
+.w-side{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  min-height:0;
+  overflow:hidden;
+}
+.w-side-panel{
+  background:linear-gradient(180deg,rgba(15,20,32,.85),rgba(23,29,46,.75));
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  min-height:0;
+}
+.w-side-panel.top-performers{
+  flex:0 0 auto;
+  max-height:42%;
+}
+.w-side-panel.recent-activities{
+  flex:1;
+  min-height:0;
+}
+.w-side-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 14px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(35,43,66,.35);
+  flex-shrink:0;
+}
+.w-side-title{
+  font-size:12.5px;
+  font-weight:900;
+  color:#eef2f9;
+  display:flex;align-items:center;gap:6px;
+}
+.w-side-badge{
+  background:rgba(91,141,239,.15);
+  color:#5b8def;
+  padding:2px 8px;
+  border-radius:10px;
+  font-size:10px;
+  font-weight:900;
+  border:1px solid rgba(91,141,239,.3);
+}
+.w-side-body{
+  flex:1;
+  overflow-y:auto;
+  padding:8px;
+  min-height:0;
+}
+.w-side-body::-webkit-scrollbar{width:4px;}
+.w-side-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px;}
 
-.watch-footer{display:flex;align-items:center;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;height:42px;flex-shrink:0;}
-.watch-ticker-label{padding:0 18px;height:100%;display:flex;align-items:center;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;font-weight:900;font-size:11.5px;flex-shrink:0;gap:8px;}
-.watch-ticker-label .notif-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:livePulse 1.5s ease-in-out infinite;}
-.watch-ticker-wrap{flex:1;overflow:hidden;}
-.watch-ticker{display:inline-block;white-space:nowrap;padding-right:100%;animation:tickerScroll 45s linear infinite;color:#8892ab;font-size:12.5px;font-weight:700;line-height:42px;}
-.watch-ticker span{padding-left:70px;}
-.watch-ticker span::before{content:'◆';color:#5b8def;margin-left:20px;font-size:10px;}
-@keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
+.w-performer{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 10px;
+  border-radius:10px;
+  transition:all .25s;
+  background:rgba(23,29,46,.5);
+  margin-bottom:6px;
+}
+.w-performer:hover{background:rgba(35,43,66,.9);}
+.w-performer-rank{
+  width:24px;height:24px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:900;
+  flex-shrink:0;
+}
+.w-performer-rank.r1{background:linear-gradient(135deg,#ffd700,#ffb300);color:#000;}
+.w-performer-rank.r2{background:linear-gradient(135deg,#c0c0c0,#a0a0a0);color:#000;}
+.w-performer-rank.r3{background:linear-gradient(135deg,#cd7f32,#a0651e);color:#fff;}
+.w-performer-rank.rx{background:rgba(91,141,239,.15);color:#5b8def;}
+.w-performer-info{flex:1;min-width:0;}
+.w-performer-name{font-size:12px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.w-performer-count{font-size:10px;color:#8892ab;font-weight:700;}
+.w-performer-score{
+  font-size:13px;
+  font-weight:900;
+  color:#2dd4a3;
+  font-family:'JetBrains Mono',monospace;
+}
 
+.w-activity{
+  display:flex;
+  gap:10px;
+  padding:8px 10px;
+  border-radius:10px;
+  transition:all .25s;
+  background:rgba(23,29,46,.5);
+  margin-bottom:5px;
+}
+.w-activity:hover{background:rgba(35,43,66,.9);}
+.w-activity-icon{
+  width:28px;height:28px;
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+  flex-shrink:0;
+  background:rgba(35,43,66,.9);
+  border:1.5px solid rgba(255,255,255,.08);
+}
+.w-activity.creator .w-activity-icon{border-color:rgba(45,212,163,.4);}
+.w-activity.status .w-activity-icon{border-color:rgba(245,165,36,.4);}
+.w-activity.comment .w-activity-icon{border-color:rgba(91,141,239,.4);}
+.w-activity-body{flex:1;min-width:0;}
+.w-activity-text{
+  font-size:11.5px;
+  color:#eef2f9;
+  font-weight:600;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  line-height:1.5;
+  margin-bottom:2px;
+}
+.w-activity-meta{
+  display:flex;
+  justify-content:space-between;
+  gap:6px;
+  font-size:9.5px;
+  color:#5b6580;
+  font-weight:700;
+}
+.w-activity-author{color:#8892ab;}
+
+/* ============================================================
+   ✅ الصف 4: شريط أخبار موحد
+   ============================================================ */
+.w-news-ticker{
+  display:flex;
+  align-items:center;
+  background:linear-gradient(135deg,rgba(15,20,32,.9),rgba(23,29,46,.8));
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  overflow:hidden;
+  height:40px;
+  position:relative;
+}
+.w-news-label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:0 16px;
+  height:100%;
+  background:linear-gradient(135deg,#f04b5c,#c81e3c);
+  color:#fff;
+  font-weight:900;
+  font-size:11px;
+  flex-shrink:0;
+  letter-spacing:.5px;
+}
+.w-news-label::before{
+  content:'';
+  width:6px;height:6px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 8px #fff;
+  animation:wLivePulse 1.5s ease-in-out infinite;
+}
+.w-news-track-wrap{flex:1;overflow:hidden;position:relative;}
+.w-news-track{
+  display:inline-block;
+  white-space:nowrap;
+  padding-right:100%;
+  animation:wNewsScroll 60s linear infinite;
+  color:#eef2f9;
+  font-size:12px;
+  font-weight:600;
+  line-height:40px;
+}
+.w-news-track:hover{animation-play-state:paused;}
+.w-news-track span{padding-left:60px;}
+.w-news-track span::before{content:'◆';color:#5b8def;margin-left:18px;font-size:9px;}
+@keyframes wNewsScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
+
+/* ============================================================
+   ✅ استجابة الشاشات
+   ============================================================ */
 @media (max-width:1400px){
-  .wg-kpi{min-width:44px;padding:6px 9px;}
-  .wg-kpi-num{font-size:17px;}
-  .wg-kpi-label{font-size:8.5px;}
+  .w-content-split{grid-template-columns:minmax(0,1fr) 300px;}
+  .w-kpi-num{font-size:24px;}
+  .w-kpi-icon{font-size:20px;}
 }
 @media (max-width:1200px){
-  .watch-grid{grid-template-columns:1fr 1fr;}
-  .watch-grid section:last-child{grid-column:1/-1;max-height:340px;}
-  .wg-center{gap:12px;}
-  .wg-clock{font-size:18px;}
-  .wg-title h1{font-size:16px;}
-  .wg-title p{font-size:10px;}
-  .wg-logo{width:42px;height:42px;}
+  .w-content-split{grid-template-columns:minmax(0,1fr) 280px;}
+  .w-kpi-row{grid-template-columns:repeat(3,1fr);}
+  .w-task-row{grid-template-columns:4px 65px minmax(0,1fr) 90px 100px minmax(100px,120px) 55px;font-size:11px;}
 }
 @media (max-width:900px){
-  .watch-glass-bar{flex-wrap:wrap;gap:10px;padding:10px 14px;}
-  .wg-brand{order:1;}
-  .wg-actions{order:2;}
-  .wg-center{order:3;flex-basis:100%;justify-content:center;}
-  .wg-kpis{order:4;flex-basis:100%;justify-content:center;}
+  .w-content-split{grid-template-columns:1fr;grid-template-rows:1fr auto;}
+  .w-side{flex-direction:row;gap:10px;max-height:200px;}
+  .w-side-panel{flex:1;max-height:none;}
+  .w-task-row{grid-template-columns:4px 1fr 90px;gap:8px;padding:10px;}
+  .w-task-row > .w-task-assignee,
+  .w-task-row > .w-task-progress-wrap{display:none;}
 }
 @media (max-width:700px){
-  #tasksList{grid-template-columns:1fr;}
-  .form-grid{grid-template-columns:1fr;}
-  .team-row{grid-template-columns:1fr;gap:6px;}
-  .user-row{flex-direction:column;text-align:center;}
-  .users-toolbar-actions{width:100%;}
-  .modal-meta{grid-template-columns:1fr;}
-  .modal-actions{flex-wrap:wrap;}
-  .modal-status-select{margin-left:0;width:100%;}
-  .r-summary{grid-template-columns:1fr 1fr;}
-  .report-content{padding:22px;}
-  .user-actions{justify-content:center;}
-  .watch-grid{grid-template-columns:1fr;}
-  .card-quick-actions{opacity:1;transform:translateY(0);}
-  .watch-ticker-task{min-width:220px;}
-  .watch-ticker-task .task-title{max-width:180px;font-size:12px;}
-  .watch-tasks-ticker-label{padding:8px 12px;font-size:11px;}
-  .wg-kpi{min-width:38px;padding:5px 7px;}
-  .wg-kpi-num{font-size:15px;}
-  .wg-kpi-icon{font-size:12px;}
-  .wg-kpi-label{font-size:8px;}
-  .wg-clock{font-size:16px;}
+  #watchMainContent{padding:6px;gap:8px;}
+  .w-kpi-row{grid-template-columns:repeat(2,1fr);gap:6px;}
+  .w-kpi-card{padding:8px;}
+  .w-kpi-num{font-size:20px;}
+  .w-kpi-icon{font-size:16px;}
+  .w-kpi-label{font-size:9.5px;}
+  .w-bar-top{padding:8px 12px;min-height:52px;}
+  .w-brand-logo{width:38px;height:38px;}
+  .w-brand-text h1{font-size:15px;}
+  .w-brand-text p{font-size:9px;}
+  .w-clock-time{font-size:16px;}
+  .w-clock-date{font-size:9px;}
+  .w-live-pill{padding:4px 10px;font-size:9px;}
+  .w-main-header{padding:10px 12px;}
+  .w-tab{padding:5px 10px;font-size:10px;}
+  .w-task-row{grid-template-columns:4px 55px minmax(0,1fr) 70px;font-size:10.5px;padding:8px;}
+  .w-task-row > .w-task-due{display:none;}
+  .w-news-track{font-size:11px;}
 }
 </style>
 </head>
@@ -883,6 +958,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <div id="appContainer">
 
+<!-- ============ LOGIN ============ -->
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK"></div>
@@ -907,19 +983,16 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
       الدخول بحساب جوجل
     </button>
-<p class="help-text">نسيت كلمة المرور؟ تواصل مع المدير</p>
-
-<div class="login-watch-section">
-  <div class="login-divider">
-    <span>أو</span>
-  </div>
-  <button type="button" class="login-watch-btn" onclick="openWatchFromLogin()">
-    <span class="watch-btn-icon">🖥️</span>
-    <span>دخول شاشة العرض</span>
-    <span class="watch-btn-pin">PIN</span>
-  </button>
-  <p class="login-watch-hint">💡 شاشة العرض لا تحتاج تسجيل دخول — فقط كلمة سر</p>
-</div>
+    <p class="help-text">نسيت كلمة المرور؟ تواصل مع المدير</p>
+    <div class="login-watch-section">
+      <div class="login-divider"><span>أو</span></div>
+      <button type="button" class="login-watch-btn" onclick="openWatchFromLogin()">
+        <span class="watch-btn-icon">🖥️</span>
+        <span>دخول شاشة العرض</span>
+        <span class="watch-btn-pin">PIN</span>
+      </button>
+      <p class="login-watch-hint">💡 شاشة العرض لا تحتاج تسجيل دخول — فقط كلمة سر</p>
+    </div>
   </div>
 </div>
 
@@ -929,6 +1002,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
 </div>
 
+<!-- ============ MAIN APP ============ -->
 <div id="mainScreen">
   <header>
     <div class="header-brand">
@@ -957,7 +1031,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
     <button class="nav-btn" id="teamNavBtn" onclick="openTeamModal()" style="display:none;">🔧 الفريق</button>
     <button class="nav-btn" data-view="activity">📜 السجل</button>
     <button class="nav-btn" onclick="exportCSV()">📊 Excel</button>
-    <button class="nav-btn watch-highlight" onclick="promptWatchPassword()" title="شاشة عرض كاملة">
+    <button class="nav-btn watch-highlight" onclick="promptWatchPassword()">
       <span class="watch-icon-pulse">🖥️</span> شاشة العرض
       <span class="watch-badge">PIN</span>
     </button>
@@ -1036,13 +1110,11 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
     <div class="container">
       <div class="card-panel">
         <div class="panel-title">👁️ متابعة المهام — تحديثات حيّة</div>
-        <p class="watch-subtitle">آخر التحديثات على المهام من جميع أعضاء الفريق</p>
         <div class="watch-filters">
           <button class="watch-filter active" data-watch="all">الكل</button>
           <button class="watch-filter" data-watch="mine">مهامي</button>
           <button class="watch-filter" data-watch="comments">💬 التعليقات</button>
           <button class="watch-filter" data-watch="status">🔄 تغييرات الحالة</button>
-          <button class="watch-filter" data-watch="overdue">⚠️ متأخرة</button>
         </div>
       </div>
       <div class="card-panel"><div class="watch-timeline" id="watchTimeline"></div></div>
@@ -1102,8 +1174,8 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 <div id="reportOverlay">
   <div class="report-wrapper">
     <div class="report-toolbar">
-      <div class="report-toolbar-title">📄 معاينة التقرير</div>
-      <div class="report-toolbar-actions">
+      <div class="panel-title" style="margin:0;">📄 معاينة التقرير</div>
+      <div style="display:flex;gap:12px;">
         <button class="btn-download" id="downloadPdfBtn" onclick="downloadPDF()">📄 تحميل PDF</button>
         <button class="btn-close-report" onclick="closeReport()">إغلاق</button>
       </div>
@@ -1114,12 +1186,14 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 </div>
 
+<!-- ============================================================
+     ✅ WATCH SCREEN — Dashboard احترافي
+     ============================================================ -->
 <div id="watchScreen">
   <div class="watch-bg">
     <div class="watch-orb o1"></div>
     <div class="watch-orb o2"></div>
     <div class="watch-orb o3"></div>
-    <div class="watch-grid-bg"></div>
   </div>
 
   <div id="watchPinScreen">
@@ -1137,126 +1211,163 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   </div>
 
   <div id="watchMainContent">
-    <!-- ✅ الشريط الواحد الأنيق — Glass Bar Minimal -->
-    <div class="watch-glass-bar">
 
-      <!-- يمين: الشعار + العنوان -->
-      <div class="wg-brand">
-        <div class="wg-logo">
+    <!-- ============ الصف 1: الشريط العلوي النظيف ============ -->
+    <div class="w-bar-top">
+      <div class="w-brand">
+        <div class="w-brand-logo">
           <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK">
         </div>
-        <div class="wg-title">
+        <div class="w-brand-text">
           <h1>Hub to IT Dep.</h1>
           <p>EMAK — نظام المتابعة</p>
         </div>
       </div>
 
-      <!-- وسط: مباشر + الساعة -->
-      <div class="wg-center">
-        <div class="wg-live">
-          <span class="wg-live-dot"></span>
+      <div class="w-bar-top-center">
+        <div class="w-live-pill">
+          <span class="w-live-dot"></span>
           <span>مباشر</span>
         </div>
-        <div class="wg-clock-wrap">
-          <div class="wg-clock" id="watchClock">--:--:--</div>
-          <div class="wg-date" id="watchDate">---</div>
+        <div class="w-clock-big">
+          <div class="w-clock-time" id="watchClock">--:--:--</div>
+          <div class="w-clock-date" id="watchDate">---</div>
         </div>
       </div>
 
-      <!-- يسار: 6 KPIs -->
-      <div class="wg-kpis">
-        <div class="wg-kpi total">
-          <span class="wg-kpi-icon">📋</span>
-          <span class="wg-kpi-num" id="wTotal">0</span>
-          <span class="wg-kpi-label">إجمالي</span>
-        </div>
-        <div class="wg-kpi active-kpi">
-          <span class="wg-kpi-icon">⚡</span>
-          <span class="wg-kpi-num" id="wProgress">0</span>
-          <span class="wg-kpi-label">نشطة</span>
-        </div>
-        <div class="wg-kpi progress-kpi">
-          <span class="wg-kpi-icon">⏳</span>
-          <span class="wg-kpi-num" id="wWorking">0</span>
-          <span class="wg-kpi-label">جارية</span>
-        </div>
-        <div class="wg-kpi overdue-kpi">
-          <span class="wg-kpi-icon">⚠️</span>
-          <span class="wg-kpi-num" id="wOverdue">0</span>
-          <span class="wg-kpi-label">متأخرة</span>
-        </div>
-        <div class="wg-kpi done-kpi">
-          <span class="wg-kpi-icon">✅</span>
-          <span class="wg-kpi-num" id="wDone">0</span>
-          <span class="wg-kpi-label">مكتملة</span>
-        </div>
-        <div class="wg-kpi team-kpi">
-          <span class="wg-kpi-icon">👥</span>
-          <span class="wg-kpi-num" id="wTeam">0</span>
-          <span class="wg-kpi-label">الفريق</span>
-        </div>
-      </div>
-
-      <!-- يسار أقصى: متصل + إغلاق -->
-      <div class="wg-actions">
-        <div class="wg-conn" id="watchConnStatus">
-          <span class="wg-conn-dot"></span>
+      <div class="w-bar-top-actions">
+        <div class="w-status-pill" id="watchConnStatus">
+          <span class="w-status-dot"></span>
           <span>متصل</span>
         </div>
-        <button class="wg-close" onclick="closeWatchScreen()" title="إغلاق">✕</button>
-      </div>
-
-    </div>
-
-    <div class="watch-grid">
-      <section class="watch-panel" data-type="active">
-        <div class="watch-panel-header">
-          <h2>📌 المهام النشطة</h2>
-          <span class="watch-panel-count" id="watchActiveCount">0</span>
-        </div>
-        <div class="watch-panel-body" id="watchActiveList"><div class="watch-empty"><div class="watch-empty-icon">📭</div><div class="watch-empty-text">لا توجد مهام نشطة</div></div></div>
-      </section>
-      <section class="watch-panel" data-type="urgent">
-        <div class="watch-panel-header">
-          <h2>⚠️ تحتاج انتباه</h2>
-          <span class="watch-panel-count" id="watchUrgentCount">0</span>
-        </div>
-        <div class="watch-panel-body" id="watchUrgentList"><div class="watch-empty"><div class="watch-empty-icon">🎉</div><div class="watch-empty-text">لا توجد مهام متأخرة</div><div class="watch-empty-hint">كل شيء تحت السيطرة</div></div></div>
-      </section>
-      <section class="watch-panel" data-type="done">
-        <div class="watch-panel-header">
-          <h2>✅ آخر المكتملة</h2>
-          <span class="watch-panel-count" id="watchDoneCount">0</span>
-        </div>
-        <div class="watch-panel-body" id="watchDoneList"><div class="watch-empty"><div class="watch-empty-icon">⏳</div><div class="watch-empty-text">لا توجد مهام مكتملة</div></div></div>
-      </section>
-    </div>
-
-    <div class="watch-tasks-ticker-section">
-      <div class="watch-tasks-ticker-label">
-        <span class="ticker-dot"></span>
-        <span>📋 المهام العادية (<span id="watchNormalCount">0</span>)</span>
-      </div>
-      <div class="watch-tasks-ticker-viewport">
-        <div class="watch-tasks-ticker-track" id="watchNormalTicker">
-          <div class="watch-tasks-ticker-empty">لا توجد مهام عادية حالياً</div>
-        </div>
+        <button class="w-close-btn" onclick="closeWatchScreen()" title="إغلاق">✕</button>
       </div>
     </div>
 
-    <footer class="watch-footer">
-      <div class="watch-ticker-label">
-        <span class="notif-dot"></span>
-        <span>🔔 إشعارات</span>
+    <!-- ============ الصف 2: 6 بطاقات KPI ============ -->
+    <div class="w-kpi-row">
+      <div class="w-kpi-card total">
+        <div class="w-kpi-icon">📋</div>
+        <div class="w-kpi-num" id="wTotal">0</div>
+        <div class="w-kpi-label">إجمالي</div>
       </div>
-      <div class="watch-ticker-wrap">
-        <div class="watch-ticker" id="watchTicker">
+      <div class="w-kpi-card active">
+        <div class="w-kpi-icon">⚡</div>
+        <div class="w-kpi-num" id="wActive">0</div>
+        <div class="w-kpi-label">نشطة</div>
+      </div>
+      <div class="w-kpi-card working">
+        <div class="w-kpi-icon">⏳</div>
+        <div class="w-kpi-num" id="wWorking">0</div>
+        <div class="w-kpi-label">جارية</div>
+      </div>
+      <div class="w-kpi-card overdue">
+        <div class="w-kpi-icon">⚠️</div>
+        <div class="w-kpi-num" id="wOverdue">0</div>
+        <div class="w-kpi-label">متأخرة</div>
+      </div>
+      <div class="w-kpi-card done">
+        <div class="w-kpi-icon">✅</div>
+        <div class="w-kpi-num" id="wDone">0</div>
+        <div class="w-kpi-label">مكتملة</div>
+      </div>
+      <div class="w-kpi-card team">
+        <div class="w-kpi-icon">👥</div>
+        <div class="w-kpi-num" id="wTeam">0</div>
+        <div class="w-kpi-label">الفريق</div>
+      </div>
+    </div>
+
+    <!-- ============ الصف 3: التقسيم 70/30 ============ -->
+    <div class="w-content-split">
+
+      <!-- عمود المهام الرئيسي -->
+      <div class="w-main-panel">
+        <div class="w-main-header">
+          <div class="w-main-title">
+            <span>📋</span>
+            <span>قائمة المهام</span>
+          </div>
+          <div class="w-tabs" id="wTabs">
+            <button class="w-tab active" data-tab="all">
+              الكل
+              <span class="w-tab-count" id="wTabAllCount">0</span>
+            </button>
+            <button class="w-tab urgent-tab" data-tab="urgent">
+              🔴 عاجلة
+              <span class="w-tab-count" id="wTabUrgentCount">0</span>
+            </button>
+            <button class="w-tab" data-tab="working">
+              ⏳ جارية
+              <span class="w-tab-count" id="wTabWorkingCount">0</span>
+            </button>
+            <button class="w-tab done-tab" data-tab="done">
+              ✅ مكتملة
+              <span class="w-tab-count" id="wTabDoneCount">0</span>
+            </button>
+          </div>
+        </div>
+        <div class="w-main-body" id="wMainBody">
+          <div class="w-scroll-track" id="wTasksList">
+            <div class="w-empty-state">
+              <div class="w-empty-icon">📭</div>
+              <div class="w-empty-text">لا توجد مهام</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="w-side">
+
+        <!-- أفضل المنجزين -->
+        <div class="w-side-panel top-performers">
+          <div class="w-side-header">
+            <div class="w-side-title">
+              <span>🏆</span>
+              <span>أفضل المنجزين</span>
+            </div>
+            <span class="w-side-badge">Top 5</span>
+          </div>
+          <div class="w-side-body" id="wTopPerformers">
+            <div class="w-empty-state" style="padding:20px;">
+              <div class="w-empty-icon" style="font-size:32px;">🏆</div>
+              <div class="w-empty-text" style="font-size:12px;">لا توجد بيانات</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- آخر النشاطات -->
+        <div class="w-side-panel recent-activities">
+          <div class="w-side-header">
+            <div class="w-side-title">
+              <span>⏱️</span>
+              <span>آخر النشاطات</span>
+            </div>
+            <span class="w-side-badge" id="wActivitiesCount">0</span>
+          </div>
+          <div class="w-side-body" id="wRecentActivities">
+            <div class="w-empty-state" style="padding:20px;">
+              <div class="w-empty-icon" style="font-size:32px;">📋</div>
+              <div class="w-empty-text" style="font-size:12px;">لا توجد نشاطات</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ الصف 4: شريط أخبار موحد ============ -->
+    <div class="w-news-ticker">
+      <div class="w-news-label">LIVE</div>
+      <div class="w-news-track-wrap">
+        <div class="w-news-track" id="wNewsTrack">
           <span>مرحباً بكم في لوحة المتابعة — Hub to IT Dep.</span>
-          <span>⏰ المهام العاجلة تنبض باللون الأحمر</span>
-          <span>📊 يتم التحديث تلقائياً كل لحظة</span>
+          <span>يتم التحديث تلقائياً كل لحظة</span>
         </div>
       </div>
-    </footer>
+    </div>
+
   </div>
 </div>
 
@@ -1264,7 +1375,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v8.2 — Glass Bar Minimal
+   EMAK Hub v9.0 — Dashboard احترافي
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1307,13 +1418,14 @@ const state = {
   currentFilter: "all", currentSearch: "", currentSort: "priority",
   currentView: "grid", currentTheme: localStorage.getItem("theme") || "dark",
   openTaskId: null, pinnedTaskId: null, currentWatch: "all",
+  currentWatchTab: "all",
   usersSearch: "", usersRoleFilter: "all", usersStatusFilter: "all",
   charts: {}, logoDataUrl: null,
   unsubs: { tasks: null, team: null, users: null, activity: null },
   isOnline: navigator.onLine, backupTimer: null, lastBackupTime: 0,
   pendingWrites: 0, renderScheduled: false,
-  watchMode: false, watchClockTimer: null, watchCursorTimer: null,
-  watchUnsubs: { tasks: null, team: null }
+  watchMode: false, watchClockTimer: null,
+  watchUnsubs: { tasks: null, team: null, activity: null }
 };
 
 /* ============ Utils ============ */
@@ -1377,7 +1489,6 @@ function swalConfirm(title, text="لا يمكن التراجع!") {
   return Swal.fire({ icon:"warning", title, text, showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580", background: themeBg(), color: themeFg() });
 }
 
-/* ============ Theme ============ */
 function applyTheme() {
   try {
     document.documentElement.setAttribute("data-theme", state.currentTheme);
@@ -1400,7 +1511,6 @@ async function loadLogoAsBase64() {
   } catch (e) { return null; }
 }
 
-/* ============ Save Indicator ============ */
 function showSaveIndicator(s) {
   let ind = document.getElementById("saveIndicator");
   if (!ind) { ind = document.createElement("div"); ind.id = "saveIndicator"; document.body.appendChild(ind); }
@@ -1439,7 +1549,6 @@ async function safeWrite(operation, maxRetries = 3) {
   throw lastError;
 }
 
-/* ============ Backup ============ */
 async function createBackup() {
   if (!state.isOnline || !state.currentUser || !state.currentUserProfile) return;
   try {
@@ -1470,7 +1579,6 @@ function startBackupTimer() {
   state.backupTimer = setInterval(() => { if (state.isOnline && state.currentUser) createBackup(); }, BACKUP_INTERVAL);
 }
 
-/* ============ Login ============ */
 window.togglePassword = function() {
   const inp = document.getElementById("loginPassword");
   if (!inp) return;
@@ -1596,9 +1704,7 @@ async function cleanupTeamDuplicates() {
         seen.set(m.uid, { id, createdAt: m.createdAt || 0, name: m.name });
       }
     }
-    for (const id of toDelete) {
-      try { await remove(ref(db, "team/" + id)); } catch(e){}
-    }
+    for (const id of toDelete) { try { await remove(ref(db, "team/" + id)); } catch(e){} }
   } catch(e) { console.error("cleanupTeamDuplicates:", e); }
 }
 
@@ -1645,7 +1751,7 @@ async function ensureUserProfile(user) {
           }
         }
       }
-    } catch(e) { console.warn("Team sync error:", e); }
+    } catch(e) {}
     return data;
   }
   const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(user.email || "");
@@ -1766,7 +1872,6 @@ function checkOverdueTasks() {
   if (updated) localStorage.setItem("notified_tasks", JSON.stringify(notified));
 }
 
-/* ============ Add Task ============ */
 function setupAddTaskForm() {
   const form = document.getElementById("addTaskForm");
   if (!form) return;
@@ -1836,7 +1941,6 @@ function restoreDraft() {
   } catch(e){}
 }
 
-/* ============ Task Ops ============ */
 async function changeStatus(taskId, newStatus) {
   if (!state.currentUserProfile) return;
   const t = state.allTasks[taskId]; if (!t) return;
@@ -1857,7 +1961,6 @@ window.quickReassign = async function(taskId, event) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.allTasks[taskId]; if (!t) return;
   const currentAssigneeId = t.assigneeId;
-
   const seenUids = new Set();
   const teamOptions = Object.entries(state.allTeam)
     .filter(([id, m]) => {
@@ -1869,21 +1972,14 @@ window.quickReassign = async function(taskId, event) {
     .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .map(([id, m]) => `<option value="${escapeHtml(id)}" ${currentAssigneeId === id ? "selected" : ""}>${escapeHtml(m.name)}</option>`)
     .join("");
-
   const { value: formValues } = await Swal.fire({
     title: "👤 تغيير المسؤول",
-    html: `
-      <div style="display:flex;flex-direction:column;gap:12px;text-align:right;direction:rtl;">
-        <p style="color:var(--text-2);font-size:13px;font-weight:600;margin:0 0 8px;">
-          المهمة: <b style="color:var(--text);">${escapeHtml(t.title)}</b>
-        </p>
+    html: `<div style="display:flex;flex-direction:column;gap:12px;text-align:right;direction:rtl;">
+        <p style="color:var(--text-2);font-size:13px;font-weight:600;margin:0 0 8px;">المهمة: <b style="color:var(--text);">${escapeHtml(t.title)}</b></p>
         <label class="swal-label">المسؤول الحالي</label>
         <input class="swal2-input" value="${escapeHtml(t.assignee || "—")}" disabled style="margin:0;width:100%;opacity:.7;">
         <label class="swal-label">المسؤول الجديد</label>
-        <select id="swal-new-assignee" class="swal2-select" style="margin:0;width:100%;">
-          <option value="">-- اختر المسؤول --</option>
-          ${teamOptions}
-        </select>
+        <select id="swal-new-assignee" class="swal2-select" style="margin:0;width:100%;"><option value="">-- اختر المسؤول --</option>${teamOptions}</select>
       </div>`,
     showCancelButton:true, confirmButtonText:"تغيير المسؤول", cancelButtonText:"إلغاء",
     confirmButtonColor:"#f5a524", focusConfirm:false,
@@ -1895,60 +1991,20 @@ window.quickReassign = async function(taskId, event) {
       return newId;
     }
   });
-
   if (!formValues) return;
   const newMember = state.allTeam[formValues];
   if (!newMember) return swalError("عضو الفريق غير موجود");
-
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), {
-      assigneeId: formValues,
-      assignee: newMember.name,
-      updatedAt: Date.now(),
-      updatedBy: state.currentUser.uid,
+      assigneeId: formValues, assignee: newMember.name,
+      updatedAt: Date.now(), updatedBy: state.currentUser.uid,
       updatedByName: state.currentUserProfile.displayName
     }));
-    await logActivity("task_reassigned",
-      `أعاد إسناد "${t.title}" من ${t.assignee} إلى ${newMember.name}`,
-      taskId, t.title);
+    await logActivity("task_reassigned", `أعاد إسناد "${t.title}" من ${t.assignee} إلى ${newMember.name}`, taskId, t.title);
     showToast(`✅ تم إسناد المهمة إلى ${newMember.name}`, "success");
     renderTasks();
     if (state.openTaskId === taskId) renderModal(taskId);
-  } catch (err) {
-    swalError("فشل التغيير", err.message);
-  }
-};
-
-window.quickStatusChange = async function(taskId, event) {
-  if (event) { event.stopPropagation(); event.preventDefault(); }
-  const t = state.allTasks[taskId]; if (!t) return;
-  const isOwner = state.currentUser && t.assigneeId === state.currentUser.uid;
-  if (!state.isAdmin && !isOwner) return swalError("غير مصرح");
-
-  const { value: newStatus } = await Swal.fire({
-    title: "🔄 تغيير حالة المهمة",
-    html: `
-      <div style="text-align:right;direction:rtl;">
-        <p style="color:var(--text-2);font-size:13px;font-weight:600;margin-bottom:14px;">
-          المهمة: <b style="color:var(--text);">${escapeHtml(t.title)}</b>
-        </p>
-        <label class="swal-label">الحالة الجديدة</label>
-        <select id="swal-new-status" class="swal2-select" style="margin:0;width:100%;">
-          <option value="جديدة" ${t.status === "جديدة" ? "selected" : ""}>🆕 جديدة</option>
-          <option value="جاري التنفيذ" ${t.status === "جاري التنفيذ" ? "selected" : ""}>⏳ جاري التنفيذ</option>
-          <option value="مكتملة" ${t.status === "مكتملة" ? "selected" : ""}>✅ مكتملة</option>
-        </select>
-      </div>`,
-    showCancelButton:true, confirmButtonText:"تغيير", cancelButtonText:"إلغاء",
-    confirmButtonColor:"#5b8def", focusConfirm:false,
-    background: themeBg(), color: themeFg(),
-    preConfirm: () => {
-      const s = document.getElementById("swal-new-status").value;
-      if (s === t.status) { Swal.showValidationMessage("اختر حالة مختلفة"); return false; }
-      return s;
-    }
-  });
-  if (newStatus) await changeStatus(taskId, newStatus);
+  } catch (err) { swalError("فشل التغيير", err.message); }
 };
 
 window.quickToggleStatus = async function(taskId, event) {
@@ -1956,8 +2012,7 @@ window.quickToggleStatus = async function(taskId, event) {
   const t = state.allTasks[taskId]; if (!t) return;
   const isOwner = state.currentUser && t.assigneeId === state.currentUser.uid;
   if (!state.isAdmin && !isOwner) return;
-  const nextStatus = t.status === "جديدة" ? "جاري التنفيذ" :
-                     t.status === "جاري التنفيذ" ? "مكتملة" : "جديدة";
+  const nextStatus = t.status === "جديدة" ? "جاري التنفيذ" : t.status === "جاري التنفيذ" ? "مكتملة" : "جديدة";
   await changeStatus(taskId, nextStatus);
 };
 
@@ -1965,34 +2020,26 @@ async function addComment(taskId, fromModal = false) {
   if (!state.currentUserProfile) return swalError("سجّل الدخول أولاً");
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
   const input = document.getElementById(inputId);
-  if (!input) return console.error("Comment input not found:", inputId);
+  if (!input) return;
   const text = input.value.trim();
   if (!text) return showToast("⚠️ اكتب تعليقاً أولاً", "warn");
-  
   const t = state.allTasks[taskId];
   if (!t) return swalError("المهمة غير موجودة");
-  
   try {
     await safeWrite(async () => {
       await set(push(ref(db, "tasks/" + taskId + "/comments")), {
-        text,
-        author: state.currentUserProfile.displayName,
-        authorId: state.currentUser.uid,
-        createdAt: Date.now()
+        text, author: state.currentUserProfile.displayName,
+        authorId: state.currentUser.uid, createdAt: Date.now()
       });
       await update(ref(db, "tasks/" + taskId), {
-        updatedAt: Date.now(),
-        updatedBy: state.currentUser.uid,
+        updatedAt: Date.now(), updatedBy: state.currentUser.uid,
         updatedByName: state.currentUserProfile.displayName
       });
     });
     await logActivity("comment_added", `علّق على "${t.title}": ${text.slice(0, 50)}`, taskId, t.title);
     input.value = "";
     showToast("💬 تم إضافة التعليق", "success");
-  } catch (err) {
-    console.error("Add comment error:", err);
-    swalError("فشل إضافة التعليق", err.message);
-  }
+  } catch (err) { swalError("فشل إضافة التعليق", err.message); }
 }
 window.addComment = addComment;
 
@@ -2006,11 +2053,8 @@ async function deleteTask(taskId) {
     await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
     await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId, t.title);
     closeModal();
-    Swal.mixin({
-      toast:true, position:"bottom-end", showConfirmButton:true,
-      confirmButtonText:"↩️ تراجع", timer:5000, timerProgressBar:true,
-      background: themeBg(), color: themeFg()
-    }).fire({ icon:"success", title:"🗑️ تم الحذف" }).then(async (result) => {
+    Swal.mixin({ toast:true, position:"bottom-end", showConfirmButton:true, confirmButtonText:"↩️ تراجع", timer:5000, timerProgressBar:true, background: themeBg(), color: themeFg() })
+      .fire({ icon:"success", title:"🗑️ تم الحذف" }).then(async (result) => {
       if (result.isConfirmed) {
         await set(ref(db, "tasks/" + taskId), deletedData);
         showToast("✅ تم الاسترجاع", "success");
@@ -2023,7 +2067,6 @@ window.deleteTask = deleteTask;
 async function editTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح — فقط المدير يمكنه التعديل");
   const t = state.allTasks[taskId]; if (!t) return;
-  
   const seenUids = new Set();
   const teamOptions = Object.entries(state.allTeam)
     .filter(([id, m]) => {
@@ -2038,42 +2081,29 @@ async function editTask(taskId) {
   const { value: formValues } = await Swal.fire({
     title: "✏️ تعديل المهمة",
     width: 640,
-    html: `
-      <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
+    html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
         <label class="swal-label">عنوان المهمة *</label>
         <input id="swal-title" class="swal2-input" value="${escapeHtml(t.title)}" style="margin:0;width:100%;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div>
-            <label class="swal-label">المسؤول *</label>
-            <select id="swal-assignee" class="swal2-select" style="margin:0;width:100%;">${teamOptions}</select>
-          </div>
-          <div>
-            <label class="swal-label">الأولوية</label>
-            <select id="swal-priority" class="swal2-select" style="margin:0;width:100%;">
+          <div><label class="swal-label">المسؤول *</label><select id="swal-assignee" class="swal2-select" style="margin:0;width:100%;">${teamOptions}</select></div>
+          <div><label class="swal-label">الأولوية</label><select id="swal-priority" class="swal2-select" style="margin:0;width:100%;">
               <option value="عادي" ${t.priority==="عادي"?"selected":""}>🟢 عادي</option>
               <option value="مهم" ${t.priority==="مهم"?"selected":""}>🟡 مهم</option>
               <option value="عاجل" ${t.priority==="عاجل"?"selected":""}>🔴 عاجل</option>
-            </select>
-          </div>
-          <div>
-            <label class="swal-label">الحالة</label>
-            <select id="swal-status" class="swal2-select" style="margin:0;width:100%;">
+            </select></div>
+          <div><label class="swal-label">الحالة</label><select id="swal-status" class="swal2-select" style="margin:0;width:100%;">
               <option value="جديدة" ${t.status==="جديدة"?"selected":""}>🆕 جديدة</option>
               <option value="جاري التنفيذ" ${t.status==="جاري التنفيذ"?"selected":""}>⏳ جاري التنفيذ</option>
               <option value="مكتملة" ${t.status==="مكتملة"?"selected":""}>✅ مكتملة</option>
-            </select>
-          </div>
-          <div>
-            <label class="swal-label">تاريخ التسليم</label>
-            <input id="swal-due" type="date" class="swal2-input" value="${t.dueDate||""}" style="margin:0;width:100%;">
-          </div>
+            </select></div>
+          <div><label class="swal-label">تاريخ التسليم</label><input id="swal-due" type="date" class="swal2-input" value="${t.dueDate||""}" style="margin:0;width:100%;"></div>
         </div>
-        <label class="swal-label">الوسوم (فاصلة)</label>
+        <label class="swal-label">الوسوم</label>
         <input id="swal-tags" class="swal2-input" value="${escapeHtml(t.tags||"")}" style="margin:0;width:100%;">
         <label class="swal-label">ملاحظات</label>
         <textarea id="swal-notes" class="swal2-textarea" style="margin:0;width:100%;min-height:80px;">${escapeHtml(t.notes||"")}</textarea>
       </div>`,
-    showCancelButton:true, confirmButtonText:"💾 حفظ التعديلات", cancelButtonText:"إلغاء",
+    showCancelButton:true, confirmButtonText:"💾 حفظ", cancelButtonText:"إلغاء",
     confirmButtonColor:"#5b8def", focusConfirm:false,
     background: themeBg(), color: themeFg(),
     preConfirm: () => {
@@ -2081,52 +2111,26 @@ async function editTask(taskId) {
       if (!title) { Swal.showValidationMessage("العنوان مطلوب"); return false; }
       const assigneeId = document.getElementById("swal-assignee").value;
       if (!assigneeId) { Swal.showValidationMessage("اختر المسؤول"); return false; }
-      return {
-        title,
-        assigneeId,
-        priority: document.getElementById("swal-priority").value,
-        status: document.getElementById("swal-status").value,
-        dueDate: document.getElementById("swal-due").value,
-        tags: document.getElementById("swal-tags").value.trim(),
-        notes: document.getElementById("swal-notes").value.trim()
-      };
+      return { title, assigneeId, priority: document.getElementById("swal-priority").value,
+        status: document.getElementById("swal-status").value, dueDate: document.getElementById("swal-due").value,
+        tags: document.getElementById("swal-tags").value.trim(), notes: document.getElementById("swal-notes").value.trim() };
     }
   });
   if (!formValues) return;
   const member = state.allTeam[formValues.assigneeId];
-  if (!member) return swalError("بيانات ناقصة — العضو غير موجود");
-
-  const changes = [];
-  if (t.title !== formValues.title) changes.push("العنوان");
-  if (t.assigneeId !== formValues.assigneeId) changes.push(`المسؤول: ${t.assignee} → ${member.name}`);
-  if (t.priority !== formValues.priority) changes.push(`الأولوية: ${t.priority} → ${formValues.priority}`);
-  if (t.status !== formValues.status) changes.push(`الحالة: ${t.status} → ${formValues.status}`);
-  if ((t.dueDate||"") !== (formValues.dueDate||"")) changes.push("تاريخ التسليم");
-
+  if (!member) return swalError("بيانات ناقصة");
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), {
-      title: formValues.title,
-      assigneeId: formValues.assigneeId,
-      assignee: member.name,
-      priority: formValues.priority,
-      status: formValues.status,
-      dueDate: formValues.dueDate,
-      tags: formValues.tags,
-      notes: formValues.notes,
-      updatedAt: Date.now(),
-      updatedBy: state.currentUser.uid,
-      updatedByName: state.currentUserProfile.displayName
+      title: formValues.title, assigneeId: formValues.assigneeId, assignee: member.name,
+      priority: formValues.priority, status: formValues.status, dueDate: formValues.dueDate,
+      tags: formValues.tags, notes: formValues.notes,
+      updatedAt: Date.now(), updatedBy: state.currentUser.uid, updatedByName: state.currentUserProfile.displayName
     }));
-    await logActivity("task_edited",
-      `عدّل "${formValues.title}"${changes.length ? " — " + changes.join(" ، ") : ""}`,
-      taskId, formValues.title);
+    await logActivity("task_edited", `عدّل "${formValues.title}"`, taskId, formValues.title);
     showToast("✏️ تم حفظ التعديلات", "success");
     renderTasks();
     if (state.openTaskId === taskId) renderModal(taskId);
-  } catch (err) {
-    showToast("⚠️ فشل الحفظ", "warn");
-    swalError("فشل التعديل", err.message);
-  }
+  } catch (err) { swalError("فشل التعديل", err.message); }
 }
 window.editTask = editTask;
 
@@ -2157,7 +2161,6 @@ async function logActivity(type, text, taskId=null, taskTitle="") {
   } catch(e) {}
 }
 
-/* ============ Modal ============ */
 function openModal(taskId) {
   state.openTaskId = taskId;
   renderModal(taskId);
@@ -2182,12 +2185,9 @@ function renderModal(taskId) {
   const comments = t.comments ? Object.entries(t.comments).sort((a,b) => (a[1].createdAt||0)-(b[1].createdAt||0)) : [];
   const commentsHtml = comments.length > 0 ? comments.map(([cid, c]) => `
     <div class="modal-comment">
-      <div class="modal-comment-head">
-        <span class="modal-comment-author">${escapeHtml(c.author)}</span>
-        <span class="modal-comment-date">${formatDateTime(c.createdAt)}</span>
-      </div>
+      <div class="modal-comment-head"><span class="modal-comment-author">${escapeHtml(c.author)}</span><span class="modal-comment-date">${formatDateTime(c.createdAt)}</span></div>
       <div class="modal-comment-text">${escapeHtml(c.text)}</div>
-    </div>`).join("") : '<p class="empty-comments">لا توجد تعليقات</p>';
+    </div>`).join("") : '<p style="text-align:center;color:var(--text-3);padding:24px;">لا توجد تعليقات</p>';
   const tagsHtml = t.tags ? t.tags.split(",").map(x=>x.trim()).filter(Boolean).map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join("") : "";
 
   document.getElementById("modalBody").innerHTML = `
@@ -2224,13 +2224,12 @@ function renderModal(taskId) {
       </select>
       ${state.isAdmin ? `
         <button class="btn-edit" onclick="editTask('${taskId}')">✏️ تعديل</button>
-        <button class="btn-edit" onclick="quickReassign('${taskId}', event)" style="background:var(--warning);color:#fff;border-color:var(--warning);">👤 تغيير المسؤول</button>
+        <button class="btn-edit" onclick="quickReassign('${taskId}', event)" style="background:var(--warning);color:#fff;">👤 تغيير المسؤول</button>
         <button class="btn-del" onclick="deleteTask('${taskId}')">🗑️ حذف</button>` : ""}
     </div>`;
   document.getElementById("modalBox").className = "modal-box" + (isUrgent ? " urgent-glow" : "");
 }
 
-/* ============ Render Main ============ */
 function scheduleRender() {
   if (state.renderScheduled) return;
   state.renderScheduled = true;
@@ -2256,16 +2255,13 @@ function renderStats() {
 function renderTeamProgress() {
   const teamMap = {};
   const seenNames = new Set();
-  
   Object.values(state.allTasks).forEach(t => {
     const key = t.assigneeId || t.assignee || "غير محدد";
     const name = t.assignee || "غير محدد";
     if (!teamMap[key]) {
       const normalizedName = String(name).trim().toLowerCase();
       if (seenNames.has(normalizedName)) {
-        const existingKey = Object.keys(teamMap).find(k => 
-          String(teamMap[k].name).trim().toLowerCase() === normalizedName
-        );
+        const existingKey = Object.keys(teamMap).find(k => String(teamMap[k].name).trim().toLowerCase() === normalizedName);
         if (existingKey) {
           teamMap[existingKey].total++;
           if (t.status === "مكتملة") teamMap[existingKey].done++;
@@ -2278,7 +2274,6 @@ function renderTeamProgress() {
     teamMap[key].total++;
     if (t.status === "مكتملة") teamMap[key].done++;
   });
-  
   const html = Object.values(teamMap).map(s => {
     const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
     return `<div class="team-row">
@@ -2382,36 +2377,27 @@ function taskCardHtml(id, t) {
   const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
   const isPinned = state.pinnedTaskId === id;
   const tagsHtml = t.tags ? t.tags.split(",").map(x=>x.trim()).filter(Boolean).slice(0,2).map(x=>`<span class="card-tag">${escapeHtml(x)}</span>`).join("") : "";
-
   const quickActions = state.isAdmin ? `
     <div class="card-quick-actions">
-      <button class="quick-action-btn edit" onclick="editTask('${id}');event.stopPropagation();" title="تعديل سريع">✏️</button>
-      <button class="quick-action-btn reassign" onclick="quickReassign('${id}', event);" title="تغيير المسؤول">👤</button>
-      <button class="quick-action-btn status-toggle" onclick="quickToggleStatus('${id}', event);" title="تبديل الحالة">🔄</button>
-      <button class="quick-action-btn delete" onclick="deleteTask('${id}');event.stopPropagation();" title="حذف">🗑️</button>
+      <button class="quick-action-btn" onclick="editTask('${id}');event.stopPropagation();" title="تعديل">✏️</button>
+      <button class="quick-action-btn" onclick="quickReassign('${id}', event);" title="تغيير المسؤول">👤</button>
+      <button class="quick-action-btn" onclick="deleteTask('${id}');event.stopPropagation();" title="حذف">🗑️</button>
     </div>` : "";
 
-  return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""} ${isPinned ? "pinned" : ""}" onclick="openModal('${id}')">
-    ${isPinned ? '<div class="pin-badge">⭐</div>' : ""}
+  return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""}" onclick="openModal('${id}')">
     ${quickActions}
     <div class="card-top">
       <span class="priority-dot ${priorityClass}"></span>
-      <span class="assignee-chip ${state.isAdmin ? 'clickable' : ''}"
-            ${state.isAdmin ? `onclick="quickReassign('${id}', event)" title="انقر لتغيير المسؤول"` : ""}>
-        👤 ${escapeHtml(t.assignee || "—")}
-      </span>
+      <span class="assignee-chip">👤 ${escapeHtml(t.assignee || "—")}</span>
     </div>
     <h3 class="card-title">${highlight(t.title, state.currentSearch)}</h3>
     ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
     ${t.notes ? `<p class="card-notes">${escapeHtml(t.notes)}</p>` : ""}
     <div class="card-bottom">
       ${t.dueDate ? `<span class="card-due ${isOverdue?'overdue':''}">${escapeHtml(dueLabel(t.dueDate))}</span>` : "<span></span>"}
-      <div class="card-icons">
-        ${commentsCount > 0 ? `<span class="card-icon">💬 ${commentsCount}</span>` : ""}
-        <span class="status-pill ${statusClass}"
-              ${(state.isAdmin || (state.currentUser && t.assigneeId === state.currentUser.uid)) ? `onclick="quickToggleStatus('${id}', event)" title="انقر لتبديل الحالة"` : ""}>
-          ${escapeHtml(t.status)}
-        </span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        ${commentsCount > 0 ? `<span style="font-size:11px;color:var(--text-2);font-weight:700;">💬 ${commentsCount}</span>` : ""}
+        <span class="status-pill ${statusClass}">${escapeHtml(t.status)}</span>
       </div>
     </div>
   </div>`;
@@ -2420,54 +2406,23 @@ function taskCardHtml(id, t) {
 function renderKanban(list, filtered) {
   list.className = "kanban-board";
   const cols = { "جديدة": [], "جاري التنفيذ": [], "مكتملة": [] };
-  filtered.forEach(([id, t]) => {
-    const key = cols[t.status] !== undefined ? t.status : "جيدة";
-    if (cols[key]) cols[key].push([id, t]);
-  });
+  filtered.forEach(([id, t]) => { if (cols[t.status]) cols[t.status].push([id, t]); });
   list.innerHTML = Object.entries(cols).map(([status, items]) => `
-    <div class="kanban-col" data-status="${escapeHtml(status)}"
-         ondragover="event.preventDefault();this.classList.add('dragover')"
-         ondragleave="this.classList.remove('dragover')"
-         ondrop="kanbanDrop(event, '${escapeHtml(status)}')">
+    <div class="kanban-col">
       <div class="kanban-col-header">
         <span>${status === "جديدة" ? "🆕" : status === "جاري التنفيذ" ? "⏳" : "✅"} ${escapeHtml(status)}</span>
         <span class="kanban-count">${items.length}</span>
       </div>
       <div class="kanban-col-body">
-        ${items.map(([id, t]) => {
-          const quickActionsKanban = state.isAdmin ? `
-            <div class="kanban-quick-actions">
-              <button class="quick-action-btn edit" onclick="editTask('${id}');event.stopPropagation();" title="تعديل">✏️</button>
-              <button class="quick-action-btn reassign" onclick="quickReassign('${id}', event);" title="تغيير المسؤول">👤</button>
-              <button class="quick-action-btn delete" onclick="deleteTask('${id}');event.stopPropagation();" title="حذف">🗑️</button>
-            </div>` : "";
-          return `
-          <div class="kanban-card" draggable="true" ondragstart="kanbanDrag(event, '${id}')" onclick="openModal('${id}')">
-            ${quickActionsKanban}
+        ${items.map(([id, t]) => `
+          <div class="kanban-card" onclick="openModal('${id}')">
             <div class="kanban-card-title">${escapeHtml(t.title)}</div>
-            <div class="kanban-card-meta">
-              <span class="assignee-chip ${state.isAdmin ? 'clickable' : ''}"
-                    ${state.isAdmin ? `onclick="quickReassign('${id}', event)" title="انقر لتغيير المسؤول"` : ""}>
-                👤 ${escapeHtml(t.assignee || "—")}
-              </span>
-              ${t.dueDate ? `<span class="card-due ${daysRemaining(t.dueDate)<0 && t.status!=="مكتملة" ? "overdue" : ""}">${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
-            </div>
-          </div>`;
-        }).join("") || '<p class="empty">لا توجد مهام</p>'}
+            <div style="font-size:11px;color:var(--text-2);">👤 ${escapeHtml(t.assignee || "—")}</div>
+          </div>`).join("") || '<p class="empty" style="padding:20px;font-size:12px;">لا توجد مهام</p>'}
       </div>
     </div>
   `).join("");
 }
-let _draggingId = null;
-window.kanbanDrag = (e, id) => { _draggingId = id; e.dataTransfer.effectAllowed = "move"; };
-window.kanbanDrop = async (e, status) => {
-  e.preventDefault(); e.currentTarget.classList.remove("dragover");
-  if (!_draggingId) return;
-  const t = state.allTasks[_draggingId];
-  if (!t || t.status === status) { _draggingId = null; return; }
-  await changeStatus(_draggingId, status);
-  _draggingId = null;
-};
 
 function renderWatch() {
   const timeline = document.getElementById("watchTimeline");
@@ -2476,38 +2431,22 @@ function renderWatch() {
   if (state.currentWatch === "mine" && state.currentUser) events = events.filter(e => e.uid === state.currentUser.uid);
   else if (state.currentWatch === "comments") events = events.filter(e => e.type === "comment_added");
   else if (state.currentWatch === "status") events = events.filter(e => e.type === "status_changed" || e.type === "task_edited");
-  else if (state.currentWatch === "overdue") {
-    events = events.filter(e => { const t = state.allTasks[e.taskId]; if (!t) return false; const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; });
-  }
-  if (!state.isAdmin && state.currentUser) {
-    const myTasks = new Set(Object.entries(state.allTasks).filter(([_, t]) => t.assigneeId === state.currentUser.uid).map(([id]) => id));
-    events = events.filter(e => e.uid === state.currentUser.uid || myTasks.has(e.taskId) || e.type === "task_created");
-  }
   events = events.slice(0, 50);
   if (events.length === 0) { timeline.innerHTML = '<p class="empty">لا توجد تحديثات</p>'; return; }
-  const typeIcons = {
-    task_created: "➕", task_edited: "✏️", task_deleted: "🗑️",
-    status_changed: "🔄", comment_added: "💬", user_created: "👤",
-    user_promoted: "👑", password_changed: "🔑", task_reassigned: "👤"
-  };
-  timeline.innerHTML = events.map(e => {
-    const icon = typeIcons[e.type] || "•";
-    const task = e.taskId ? state.allTasks[e.taskId] : null;
-    const taskLink = task ? `<a href="#" onclick="event.preventDefault();openModal('${e.taskId}')" class="watch-task-link">${escapeHtml(e.taskTitle || task.title)}</a>` : "";
-    return `
-      <div class="watch-event type-${escapeHtml(e.type || "info")}">
-        <div class="watch-event-icon">${icon}</div>
-        <div class="watch-event-body">
-          <div class="watch-event-text">${escapeHtml(e.text)}</div>
-          <div class="watch-event-meta">
-            <span class="watch-event-author">${escapeHtml(e.byName || "—")}</span>
-            <span>•</span>
-            <span>${timeAgo(e.at)}</span>
-            ${taskLink ? `<span>•</span>${taskLink}` : ""}
-          </div>
+  const typeIcons = { task_created: "➕", task_edited: "✏️", task_deleted: "🗑️", status_changed: "🔄", comment_added: "💬" };
+  timeline.innerHTML = events.map(e => `
+    <div class="watch-event">
+      <div class="watch-event-icon">${typeIcons[e.type] || "•"}</div>
+      <div class="watch-event-body">
+        <div class="watch-event-text">${escapeHtml(e.text)}</div>
+        <div class="watch-event-meta">
+          <span class="watch-event-author">${escapeHtml(e.byName || "—")}</span>
+          <span>•</span>
+          <span>${timeAgo(e.at)}</span>
         </div>
-      </div>`;
-  }).join("");
+      </div>
+    </div>
+  `).join("");
   renderActiveTasks();
 }
 function renderActiveTasks() {
@@ -2518,19 +2457,16 @@ function renderActiveTasks() {
       const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
       const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
       if (pa !== pb) return pa - pb;
-      const da = daysRemaining(a[1].dueDate) ?? 999;
-      const dbb = daysRemaining(b[1].dueDate) ?? 999;
-      return da - dbb;
+      return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
     }).slice(0, 8);
   if (active.length === 0) { wrap.innerHTML = '<p class="empty">لا توجد مهام نشطة 🎉</p>'; return; }
   wrap.innerHTML = '<div class="active-tasks-grid">' + active.map(([id, t]) => {
     const isOverdue = daysRemaining(t.dueDate) < 0 && t.status !== "مكتملة";
-    const isUrgent = t.priority === "عاجل" && t.status !== "مكتملة";
-    return `<div class="active-task-card ${isUrgent ? 'urgent' : ''} ${isOverdue ? 'overdue' : ''}" onclick="openModal('${id}')">
-      <div class="active-task-title">${escapeHtml(t.title)}</div>
-      <div class="active-task-meta">
+    return `<div class="active-task-card" onclick="openModal('${id}')">
+      <div style="font-size:14px;font-weight:800;margin-bottom:10px;">${escapeHtml(t.title)}</div>
+      <div style="font-size:12px;color:var(--text-2);display:flex;justify-content:space-between;">
         <span>👤 ${escapeHtml(t.assignee || "—")}</span>
-        ${t.dueDate ? `<span class="${isOverdue ? 'overdue-text' : ''}">${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
+        ${t.dueDate ? `<span style="${isOverdue ? 'color:var(--urgent);font-weight:800;' : ''}">${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
       </div>
     </div>`;
   }).join("") + '</div>';
@@ -2540,23 +2476,19 @@ function renderActivity() {
   if (!wrap) return;
   const events = state.allActivity.slice(0, 100);
   if (events.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد نشاط</p>'; return; }
-  const typeIcons = {
-    task_created: "➕", task_edited: "✏️", task_deleted: "🗑️",
-    status_changed: "🔄", comment_added: "💬", user_created: "👤",
-    user_promoted: "👑", password_changed: "🔑", task_reassigned: "👤"
-  };
   wrap.innerHTML = events.map(e => `
-    <div class="activity-row">
-      <div class="activity-icon">${typeIcons[e.type] || "•"}</div>
-      <div class="activity-body">
-        <div class="activity-text">${escapeHtml(e.text)}</div>
-        <div class="activity-meta"><span>${escapeHtml(e.byName || "—")}</span><span>•</span><span>${formatDateTime(e.at)}</span></div>
+    <div class="activity-row" style="display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);">
+      <div class="activity-icon">•</div>
+      <div style="flex:1;">
+        <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${escapeHtml(e.text)}</div>
+        <div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;">
+          <span>${escapeHtml(e.byName || "—")}</span><span>•</span><span>${formatDateTime(e.at)}</span>
+        </div>
       </div>
     </div>
   `).join("");
 }
 
-/* ============ Users ============ */
 function renderUsersStats() {
   const users = Object.values(state.allUsers);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -2570,7 +2502,6 @@ function renderUsersList() {
   const wrap = document.getElementById("usersList");
   if (!wrap) return;
   renderUsersStats();
-
   const seenKeys = new Set();
   let users = Object.entries(state.allUsers).filter(([uid, u]) => {
     if (!u || typeof u !== "object") return false;
@@ -2579,91 +2510,54 @@ function renderUsersList() {
     seenKeys.add(key);
     return true;
   });
-
   if (state.usersSearch) users = users.filter(([uid, u]) => {
     const hay = `${u.displayName || ""} ${u.name || ""} ${u.username || ""} ${u.email || ""}`.toLowerCase();
     return hay.includes(state.usersSearch);
   });
   if (state.usersRoleFilter !== "all") users = users.filter(([_, u]) => u.role === state.usersRoleFilter);
   if (state.usersStatusFilter !== "all") users = users.filter(([_, u]) => state.usersStatusFilter === "active" ? u.active !== false : u.active === false);
-
-  users.sort((a, b) => {
-    const ra = a[1].role === "admin" ? 0 : 1;
-    const rb = b[1].role === "admin" ? 0 : 1;
-    if (ra !== rb) return ra - rb;
-    return (a[1].displayName || a[1].username || "").localeCompare(b[1].displayName || b[1].username || "", "ar");
-  });
-
   if (users.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون</p>'; return; }
-
   wrap.innerHTML = users.map(([uid, u]) => {
     const isMe = uid === state.currentUser.uid;
     const tasks = Object.values(state.allTasks).filter(t => t.assigneeId === uid);
     const doneTasks = tasks.filter(t => t.status === "مكتملة").length;
     const activeTasks = tasks.filter(t => t.status !== "مكتملة").length;
     const displayName = u.displayName || u.name || u.username || "—";
-    const initial = escapeHtml(displayName.charAt(0));
     const lastLogin = u.lastLogin ? timeAgo(u.lastLogin) : "لم يسجل بعد";
-    return `
-    <div class="user-row ${isMe ? 'is-me' : ''}">
-      <div class="user-avatar ${u.role === 'admin' ? 'admin-avatar' : ''}">${initial}</div>
+    return `<div class="user-row ${isMe ? 'is-me' : ''}">
+      <div class="user-avatar">${escapeHtml(displayName.charAt(0))}</div>
       <div class="user-info-cell">
-        <div class="user-name">${escapeHtml(displayName)}${isMe ? "<span class='me-tag'>أنت</span>" : ""}</div>
+        <div class="user-name">${escapeHtml(displayName)}${isMe ? "<span style='font-size:10px;padding:3px 10px;background:var(--warning);color:#fff;border-radius:10px;font-weight:800;'>أنت</span>" : ""}</div>
         <div class="user-meta">
-          <span class="user-email">@${escapeHtml(u.username || "—")}</span>
+          <span style="font-family:monospace;color:var(--text-3);">@${escapeHtml(u.username || "—")}</span>
           <span class="role-badge ${u.role === "admin" ? "admin" : "user"}">${u.role === "admin" ? "👑 مدير" : "👤 موظف"}</span>
           <span class="status-badge ${u.active !== false ? "active" : "inactive"}">${u.active !== false ? "● نشط" : "○ معطّل"}</span>
         </div>
         <div class="user-stats-row">
-          <span class="ustat"><b>${tasks.length}</b> مهمة</span>
-          <span class="ustat success"><b>${doneTasks}</b> مكتملة</span>
-          <span class="ustat progress"><b>${activeTasks}</b> جارية</span>
-          <span class="ustat muted">🕐 ${lastLogin}</span>
+          <span>📋 <b>${tasks.length}</b></span>
+          <span style="color:var(--success);">✅ <b>${doneTasks}</b></span>
+          <span style="color:var(--warning);">⏳ <b>${activeTasks}</b></span>
+          <span style="color:var(--text-3);">🕐 ${lastLogin}</span>
         </div>
       </div>
       <div class="user-actions">
         ${u.role !== "admin" ? `<button class="btn-sm primary" onclick="promoteUser('${uid}')">⬆️</button>` : ""}
         ${u.role === "admin" && !isMe ? `<button class="btn-sm" onclick="demoteUser('${uid}')">⬇️</button>` : ""}
-        ${u.active !== false
-          ? `<button class="btn-sm warn" onclick="toggleUserActive('${uid}', false)">⛔</button>`
-          : `<button class="btn-sm success" onclick="toggleUserActive('${uid}', true)">✅</button>`}
+        ${u.active !== false ? `<button class="btn-sm warn" onclick="toggleUserActive('${uid}', false)">⛔</button>` : `<button class="btn-sm success" onclick="toggleUserActive('${uid}', true)">✅</button>`}
         ${!isMe ? `<button class="btn-sm danger" onclick="deleteUser('${uid}')">🗑️</button>` : ""}
       </div>
     </div>`;
   }).join("");
 }
 
-window.promoteUser = async (uid) => {
-  if (!state.isAdmin) return;
-  const r = await swalConfirm("ترقية إلى مدير؟");
-  if (!r.isConfirmed) return;
-  await safeWrite(() => update(ref(db, "users/" + uid), { role: "admin" }));
-  await logActivity("user_promoted", `رقّى مستخدم`);
-  showToast("👑 تمت الترقية", "success");
-};
-window.demoteUser = async (uid) => {
-  if (!state.isAdmin) return;
-  const adminCount = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length;
-  if (adminCount <= 1) return swalError("لا يمكن إزالة آخر مدير");
-  const r = await swalConfirm("إزالة صلاحية الإدارة؟");
-  if (!r.isConfirmed) return;
-  await safeWrite(() => update(ref(db, "users/" + uid), { role: "employee" }));
-  showToast("تمت الإزالة", "info");
-};
-window.toggleUserActive = async (uid, active) => {
-  if (!state.isAdmin) return;
-  if (!active) {
-    const adminCount = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length;
-    if (state.allUsers[uid]?.role === "admin" && adminCount <= 1) return swalError("لا يمكن تعطيل آخر مدير");
-  }
-  await safeWrite(() => update(ref(db, "users/" + uid), { active }));
-  showToast(active ? "✅ تم التنشيط" : "⛔ تم التعطيل", active ? "success" : "warn");
-};
+window.promoteUser = async (uid) => { if (!state.isAdmin) return; const r = await swalConfirm("ترقية إلى مدير؟"); if (!r.isConfirmed) return; await safeWrite(() => update(ref(db, "users/" + uid), { role: "admin" })); await logActivity("user_promoted", `رقّى مستخدم`); showToast("👑 تمت الترقية", "success"); };
+window.demoteUser = async (uid) => { if (!state.isAdmin) return; const c = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length; if (c <= 1) return swalError("لا يمكن إزالة آخر مدير"); const r = await swalConfirm("إزالة صلاحية الإدارة؟"); if (!r.isConfirmed) return; await safeWrite(() => update(ref(db, "users/" + uid), { role: "employee" })); showToast("تمت الإزالة", "info"); };
+window.toggleUserActive = async (uid, active) => { if (!state.isAdmin) return; if (!active) { const c = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length; if (state.allUsers[uid]?.role === "admin" && c <= 1) return swalError("لا يمكن تعطيل آخر مدير"); } await safeWrite(() => update(ref(db, "users/" + uid), { active })); showToast(active ? "✅ تم التنشيط" : "⛔ تم التعطيل", active ? "success" : "warn"); };
 window.deleteUser = async (uid) => {
   if (!state.isAdmin) return;
   const u = state.allUsers[uid]; if (!u) return;
-  const adminCount = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length;
-  if (u.role === "admin" && adminCount <= 1) return swalError("لا يمكن حذف آخر مدير");
+  const c = Object.values(state.allUsers).filter(x => x.role === "admin" && x.active !== false).length;
+  if (u.role === "admin" && c <= 1) return swalError("لا يمكن حذف آخر مدير");
   const r = await swalConfirm("حذف المستخدم؟", `@${u.username}`);
   if (!r.isConfirmed) return;
   try {
@@ -2679,22 +2573,13 @@ window.openAddUserModal = async () => {
   if (!state.isAdmin) return;
   const { value: formValues } = await Swal.fire({
     title: "➕ إضافة مستخدم جديد",
-    html: `
-      <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-        <label class="swal-label">اسم المستخدم</label>
-        <input id="nu-username" class="swal2-input" placeholder="bahaa" style="margin:0;width:100%;">
-        <label class="swal-label">الاسم الكامل</label>
-        <input id="nu-name" class="swal2-input" placeholder="بهاء محمد" style="margin:0;width:100%;">
-        <label class="swal-label">كلمة المرور (6+)</label>
-        <input id="nu-pass" type="text" class="swal2-input" placeholder="مؤقتة" style="margin:0;width:100%;">
-        <label class="swal-label">الدور</label>
-        <select id="nu-role" class="swal2-select" style="margin:0;width:100%;">
-          <option value="employee">👤 موظف</option>
-          <option value="admin">👑 مدير</option>
-        </select>
+    html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
+        <label class="swal-label">اسم المستخدم</label><input id="nu-username" class="swal2-input" placeholder="bahaa" style="margin:0;width:100%;">
+        <label class="swal-label">الاسم الكامل</label><input id="nu-name" class="swal2-input" placeholder="بهاء محمد" style="margin:0;width:100%;">
+        <label class="swal-label">كلمة المرور (6+)</label><input id="nu-pass" type="text" class="swal2-input" placeholder="مؤقتة" style="margin:0;width:100%;">
+        <label class="swal-label">الدور</label><select id="nu-role" class="swal2-select" style="margin:0;width:100%;"><option value="employee">👤 موظف</option><option value="admin">👑 مدير</option></select>
       </div>`,
-    showCancelButton:true, confirmButtonText:"إنشاء", cancelButtonText:"إلغاء",
-    confirmButtonColor:"#5b8def", focusConfirm:false,
+    showCancelButton:true, confirmButtonText:"إنشاء", cancelButtonText:"إلغاء", confirmButtonColor:"#5b8def", focusConfirm:false,
     background: themeBg(), color: themeFg(),
     preConfirm: () => {
       const username = document.getElementById("nu-username").value.trim().toLowerCase();
@@ -2722,18 +2607,12 @@ window.openAddUserModal = async () => {
     await set(ref(db, "usernames/" + username), { uid: newUid, createdAt: Date.now() });
     await push(ref(db, "team"), { uid: newUid, username, name: displayName, createdAt: Date.now() });
     await logActivity("user_created", `أنشأ مستخدم: ${displayName} (@${username})`);
-    await Swal.fire({
-      icon:"success", title:"✅ تم الإنشاء",
+    await Swal.fire({ icon:"success", title:"✅ تم الإنشاء",
       html: `<div style="text-align:right;direction:rtl;font-size:14px;line-height:2;">
         <p><b>المستخدم:</b> <code style="background:#171d2e;padding:6px 10px;border-radius:8px;">${escapeHtml(username)}</code></p>
-        <p><b>كلمة المرور:</b> <code id="pwd-display" style="background:#171d2e;padding:6px 10px;border-radius:8px;filter:blur(4px);">${escapeHtml(password)}</code>
-          <button onclick="document.getElementById('pwd-display').style.filter='none'" style="margin-right:8px;padding:5px 12px;border-radius:8px;cursor:pointer;background:#5b8def;color:#fff;border:none;">👁️</button>
-        </p>
-        <p style="color:#f5a524;font-size:12px;margin-top:12px;">📋 احفظ البيانات</p>
+        <p><b>كلمة المرور:</b> <code style="background:#171d2e;padding:6px 10px;border-radius:8px;">${escapeHtml(password)}</code></p>
       </div>`,
-      confirmButtonText:"حسناً", confirmButtonColor:"#5b8def",
-      background: themeBg(), color: themeFg()
-    });
+      confirmButtonText:"حسناً", confirmButtonColor:"#5b8def", background: themeBg(), color: themeFg() });
   } catch (err) {
     const msgs = { "auth/email-already-in-use": "اسم المستخدم مستخدم", "auth/weak-password": "كلمة المرور ضعيفة" };
     swalError("فشل الإنشاء", msgs[err.code] || err.message);
@@ -2751,50 +2630,28 @@ window.openTeamModal = async () => {
     return true;
   });
   const html = uniqueTeam.map(([id, m]) => `
-    <div class="user-row">
-      <div class="user-avatar">${escapeHtml((m.name || "?").charAt(0))}</div>
-      <div class="user-info-cell">
-        <div class="user-name">${escapeHtml(m.name || "—")}</div>
-        <div class="user-meta"><span>@${escapeHtml(m.username || "—")}</span></div>
-      </div>
-      <div class="user-actions">
-        <button class="btn-sm danger" onclick="removeTeamMember('${id}')">حذف</button>
-      </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg-3);border-radius:12px;margin-bottom:8px;">
+      <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--success));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;">${escapeHtml((m.name || "?").charAt(0))}</div>
+      <div style="flex:1;"><div style="font-weight:800;">${escapeHtml(m.name || "—")}</div><div style="font-size:11.5px;color:var(--text-2);">@${escapeHtml(m.username || "—")}</div></div>
+      <button class="btn-sm danger" onclick="removeTeamMember('${id}')">حذف</button>
     </div>`).join("") || '<p class="empty">لا يوجد أعضاء</p>';
-  await Swal.fire({
-    title: "👥 إدارة الفريق",
-    html: `<div style="max-height:400px;overflow-y:auto;text-align:right;direction:rtl;">${html}</div>`,
-    showCancelButton:true, showConfirmButton:false, cancelButtonText:"إغلاق",
-    background: themeBg(), color: themeFg()
-  });
+  await Swal.fire({ title: "👥 إدارة الفريق",
+    html: `<div style="max-height:400px;overflow-y:auto;">${html}</div>`,
+    showCancelButton:true, showConfirmButton:false, cancelButtonText:"إغلاق", background: themeBg(), color: themeFg() });
 };
-window.removeTeamMember = async (id) => {
-  if (!state.isAdmin) return;
-  const r = await swalConfirm("حذف من الفريق؟");
-  if (!r.isConfirmed) return;
-  await safeWrite(() => remove(ref(db, "team/" + id)));
-  showToast("🗑️ تم الحذف", "success");
-  setTimeout(() => window.openTeamModal(), 300);
-};
+window.removeTeamMember = async (id) => { if (!state.isAdmin) return; const r = await swalConfirm("حذف من الفريق؟"); if (!r.isConfirmed) return; await safeWrite(() => remove(ref(db, "team/" + id))); showToast("🗑️ تم الحذف", "success"); setTimeout(() => window.openTeamModal(), 300); };
 window.openChangePasswordModal = async () => {
   if (!state.currentUser) return;
   const isGoogleUser = state.currentUser.providerData.some(p => p.providerId === "google.com");
-  if (isGoogleUser) {
-    return Swal.fire({ icon:"info", title:"حساب جوجل", text:"كلمة المرور تُدار من جوجل.", confirmButtonText:"حسناً", background: themeBg(), color: themeFg() });
-  }
+  if (isGoogleUser) return Swal.fire({ icon:"info", title:"حساب جوجل", text:"كلمة المرور تُدار من جوجل.", confirmButtonText:"حسناً", background: themeBg(), color: themeFg() });
   const { value: formValues } = await Swal.fire({
     title: "🔑 تغيير كلمة المرور",
-    html: `
-      <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-        <label class="swal-label">الحالية</label>
-        <input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;">
-        <label class="swal-label">الجديدة (6+)</label>
-        <input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;">
-        <label class="swal-label">تأكيد</label>
-        <input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;">
+    html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
+        <label class="swal-label">الحالية</label><input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;">
+        <label class="swal-label">الجديدة (6+)</label><input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;">
+        <label class="swal-label">تأكيد</label><input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;">
       </div>`,
-    showCancelButton:true, confirmButtonText:"تغيير", cancelButtonText:"إلغاء",
-    confirmButtonColor:"#5b8def", focusConfirm:false,
+    showCancelButton:true, confirmButtonText:"تغيير", cancelButtonText:"إلغاء", confirmButtonColor:"#5b8def", focusConfirm:false,
     background: themeBg(), color: themeFg(),
     preConfirm: () => {
       const cur = document.getElementById("cp-current").value;
@@ -2803,7 +2660,6 @@ window.openChangePasswordModal = async () => {
       if (!cur || !nw || !cf) { Swal.showValidationMessage("املأ الحقول"); return false; }
       if (nw.length < 6) { Swal.showValidationMessage("6+ أحرف"); return false; }
       if (nw !== cf) { Swal.showValidationMessage("غير متطابقتين"); return false; }
-      if (cur === nw) { Swal.showValidationMessage("يجب أن تختلف"); return false; }
       return { currentPassword: cur, newPassword: nw };
     }
   });
@@ -2820,72 +2676,34 @@ window.openChangePasswordModal = async () => {
   }
 };
 
-/* ============ Report ============ */
 function openReport() {
   const entries = Object.entries(state.allTasks);
   const done = entries.filter(([_, t]) => t.status === "مكتملة");
   const progress = entries.filter(([_, t]) => t.status === "جاري التنفيذ");
-  const newT = entries.filter(([_, t]) => t.status === "جديدة");
   const overdue = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; });
-  const team = {};
-  entries.forEach(([_, t]) => {
-    const k = t.assignee || "غير محدد";
-    if (!team[k]) team[k] = { total:0, done:0, progress:0, overdue:0 };
-    team[k].total++;
-    if (t.status === "مكتملة") team[k].done++;
-    else if (t.status === "جاري التنفيذ") team[k].progress++;
-    const d = daysRemaining(t.dueDate);
-    if (d !== null && d < 0 && t.status !== "مكتملة") team[k].overdue++;
-  });
-  const teamRows = Object.entries(team).map(([name, s]) => `
-    <tr><td>${escapeHtml(name)}</td><td>${s.total}</td><td>${s.done}</td><td>${s.progress}</td><td>${s.overdue}</td><td>${s.total ? Math.round((s.done/s.total)*100) : 0}%</td></tr>`).join("");
-  const taskRow = (id, t) => `
-    <div class="r-task">
-      <div class="r-task-head">
-        <span class="r-badge ${t.priority === 'عاجل' ? 'r-urgent' : t.priority === 'مهم' ? 'r-important' : 'r-normal'}">${escapeHtml(t.priority || 'عادي')}</span>
-        <span class="r-status">${escapeHtml(t.status)}</span>
-      </div>
-      <div class="r-title">${escapeHtml(t.title)}</div>
-      <div class="r-meta"><span>👤 ${escapeHtml(t.assignee || "—")}</span>${t.dueDate ? `<span>📅 ${escapeHtml(t.dueDate)}</span>` : ""}</div>
-      ${t.notes ? `<div class="r-notes">📝 ${escapeHtml(t.notes)}</div>` : ""}
-    </div>`;
   const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
   document.getElementById("reportBody").innerHTML = `
     <div class="report-content">
-      <div class="r-header">
-        <div class="r-logo-wrap"><img src="${LOGO_URL}" class="r-logo" crossorigin="anonymous"></div>
-        <div class="r-header-text">
-          <h1>EMAK Hub</h1>
-          <p>تقرير المهام — قسم نظم المعلومات</p>
-          <p class="r-date">التاريخ: ${today}</p>
-        </div>
+      <h1 style="color:#1e3a8a;font-size:30px;margin-bottom:10px;">EMAK Hub</h1>
+      <p style="color:#64748b;">تقرير المهام — ${today}</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0;">
+        <div style="background:#f1f5f9;padding:18px;border-radius:14px;text-align:center;border-right:4px solid #1e3a8a;"><div style="font-size:28px;font-weight:900;color:#1e3a8a;">${entries.length}</div><div style="font-size:12px;color:#64748b;">إجمالي</div></div>
+        <div style="background:rgba(34,197,94,.08);padding:18px;border-radius:14px;text-align:center;border-right:4px solid #22c55e;"><div style="font-size:28px;font-weight:900;color:#16a34a;">${done.length}</div><div style="font-size:12px;color:#64748b;">مكتملة</div></div>
+        <div style="background:rgba(245,158,11,.08);padding:18px;border-radius:14px;text-align:center;border-right:4px solid #f59e0b;"><div style="font-size:28px;font-weight:900;color:#d97706;">${progress.length}</div><div style="font-size:12px;color:#64748b;">جارية</div></div>
+        <div style="background:rgba(220,38,38,.08);padding:18px;border-radius:14px;text-align:center;border-right:4px solid #dc2626;"><div style="font-size:28px;font-weight:900;color:#dc2626;">${overdue.length}</div><div style="font-size:12px;color:#64748b;">متأخرة</div></div>
       </div>
-      <div class="r-summary">
-        <div class="r-sum-item"><div class="r-sum-num">${entries.length}</div><div class="r-sum-label">إجمالي</div></div>
-        <div class="r-sum-item done"><div class="r-sum-num">${done.length}</div><div class="r-sum-label">مكتملة</div></div>
-        <div class="r-sum-item progress"><div class="r-sum-num">${progress.length}</div><div class="r-sum-label">جارية</div></div>
-        <div class="r-sum-item overdue"><div class="r-sum-num">${overdue.length}</div><div class="r-sum-label">متأخرة</div></div>
-      </div>
-      <div class="r-section">
-        <h2>👥 أداء الفريق</h2>
-        <table class="r-table">
-          <thead><tr><th>الموظف</th><th>الإجمالي</th><th>مكتملة</th><th>جارية</th><th>متأخرة</th><th>النسبة</th></tr></thead>
-          <tbody>${teamRows}</tbody>
-        </table>
-      </div>
-      ${overdue.length > 0 ? `<div class="r-section"><h2>⚠️ المتأخرة (${overdue.length})</h2>${overdue.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
-      ${progress.length > 0 ? `<div class="r-section"><h2>⏳ الجارية (${progress.length})</h2>${progress.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
-      ${newT.length > 0 ? `<div class="r-section"><h2>🆕 الجديدة (${newT.length})</h2>${newT.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
-      ${done.length > 0 ? `<div class="r-section"><h2>✅ المكتملة (${done.length})</h2>${done.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
-      <div class="r-footer">تم إنشاء التقرير تلقائياً بواسطة EMAK Hub — ${today}</div>
+      <h2 style="color:#1e3a8a;font-size:19px;margin:20px 0 14px;padding-bottom:10px;border-bottom:2px solid #e2e8f0;">جميع المهام (${entries.length})</h2>
+      ${entries.map(([id, t]) => `
+        <div style="background:#f8fafc;padding:16px;border-radius:12px;margin-bottom:12px;border-right:4px solid ${t.priority==="عاجل"?"#dc2626":t.priority==="مهم"?"#d97706":"#059669"};">
+          <div style="font-size:15px;font-weight:800;margin-bottom:6px;">${escapeHtml(t.title)}</div>
+          <div style="font-size:12px;color:#64748b;">👤 ${escapeHtml(t.assignee || "—")} • ${escapeHtml(t.status)} • ${escapeHtml(t.priority || "عادي")}</div>
+        </div>`).join("")}
+      <div style="margin-top:34px;padding-top:18px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;">تم إنشاء التقرير تلقائياً بواسطة EMAK Hub — ${today}</div>
     </div>`;
   document.getElementById("reportOverlay").classList.add("active");
   document.body.style.overflow = "hidden";
 }
-function closeReport() {
-  document.getElementById("reportOverlay").classList.remove("active");
-  document.body.style.overflow = "";
-}
+function closeReport() { document.getElementById("reportOverlay").classList.remove("active"); document.body.style.overflow = ""; }
 window.openReport = openReport;
 window.closeReport = closeReport;
 
@@ -2898,20 +2716,6 @@ async function downloadPDF() {
     const pageW = 210, pageH = 297, margin = 15;
     let y = margin;
     const entries = Object.entries(state.allTasks);
-    const done = entries.filter(([_, t]) => t.status === "مكتملة");
-    const progress = entries.filter(([_, t]) => t.status === "جاري التنفيذ");
-    const newT = entries.filter(([_, t]) => t.status === "جديدة");
-    const overdue = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; });
-    const team = {};
-    entries.forEach(([_, t]) => {
-      const k = t.assignee || "غير محدد";
-      if (!team[k]) team[k] = { total:0, done:0, progress:0, overdue:0 };
-      team[k].total++;
-      if (t.status === "مكتملة") team[k].done++;
-      else if (t.status === "جاري التنفيذ") team[k].progress++;
-      const d = daysRemaining(t.dueDate);
-      if (d !== null && d < 0 && t.status !== "مكتملة") team[k].overdue++;
-    });
     pdf.setFillColor(30, 58, 138); pdf.rect(0, 0, pageW, 25, "F");
     if (state.logoDataUrl) { try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); } catch(e){} }
     pdf.setTextColor(255,255,255); pdf.setFontSize(20);
@@ -2920,69 +2724,17 @@ async function downloadPDF() {
     y = 35;
     const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
     pdf.setTextColor(100,116,139); pdf.setFontSize(10);
-    pdf.text(`التاريخ: ${today}`, pageW - margin, y, { align:"right" }); y += 10;
-    pdf.setFillColor(241,245,249); pdf.roundedRect(margin, y, pageW - 2*margin, 25, 3, 3, "F");
-    pdf.setTextColor(30,58,138); pdf.setFontSize(13);
-    pdf.text("ملخص عام", pageW - margin - 5, y + 7, { align:"right" });
-    pdf.setFontSize(11); pdf.setTextColor(15,23,42);
-    pdf.text(`إجمالي: ${entries.length}  |  مكتملة: ${done.length}  |  جارية: ${progress.length}  |  متأخرة: ${overdue.length}`, pageW - margin - 5, y + 18, { align:"right" });
-    y += 35;
-    pdf.setTextColor(30,58,138); pdf.setFontSize(14);
-    pdf.text("أداء الفريق", pageW - margin, y, { align:"right" }); y += 8;
-    pdf.setFillColor(30,58,138); pdf.rect(margin, y, pageW - 2*margin, 8, "F");
-    pdf.setTextColor(255,255,255); pdf.setFontSize(10);
-    const colWidths = [40, 22, 22, 22, 22, 22];
-    let colX = pageW - margin - 5;
-    ["الموظف","الإجمالي","مكتملة","جارية","متأخرة","النسبة"].forEach((h, i) => { pdf.text(h, colX, y + 5.5, { align:"right" }); colX -= colWidths[i]; });
-    y += 8;
-    pdf.setTextColor(15,23,42);
-    Object.entries(team).forEach(([name, s], idx) => {
-      if (y > pageH - 30) { pdf.addPage(); y = margin; }
-      if (idx % 2 === 0) { pdf.setFillColor(248,250,252); pdf.rect(margin, y, pageW - 2*margin, 7, "F"); }
-      colX = pageW - margin - 5;
-      const row = [name, String(s.total), String(s.done), String(s.progress), String(s.overdue), `${s.total ? Math.round((s.done/s.total)*100) : 0}%`];
-      row.forEach((cell, i) => { pdf.text(cell, colX, y + 5, { align:"right" }); colX -= colWidths[i]; });
-      y += 7;
+    pdf.text(`التاريخ: ${today}`, pageW - margin, y, { align:"right" }); y += 15;
+    entries.forEach(([id, t]) => {
+      if (y > pageH - 20) { pdf.addPage(); y = margin; }
+      pdf.setTextColor(15,23,42); pdf.setFontSize(12);
+      pdf.text(t.title, pageW - margin, y, { align:"right" }); y += 6;
+      pdf.setFontSize(9); pdf.setTextColor(100,116,139);
+      pdf.text(`👤 ${t.assignee || "—"} | ${t.status} | ${t.priority || "عادي"}`, pageW - margin, y, { align:"right" }); y += 10;
     });
-    y += 12;
-    const writeTaskSection = (title, tasks, color) => {
-      if (tasks.length === 0) return;
-      if (y > pageH - 40) { pdf.addPage(); y = margin; }
-      pdf.setTextColor(...color); pdf.setFontSize(14);
-      pdf.text(title, pageW - margin, y, { align:"right" }); y += 9;
-      tasks.forEach(([id, t]) => {
-        const lines = t.notes ? pdf.splitTextToSize(t.notes, pageW - 2*margin - 20) : [];
-        const taskHeight = 22 + (lines.length * 5);
-        if (y + taskHeight > pageH - 20) { pdf.addPage(); y = margin; }
-        pdf.setFillColor(248,250,252); pdf.roundedRect(margin, y, pageW - 2*margin, taskHeight, 2, 2, "F");
-        let barColor = [100,116,139];
-        if (t.priority === "عاجل") barColor = [220,38,38];
-        else if (t.priority === "مهم") barColor = [217,119,6];
-        else if (t.priority === "عادي") barColor = [5,150,105];
-        pdf.setFillColor(...barColor); pdf.rect(pageW - margin - 3, y, 3, taskHeight, "F");
-        pdf.setTextColor(15,23,42); pdf.setFontSize(11);
-        const title2 = t.title.length > 60 ? t.title.substring(0,57) + "..." : t.title;
-        pdf.text(title2, pageW - margin - 8, y + 6, { align:"right" });
-        pdf.setFontSize(9); pdf.setTextColor(100,116,139);
-        const dueText = t.dueDate ? `  |  📅 ${t.dueDate}` : "";
-        pdf.text(`👤 ${t.assignee || "—"}  |  ${t.priority || "عادي"}  |  ${t.status}${dueText}`, pageW - margin - 8, y + 13, { align:"right" });
-        if (lines.length > 0) { pdf.setTextColor(71,85,105); pdf.setFontSize(9); pdf.text(lines, pageW - margin - 8, y + 19, { align:"right" }); }
-        y += taskHeight + 3;
-      });
-      y += 5;
-    };
-    writeTaskSection(`المهام المتأخرة (${overdue.length})`, overdue, [220,38,38]);
-    writeTaskSection(`المهام الجارية (${progress.length})`, progress, [217,119,6]);
-    writeTaskSection(`المهام الجديدة (${newT.length})`, newT, [37,99,235]);
-    writeTaskSection(`المهام المكتملة (${done.length})`, done, [5,150,105]);
-    const totalPages = pdf.internal.getNumberOfPages();
-    for (let i = 1; i <= totalPages; i++) {
-      pdf.setPage(i); pdf.setFontSize(8); pdf.setTextColor(148,163,184);
-      pdf.text(`EMAK Hub — صفحة ${i} من ${totalPages}`, pageW / 2, pageH - 8, { align:"center" });
-    }
     pdf.save(`EMAK-Report-${new Date().toISOString().slice(0,10)}.pdf`);
     showToast("📄 تم التحميل", "success");
-  } catch (e) { swalError("خطأ في التحميل", e.message); }
+  } catch (e) { swalError("خطأ", e.message); }
   finally { btn.disabled = false; btn.textContent = "📄 تحميل PDF"; }
 }
 window.downloadPDF = downloadPDF;
@@ -3002,43 +2754,19 @@ window.exportCSV = () => {
 };
 
 /* ============================================================
-   شاشة العرض
+   شاشة العرض - Dashboard
    ============================================================ */
 window.openWatchFromLogin = async function() {
   const { value: password } = await Swal.fire({
     title: "🖥️ شاشة العرض",
-    html: `
-      <div style="text-align:center;direction:rtl;">
-        <p style="color:var(--text-2);font-size:13px;margin-bottom:16px;font-weight:600;">
-          أدخل كلمة سر شاشة العرض للدخول مباشرة
-        </p>
-        <input id="login-watch-pass"
-               type="password"
-               class="swal2-input"
-               placeholder="••••••••"
-               style="margin:0;width:100%;text-align:center;font-size:18px;letter-spacing:4px;font-family:monospace;">
-        <p style="color:var(--text-3);font-size:11px;margin-top:14px;">
-          🔓 لا يحتاج تسجيل دخول — الجلسة تبقى 12 ساعة
-        </p>
-      </div>
-    `,
-    showCancelButton: true,
-    confirmButtonText: "🔓 دخول",
-    cancelButtonText: "إلغاء",
-    confirmButtonColor: "#a855f7",
-    cancelButtonColor: "#5b6580",
-    background: themeBg(),
-    color: themeFg(),
-    focusConfirm: false,
-    didOpen: () => {
-      const inp = document.getElementById("login-watch-pass");
-      if (inp) {
-        inp.focus();
-        inp.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); }
-        });
-      }
-    },
+    html: `<div style="text-align:center;direction:rtl;">
+        <p style="color:var(--text-2);font-size:13px;margin-bottom:16px;">أدخل كلمة السر</p>
+        <input id="login-watch-pass" type="password" class="swal2-input" placeholder="••••••••" style="margin:0;width:100%;text-align:center;font-size:18px;letter-spacing:4px;font-family:monospace;">
+      </div>`,
+    showCancelButton: true, confirmButtonText: "🔓 دخول", cancelButtonText: "إلغاء",
+    confirmButtonColor: "#a855f7", cancelButtonColor: "#5b6580",
+    background: themeBg(), color: themeFg(), focusConfirm: false,
+    didOpen: () => { const inp = document.getElementById("login-watch-pass"); if (inp) { inp.focus(); inp.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); } }); } },
     preConfirm: () => {
       const entered = document.getElementById("login-watch-pass").value;
       if (!entered) { Swal.showValidationMessage("أدخل كلمة السر"); return false; }
@@ -3046,7 +2774,6 @@ window.openWatchFromLogin = async function() {
       return entered;
     }
   });
-
   if (password) {
     localStorage.setItem("emak_watch_session", JSON.stringify({ at: Date.now() }));
     showToast("🔓 تم فتح شاشة العرض", "success");
@@ -3057,48 +2784,18 @@ window.openWatchFromLogin = async function() {
 window.promptWatchPassword = async function() {
   const session = localStorage.getItem("emak_watch_session");
   if (session) {
-    try {
-      const data = JSON.parse(session);
-      if (Date.now() - data.at < WATCH_SESSION_DURATION) {
-        openWatchScreen();
-        return;
-      }
-    } catch(e) {}
+    try { const data = JSON.parse(session); if (Date.now() - data.at < WATCH_SESSION_DURATION) { openWatchScreen(); return; } } catch(e) {}
   }
-
   const { value: password } = await Swal.fire({
     title: "🖥️ شاشة العرض",
-    html: `
-      <div style="text-align:center;direction:rtl;">
-        <p style="color:var(--text-2);font-size:13px;margin-bottom:16px;font-weight:600;">
-          أدخل كلمة السر للدخول إلى شاشة العرض الكاملة
-        </p>
-        <input id="watch-pass-input" type="password"
-               class="swal2-input"
-               placeholder="••••••••"
-               style="margin:0;width:100%;text-align:center;font-size:18px;letter-spacing:4px;font-family:monospace;">
-        <p style="color:var(--text-3);font-size:11px;margin-top:14px;">
-          💡 الجلسة تبقى 12 ساعة
-        </p>
-      </div>
-    `,
-    showCancelButton: true,
-    confirmButtonText: "🔓 دخول",
-    cancelButtonText: "إلغاء",
-    confirmButtonColor: "#a855f7",
-    cancelButtonColor: "#5b6580",
-    background: themeBg(),
-    color: themeFg(),
-    focusConfirm: false,
-    didOpen: () => {
-      const inp = document.getElementById("watch-pass-input");
-      if (inp) {
-        inp.focus();
-        inp.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); }
-        });
-      }
-    },
+    html: `<div style="text-align:center;direction:rtl;">
+        <p style="color:var(--text-2);font-size:13px;margin-bottom:16px;">أدخل كلمة السر</p>
+        <input id="watch-pass-input" type="password" class="swal2-input" placeholder="••••••••" style="margin:0;width:100%;text-align:center;font-size:18px;letter-spacing:4px;font-family:monospace;">
+      </div>`,
+    showCancelButton: true, confirmButtonText: "🔓 دخول", cancelButtonText: "إلغاء",
+    confirmButtonColor: "#a855f7", cancelButtonColor: "#5b6580",
+    background: themeBg(), color: themeFg(), focusConfirm: false,
+    didOpen: () => { const inp = document.getElementById("watch-pass-input"); if (inp) { inp.focus(); inp.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); } }); } },
     preConfirm: () => {
       const entered = document.getElementById("watch-pass-input").value;
       if (!entered) { Swal.showValidationMessage("أدخل كلمة السر"); return false; }
@@ -3106,7 +2803,6 @@ window.promptWatchPassword = async function() {
       return entered;
     }
   });
-
   if (password) {
     localStorage.setItem("emak_watch_session", JSON.stringify({ at: Date.now() }));
     showToast("🔓 تم فتح شاشة العرض", "success");
@@ -3118,7 +2814,6 @@ window.openWatchScreen = async function() {
   state.watchMode = true;
   document.getElementById("watchScreen").classList.add("active");
   document.body.style.overflow = "hidden";
-
   if (localStorage.getItem("emak_watch_session")) {
     document.getElementById("watchPinScreen").style.display = "none";
     document.getElementById("watchMainContent").classList.add("active");
@@ -3136,7 +2831,6 @@ window.closeWatchScreen = function() {
   document.body.style.overflow = "";
   if (state.watchClockTimer) { clearInterval(state.watchClockTimer); state.watchClockTimer = null; }
   stopWatchData();
-  stopWatchCursor();
   if (document.fullscreenElement) document.exitFullscreen?.();
 };
 
@@ -3147,55 +2841,56 @@ document.getElementById("watchPinForm").addEventListener("submit", async (e) => 
   const entered = input.value;
   if (entered === WATCH_PASSWORD) {
     localStorage.setItem("emak_watch_session", JSON.stringify({ at: Date.now() }));
-    err.textContent = "";
-    input.value = "";
+    err.textContent = ""; input.value = "";
     document.getElementById("watchPinScreen").style.display = "none";
     document.getElementById("watchMainContent").classList.add("active");
     startWatchData();
   } else {
     err.textContent = "❌ كلمة السر غير صحيحة";
-    input.value = "";
-    input.focus();
+    input.value = ""; input.focus();
     setTimeout(() => { err.textContent = ""; }, 3000);
   }
 });
 
 async function startWatchData() {
-  if (!auth.currentUser) {
-    try { await signInAnonymously(auth); } catch(e) { console.error("Anon auth:", e); }
-  }
-
+  if (!auth.currentUser) { try { await signInAnonymously(auth); } catch(e) {} }
   updateWatchClock();
   if (state.watchClockTimer) clearInterval(state.watchClockTimer);
   state.watchClockTimer = setInterval(updateWatchClock, 1000);
   watchUpdateConnection();
 
+  // شريط التبويبات
+  document.querySelectorAll(".w-tab").forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll(".w-tab").forEach(t => t.classList.remove("active"));
+      tab.classList.add("active");
+      state.currentWatchTab = tab.dataset.tab;
+      wRenderTasks();
+    };
+  });
+
   if (state.watchUnsubs.tasks) try { state.watchUnsubs.tasks(); } catch(e){}
   if (state.watchUnsubs.team) try { state.watchUnsubs.team(); } catch(e){}
+  if (state.watchUnsubs.activity) try { state.watchUnsubs.activity(); } catch(e){}
 
   state.watchUnsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
     state.allTasks = snap.val() || {};
-    if (state.watchMode) {
-      watchRenderStats();
-      watchRenderActive();
-      watchRenderUrgent();
-      watchRenderDone();
-      watchRenderNormalTicker();
-    }
-  }, (err) => { console.error("Watch tasks:", err); });
+    if (state.watchMode) { wRenderAll(); }
+  }, (err) => {});
 
   state.watchUnsubs.team = onValue(ref(db, "team"), (snap) => {
     state.allTeam = snap.val() || {};
-    if (state.watchMode) watchRenderStats();
+    if (state.watchMode) wRenderKPI();
   }, (err) => {});
 
-  watchRenderStats();
-  watchRenderActive();
-  watchRenderUrgent();
-  watchRenderDone();
-  watchRenderNormalTicker();
+  state.watchUnsubs.activity = onValue(ref(db, "activity"), (snap) => {
+    const raw = snap.val() || {};
+    state.allActivity = Object.entries(raw).map(([id, a]) => ({ id, ...a }))
+      .sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 30);
+    if (state.watchMode) wRenderActivities();
+  }, (err) => {});
 
-  startWatchCursor();
+  wRenderAll();
 }
 
 function stopWatchData() {
@@ -3221,213 +2916,258 @@ function watchUpdateConnection() {
   s.querySelector("span:last-child").textContent = online ? "متصل" : "غير متصل";
 }
 
-/* ✅ الإحصائيات الجديدة - 6 أرقام مختلفة */
-function watchRenderStats() {
-  const tasks = Object.values(state.allTasks);
-  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  
-  const total = tasks.length;
-  const done = tasks.filter(t => t.status === "مكتملة").length;
-  const working = tasks.filter(t => t.status === "جاري التنفيذ").length;
-  const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
-  const activeNew = tasks.filter(t => t.status === "جديدة" && t.priority !== "عاجل" && t.priority !== "مهم").length;
-  
-  const seenUids = new Set();
-  Object.values(state.allTeam).forEach(m => {
-    if (m && m.uid) seenUids.add(m.uid);
-  });
-  const teamCount = seenUids.size;
-  
-  set("wTotal", total);
-  set("wProgress", activeNew);  // نشطة (جديدة عادية)
-  set("wWorking", working);     // جارية
-  set("wOverdue", overdue);     // متأخرة
-  set("wDone", done);           // مكتملة
-  set("wTeam", teamCount);      // الفريق
-}
-
 function getTaskProgress(t) {
   if (!t) return 0;
   if (t.status === "مكتملة") return 100;
   if (t.status === "جاري التنفيذ") {
-    const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
-    return Math.min(90, 50 + commentsCount * 10);
+    const c = t.comments ? Object.keys(t.comments).length : 0;
+    return Math.min(90, 50 + c * 10);
   }
-  const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
-  return Math.min(30, 10 + commentsCount * 5);
+  const c = t.comments ? Object.keys(t.comments).length : 0;
+  return Math.min(30, 10 + c * 5);
 }
 
-function watchTaskHtml(t) {
+/* ============================================================
+   ✅ KPI Row
+   ============================================================ */
+function wRenderKPI() {
+  const tasks = Object.values(state.allTasks);
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const active = tasks.filter(t => t.status === "جديدة" && t.priority !== "عاجل" && t.priority !== "مهم").length;
+  const working = tasks.filter(t => t.status === "جاري التنفيذ").length;
+  const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
+  const done = tasks.filter(t => t.status === "مكتملة").length;
+  const seenUids = new Set();
+  Object.values(state.allTeam).forEach(m => { if (m && m.uid) seenUids.add(m.uid); });
+  set("wTotal", tasks.length);
+  set("wActive", active);
+  set("wWorking", working);
+  set("wOverdue", overdue);
+  set("wDone", done);
+  set("wTeam", seenUids.size);
+
+  // عدد التبويبات
+  const setTab = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setTab("wTabAllCount", tasks.length);
+  setTab("wTabUrgentCount", tasks.filter(t => t.status !== "مكتملة" && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)).length);
+  setTab("wTabWorkingCount", working);
+  setTab("wTabDoneCount", done);
+}
+
+/* ============================================================
+   ✅ بطاقة مهمة أفقية
+   ============================================================ */
+function wTaskRowHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
   const pc = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const isUrgentFlashing = t.priority === "عاجل" && t.status !== "مكتملة";
   const isDone = t.status === "مكتملة";
-  const statusClass = t.status === "جاري التنفيذ" ? "progress" : isDone ? "done" : "";
+  const statusClass = t.status === "جاري التنفيذ" ? "progress" : isDone ? "done" : "new";
   const progress = getTaskProgress(t);
-  const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
-  
-  return `<div class="watch-task ${pc} ${isOverdue ? 'overdue' : ''} ${isUrgentFlashing ? 'urgent-flash' : ''} ${isDone ? 'done-task' : ''}">
-    <div class="watch-task-top">
-      <span class="watch-task-priority ${pc}">${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}</span>
-      <span class="watch-task-status ${statusClass}">${escapeHtml(t.status || "جديدة")}</span>
+  const statusLabel = t.status === "جديدة" ? "جديدة" : t.status === "جاري التنفيذ" ? "جارية" : "مكتملة";
+
+  return `<div class="w-task-row ${pc} ${isOverdue ? 'overdue' : ''} ${isUrgentFlashing ? 'urgent-flash' : ''} ${isDone ? 'done-task' : ''}" onclick="openModal('${id}')">
+    <div class="w-task-bar"></div>
+    <div class="w-task-priority ${pc}">${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}</div>
+    <div class="w-task-title" title="${escapeHtml(t.title)}">${escapeHtml(t.title)}</div>
+    <div class="w-task-assignee">👤 ${escapeHtml(t.assignee || "—")}</div>
+    <div class="w-task-due ${isOverdue ? 'overdue' : ''}">📅 ${escapeHtml(dueLabel(t.dueDate) || "—")}</div>
+    <div class="w-task-progress-wrap">
+      <div class="w-task-progress-bar">
+        <div class="w-task-progress-fill" style="width:${progress}%"></div>
+      </div>
+      <div class="w-task-progress-text">${progress}%</div>
     </div>
-    <div class="watch-task-title">${escapeHtml(t.title)}</div>
-    <div class="watch-task-meta">
-      <span>👤 ${escapeHtml(t.assignee || "—")}</span>
-      ${t.dueDate ? `<span ${isOverdue ? 'style="color:#ff6b7d;"' : ''}>📅 ${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
-      ${commentsCount > 0 ? `<span>💬 ${commentsCount}</span>` : ""}
-    </div>
-    <div class="watch-task-progress">
-      <div class="watch-task-progress-fill" style="width:${progress}%"></div>
-    </div>
+    <div class="w-task-status ${statusClass}">${statusLabel}</div>
   </div>`;
 }
 
-function buildAutoScrollPanel(panelId, tasks, emptyMsg, emptyIcon, emptyHint) {
-  const panelBody = document.getElementById(panelId);
-  if (!panelBody) return;
+/* ============================================================
+   ✅ عرض قائمة المهام
+   ============================================================ */
+function wRenderTasks() {
+  const body = document.getElementById("wMainBody");
+  if (!body) return;
   
-  if (tasks.length === 0) {
-    panelBody.classList.remove("auto-scroll", "no-scroll");
-    panelBody.innerHTML = `<div class="watch-empty">
-      <div class="watch-empty-icon">${emptyIcon}</div>
-      <div class="watch-empty-text">${emptyMsg}</div>
-      ${emptyHint ? `<div class="watch-empty-hint">${emptyHint}</div>` : ""}
+  const allTasks = Object.entries(state.allTasks);
+  let filtered = [];
+  const tab = state.currentWatchTab;
+  
+  if (tab === "all") {
+    // ترتيب: العاجل → المهم → المتأخر → الجاري → جديد
+    filtered = allTasks.sort((a, b) => {
+      const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
+      const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
+      if (a[1].status === "مكتملة" && b[1].status !== "مكتملة") return 1;
+      if (b[1].status === "مكتملة" && a[1].status !== "مكتملة") return -1;
+      if (pa !== pb) return pa - pb;
+      return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
+    });
+  } else if (tab === "urgent") {
+    filtered = allTasks.filter(([_, t]) => t.status !== "مكتملة" && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0))
+      .sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
+  } else if (tab === "working") {
+    filtered = allTasks.filter(([_, t]) => t.status === "جاري التنفيذ");
+  } else if (tab === "done") {
+    filtered = allTasks.filter(([_, t]) => t.status === "مكتملة")
+      .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
+  }
+
+  if (filtered.length === 0) {
+    body.classList.remove("auto-scroll");
+    body.innerHTML = `<div class="w-empty-state">
+      <div class="w-empty-icon">📭</div>
+      <div class="w-empty-text">لا توجد مهام في هذا التصنيف</div>
+    </div>`;
+    return;
+  }
+
+  const html = filtered.map(([id, t]) => wTaskRowHtml(id, t)).join("");
+  
+  // إذا المهام أكثر من 5، نفعّل التمرير التلقائي
+  if (filtered.length > 5) {
+    body.classList.add("auto-scroll");
+    body.innerHTML = `<div class="w-scroll-track">${html}${html}</div>`;
+    const duration = filtered.length * SCROLL_SECONDS_PER_TASK;
+    const track = body.querySelector(".w-scroll-track");
+    if (track) track.style.animation = `wAutoScroll ${duration}s linear infinite`;
+  } else {
+    body.classList.remove("auto-scroll");
+    body.innerHTML = `<div class="w-scroll-track" style="animation:none;">${html}</div>`;
+  }
+}
+
+/* ============================================================
+   ✅ أفضل المنجزين
+   ============================================================ */
+function wRenderTopPerformers() {
+  const wrap = document.getElementById("wTopPerformers");
+  if (!wrap) return;
+  
+  const performers = {};
+  Object.values(state.allTasks).forEach(t => {
+    if (t.status === "مكتملة" && t.assigneeId) {
+      if (!performers[t.assigneeId]) {
+        performers[t.assigneeId] = { name: t.assignee || "—", count: 0 };
+      }
+      performers[t.assigneeId].count++;
+    }
+  });
+  
+  const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 5);
+  
+  if (sorted.length === 0) {
+    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;">
+      <div class="w-empty-icon" style="font-size:32px;">🏆</div>
+      <div class="w-empty-text" style="font-size:12px;">لا توجد إنجازات بعد</div>
     </div>`;
     return;
   }
   
-  const html = tasks.map(([_, t]) => watchTaskHtml(t)).join("");
-  const isFew = tasks.length <= 2;
-  
-  if (isFew) {
-    panelBody.innerHTML = `<div class="scroll-content">${html}</div>`;
-    panelBody.classList.remove("auto-scroll");
-    panelBody.classList.add("no-scroll");
-  } else {
-    panelBody.innerHTML = `<div class="scroll-content">${html}${html}</div>`;
-    panelBody.classList.remove("no-scroll");
-    panelBody.classList.add("auto-scroll");
-    const duration = tasks.length * SCROLL_SECONDS_PER_TASK;
-    const scrollContent = panelBody.querySelector(".scroll-content");
-    if (scrollContent) {
-      scrollContent.style.animation = `autoScrollVertical ${duration}s linear infinite`;
-    }
-  }
-}
-
-function watchRenderActive() {
-  const active = Object.entries(state.allTasks)
-    .filter(([_, t]) => {
-      if (t.status !== "جديدة") return false;
-      if (t.priority === "عاجل" || t.priority === "مهم") return false;
-      return true;
-    })
-    .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
-  
-  document.getElementById("watchActiveCount").textContent = active.length;
-  buildAutoScrollPanel("watchActiveList", active, "لا توجد مهام نشطة", "📭", "سيتم عرض المهام الجديدة هنا");
-}
-
-function watchRenderUrgent() {
-  const urgent = Object.entries(state.allTasks)
-    .filter(([_, t]) => {
-      if (t.status === "مكتملة") return false;
-      if (t.priority === "عاجل") return true;
-      if (t.priority === "مهم") return true;
-      if (t.status === "جاري التنفيذ") return true;
-      const d = daysRemaining(t.dueDate);
-      if (d !== null && d <= 0) return true;
-      return false;
-    })
-    .sort((a, b) => {
-      const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
-      const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
-      if (pa !== pb) return pa - pb;
-      return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
-    });
-  
-  document.getElementById("watchUrgentCount").textContent = urgent.length;
-  buildAutoScrollPanel("watchUrgentList", urgent, "لا توجد مهام متأخرة", "🎉", "كل شيء تحت السيطرة");
-}
-
-function watchRenderDone() {
-  const done = Object.entries(state.allTasks)
-    .filter(([_, t]) => t.status === "مكتملة")
-    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
-  
-  document.getElementById("watchDoneCount").textContent = done.length;
-  buildAutoScrollPanel("watchDoneList", done, "لا توجد مهام مكتملة", "⏳", "ستظهر المهام المنجزة هنا");
-}
-
-function watchRenderNormalTicker() {
-  const track = document.getElementById("watchNormalTicker");
-  if (!track) return;
-
-  const normalTasks = Object.entries(state.allTasks)
-    .filter(([_, t]) => {
-      if (t.status === "مكتملة") return false;
-      if (t.priority === "عاجل" || t.priority === "مهم") return false;
-      return true;
-    })
-    .sort((a, b) => {
-      const da = daysRemaining(a[1].dueDate) ?? 999;
-      const dbb = daysRemaining(b[1].dueDate) ?? 999;
-      return da - dbb;
-    });
-
-  const countEl = document.getElementById("watchNormalCount");
-  if (countEl) countEl.textContent = normalTasks.length;
-
-  if (normalTasks.length === 0) {
-    track.innerHTML = '<div class="watch-tasks-ticker-empty">لا توجد مهام عادية حالياً</div>';
-    track.style.animation = "none";
-    return;
-  }
-
-  const taskHtml = (id, t) => {
-    const statusClass = t.status === "جاري التنفيذ" ? "progress" : "new";
-    const d = daysRemaining(t.dueDate);
-    const dueText = t.dueDate ? (d < 0 ? `متأخر ${Math.abs(d)} يوم` : d === 0 ? "اليوم" : d === 1 ? "غداً" : `باقي ${d} أيام`) : "";
-    const dueClass = (d !== null && d < 0) ? 'style="color:#f04b5c;"' : '';
-    return `
-      <div class="watch-ticker-task" onclick="openModal('${id}')" style="cursor:pointer;">
-        <span class="task-priority-dot normal"></span>
-        <div class="task-info">
-          <div class="task-title">${escapeHtml(t.title)}</div>
-          <div class="task-meta">
-            <span>👤 ${escapeHtml(t.assignee || "—")}</span>
-            ${dueText ? `<span ${dueClass}>📅 ${escapeHtml(dueText)}</span>` : ""}
-          </div>
-        </div>
-        <span class="task-status-badge ${statusClass}">${escapeHtml(t.status || "جديدة")}</span>
-      </div>`;
-  };
-
-  const html = normalTasks.map(([id, t]) => taskHtml(id, t)).join("");
-  track.innerHTML = html + html;
-
-  const duration = Math.max(30, normalTasks.length * 6);
-  track.style.animation = `tasksTickerScroll ${duration}s linear infinite`;
-}
-
-function startWatchCursor() {
-  const reset = () => {
-    document.body.style.cursor = "default";
-    clearTimeout(state.watchCursorTimer);
-    state.watchCursorTimer = setTimeout(() => { document.body.style.cursor = "none"; }, 5000);
-  };
-  document.addEventListener("mousemove", reset);
-  reset();
-}
-function stopWatchCursor() {
-  clearTimeout(state.watchCursorTimer);
-  document.body.style.cursor = "default";
+  wrap.innerHTML = sorted.map(([uid, p], i) => {
+    const rankClass = i === 0 ? "r1" : i === 1 ? "r2" : i === 2 ? "r3" : "rx";
+    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
+    return `<div class="w-performer">
+      <div class="w-performer-rank ${rankClass}">${medal}</div>
+      <div class="w-performer-info">
+        <div class="w-performer-name">${escapeHtml(p.name)}</div>
+        <div class="w-performer-count">${p.count} مهمة مكتملة</div>
+      </div>
+      <div class="w-performer-score">${p.count}</div>
+    </div>`;
+  }).join("");
 }
 
 /* ============================================================
-   Navigation & Init
+   ✅ آخر النشاطات
+   ============================================================ */
+function wRenderActivities() {
+  const wrap = document.getElementById("wRecentActivities");
+  const countEl = document.getElementById("wActivitiesCount");
+  if (!wrap) return;
+  
+  const activities = state.allActivity.slice(0, 15);
+  if (countEl) countEl.textContent = activities.length;
+  
+  if (activities.length === 0) {
+    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;">
+      <div class="w-empty-icon" style="font-size:32px;">📋</div>
+      <div class="w-empty-text" style="font-size:12px;">لا توجد نشاطات</div>
+    </div>`;
+    return;
+  }
+  
+  const typeMap = {
+    task_created: { icon: "➕", class: "creator" },
+    task_edited: { icon: "✏️", class: "creator" },
+    task_deleted: { icon: "🗑️", class: "creator" },
+    status_changed: { icon: "🔄", class: "status" },
+    comment_added: { icon: "💬", class: "comment" },
+    task_reassigned: { icon: "👤", class: "status" }
+  };
+  
+  wrap.innerHTML = activities.map(a => {
+    const meta = typeMap[a.type] || { icon: "•", class: "" };
+    return `<div class="w-activity ${meta.class}">
+      <div class="w-activity-icon">${meta.icon}</div>
+      <div class="w-activity-body">
+        <div class="w-activity-text">${escapeHtml(a.text)}</div>
+        <div class="w-activity-meta">
+          <span class="w-activity-author">${escapeHtml(a.byName || "—")}</span>
+          <span>${timeAgo(a.at)}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   ✅ شريط الأخبار
+   ============================================================ */
+function wRenderNewsTicker() {
+  const track = document.getElementById("wNewsTrack");
+  if (!track) return;
+  
+  const items = [];
+  const tasks = Object.values(state.allTasks);
+  
+  const urgent = tasks.filter(t => t.status !== "مكتملة" && t.priority === "عاجل").length;
+  const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
+  const today = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== "مكتملة"; }).length;
+  const doneToday = tasks.filter(t => t.status === "مكتملة" && isThisWeek(t.updatedAt)).length;
+  
+  if (urgent > 0) items.push(`⚠️ ${urgent} مهمة عاجلة تحتاج انتباه فوري`);
+  if (overdue > 0) items.push(`🔴 ${overdue} مهمة متأخرة عن موعدها`);
+  if (today > 0) items.push(`🔥 ${today} مهمة تستحق اليوم`);
+  if (doneToday > 0) items.push(`✅ ${doneToday} مهمة أُنجزت هذا الأسبوع`);
+  
+  // آخر النشاطات
+  state.allActivity.slice(0, 5).forEach(a => {
+    items.push(`📌 ${a.byName || "—"}: ${a.text}`);
+  });
+  
+  if (items.length === 0) {
+    items.push("مرحباً بكم في لوحة المتابعة — Hub to IT Dep.");
+    items.push("📊 يتم التحديث تلقائياً كل لحظة");
+  }
+  
+  track.innerHTML = items.map(t => `<span>${escapeHtml(t)}</span>`).join("");
+}
+
+/* ============================================================
+   ✅ دالة موحدة لعرض كل شيء
+   ============================================================ */
+function wRenderAll() {
+  wRenderKPI();
+  wRenderTasks();
+  wRenderTopPerformers();
+  wRenderActivities();
+  wRenderNewsTicker();
+}
+
+/* ============================================================
+   Init
    ============================================================ */
 function initializeApp_() {
   applyTheme();
