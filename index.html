@@ -11,7 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 /* ============================================================
-   THEME SYSTEM — Dark (default) + Light
+   THEME SYSTEM
    ============================================================ */
 :root{
   --bg-0:#050810;--bg-1:#0a0e1a;--bg-2:#10141f;--bg-3:#181d2e;--bg-4:#232a42;
@@ -20,7 +20,6 @@
   --primary:#5b8def;--primary-2:#3b6fd4;
   --success:#2dd4a3;--warning:#f5a524;--urgent:#f04b5c;--accent:#a855f7;--cyan:#06b6d4;
   --surface-1:linear-gradient(135deg,rgba(35,43,66,.7),rgba(23,29,46,.5));
-  --surface-2:linear-gradient(135deg,rgba(35,43,66,.95),rgba(23,29,46,.85));
   --panel-bg:linear-gradient(135deg,rgba(23,29,46,.9),rgba(15,20,32,.85));
   --card-bg:linear-gradient(135deg,rgba(23,29,46,.9),rgba(15,20,32,.8));
   --hover-bg:linear-gradient(135deg,rgba(35,43,66,.95),rgba(23,29,46,.8));
@@ -52,10 +51,10 @@ html[data-theme="light"]{
   --watch-bg:#f1f5f9;
   --shadow-color:rgba(15,23,42,.1);--shadow-color-2:rgba(15,23,42,.2);
 }
-html, body, header, nav, .card-panel, .task-card, .stat, .modal-box, .login-card,
-.w-panel, .w-task-row, .w-stat-card, .user-row, .kanban-col, .kanban-card,
-.w-tasks-panel, .w-bar-top, .w-news-ticker, .watch-pin-card, input, select, textarea, button {
-  transition: background-color .35s ease, background .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease;
+html,body,header,nav,.card-panel,.task-card,.stat,.modal-box,.login-card,
+.w-panel,.w-task-row,.w-stat-card,.user-row,.kanban-col,.kanban-card,
+.w-tasks-panel,.w-bar-top,.w-news-ticker,.watch-pin-card,input,select,textarea,button{
+  transition:background-color .35s ease,background .35s ease,color .35s ease,border-color .35s ease,box-shadow .35s ease;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;background:var(--body-bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
@@ -274,6 +273,10 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .btn-sm.success:hover{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;}
 .empty{text-align:center;padding:60px 20px;color:var(--text-2);font-weight:700;font-size:14px;}
 
+/* ✅ زر مسح سجل المحذوفات */
+.btn-clear-deleted{background:rgba(240,75,92,.15);color:var(--urgent);border:1.5px solid rgba(240,75,92,.4);padding:8px 16px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:800;transition:all .25s;display:none;align-items:center;gap:6px;}
+.btn-clear-deleted:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;transform:translateY(-2px);}
+
 /* ============ Modal ============ */
 #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(15px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
 html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
@@ -391,7 +394,7 @@ html[data-theme="light"] .watch-orb{opacity:.15;}
 #watchPinError{color:var(--urgent);font-size:13px;min-height:22px;font-weight:800;}
 .watch-pin-hint{color:var(--text-3);font-size:12px;margin-top:22px;font-weight:700;}
 
-#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto;gap:14px;padding:14px;overflow:hidden;}
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto auto 1fr auto auto;gap:12px;padding:14px;overflow:hidden;}
 #watchMainContent.active{display:grid;}
 
 .w-bar-top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 24px;background:var(--header-bg);backdrop-filter:blur(40px);border:1.5px solid rgba(91,141,239,.25);border-radius:20px;box-shadow:0 8px 40px var(--shadow-color);min-height:84px;position:relative;overflow:hidden;flex-shrink:0;}
@@ -418,45 +421,58 @@ html[data-theme="light"] .watch-orb{opacity:.15;}
 .w-close-btn:hover{background:linear-gradient(135deg,#f04b5c,#c81e3c);color:#fff;border-color:#f04b5c;transform:rotate(90deg) scale(1.1);}
 .w-kiosk-btn:hover{background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;transform:scale(1.1);}
 
-.w-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;flex-shrink:0;}
-.w-stat-card{display:flex;align-items:center;gap:16px;padding:18px 22px;border-radius:20px;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1);cursor:pointer;box-shadow:0 8px 28px var(--shadow-color);border:1.5px solid transparent;min-height:100px;}
+.w-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;flex-shrink:0;}
+.w-stat-card{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:18px;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.16,1,.3,1);cursor:pointer;box-shadow:0 8px 28px var(--shadow-color);border:1.5px solid transparent;min-height:88px;}
 .w-stat-card:hover{transform:translateY(-5px) scale(1.02);}
 .w-stat-card.total{background:linear-gradient(135deg,#3b6fd4 0%,#5b8def 50%,#7ca5f5 100%);border-color:rgba(124,165,245,.5);}
 .w-stat-card.active{background:linear-gradient(135deg,#f5a524 0%,#fbbf24 50%,#ffc043 100%);border-color:rgba(255,192,67,.5);}
 .w-stat-card.working{background:linear-gradient(135deg,#8b5cf6 0%,#a855f7 50%,#c084fc 100%);border-color:rgba(192,132,252,.5);}
 .w-stat-card.done{background:linear-gradient(135deg,#22b388 0%,#2dd4a3 50%,#3ee8b5 100%);border-color:rgba(62,232,181,.5);}
-.w-stat-icon{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,.25);}
-.w-stat-info{display:flex;flex-direction:column;gap:4px;min-width:0;}
-.w-stat-num{font-family:'JetBrains Mono',monospace;font-size:40px;font-weight:900;line-height:1;letter-spacing:-2px;color:#fff;text-shadow:0 4px 16px rgba(0,0,0,.3);font-variant-numeric:tabular-nums;}
-.w-stat-label{font-size:13px;color:rgba(255,255,255,.9);font-weight:800;letter-spacing:.3px;}
+.w-stat-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,.25);}
+.w-stat-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.w-stat-num{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:900;line-height:1;letter-spacing:-2px;color:#fff;text-shadow:0 4px 16px rgba(0,0,0,.3);font-variant-numeric:tabular-nums;}
+.w-stat-label{font-size:12px;color:rgba(255,255,255,.9);font-weight:800;letter-spacing:.3px;}
 
-.w-middle-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.1fr);gap:14px;min-height:0;}
-.w-panel{background:var(--panel-bg);backdrop-filter:blur(30px);border:1.5px solid var(--border-2);border-radius:20px;display:flex;flex-direction:column;overflow:hidden;min-height:0;box-shadow:0 8px 32px var(--shadow-color);}
-.w-panel-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface-1);flex-shrink:0;}
-.w-panel-title{font-size:14px;font-weight:900;color:var(--text);display:flex;align-items:center;gap:8px;}
+/* ✅ قسم آخر المكتملة */
+.w-completed-panel{background:var(--panel-bg);border:1.5px solid rgba(45,212,163,.3);border-radius:18px;overflow:hidden;flex-shrink:0;box-shadow:0 8px 32px var(--shadow-color);}
+.w-completed-header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:linear-gradient(135deg,rgba(45,212,163,.15),rgba(34,179,136,.08));border-bottom:1px solid rgba(45,212,163,.2);}
+.w-completed-body{display:flex;gap:10px;overflow-x:auto;padding:12px;min-height:72px;}
+.w-completed-body::-webkit-scrollbar{height:6px;}
+.w-completed-body::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:3px;}
+.w-completed-card{flex-shrink:0;min-width:230px;max-width:270px;background:linear-gradient(135deg,rgba(45,212,163,.12),var(--surface-1));border:1.5px solid rgba(45,212,163,.35);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.w-completed-card::before{content:'✓';position:absolute;top:6px;left:10px;color:#2dd4a3;font-size:14px;font-weight:900;}
+.w-completed-card:hover{transform:translateY(-3px);border-color:#2dd4a3;box-shadow:0 8px 20px rgba(45,212,163,.3);}
+.w-completed-title{font-size:12.5px;font-weight:800;color:var(--text);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:22px;}
+.w-completed-meta{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text-2);font-weight:700;}
+.w-completed-time{color:#2dd4a3;font-weight:800;}
+
+.w-middle-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.1fr);gap:12px;min-height:0;}
+.w-panel{background:var(--panel-bg);backdrop-filter:blur(30px);border:1.5px solid var(--border-2);border-radius:18px;display:flex;flex-direction:column;overflow:hidden;min-height:0;box-shadow:0 8px 32px var(--shadow-color);}
+.w-panel-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface-1);flex-shrink:0;}
+.w-panel-title{font-size:13px;font-weight:900;color:var(--text);display:flex;align-items:center;gap:8px;}
 .w-panel-badge{background:rgba(91,141,239,.2);color:var(--primary);padding:4px 12px;border-radius:12px;font-size:11px;font-weight:900;border:1px solid rgba(91,141,239,.3);}
-.w-panel-body{flex:1;overflow:hidden;padding:14px;position:relative;min-height:0;}
-.w-chart-line,.w-chart-doughnut{width:100%;height:100%;position:relative;min-height:160px;}
+.w-panel-body{flex:1;overflow:hidden;padding:12px;position:relative;min-height:0;}
+.w-chart-line,.w-chart-doughnut{width:100%;height:100%;position:relative;min-height:140px;}
 .w-chart-doughnut{display:flex;align-items:center;justify-content:center;}
 .w-doughnut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
-.w-doughnut-center-num{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:900;color:var(--success);line-height:1;}
-.w-doughnut-center-label{font-size:10.5px;color:var(--text-2);font-weight:800;margin-top:5px;}
-.w-top-list{display:flex;flex-direction:column;gap:8px;overflow-y:auto;height:100%;padding:2px;}
-.w-top-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface-1);border:1.5px solid var(--border);border-radius:14px;transition:all .3s;}
+.w-doughnut-center-num{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:900;color:var(--success);line-height:1;}
+.w-doughnut-center-label{font-size:10px;color:var(--text-2);font-weight:800;margin-top:5px;}
+.w-top-list{display:flex;flex-direction:column;gap:6px;overflow-y:auto;height:100%;padding:2px;}
+.w-top-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface-1);border:1.5px solid var(--border);border-radius:12px;transition:all .3s;}
 .w-top-item:hover{background:var(--hover-bg);border-color:rgba(91,141,239,.4);transform:translateX(-4px);}
-.w-top-rank{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0;}
+.w-top-rank{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex-shrink:0;}
 .w-top-rank.r1{background:linear-gradient(135deg,#ffd700,#ffb300);color:#000;}
 .w-top-rank.r2{background:linear-gradient(135deg,#e0e0e0,#a0a0a0);color:#000;}
 .w-top-rank.r3{background:linear-gradient(135deg,#cd7f32,#a0651e);color:#fff;}
 .w-top-rank.rx{background:rgba(91,141,239,.2);color:var(--primary);border:1.5px solid rgba(91,141,239,.4);}
-.w-top-avatar{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--primary),var(--success));}
+.w-top-avatar{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;flex-shrink:0;background:linear-gradient(135deg,var(--primary),var(--success));}
 .w-top-info{flex:1;min-width:0;}
-.w-top-name{font-size:13px;font-weight:900;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px;}
-.w-top-count{font-size:10.5px;color:var(--text-2);font-weight:700;}
-.w-top-score{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:900;color:var(--success);}
+.w-top-name{font-size:12.5px;font-weight:900;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px;}
+.w-top-count{font-size:10px;color:var(--text-2);font-weight:700;}
+.w-top-score{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:900;color:var(--success);}
 
-.w-tasks-panel{display:flex;flex-direction:column;background:var(--panel-bg);backdrop-filter:blur(30px);border:1.5px solid var(--border-2);border-radius:20px;overflow:hidden;min-height:0;box-shadow:0 8px 32px var(--shadow-color);}
-.w-tasks-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface-1);flex-shrink:0;gap:12px;flex-wrap:wrap;}
+.w-tasks-panel{display:flex;flex-direction:column;background:var(--panel-bg);backdrop-filter:blur(30px);border:1.5px solid var(--border-2);border-radius:18px;overflow:hidden;min-height:0;box-shadow:0 8px 32px var(--shadow-color);}
+.w-tasks-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface-1);flex-shrink:0;gap:12px;flex-wrap:wrap;}
 .w-tabs{display:flex;gap:4px;background:var(--input-bg);padding:4px;border-radius:12px;border:1px solid var(--border);}
 .w-tab{padding:7px 14px;border:none;background:transparent;color:var(--text-2);border-radius:9px;cursor:pointer;font-size:11.5px;font-weight:800;font-family:inherit;transition:all .3s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
 .w-tab:hover{color:var(--text);background:var(--border-2);}
@@ -471,13 +487,15 @@ html[data-theme="light"] .watch-orb{opacity:.15;}
 .w-tasks-body.auto-scroll:hover .w-scroll-track{animation-play-state:paused;}
 @keyframes wAutoScroll{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
 
-.w-task-row{display:grid;grid-template-columns:6px 0.7fr 2.5fr 1fr 1fr 1.3fr 0.8fr;align-items:center;gap:14px;padding:14px 16px;background:var(--surface-1);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;transition:all .3s;min-height:62px;}
+/* ✅ المهمة العادية */
+.w-task-row{display:grid;grid-template-columns:6px 0.7fr 2.5fr 1fr 1fr 1.3fr 0.8fr;align-items:center;gap:12px;padding:14px 16px;background:var(--surface-1);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;transition:all .3s;min-height:62px;animation:taskRowIn .4s cubic-bezier(.16,1,.3,1) both;}
+@keyframes taskRowIn{from{opacity:0;transform:translateX(-20px);}to{opacity:1;transform:translateX(0);}}
 .w-task-row:hover{background:var(--hover-bg);border-color:rgba(91,141,239,.4);transform:translateX(-4px);}
 .w-task-bar{width:6px;height:100%;min-height:42px;border-radius:3px;background:var(--primary);}
 .w-task-row.urgent .w-task-bar{background:linear-gradient(180deg,#f04b5c,#ff6b7d);}
 .w-task-row.important .w-task-bar{background:linear-gradient(180deg,#f5a524,#ffc043);}
 .w-task-row.normal .w-task-bar{background:linear-gradient(180deg,#2dd4a3,#3ee8b5);}
-.w-task-row.done-task{opacity:.7;}
+.w-task-row.done-task{opacity:.75;}
 .w-task-row.overdue{background:linear-gradient(90deg,rgba(240,75,92,.15),var(--surface-1) 40%);border-color:rgba(240,75,92,.25);}
 .w-task-priority{font-size:11px;padding:6px 12px;border-radius:10px;font-weight:900;text-align:center;white-space:nowrap;}
 .w-task-priority.urgent{background:rgba(240,75,92,.3);color:#ff6b7d;border:1.5px solid rgba(240,75,92,.5);}
@@ -498,6 +516,36 @@ html[data-theme="light"] .watch-orb{opacity:.15;}
 .w-task-status.new{background:rgba(91,141,239,.25);color:#7ca5f5;border:1.5px solid rgba(91,141,239,.4);}
 .w-task-status.progress{background:rgba(245,165,36,.25);color:#f5b84a;border:1.5px solid rgba(245,165,36,.4);}
 .w-task-status.done{background:rgba(45,212,163,.25);color:#3ee8b5;border:1.5px solid rgba(45,212,163,.4);}
+
+/* ✅ كارت المهمة العاجلة: أكبر + نبض */
+.w-task-row.urgent-highlight{
+  grid-template-columns:8px 0.8fr 2.8fr 1.1fr 1.1fr 1.4fr 0.9fr;
+  padding:20px 22px;
+  min-height:82px;
+  border:2px solid rgba(240,75,92,.5);
+  background:linear-gradient(90deg,rgba(240,75,92,.12),var(--surface-1) 40%);
+  box-shadow:0 0 0 0 rgba(240,75,92,.5),0 8px 24px rgba(0,0,0,.3);
+  animation:urgentCardPulse 2s ease-in-out infinite;
+  position:relative;
+}
+@keyframes urgentCardPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,.5),0 8px 24px rgba(0,0,0,.3);}
+  50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 8px 32px rgba(240,75,92,.5);}
+}
+.w-task-row.urgent-highlight .w-task-bar{
+  width:8px;
+  background:linear-gradient(180deg,#f04b5c,#ff6b7d,#f04b5c);
+  background-size:100% 200%;
+  animation:urgentBarFlow 1.5s linear infinite;
+}
+@keyframes urgentBarFlow{0%{background-position:0 0;}100%{background-position:0 200%;}}
+.w-task-row.urgent-highlight .w-task-title{font-size:16px;font-weight:900;color:var(--text);}
+.w-task-row.urgent-highlight .w-task-priority{font-size:12.5px;padding:8px 14px;animation:urgentBadgeBlink 1.4s ease-in-out infinite;}
+@keyframes urgentBadgeBlink{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:.85;}}
+.w-task-row.urgent-highlight .w-task-progress-bar{height:8px;}
+.w-task-row.urgent-highlight .w-task-progress-fill{background:linear-gradient(90deg,#f04b5c,#ff6b7d,#f04b5c) !important;background-size:200% 100%;animation:urgentProgressFlow 2s linear infinite;}
+@keyframes urgentProgressFlow{0%{background-position:0 0;}100%{background-position:200% 0;}}
+
 .w-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:var(--text-3);gap:14px;text-align:center;height:100%;}
 .w-empty-icon{font-size:56px;opacity:.4;}
 .w-empty-text{font-size:14px;font-weight:800;color:var(--text-2);}
@@ -536,33 +584,36 @@ html[data-theme="light"] .watch-orb{opacity:.15;}
 .watch-sub-progress-text{position:absolute;bottom:6px;left:14px;font-size:9.5px;color:var(--text-3);font-weight:800;font-family:'JetBrains Mono',monospace;}
 
 body.watch-kiosk .w-bar-top,
-body.watch-kiosk .w-news-ticker { display: none !important; }
-body.watch-kiosk #watchMainContent { grid-template-rows: auto 1fr !important; }
+body.watch-kiosk .w-news-ticker{display:none !important;}
+body.watch-kiosk #watchMainContent{grid-template-rows:auto auto 1fr auto !important;}
 
 @media (max-width:1400px){
   .w-middle-row{grid-template-columns:1fr 1fr 1fr;}
-  .w-task-row{grid-template-columns:6px 0.7fr 2.5fr 0.9fr 1fr 1.2fr 0.8fr;gap:12px;padding:12px 14px;}
-  .w-stat-num{font-size:34px;}.w-stat-icon{width:56px;height:56px;font-size:26px;}
+  .w-task-row{grid-template-columns:6px 0.7fr 2.5fr 0.9fr 1fr 1.2fr 0.8fr;gap:10px;padding:12px 14px;}
+  .w-task-row.urgent-highlight{grid-template-columns:8px 0.8fr 2.8fr 1fr 1.1fr 1.3fr 0.9fr;padding:16px 18px;min-height:76px;}
+  .w-stat-num{font-size:30px;}.w-stat-icon{width:48px;height:48px;font-size:22px;}.w-stat-card{padding:14px 16px;min-height:80px;}
 }
 @media (max-width:1200px){
-  .w-stat-num{font-size:30px;}.w-stat-icon{width:50px;height:50px;font-size:24px;}
+  .w-stat-num{font-size:26px;}.w-stat-icon{width:44px;height:44px;font-size:20px;}
   .w-middle-row{grid-template-columns:1fr 1fr;}.w-middle-row > :nth-child(3){grid-column:1/-1;}
-  .w-bar-title h1{font-size:18px;}.w-clock-time{font-size:24px;}
+  .w-bar-title h1{font-size:18px;}.w-clock-time{font-size:22px;}
   .charts-grid{grid-template-columns:1fr;}
+  .w-task-row.urgent-highlight{grid-template-columns:6px 0.8fr 2.5fr 1fr 1fr 1.2fr 0.9fr;}
 }
 @media (max-width:900px){
   .w-stats-row{grid-template-columns:repeat(2,1fr);}
   .w-middle-row{grid-template-columns:1fr;}
   .w-task-row{grid-template-columns:6px 1fr 100px;gap:10px;padding:12px;}
   .w-task-row > .w-task-assignee,.w-task-row > .w-task-progress-wrap{display:none;}
+  .w-task-row.urgent-highlight{grid-template-columns:6px 1fr 90px;padding:14px;min-height:70px;}
   .w-bar-top{flex-wrap:wrap;gap:12px;padding:12px 16px;}
   .w-bar-center{order:3;flex-basis:100%;}.w-bar-brand{order:1;}.w-bar-actions{order:2;margin-right:auto;}
   .charts-grid,.form-grid,.modal-meta{grid-template-columns:1fr;}
 }
 @media (max-width:700px){
   .w-stats-row{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .w-stat-card{padding:12px;gap:10px;min-height:80px;}
-  .w-stat-num{font-size:24px;}.w-stat-icon{width:44px;height:44px;font-size:22px;border-radius:12px;}
+  .w-stat-card{padding:12px;gap:10px;min-height:72px;}
+  .w-stat-num{font-size:22px;}.w-stat-icon{width:40px;height:40px;font-size:18px;border-radius:12px;}
   .w-bar-title h1{font-size:15px;}.w-bar-logo{width:44px;height:44px;}
   .w-clock-time{font-size:18px;}.w-clock-date{font-size:10px;}
   .w-task-row{grid-template-columns:6px 70px minmax(0,1fr) 70px;gap:8px;padding:10px;}
@@ -774,10 +825,16 @@ body.watch-kiosk #watchMainContent { grid-template-rows: auto 1fr !important; }
     </div>
   </div>
 
+  <!-- ✅ Activity مع زر مسح سجل المحذوفات -->
   <div class="view-section" id="activityView">
     <div class="container">
       <div class="card-panel">
-        <div class="panel-title">📜 سجل النشاطات</div>
+        <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <span>📜 سجل النشاطات</span>
+          <button id="clearDeletedBtn" class="btn-clear-deleted" onclick="clearDeletedHistory()">
+            🗑️ مسح سجل المحذوفات
+          </button>
+        </div>
         <div id="activityList"></div>
       </div>
     </div>
@@ -824,6 +881,7 @@ body.watch-kiosk #watchMainContent { grid-template-rows: auto 1fr !important; }
   </div>
 
   <div id="watchMainContent">
+    <!-- Header -->
     <div class="w-bar-top">
       <div class="w-bar-brand">
         <div class="w-bar-logo"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK"></div>
@@ -844,6 +902,7 @@ body.watch-kiosk #watchMainContent { grid-template-rows: auto 1fr !important; }
       </div>
     </div>
 
+    <!-- Stats Cards -->
     <div class="w-stats-row">
       <div class="w-stat-card total"><div class="w-stat-icon">📋</div><div class="w-stat-info"><div class="w-stat-num" id="wTotal">0</div><div class="w-stat-label">إجمالي المهام</div></div></div>
       <div class="w-stat-card active"><div class="w-stat-icon">⚡</div><div class="w-stat-info"><div class="w-stat-num" id="wActive">0</div><div class="w-stat-label">قيد الانتظار</div></div></div>
@@ -851,6 +910,21 @@ body.watch-kiosk #watchMainContent { grid-template-rows: auto 1fr !important; }
       <div class="w-stat-card done"><div class="w-stat-icon">✅</div><div class="w-stat-info"><div class="w-stat-num" id="wDone">0</div><div class="w-stat-label">مكتملة</div></div></div>
     </div>
 
+    <!-- ✅ قسم آخر المكتملة (جديد) -->
+    <div class="w-completed-panel">
+      <div class="w-completed-header">
+        <div class="w-panel-title"><span>🎉</span><span>آخر ما تم إنجازه</span></div>
+        <span class="w-panel-badge" id="wCompletedCount">0</span>
+      </div>
+      <div class="w-completed-body" id="wCompletedList">
+        <div class="w-empty-state" style="padding:20px;">
+          <div class="w-empty-icon" style="font-size:32px;">🎉</div>
+          <div class="w-empty-text" style="font-size:11px;">لا توجد مهام مكتملة</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts + Top Performers -->
     <div class="w-middle-row">
       <div class="w-panel">
         <div class="w-panel-header"><div class="w-panel-title"><span>📈</span><span>الإنتاجية الأسبوعية</span></div><span class="w-panel-badge">آخر 7 أيام</span></div>
@@ -871,6 +945,7 @@ body.watch-kiosk #watchMainContent { grid-template-rows: auto 1fr !important; }
       </div>
     </div>
 
+    <!-- Tasks Table -->
     <div class="w-tasks-panel">
       <div class="w-tasks-header">
         <div class="w-panel-title"><span>📋</span><span>قائمة المهام</span></div>
@@ -888,6 +963,7 @@ body.watch-kiosk #watchMainContent { grid-template-rows: auto 1fr !important; }
       </div>
     </div>
 
+    <!-- Ticker -->
     <div class="w-news-ticker">
       <div class="w-news-label">🔔 إشعارات</div>
       <div class="w-news-track-wrap"><div class="w-news-track" id="wNewsTrack"><span>مرحباً بكم في لوحة المتابعة — EMAK IT Dep.</span></div></div>
@@ -898,7 +974,7 @@ body.watch-kiosk #watchMainContent { grid-template-rows: auto 1fr !important; }
 <div id="toast"></div>
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v13.0 — Professional Edition
+   EMAK IT Dep. v14.0 — Professional Edition
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -936,6 +1012,7 @@ const SCROLL_MIN_SECONDS = 25;
 const SCROLL_MAX_SECONDS = 90;
 const SCROLL_PER_TASK_SECONDS = 3;
 const CHARTS_REFRESH_INTERVAL = 30000;
+const DELETED_RETENTION_DAYS = 7; // أيام الاحتفاظ بسجل الحذف
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -1163,7 +1240,6 @@ function showWatchSubNotification(task) {
   const notif = document.createElement("div");
   notif.className = `watch-sub-notification ${priority}`;
   notif.id = notifId;
-  notif.setAttribute("role", "alert");
   notif.innerHTML = `
     <div class="watch-sub-icon">${iconMap[priority]}</div>
     <div class="watch-sub-body">
@@ -1358,6 +1434,7 @@ function setupAuthListener() {
       document.getElementById("addTaskCard").style.display = state.isAdmin ? "block" : "none";
       document.getElementById("usersNavBtn").style.display = state.isAdmin ? "inline-flex" : "none";
       document.getElementById("teamNavBtn").style.display = state.isAdmin ? "inline-flex" : "none";
+      updateClearDeletedBtn();
       startRealtimeListeners();
       startBackupTimer();
       setupOnlinePresence();
@@ -1736,6 +1813,33 @@ async function logActivity(type, text, taskId=null, taskTitle="") {
   } catch(e) {}
 }
 
+/* ============ CLEAR DELETED HISTORY ============ */
+window.clearDeletedHistory = async function() {
+  if (!state.isAdmin) return swalError("غير مصرح — للمدير فقط");
+  const r = await swalConfirm("مسح سجل المحذوفات؟", "سيتم حذف جميع أحداث الحذف من السجل. لا يمكن التراجع!");
+  if (!r.isConfirmed) return;
+  try {
+    const snap = await get(ref(db, "activity"));
+    const activities = snap.val() || {};
+    const deleteIds = Object.entries(activities)
+      .filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared")
+      .map(([id]) => id);
+    if (deleteIds.length === 0) return showToast("لا يوجد سجل محذوفات", "info");
+    for (const id of deleteIds) {
+      await remove(ref(db, "activity/" + id));
+    }
+    await logActivity("history_cleared", `مسح ${deleteIds.length} حدث حذف من السجل`);
+    showToast(`🗑️ تم مسح ${deleteIds.length} حدث`, "success");
+  } catch (err) {
+    swalError("فشل", err.message);
+  }
+};
+
+function updateClearDeletedBtn() {
+  const btn = document.getElementById("clearDeletedBtn");
+  if (btn) btn.style.display = state.isAdmin ? "inline-flex" : "none";
+}
+
 /* ============ MODAL ============ */
 function openModal(taskId) {
   state.openTaskId = taskId;
@@ -2062,14 +2166,25 @@ function renderActiveTasks() {
     </div>`;
   }).join("") + '</div>';
 }
+
+/* ✅ Activity — استبعاد المحذوفات */
 function renderActivity() {
   const wrap = document.getElementById("activityList");
   if (!wrap) return;
-  const events = state.allActivity.slice(0, 100);
+  const events = state.allActivity
+    .filter(e => e.type !== "task_deleted" && e.type !== "task_cleared")
+    .slice(0, 100);
   if (events.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد نشاط</p>'; return; }
+  const typeIcons = {
+    task_created: "➕", task_edited: "✏️", status_changed: "🔄",
+    comment_added: "💬", user_created: "👤", user_promoted: "👑",
+    task_reassigned: "👤", password_changed: "🔑", history_cleared: "🗑️"
+  };
   wrap.innerHTML = events.map(e => `
     <div style="display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);">
-      <div style="font-size:18px;">•</div>
+      <div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
+        ${typeIcons[e.type] || "•"}
+      </div>
       <div style="flex:1;">
         <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${escapeHtml(e.text)}</div>
         <div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;">
@@ -2293,33 +2408,106 @@ function closeReport() { document.getElementById("reportOverlay").classList.remo
 window.openReport = openReport;
 window.closeReport = closeReport;
 
+/* ✅ PDF احترافي */
 async function downloadPDF() {
   const btn = document.getElementById("downloadPdfBtn");
-  btn.disabled = true; btn.textContent = "⏳";
+  btn.disabled = true; btn.textContent = "⏳ جارٍ التوليد...";
   try {
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+    const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     const pageW = 210, pageH = 297, margin = 15;
     let y = margin;
-    pdf.setFillColor(30, 58, 138); pdf.rect(0, 0, pageW, 25, "F");
-    if (state.logoDataUrl) { try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); } catch(e){} }
-    pdf.setTextColor(255,255,255); pdf.setFontSize(20);
-    pdf.text("EMAK IT Dep.", pageW - 40, 12, { align:"right" });
-    y = 35;
-    const today = new Date().toLocaleDateString("ar-EG");
-    pdf.setTextColor(100,116,139); pdf.setFontSize(10);
-    pdf.text(`التاريخ: ${today}`, pageW - margin, y, { align:"right" }); y += 15;
-    Object.entries(state.allTasks).forEach(([id, t]) => {
-      if (y > pageH - 20) { pdf.addPage(); y = margin; }
-      pdf.setTextColor(15,23,42); pdf.setFontSize(12);
-      pdf.text(t.title, pageW - margin, y, { align:"right" }); y += 6;
-      pdf.setFontSize(9); pdf.setTextColor(100,116,139);
-      pdf.text(`👤 ${t.assignee || "—"} | ${t.status}`, pageW - margin, y, { align:"right" }); y += 10;
+    const entries = Object.entries(state.allTasks);
+    const done = entries.filter(([_, t]) => t.status === "مكتملة");
+    const progress = entries.filter(([_, t]) => t.status === "جاري التنفيذ");
+    const newT = entries.filter(([_, t]) => t.status === "جديدة");
+    const overdue = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; });
+    const urgent = entries.filter(([_, t]) => t.priority === "عاجل" && t.status !== "مكتملة");
+    // ترويسة
+    pdf.setFillColor(30, 58, 138); pdf.rect(0, 0, pageW, 30, "F");
+    pdf.setFillColor(45, 212, 163); pdf.rect(0, 30, pageW / 3, 2, "F");
+    pdf.setFillColor(91, 141, 239); pdf.rect(pageW / 3, 30, pageW / 3, 2, "F");
+    pdf.setFillColor(168, 85, 247); pdf.rect(2 * pageW / 3, 30, pageW / 3, 2, "F");
+    if (state.logoDataUrl) { try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 22, 4, 22, 22); } catch(e){} }
+    pdf.setTextColor(255, 255, 255); pdf.setFontSize(22);
+    pdf.text("EMAK IT Dep.", pageW - 45, 13, { align: "right" });
+    pdf.setFontSize(11);
+    pdf.text("نظام إدارة المهام — قسم نظم المعلومات", pageW - 45, 21, { align: "right" });
+    y = 42;
+    const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
+    // بطاقات إحصائية
+    const cardW = (pageW - 2 * margin - 12) / 4;
+    const cards = [
+      { label: "إجمالي", value: entries.length, color: [91, 141, 239] },
+      { label: "مكتملة", value: done.length, color: [45, 212, 163] },
+      { label: "جارية", value: progress.length, color: [245, 165, 36] },
+      { label: "متأخرة", value: overdue.length, color: [240, 75, 92] }
+    ];
+    cards.forEach((card, i) => {
+      const x = pageW - margin - cardW - (i * (cardW + 4));
+      pdf.setFillColor(...card.color);
+      pdf.roundedRect(x, y, cardW, 22, 3, 3, "F");
+      pdf.setTextColor(255, 255, 255); pdf.setFontSize(18); pdf.setFont("helvetica", "bold");
+      pdf.text(String(card.value), x + cardW / 2, y + 10, { align: "center" });
+      pdf.setFontSize(9);
+      pdf.text(card.label, x + cardW / 2, y + 17, { align: "center" });
     });
+    y += 32;
+    pdf.setTextColor(30, 58, 138); pdf.setFontSize(13); pdf.setFont("helvetica", "bold");
+    pdf.text(`عاجلة: ${urgent.length}  •  جديدة: ${newT.length}`, pageW - margin, y, { align: "right" });
+    y += 10;
+    const writeSection = (title, tasks, color) => {
+      if (tasks.length === 0) return;
+      if (y > pageH - 40) { pdf.addPage(); y = margin; }
+      pdf.setFillColor(...color);
+      pdf.roundedRect(pageW - margin - 90, y, 90, 8, 2, 2, "F");
+      pdf.setTextColor(255, 255, 255); pdf.setFontSize(11); pdf.setFont("helvetica", "bold");
+      pdf.text(`${title} (${tasks.length})`, pageW - margin - 4, y + 5.5, { align: "right" });
+      y += 12;
+      tasks.forEach(([id, t]) => {
+        const d = daysRemaining(t.dueDate);
+        const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
+        const lines = t.notes ? pdf.splitTextToSize(t.notes, pageW - 2 * margin - 20) : [];
+        const taskH = 20 + (lines.length * 4);
+        if (y + taskH > pageH - 20) { pdf.addPage(); y = margin; }
+        pdf.setFillColor(248, 250, 252);
+        pdf.roundedRect(margin, y, pageW - 2 * margin, taskH, 2, 2, "F");
+        const pc = t.priority === "عاجل" ? [220, 38, 38] : t.priority === "مهم" ? [217, 119, 6] : [5, 150, 105];
+        pdf.setFillColor(...pc);
+        pdf.rect(pageW - margin - 3, y, 3, taskH, "F");
+        pdf.setTextColor(15, 23, 42); pdf.setFontSize(11); pdf.setFont("helvetica", "bold");
+        const title2 = t.title.length > 55 ? t.title.substring(0, 52) + "..." : t.title;
+        pdf.text(title2, pageW - margin - 8, y + 6, { align: "right" });
+        pdf.setFontSize(9); pdf.setTextColor(100, 116, 139); pdf.setFont("helvetica", "normal");
+        const statusText = t.status === "مكتملة" ? "مكتملة ✓" : t.status;
+        const dueText = t.dueDate ? `  |  📅 ${isOverdue ? "متأخر " + Math.abs(d) + " يوم" : t.dueDate}` : "";
+        pdf.text(`👤 ${t.assignee || "—"}  |  ${t.priority || "عادي"}  |  ${statusText}${dueText}`, pageW - margin - 8, y + 13, { align: "right" });
+        if (lines.length > 0) {
+          pdf.setTextColor(71, 85, 105); pdf.setFontSize(8);
+          pdf.text(lines, pageW - margin - 8, y + 18, { align: "right" });
+        }
+        y += taskH + 3;
+      });
+      y += 6;
+    };
+    writeSection("🔴 مهام عاجلة", urgent, [240, 75, 92]);
+    writeSection("⚠️ مهام متأخرة", overdue, [220, 38, 38]);
+    writeSection("⏳ مهام جارية", progress, [245, 165, 36]);
+    writeSection("🆕 مهام جديدة", newT, [91, 141, 239]);
+    writeSection("✅ مهام مكتملة", done.slice(0, 30), [45, 212, 163]);
+    const totalPages = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pdf.setPage(i); pdf.setFontSize(8); pdf.setTextColor(148, 163, 184);
+      pdf.text(`EMAK Hub — صفحة ${i} من ${totalPages}  |  ${today}`, pageW / 2, pageH - 6, { align: "center" });
+    }
     pdf.save(`EMAK-Report-${new Date().toISOString().slice(0,10)}.pdf`);
-    showToast("📄 تم", "success");
-  } catch (e) { swalError("خطأ", e.message); }
-  finally { btn.disabled = false; btn.textContent = "📄 تحميل PDF"; }
+    showToast("📄 تم تحميل التقرير", "success");
+  } catch (e) {
+    swalError("خطأ في التحميل", e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "📄 تحميل PDF";
+  }
 }
 window.downloadPDF = downloadPDF;
 
@@ -2481,7 +2669,7 @@ async function startWatchData() {
     }
     state.watchKnownTaskIds = new Set([...state.watchKnownTaskIds].filter(id => state.watchData.tasks[id]));
     if (state.watchMode) {
-      wRenderStats(); wRenderTasks(); wRenderTopPerformers(); wRenderNewsTicker();
+      wRenderStats(); wRenderTasks(); wRenderCompleted(); wRenderTopPerformers(); wRenderNewsTicker();
     }
   }, (err) => {});
 
@@ -2501,7 +2689,7 @@ async function startWatchData() {
     if (state.watchMode) { wRenderLineChart(); wRenderDoughnutChart(); }
   }, CHARTS_REFRESH_INTERVAL);
 
-  wRenderStats(); wRenderTasks(); wRenderTopPerformers();
+  wRenderStats(); wRenderTasks(); wRenderCompleted(); wRenderTopPerformers();
   wRenderLineChart(); wRenderDoughnutChart(); wRenderNewsTicker();
 }
 
@@ -2563,6 +2751,33 @@ function wRenderStats() {
   set("wTabUrgentCount", tasks.filter(t => t.status !== "مكتملة" && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)).length);
   set("wTabWorkingCount", working);
   set("wTabDoneCount", done);
+}
+
+/* ✅ آخر ما تم إنجازه */
+function wRenderCompleted() {
+  const wrap = document.getElementById("wCompletedList");
+  const countEl = document.getElementById("wCompletedCount");
+  if (!wrap) return;
+  const completed = Object.entries(state.watchData.tasks)
+    .filter(([id, t]) => t.status === "مكتملة")
+    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0))
+    .slice(0, 10);
+  if (countEl) countEl.textContent = completed.length;
+  if (completed.length === 0) {
+    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;">
+      <div class="w-empty-icon" style="font-size:32px;">🎉</div>
+      <div class="w-empty-text" style="font-size:11px;">لا توجد مهام مكتملة</div>
+    </div>`;
+    return;
+  }
+  wrap.innerHTML = completed.map(([id, t]) => `
+    <div class="w-completed-card" onclick="openModal('${id}')">
+      <div class="w-completed-title">${escapeHtml(t.title)}</div>
+      <div class="w-completed-meta">
+        <span>👤 ${escapeHtml(t.assignee || "—")}</span>
+        <span class="w-completed-time">${timeAgo(t.updatedAt)}</span>
+      </div>
+    </div>`).join("");
 }
 
 function wRenderLineChart() {
@@ -2683,15 +2898,20 @@ function wRenderTopPerformers() {
   }).join("");
 }
 
-function wTaskRowHtml(id, t) {
+/* ✅ المهمة مع كارت العاجلة الأكبر */
+function wTaskRowHtml(id, t, index = 0) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
   const pc = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const isDone = t.status === "مكتملة";
+  const isUrgentActive = t.priority === "عاجل" && !isDone;
   const statusClass = t.status === "جاري التنفيذ" ? "progress" : isDone ? "done" : "new";
   const progress = getTaskProgress(t);
   const statusLabel = t.status === "جديدة" ? "جديدة" : t.status === "جاري التنفيذ" ? "جارية" : "مكتملة";
-  return `<div class="w-task-row ${pc} ${isOverdue ? 'overdue' : ''} ${isDone ? 'done-task' : ''}" onclick="openModal('${id}')">
+  const urgentClass = isUrgentActive ? "urgent-highlight" : "";
+  return `<div class="w-task-row ${pc} ${urgentClass} ${isOverdue ? 'overdue' : ''} ${isDone ? 'done-task' : ''}" 
+              onclick="openModal('${id}')"
+              style="animation-delay:${index * 30}ms">
     <div class="w-task-bar"></div>
     <div class="w-task-priority ${pc}">${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}</div>
     <div class="w-task-title" title="${escapeHtml(t.title)}">${escapeHtml(t.title)}</div>
@@ -2725,25 +2945,27 @@ function wRenderTasks() {
   } else if (tab === "working") {
     filtered = allTasks.filter(([_, t]) => t.status === "جاري التنفيذ");
   } else if (tab === "done") {
-    filtered = allTasks.filter(([_, t]) => t.status === "مكتملة").sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
+    filtered = allTasks.filter(([_, t]) => t.status === "مكتملة").sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)).slice(0, 20);
   }
   if (filtered.length === 0) {
     body.classList.remove("auto-scroll");
     body.innerHTML = `<div class="w-empty-state"><div class="w-empty-icon">📭</div><div class="w-empty-text">لا توجد مهام</div></div>`;
     return;
   }
-  const html = filtered.map(([id, t]) => wTaskRowHtml(id, t)).join("");
-  if (filtered.length > 5) {
+  const html = filtered.map(([id, t], idx) => wTaskRowHtml(id, t, idx)).join("");
+  const hasUrgent = filtered.some(([_, t]) => t.priority === "عاجل" && t.status !== "مكتملة");
+  if (hasUrgent || filtered.length <= 6) {
+    body.classList.remove("auto-scroll");
+    body.innerHTML = `<div class="w-scroll-track" style="animation:none;">${html}</div>`;
+  } else {
     body.classList.add("auto-scroll");
     body.innerHTML = `<div class="w-scroll-track">${html}${html}</div>`;
     const duration = Math.min(SCROLL_MAX_SECONDS, Math.max(SCROLL_MIN_SECONDS, filtered.length * SCROLL_PER_TASK_SECONDS));
     body.style.setProperty("--scroll-duration", duration + "s");
-  } else {
-    body.classList.remove("auto-scroll");
-    body.innerHTML = `<div class="w-scroll-track" style="animation:none;">${html}</div>`;
   }
 }
 
+/* ✅ الشريط السفلي — استبعاد الحذف */
 function wRenderNewsTicker() {
   const track = document.getElementById("wNewsTrack");
   if (!track) return;
@@ -2756,11 +2978,15 @@ function wRenderNewsTicker() {
   if (urgent > 0) items.push(`⚠️ ${urgent} مهمة عاجلة`);
   if (overdue > 0) items.push(`🔴 ${overdue} مهمة متأخرة`);
   if (today > 0) items.push(`🔥 ${today} مهمة تستحق اليوم`);
-  if (doneWeek > 0) items.push(`✅ ${doneWeek} مهمة أُنجزت`);
-  state.watchData.activity.slice(0, 5).forEach(a => { items.push(`📌 ${a.byName || "—"}: ${a.text}`); });
+  if (doneWeek > 0) items.push(`✅ ${doneWeek} مهمة أُنجزت هذا الأسبوع`);
+  // ✅ استبعاد الحذف من الشريط
+  state.watchData.activity
+    .filter(a => a.type !== "task_deleted" && a.type !== "task_cleared")
+    .slice(0, 5)
+    .forEach(a => { items.push(`📌 ${a.byName || "—"}: ${a.text}`); });
   if (items.length === 0) {
     items.push("مرحباً بكم — EMAK IT Dep.");
-    items.push("📊 يتم التحديث تلقائياً");
+    items.push("📊 يتم التحديث تلقائياً كل لحظة");
   }
   const signature = items.join("|");
   if (track._signature === signature) return;
@@ -2795,6 +3021,7 @@ function initializeApp_() {
       if (view === "activity") renderActivity();
       if (view === "watch") renderWatch();
       if (view === "tasks") renderTasks();
+      if (view === "activity") updateClearDeletedBtn();
     };
   });
 
