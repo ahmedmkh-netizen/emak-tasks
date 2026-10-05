@@ -872,7 +872,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
     <div class="watch-grid">
       <section class="watch-panel">
         <div class="watch-panel-header">
-          <h2>🔥 المهام النشطة</h2>
+          <h2>📌 المهام النشطة</h2>
           <span class="watch-panel-count" id="watchActiveCount">0</span>
         </div>
         <div class="watch-panel-body" id="watchActiveList"><div class="watch-empty">لا توجد مهام نشطة</div></div>
@@ -922,7 +922,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v7.4 — إصلاح التعليقات + توحيد أسماء المستخدمين
+   EMAK Hub v7.5 — فصل المهام لمنع التكرار + إصلاحات شاملة
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1230,31 +1230,18 @@ function setupAuthListener() {
   });
 }
 
-/* ✅ دالة موحّدة للحصول على اسم العرض الرسمي من users/{uid} */
-async function resolveDisplayName(uid, fallbackName = "مستخدم") {
-  try {
-    const snap = await get(ref(db, "users/" + uid));
-    if (snap.exists()) {
-      const u = snap.val();
-      return u.displayName || u.name || u.username || fallbackName;
-    }
-  } catch(e) {}
-  return fallbackName;
-}
-
 /* ✅ تنظيف سجلات الفريق المكررة لنفس uid */
 async function cleanupTeamDuplicates() {
   try {
     const snap = await get(ref(db, "team"));
     if (!snap.exists()) return;
     const team = snap.val();
-    const seen = new Map(); // uid → {id, name}
+    const seen = new Map();
     const toDelete = [];
     for (const [id, m] of Object.entries(team)) {
       if (!m || !m.uid) { toDelete.push(id); continue; }
       const existing = seen.get(m.uid);
       if (existing) {
-        // احتفظ بالأقدم (createdAt أصغر) — احذف الأحدث
         const existingAt = existing.createdAt || 0;
         const currentAt = m.createdAt || 0;
         if (currentAt < existingAt) {
@@ -1291,15 +1278,12 @@ async function ensureUserProfile(user) {
     const data = snap.val();
     if (data.active === false) return data;
     try { await update(uref, { lastLogin: Date.now() }); } catch(e) {}
-    // ✅ تأكد أن الاسم في users هو المرجع الرسمي
     const officialName = data.displayName || data.name || data.username || "مستخدم";
-    // ✅ تأكد من وجود سجل واحد فقط في team بنفس الاسم الرسمي
     try {
       const ts = await get(ref(db, "team"));
       const team = ts.val() || {};
       const myTeamEntries = Object.entries(team).filter(([id, m]) => m && m.uid === user.uid);
       if (myTeamEntries.length === 0) {
-        // أضف سجل جديد إن لم يوجد
         await push(ref(db, "team"), {
           uid: user.uid,
           username: data.username || (user.email || "").split("@")[0],
@@ -1307,7 +1291,6 @@ async function ensureUserProfile(user) {
           createdAt: Date.now()
         });
       } else {
-        // تأكد أن الاسم في كل السجلات = الاسم الرسمي، واحذف المكرر
         for (let i = 0; i < myTeamEntries.length; i++) {
           const [id, m] = myTeamEntries[i];
           if (m.name !== officialName) {
@@ -1315,7 +1298,6 @@ async function ensureUserProfile(user) {
           }
         }
         if (myTeamEntries.length > 1) {
-          // احتفظ بالأقدم واحذف الباقي
           myTeamEntries.sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
           for (let i = 1; i < myTeamEntries.length; i++) {
             try { await remove(ref(db, "team/" + myTeamEntries[i][0])); } catch(e){}
@@ -1380,7 +1362,6 @@ function startRealtimeListeners() {
     if (document.getElementById("watchView").classList.contains("active")) renderWatch();
   }, (err) => {});
   
-  // ✅ تنظيف المكرر بعد بدء الاستماع
   setTimeout(cleanupTeamDuplicates, 2000);
 }
 
@@ -1389,7 +1370,6 @@ function populateAssigneeSelect() {
   if (!sel) return;
   const current = sel.value;
   const options = ['<option value="">-- المسؤول --</option>'];
-  // ✅ إزالة المكرر حسب uid
   const seenUids = new Set();
   Object.entries(state.allTeam)
     .filter(([id, m]) => {
@@ -1537,7 +1517,6 @@ window.quickReassign = async function(taskId, event) {
   const t = state.allTasks[taskId]; if (!t) return;
   const currentAssigneeId = t.assigneeId;
 
-  // ✅ إزالة المكرر حسب uid
   const seenUids = new Set();
   const teamOptions = Object.entries(state.allTeam)
     .filter(([id, m]) => {
@@ -1641,7 +1620,7 @@ window.quickToggleStatus = async function(taskId, event) {
   await changeStatus(taskId, nextStatus);
 };
 
-/* ✅ addComment - مُصدَّرة على window لتعمل من onclick */
+/* ✅ addComment - مُصدَّرة على window */
 async function addComment(taskId, fromModal = false) {
   if (!state.currentUserProfile) return swalError("سجّل الدخول أولاً");
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
@@ -1705,7 +1684,6 @@ async function editTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح — فقط المدير يمكنه التعديل");
   const t = state.allTasks[taskId]; if (!t) return;
   
-  // ✅ إزالة المكرر حسب uid
   const seenUids = new Set();
   const teamOptions = Object.entries(state.allTeam)
     .filter(([id, m]) => {
@@ -1935,19 +1913,17 @@ function renderStats() {
   document.getElementById("statOverdue").textContent = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
 }
 
-/* ✅ عرض أداء الفريق مع إزالة التكرار حسب uid */
+/* ✅ عرض أداء الفريق مع إزالة التكرار */
 function renderTeamProgress() {
-  const teamMap = {}; // uid → {name, total, done}
+  const teamMap = {};
   const seenNames = new Set();
   
   Object.values(state.allTasks).forEach(t => {
     const key = t.assigneeId || t.assignee || "غير محدد";
     const name = t.assignee || "غير محدد";
     if (!teamMap[key]) {
-      // ✅ تحقق من عدم التكرار بالاسم أيضاً (لو نفس الشخص بأسماء مختلفة)
       const normalizedName = String(name).trim().toLowerCase();
       if (seenNames.has(normalizedName)) {
-        // ابحث عن uid موجود بنفس الاسم
         const existingKey = Object.keys(teamMap).find(k => 
           String(teamMap[k].name).trim().toLowerCase() === normalizedName
         );
@@ -2428,7 +2404,6 @@ window.openTeamModal = async () => {
   if (!state.isAdmin) return;
   const teamSnap = await get(ref(db, "team"));
   const team = teamSnap.val() || {};
-  // ✅ إزالة المكرر حسب uid
   const seenUids = new Set();
   const uniqueTeam = Object.entries(team).filter(([id, m]) => {
     if (!m || !m.uid) return false;
@@ -2906,7 +2881,6 @@ function watchUpdateConnection() {
   s.classList.toggle("offline", !online);
   s.querySelector("span:last-child").textContent = online ? "متصل" : "غير متصل";
 }
-/* ✅ إزالة تكرار أعضاء الفريق في الإحصائية */
 function watchRenderStats() {
   const tasks = Object.values(state.allTasks);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -2915,7 +2889,6 @@ function watchRenderStats() {
   set("wProgress", tasks.filter(t => t.status === "جاري التنفيذ").length);
   set("wOverdue", tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length);
   set("wToday", tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== "مكتملة"; }).length);
-  // ✅ عدد فريد لأعضاء الفريق حسب uid
   const seenUids = new Set();
   Object.values(state.allTeam).forEach(m => {
     if (m && m.uid) seenUids.add(m.uid);
@@ -2941,33 +2914,41 @@ function watchTaskHtml(t) {
   </div>`;
 }
 
+/* ✅ المهام النشطة = مهام جديدة عادية فقط (غير عاجلة وغير مهمة) - لتفادي التكرار */
 function watchRenderActive() {
   const list = document.getElementById("watchActiveList");
   if (!list) return;
   const active = Object.entries(state.allTasks)
-    .filter(([_, t]) => t.status === "جديدة")
+    .filter(([_, t]) => {
+      if (t.status !== "جديدة") return false;
+      if (t.priority === "عاجل" || t.priority === "مهم") return false;
+      return true;
+    })
     .sort((a, b) => {
-      const pri = { "عاجل": 0, "مهم": 1, "عادي": 2 };
-      const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
-      if (pa !== pb) return pa - pb;
       const da = daysRemaining(a[1].dueDate) ?? 999;
       const dbb = daysRemaining(b[1].dueDate) ?? 999;
       return da - dbb;
     })
     .slice(0, 25);
   document.getElementById("watchActiveCount").textContent = active.length;
-  if (active.length === 0) { list.innerHTML = '<div class="watch-empty">لا توجد مهام جديدة</div>'; return; }
+  if (active.length === 0) { 
+    list.innerHTML = '<div class="watch-empty">لا توجد مهام عادية نشطة</div>'; 
+    return; 
+  }
   list.innerHTML = active.map(([_, t]) => watchTaskHtml(t)).join("");
 }
 
+/* ✅ تحتاج انتباه = المهام العاجلة + المهمة + المتأخرة + الجارية */
 function watchRenderUrgent() {
   const list = document.getElementById("watchUrgentList");
   if (!list) return;
   const urgent = Object.entries(state.allTasks)
     .filter(([_, t]) => {
       if (t.status === "مكتملة") return false;
-      const d = daysRemaining(t.dueDate);
+      if (t.priority === "عاجل") return true;
+      if (t.priority === "مهم") return true;
       if (t.status === "جاري التنفيذ") return true;
+      const d = daysRemaining(t.dueDate);
       if (d !== null && d <= 0) return true;
       return false;
     })
@@ -2979,7 +2960,10 @@ function watchRenderUrgent() {
     })
     .slice(0, 25);
   document.getElementById("watchUrgentCount").textContent = urgent.length;
-  if (urgent.length === 0) { list.innerHTML = '<div class="watch-empty">لا توجد مهام متأخرة 🎉</div>'; return; }
+  if (urgent.length === 0) { 
+    list.innerHTML = '<div class="watch-empty">لا توجد مهام متأخرة 🎉</div>'; 
+    return; 
+  }
   list.innerHTML = urgent.map(([_, t]) => watchTaskHtml(t)).join("");
 }
 
