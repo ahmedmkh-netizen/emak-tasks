@@ -148,9 +148,6 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 #loginBtn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,255,255,.25);}
 #loginBtn img{width:20px;}
 .help-text{color:#5b6580;font-size:11px;margin-top:16px;font-weight:500;}
-  /* ============================================================
-   زر شاشة العرض في شاشة الدخول
-   ============================================================ */
 .login-watch-section{
   margin-top:24px;
   padding-top:20px;
@@ -263,7 +260,6 @@ header{
 #logoutBtn{background:rgba(240,75,92,.1);color:var(--urgent);border:1px solid rgba(240,75,92,.3);padding:9px 16px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s;}
 #logoutBtn:hover{background:var(--urgent);color:#fff;}
 
-/* زر شاشة العرض في الهيدر */
 .btn-watch-screen{
   background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);
   color:#fff;border:none;padding:10px 18px;border-radius:12px;
@@ -285,7 +281,6 @@ header{
 .nav-btn:hover{background:var(--bg-3);color:var(--text);}
 .nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 6px 20px var(--primary-glow);}
 
-/* زر شاشة العرض في القائمة */
 .nav-btn.watch-highlight{
   background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);
   color:#fff !important;border:1px solid rgba(168,85,247,.6) !important;
@@ -381,12 +376,33 @@ header{
 .pin-badge{position:absolute;top:12px;left:12px;font-size:18px;z-index:2;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
 
+/* ✅ أزرار الإجراءات السريعة على البطاقة (للمدير) */
+.card-quick-actions{
+  position:absolute;top:10px;left:10px;display:flex;gap:4px;z-index:5;
+  opacity:0;transform:translateY(-6px);transition:all .25s;
+}
+.task-card:hover .card-quick-actions{opacity:1;transform:translateY(0);}
+.task-card.pinned .card-quick-actions{left:38px;}
+.quick-action-btn{
+  width:30px;height:30px;border-radius:9px;border:1.5px solid var(--border-strong);
+  background:var(--bg-glass);backdrop-filter:blur(10px);
+  cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;color:var(--text);padding:0;
+}
+.quick-action-btn:hover{transform:scale(1.12);}
+.quick-action-btn.edit:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
+.quick-action-btn.reassign:hover{background:var(--warning);color:#fff;border-color:var(--warning);}
+.quick-action-btn.delete:hover{background:var(--urgent);color:#fff;border-color:var(--urgent);}
+.quick-action-btn.status-toggle:hover{background:var(--success);color:#fff;border-color:var(--success);}
+
 .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
 .priority-dot{width:11px;height:11px;border-radius:50%;}
 .priority-dot.urgent{background:var(--urgent);box-shadow:0 0 12px var(--urgent);}
 .priority-dot.important{background:var(--warning);box-shadow:0 0 10px var(--warning);}
 .priority-dot.normal{background:var(--success);box-shadow:0 0 10px var(--success);}
-.assignee-chip{font-size:11px;padding:5px 12px;background:var(--bg-3);border-radius:14px;color:var(--text-2);font-weight:700;display:inline-flex;align-items:center;gap:4px;}
+.assignee-chip{font-size:11px;padding:5px 12px;background:var(--bg-3);border-radius:14px;color:var(--text-2);font-weight:700;display:inline-flex;align-items:center;gap:4px;transition:all .2s;}
+.assignee-chip.clickable{cursor:pointer;}
+.assignee-chip.clickable:hover{background:var(--warning);color:#fff;}
 .card-title{font-size:16px;font-weight:800;line-height:1.4;color:var(--text);margin-bottom:10px;min-height:45px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .card-notes{font-size:12.5px;color:var(--text-2);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .card-tags{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
@@ -396,10 +412,11 @@ header{
 .card-due.overdue{background:rgba(240,75,92,.15);color:var(--urgent);border:1px solid rgba(240,75,92,.3);}
 .card-icons{display:flex;gap:8px;align-items:center;}
 .card-icon{font-size:11px;color:var(--text-2);font-weight:700;}
-.status-pill{font-size:10px;font-weight:800;padding:5px 12px;border-radius:14px;}
+.status-pill{font-size:10px;font-weight:800;padding:5px 12px;border-radius:14px;cursor:pointer;transition:all .2s;}
 .status-pill.new{background:rgba(91,141,239,.2);color:var(--primary);}
 .status-pill.progress{background:rgba(245,165,36,.2);color:var(--warning);}
 .status-pill.done{background:rgba(45,212,163,.2);color:var(--success);}
+.status-pill:hover{transform:scale(1.08);}
 
 /* Kanban */
 .kanban-col{background:var(--bg-3);border:1.5px solid var(--border);border-radius:18px;padding:16px;min-height:450px;display:flex;flex-direction:column;gap:12px;}
@@ -407,10 +424,15 @@ header{
 .kanban-col-header{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
 .kanban-count{background:var(--bg-4);padding:3px 12px;border-radius:10px;font-size:12px;color:var(--text-2);font-weight:800;}
 .kanban-col-body{display:flex;flex-direction:column;gap:10px;flex:1;}
-.kanban-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:12px;padding:14px;cursor:grab;border-right:4px solid var(--primary);}
+.kanban-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:12px;padding:14px;cursor:grab;border-right:4px solid var(--primary);position:relative;transition:all .2s;}
 .kanban-card:hover{border-color:var(--primary);transform:translateX(-4px);}
-.kanban-card-title{font-size:13.5px;font-weight:800;margin-bottom:10px;}
+.kanban-card-title{font-size:13.5px;font-weight:800;margin-bottom:10px;padding-left:60px;}
 .kanban-card-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11px;}
+.kanban-quick-actions{
+  position:absolute;top:8px;left:8px;display:flex;gap:4px;opacity:0;transition:all .2s;
+}
+.kanban-card:hover .kanban-quick-actions{opacity:1;}
+.kanban-quick-actions .quick-action-btn{width:26px;height:26px;font-size:11px;border-radius:7px;}
 
 /* Watch */
 .watch-subtitle{font-size:13px;color:var(--text-2);margin-bottom:18px;}
@@ -626,7 +648,7 @@ header{
 #watchPinError{color:#f04b5c;font-size:13px;min-height:20px;font-weight:700;}
 .watch-pin-hint{color:#5b6580;font-size:12px;margin-top:18px;font-weight:600;}
 
-#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto;gap:16px;padding:16px;}
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto auto;gap:14px;padding:14px;}
 #watchMainContent.active{display:grid;}
 
 .watch-header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding:16px 28px;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 4px 40px rgba(0,0,0,.5);}
@@ -693,6 +715,164 @@ header{
 
 .watch-empty{text-align:center;padding:50px 20px;color:#5b6580;font-size:14px;font-weight:700;}
 
+/* ============ شريط المهام العادية المتتابع ============ */
+.watch-tasks-ticker-section {
+  background: rgba(15, 20, 32, .75);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 16px;
+  padding: 12px 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  min-height: 80px;
+}
+
+.watch-tasks-ticker-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #2dd4a3, #22b388);
+  color: #fff;
+  font-weight: 900;
+  font-size: 13px;
+  flex-shrink: 0;
+  border-radius: 0 12px 12px 0;
+  margin-right: 0;
+  height: 100%;
+  white-space: nowrap;
+  align-self: stretch;
+}
+
+.watch-tasks-ticker-label .ticker-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: livePulse 1.5s ease-in-out infinite;
+}
+
+.watch-tasks-ticker-viewport {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  height: 56px;
+  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+.watch-tasks-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  width: max-content;
+  animation: tasksTickerScroll 60s linear infinite;
+  padding: 0 12px;
+}
+
+.watch-tasks-ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes tasksTickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(50%); }
+}
+
+.watch-ticker-task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: rgba(23, 29, 46, .95);
+  border: 1.5px solid rgba(255, 255, 255, .08);
+  border-radius: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all .25s;
+  border-right: 3px solid #2dd4a3;
+  min-width: 260px;
+}
+
+.watch-ticker-task:hover {
+  background: rgba(35, 43, 66, .95);
+  transform: scale(1.03);
+  border-color: rgba(45, 212, 163, .4);
+}
+
+.watch-ticker-task .task-priority-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.watch-ticker-task .task-priority-dot.normal { background: #2dd4a3; color: #2dd4a3; }
+.watch-ticker-task .task-priority-dot.important { background: #f5a524; color: #f5a524; }
+
+.watch-ticker-task .task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.watch-ticker-task .task-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #eef2f9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+  white-space: nowrap;
+}
+
+.watch-ticker-task .task-meta {
+  font-size: 11px;
+  color: #8892ab;
+  display: flex;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.watch-ticker-task .task-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.watch-ticker-task .task-status-badge {
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: 800;
+  background: rgba(91, 141, 239, .15);
+  color: #5b8def;
+  flex-shrink: 0;
+}
+
+.watch-ticker-task .task-status-badge.progress {
+  background: rgba(245, 165, 36, .15);
+  color: #f5a524;
+}
+
+.watch-tasks-ticker-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #5b6580;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .watch-footer{display:flex;align-items:center;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;height:48px;}
 .watch-ticker-label{padding:0 24px;height:100%;display:flex;align-items:center;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;font-weight:900;font-size:13px;flex-shrink:0;}
 .watch-ticker-wrap{flex:1;overflow:hidden;}
@@ -724,12 +904,15 @@ header{
   .watch-header-center{order:-1;}
   .watch-clock{font-size:24px;}
   .watch-header-title h1{font-size:22px;}
+  .card-quick-actions{opacity:1;transform:translateY(0);}
+  .watch-ticker-task { min-width: 220px; }
+  .watch-ticker-task .task-title { max-width: 180px; font-size: 12px; }
+  .watch-tasks-ticker-label { padding: 8px 12px; font-size: 11px; }
 }
 </style>
 </head>
 <body>
 
-<!-- ============ التطبيق الرئيسي ============ -->
 <div id="appContainer">
 
 <div id="loginScreen">
@@ -961,9 +1144,8 @@ header{
   </div>
 </div>
 
-</div><!-- /appContainer -->
+</div>
 
-<!-- ============ شاشة العرض ============ -->
 <div id="watchScreen">
   <div class="watch-bg">
     <div class="watch-orb o1"></div>
@@ -1039,6 +1221,19 @@ header{
       </section>
     </div>
 
+    <!-- ✅ شريط المهام العادية المتتابع -->
+    <div class="watch-tasks-ticker-section">
+      <div class="watch-tasks-ticker-label">
+        <span class="ticker-dot"></span>
+        <span>📋 المهام العادية (<span id="watchNormalCount">0</span>)</span>
+      </div>
+      <div class="watch-tasks-ticker-viewport">
+        <div class="watch-tasks-ticker-track" id="watchNormalTicker">
+          <div class="watch-tasks-ticker-empty">لا توجد مهام عادية حالياً</div>
+        </div>
+      </div>
+    </div>
+
     <footer class="watch-footer">
       <div class="watch-ticker-label">📢 إعلانات</div>
       <div class="watch-ticker-wrap">
@@ -1056,8 +1251,7 @@ header{
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v7.1 — ملف موحّد + شاشة عرض + Flasher للمهام العاجلة
-   إصلاح: إزالة تكرار المستخدمين + تحسينات الأداء
+   EMAK Hub v7.3 — مع شريط المهام العادية المتتابع في شاشة العرض
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1584,6 +1778,110 @@ async function changeStatus(taskId, newStatus) {
     showToast(`🔄 الحالة: ${newStatus}`, "info");
   } catch (err) { showToast("⚠️ سيُعاد الحفظ", "warn"); }
 }
+
+window.quickReassign = async function(taskId, event) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  if (!state.isAdmin) return swalError("غير مصرح");
+  const t = state.allTasks[taskId]; if (!t) return;
+  const currentAssigneeId = t.assigneeId;
+
+  const teamOptions = Object.entries(state.allTeam)
+    .filter(([id, m]) => m && m.name)
+    .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
+    .map(([id, m]) => `<option value="${escapeHtml(id)}" ${currentAssigneeId === id ? "selected" : ""}>${escapeHtml(m.name)}</option>`)
+    .join("");
+
+  const { value: formValues } = await Swal.fire({
+    title: "👤 تغيير المسؤول",
+    html: `
+      <div style="display:flex;flex-direction:column;gap:12px;text-align:right;direction:rtl;">
+        <p style="color:var(--text-2);font-size:13px;font-weight:600;margin:0 0 8px;">
+          المهمة: <b style="color:var(--text);">${escapeHtml(t.title)}</b>
+        </p>
+        <label class="swal-label">المسؤول الحالي</label>
+        <input class="swal2-input" value="${escapeHtml(t.assignee || "—")}" disabled style="margin:0;width:100%;opacity:.7;">
+        <label class="swal-label">المسؤول الجديد</label>
+        <select id="swal-new-assignee" class="swal2-select" style="margin:0;width:100%;">
+          <option value="">-- اختر المسؤول --</option>
+          ${teamOptions}
+        </select>
+      </div>`,
+    showCancelButton:true, confirmButtonText:"تغيير المسؤول", cancelButtonText:"إلغاء",
+    confirmButtonColor:"#f5a524", focusConfirm:false,
+    background: themeBg(), color: themeFg(),
+    preConfirm: () => {
+      const newId = document.getElementById("swal-new-assignee").value;
+      if (!newId) { Swal.showValidationMessage("اختر المسؤول الجديد"); return false; }
+      if (newId === currentAssigneeId) { Swal.showValidationMessage("اختر مسؤولاً مختلفاً"); return false; }
+      return newId;
+    }
+  });
+
+  if (!formValues) return;
+  const newMember = state.allTeam[formValues];
+  if (!newMember) return swalError("عضو الفريق غير موجود");
+
+  try {
+    await safeWrite(() => update(ref(db, "tasks/" + taskId), {
+      assigneeId: formValues,
+      assignee: newMember.name,
+      updatedAt: Date.now(),
+      updatedBy: state.currentUser.uid,
+      updatedByName: state.currentUserProfile.displayName
+    }));
+    await logActivity("task_reassigned",
+      `أعاد إسناد "${t.title}" من ${t.assignee} إلى ${newMember.name}`,
+      taskId, t.title);
+    showToast(`✅ تم إسناد المهمة إلى ${newMember.name}`, "success");
+    renderTasks();
+    if (state.openTaskId === taskId) renderModal(taskId);
+  } catch (err) {
+    swalError("فشل التغيير", err.message);
+  }
+};
+
+window.quickStatusChange = async function(taskId, event) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  const t = state.allTasks[taskId]; if (!t) return;
+  const isOwner = state.currentUser && t.assigneeId === state.currentUser.uid;
+  if (!state.isAdmin && !isOwner) return swalError("غير مصرح");
+
+  const { value: newStatus } = await Swal.fire({
+    title: "🔄 تغيير حالة المهمة",
+    html: `
+      <div style="text-align:right;direction:rtl;">
+        <p style="color:var(--text-2);font-size:13px;font-weight:600;margin-bottom:14px;">
+          المهمة: <b style="color:var(--text);">${escapeHtml(t.title)}</b>
+        </p>
+        <label class="swal-label">الحالة الجديدة</label>
+        <select id="swal-new-status" class="swal2-select" style="margin:0;width:100%;">
+          <option value="جديدة" ${t.status === "جديدة" ? "selected" : ""}>🆕 جديدة</option>
+          <option value="جاري التنفيذ" ${t.status === "جاري التنفيذ" ? "selected" : ""}>⏳ جاري التنفيذ</option>
+          <option value="مكتملة" ${t.status === "مكتملة" ? "selected" : ""}>✅ مكتملة</option>
+        </select>
+      </div>`,
+    showCancelButton:true, confirmButtonText:"تغيير", cancelButtonText:"إلغاء",
+    confirmButtonColor:"#5b8def", focusConfirm:false,
+    background: themeBg(), color: themeFg(),
+    preConfirm: () => {
+      const s = document.getElementById("swal-new-status").value;
+      if (s === t.status) { Swal.showValidationMessage("اختر حالة مختلفة"); return false; }
+      return s;
+    }
+  });
+  if (newStatus) await changeStatus(taskId, newStatus);
+};
+
+window.quickToggleStatus = async function(taskId, event) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  const t = state.allTasks[taskId]; if (!t) return;
+  const isOwner = state.currentUser && t.assigneeId === state.currentUser.uid;
+  if (!state.isAdmin && !isOwner) return;
+  const nextStatus = t.status === "جديدة" ? "جاري التنفيذ" :
+                     t.status === "جاري التنفيذ" ? "مكتملة" : "جديدة";
+  await changeStatus(taskId, nextStatus);
+};
+
 async function addComment(taskId, fromModal = false) {
   if (!state.currentUserProfile) return;
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
@@ -1628,43 +1926,66 @@ async function deleteTask(taskId) {
     });
   } catch (err) { swalError("فشل الحذف", err.message); }
 }
+window.deleteTask = deleteTask;
+
 async function editTask(taskId) {
-  if (!state.isAdmin) return swalError("غير مصرح");
+  if (!state.isAdmin) return swalError("غير مصرح — فقط المدير يمكنه التعديل");
   const t = state.allTasks[taskId]; if (!t) return;
   const teamOptions = Object.entries(state.allTeam).filter(([id, m]) => m && m.name)
+    .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .map(([id, m]) => `<option value="${escapeHtml(id)}" ${t.assigneeId===id?"selected":""}>${escapeHtml(m.name)}</option>`).join("");
 
   const { value: formValues } = await Swal.fire({
     title: "✏️ تعديل المهمة",
+    width: 640,
     html: `
       <div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-        <label class="swal-label">العنوان</label>
+        <label class="swal-label">عنوان المهمة *</label>
         <input id="swal-title" class="swal2-input" value="${escapeHtml(t.title)}" style="margin:0;width:100%;">
-        <label class="swal-label">المسؤول</label>
-        <select id="swal-assignee" class="swal2-select" style="margin:0;width:100%;">${teamOptions}</select>
-        <label class="swal-label">الأولوية</label>
-        <select id="swal-priority" class="swal2-select" style="margin:0;width:100%;">
-          <option value="عادي" ${t.priority==="عادي"?"selected":""}>🟢 عادي</option>
-          <option value="مهم" ${t.priority==="مهم"?"selected":""}>🟡 مهم</option>
-          <option value="عاجل" ${t.priority==="عاجل"?"selected":""}>🔴 عاجل</option>
-        </select>
-        <label class="swal-label">تاريخ التسليم</label>
-        <input id="swal-due" type="date" class="swal2-input" value="${t.dueDate||""}" style="margin:0;width:100%;">
-        <label class="swal-label">الوسوم</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label class="swal-label">المسؤول *</label>
+            <select id="swal-assignee" class="swal2-select" style="margin:0;width:100%;">${teamOptions}</select>
+          </div>
+          <div>
+            <label class="swal-label">الأولوية</label>
+            <select id="swal-priority" class="swal2-select" style="margin:0;width:100%;">
+              <option value="عادي" ${t.priority==="عادي"?"selected":""}>🟢 عادي</option>
+              <option value="مهم" ${t.priority==="مهم"?"selected":""}>🟡 مهم</option>
+              <option value="عاجل" ${t.priority==="عاجل"?"selected":""}>🔴 عاجل</option>
+            </select>
+          </div>
+          <div>
+            <label class="swal-label">الحالة</label>
+            <select id="swal-status" class="swal2-select" style="margin:0;width:100%;">
+              <option value="جديدة" ${t.status==="جديدة"?"selected":""}>🆕 جديدة</option>
+              <option value="جاري التنفيذ" ${t.status==="جاري التنفيذ"?"selected":""}>⏳ جاري التنفيذ</option>
+              <option value="مكتملة" ${t.status==="مكتملة"?"selected":""}>✅ مكتملة</option>
+            </select>
+          </div>
+          <div>
+            <label class="swal-label">تاريخ التسليم</label>
+            <input id="swal-due" type="date" class="swal2-input" value="${t.dueDate||""}" style="margin:0;width:100%;">
+          </div>
+        </div>
+        <label class="swal-label">الوسوم (فاصلة)</label>
         <input id="swal-tags" class="swal2-input" value="${escapeHtml(t.tags||"")}" style="margin:0;width:100%;">
         <label class="swal-label">ملاحظات</label>
-        <textarea id="swal-notes" class="swal2-textarea" style="margin:0;width:100%;">${escapeHtml(t.notes||"")}</textarea>
+        <textarea id="swal-notes" class="swal2-textarea" style="margin:0;width:100%;min-height:80px;">${escapeHtml(t.notes||"")}</textarea>
       </div>`,
-    showCancelButton:true, confirmButtonText:"حفظ", cancelButtonText:"إلغاء",
+    showCancelButton:true, confirmButtonText:"💾 حفظ التعديلات", cancelButtonText:"إلغاء",
     confirmButtonColor:"#5b8def", focusConfirm:false,
     background: themeBg(), color: themeFg(),
     preConfirm: () => {
       const title = document.getElementById("swal-title").value.trim();
       if (!title) { Swal.showValidationMessage("العنوان مطلوب"); return false; }
+      const assigneeId = document.getElementById("swal-assignee").value;
+      if (!assigneeId) { Swal.showValidationMessage("اختر المسؤول"); return false; }
       return {
         title,
-        assigneeId: document.getElementById("swal-assignee").value,
+        assigneeId,
         priority: document.getElementById("swal-priority").value,
+        status: document.getElementById("swal-status").value,
         dueDate: document.getElementById("swal-due").value,
         tags: document.getElementById("swal-tags").value.trim(),
         notes: document.getElementById("swal-notes").value.trim()
@@ -1673,19 +1994,42 @@ async function editTask(taskId) {
   });
   if (!formValues) return;
   const member = state.allTeam[formValues.assigneeId];
-  if (!member) return swalError("بيانات ناقصة");
+  if (!member) return swalError("بيانات ناقصة — العضو غير موجود");
+
+  const changes = [];
+  if (t.title !== formValues.title) changes.push("العنوان");
+  if (t.assigneeId !== formValues.assigneeId) changes.push(`المسؤول: ${t.assignee} → ${member.name}`);
+  if (t.priority !== formValues.priority) changes.push(`الأولوية: ${t.priority} → ${formValues.priority}`);
+  if (t.status !== formValues.status) changes.push(`الحالة: ${t.status} → ${formValues.status}`);
+  if ((t.dueDate||"") !== (formValues.dueDate||"")) changes.push("تاريخ التسليم");
+
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), {
-      title: formValues.title, assigneeId: formValues.assigneeId,
-      assignee: member.name, priority: formValues.priority,
-      dueDate: formValues.dueDate, tags: formValues.tags, notes: formValues.notes,
-      updatedAt: Date.now(), updatedBy: state.currentUser.uid,
+      title: formValues.title,
+      assigneeId: formValues.assigneeId,
+      assignee: member.name,
+      priority: formValues.priority,
+      status: formValues.status,
+      dueDate: formValues.dueDate,
+      tags: formValues.tags,
+      notes: formValues.notes,
+      updatedAt: Date.now(),
+      updatedBy: state.currentUser.uid,
       updatedByName: state.currentUserProfile.displayName
     }));
-    await logActivity("task_edited", `عدّل مهمة: ${formValues.title}`, taskId, formValues.title);
-    showToast("✏️ تم التعديل", "success");
-  } catch (err) { showToast("⚠️ سيُحفظ", "warn"); }
+    await logActivity("task_edited",
+      `عدّل "${formValues.title}"${changes.length ? " — " + changes.join(" ، ") : ""}`,
+      taskId, formValues.title);
+    showToast("✏️ تم حفظ التعديلات", "success");
+    renderTasks();
+    if (state.openTaskId === taskId) renderModal(taskId);
+  } catch (err) {
+    showToast("⚠️ فشل الحفظ", "warn");
+    swalError("فشل التعديل", err.message);
+  }
 }
+window.editTask = editTask;
+
 function togglePin(taskId) {
   if (state.pinnedTaskId === taskId) {
     state.pinnedTaskId = null;
@@ -1699,6 +2043,8 @@ function togglePin(taskId) {
   renderTasks();
   if (state.openTaskId === taskId) renderModal(taskId);
 }
+window.togglePin = togglePin;
+
 async function logActivity(type, text, taskId=null, taskTitle="") {
   if (!state.currentUser) return;
   try {
@@ -1723,6 +2069,9 @@ function closeModal() {
   document.getElementById("modalOverlay").classList.remove("active");
   document.body.style.overflow = "";
 }
+window.openModal = openModal;
+window.closeModal = closeModal;
+
 function renderModal(taskId) {
   const t = state.allTasks[taskId]; if (!t) return closeModal();
   const statusClass = t.status === "مكتملة" ? "done" : t.status === "جاري التنفيذ" ? "progress" : "new";
@@ -1773,7 +2122,9 @@ function renderModal(taskId) {
         <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
         <option ${t.status === "مكتملة" ? "selected" : ""}>مكتملة</option>
       </select>
-      ${state.isAdmin ? `<button class="btn-edit" onclick="editTask('${taskId}')">✏️ تعديل</button>
+      ${state.isAdmin ? `
+        <button class="btn-edit" onclick="editTask('${taskId}')">✏️ تعديل</button>
+        <button class="btn-edit" onclick="quickReassign('${taskId}', event)" style="background:var(--warning);color:#fff;border-color:var(--warning);">👤 تغيير المسؤول</button>
         <button class="btn-del" onclick="deleteTask('${taskId}')">🗑️ حذف</button>` : ""}
     </div>`;
   document.getElementById("modalBox").className = "modal-box" + (isUrgent ? " urgent-glow" : "");
@@ -1901,6 +2252,7 @@ function renderTasks() {
     list.innerHTML = filtered.map(([id, t]) => taskCardHtml(id, t)).join("");
   }
 }
+
 function taskCardHtml(id, t) {
   const statusClass = t.status === "مكتملة" ? "done" : t.status === "جاري التنفيذ" ? "progress" : "new";
   const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
@@ -1910,11 +2262,24 @@ function taskCardHtml(id, t) {
   const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
   const isPinned = state.pinnedTaskId === id;
   const tagsHtml = t.tags ? t.tags.split(",").map(x=>x.trim()).filter(Boolean).slice(0,2).map(x=>`<span class="card-tag">${escapeHtml(x)}</span>`).join("") : "";
+
+  const quickActions = state.isAdmin ? `
+    <div class="card-quick-actions">
+      <button class="quick-action-btn edit" onclick="editTask('${id}');event.stopPropagation();" title="تعديل سريع">✏️</button>
+      <button class="quick-action-btn reassign" onclick="quickReassign('${id}', event);" title="تغيير المسؤول">👤</button>
+      <button class="quick-action-btn status-toggle" onclick="quickToggleStatus('${id}', event);" title="تبديل الحالة">🔄</button>
+      <button class="quick-action-btn delete" onclick="deleteTask('${id}');event.stopPropagation();" title="حذف">🗑️</button>
+    </div>` : "";
+
   return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgent ? "urgent-glow" : ""} ${isPinned ? "pinned" : ""}" onclick="openModal('${id}')">
     ${isPinned ? '<div class="pin-badge">⭐</div>' : ""}
+    ${quickActions}
     <div class="card-top">
       <span class="priority-dot ${priorityClass}"></span>
-      <span class="assignee-chip">👤 ${escapeHtml(t.assignee || "—")}</span>
+      <span class="assignee-chip ${state.isAdmin ? 'clickable' : ''}"
+            ${state.isAdmin ? `onclick="quickReassign('${id}', event)" title="انقر لتغيير المسؤول"` : ""}>
+        👤 ${escapeHtml(t.assignee || "—")}
+      </span>
     </div>
     <h3 class="card-title">${highlight(t.title, state.currentSearch)}</h3>
     ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
@@ -1923,17 +2288,21 @@ function taskCardHtml(id, t) {
       ${t.dueDate ? `<span class="card-due ${isOverdue?'overdue':''}">${escapeHtml(dueLabel(t.dueDate))}</span>` : "<span></span>"}
       <div class="card-icons">
         ${commentsCount > 0 ? `<span class="card-icon">💬 ${commentsCount}</span>` : ""}
-        <span class="status-pill ${statusClass}">${escapeHtml(t.status)}</span>
+        <span class="status-pill ${statusClass}"
+              ${(state.isAdmin || (state.currentUser && t.assigneeId === state.currentUser.uid)) ? `onclick="quickToggleStatus('${id}', event)" title="انقر لتبديل الحالة"` : ""}>
+          ${escapeHtml(t.status)}
+        </span>
       </div>
     </div>
   </div>`;
 }
+
 function renderKanban(list, filtered) {
   list.className = "kanban-board";
   const cols = { "جديدة": [], "جاري التنفيذ": [], "مكتملة": [] };
   filtered.forEach(([id, t]) => {
-    const key = cols[t.status] !== undefined ? t.status : "جديدة";
-    cols[key].push([id, t]);
+    const key = cols[t.status] !== undefined ? t.status : "جيدة";
+    if (cols[key]) cols[key].push([id, t]);
   });
   list.innerHTML = Object.entries(cols).map(([status, items]) => `
     <div class="kanban-col" data-status="${escapeHtml(status)}"
@@ -1945,15 +2314,26 @@ function renderKanban(list, filtered) {
         <span class="kanban-count">${items.length}</span>
       </div>
       <div class="kanban-col-body">
-        ${items.map(([id, t]) => `
+        ${items.map(([id, t]) => {
+          const quickActionsKanban = state.isAdmin ? `
+            <div class="kanban-quick-actions">
+              <button class="quick-action-btn edit" onclick="editTask('${id}');event.stopPropagation();" title="تعديل">✏️</button>
+              <button class="quick-action-btn reassign" onclick="quickReassign('${id}', event);" title="تغيير المسؤول">👤</button>
+              <button class="quick-action-btn delete" onclick="deleteTask('${id}');event.stopPropagation();" title="حذف">🗑️</button>
+            </div>` : "";
+          return `
           <div class="kanban-card" draggable="true" ondragstart="kanbanDrag(event, '${id}')" onclick="openModal('${id}')">
+            ${quickActionsKanban}
             <div class="kanban-card-title">${escapeHtml(t.title)}</div>
             <div class="kanban-card-meta">
-              <span class="assignee-chip">👤 ${escapeHtml(t.assignee || "—")}</span>
+              <span class="assignee-chip ${state.isAdmin ? 'clickable' : ''}"
+                    ${state.isAdmin ? `onclick="quickReassign('${id}', event)" title="انقر لتغيير المسؤول"` : ""}>
+                👤 ${escapeHtml(t.assignee || "—")}
+              </span>
               ${t.dueDate ? `<span class="card-due ${daysRemaining(t.dueDate)<0 && t.status!=="مكتملة" ? "overdue" : ""}">${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
             </div>
-          </div>
-        `).join("") || '<p class="empty">لا توجد مهام</p>'}
+          </div>`;
+        }).join("") || '<p class="empty">لا توجد مهام</p>'}
       </div>
     </div>
   `).join("");
@@ -1988,7 +2368,7 @@ function renderWatch() {
   const typeIcons = {
     task_created: "➕", task_edited: "✏️", task_deleted: "🗑️",
     status_changed: "🔄", comment_added: "💬", user_created: "👤",
-    user_promoted: "👑", password_changed: "🔑"
+    user_promoted: "👑", password_changed: "🔑", task_reassigned: "👤"
   };
   timeline.innerHTML = events.map(e => {
     const icon = typeIcons[e.type] || "•";
@@ -2043,7 +2423,7 @@ function renderActivity() {
   const typeIcons = {
     task_created: "➕", task_edited: "✏️", task_deleted: "🗑️",
     status_changed: "🔄", comment_added: "💬", user_created: "👤",
-    user_promoted: "👑", password_changed: "🔑"
+    user_promoted: "👑", password_changed: "🔑", task_reassigned: "👤"
   };
   wrap.innerHTML = events.map(e => `
     <div class="activity-row">
@@ -2065,15 +2445,12 @@ function renderUsersStats() {
   set("usersStatAdmin", users.filter(u => u.role === "admin").length);
   set("usersStatInactive", users.filter(u => u.active === false).length);
 }
-
-/* ✅ إصلاح: منع تكرار المستخدمين بناءً على UID أو email أو username */
 function renderUsersList() {
   if (!state.isAdmin) return;
   const wrap = document.getElementById("usersList");
   if (!wrap) return;
   renderUsersStats();
 
-  // ✅ تصفية المستخدمين الفريدين فقط — إزالة أي تكرار بناءً على uid أو email أو username
   const seenKeys = new Set();
   let users = Object.entries(state.allUsers).filter(([uid, u]) => {
     if (!u || typeof u !== "object") return false;
@@ -2382,6 +2759,9 @@ function closeReport() {
   document.getElementById("reportOverlay").classList.remove("active");
   document.body.style.overflow = "";
 }
+window.openReport = openReport;
+window.closeReport = closeReport;
+
 async function downloadPDF() {
   const btn = document.getElementById("downloadPdfBtn");
   btn.disabled = true; btn.textContent = "⏳ جاري التحميل...";
@@ -2478,6 +2858,8 @@ async function downloadPDF() {
   } catch (e) { swalError("خطأ في التحميل", e.message); }
   finally { btn.disabled = false; btn.textContent = "📄 تحميل PDF"; }
 }
+window.downloadPDF = downloadPDF;
+
 window.exportCSV = () => {
   const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم","الوسوم","ملاحظات"]];
   Object.values(state.allTasks).forEach(t => {
@@ -2493,7 +2875,7 @@ window.exportCSV = () => {
 };
 
 /* ============================================================
-   فتح شاشة العرض من شاشة الدخول (بدون تسجيل دخول)
+   شاشة العرض
    ============================================================ */
 window.openWatchFromLogin = async function() {
   const { value: password } = await Swal.fire({
@@ -2545,9 +2927,6 @@ window.openWatchFromLogin = async function() {
   }
 };
 
-/* ============================================================
-   شاشة العرض — كلمة سر منفصلة
-   ============================================================ */
 window.promptWatchPassword = async function() {
   const session = localStorage.getItem("emak_watch_session");
   if (session) {
@@ -2634,7 +3013,6 @@ window.closeWatchScreen = function() {
   if (document.fullscreenElement) document.exitFullscreen?.();
 };
 
-/* نموذج كلمة السر */
 document.getElementById("watchPinForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const input = document.getElementById("watchPinInput");
@@ -2655,7 +3033,6 @@ document.getElementById("watchPinForm").addEventListener("submit", async (e) => 
   }
 });
 
-/* ============ Watch Data & Render ============ */
 async function startWatchData() {
   if (!auth.currentUser) {
     try { await signInAnonymously(auth); } catch(e) { console.error("Anon auth:", e); }
@@ -2676,6 +3053,7 @@ async function startWatchData() {
       watchRenderActive();
       watchRenderUrgent();
       watchRenderDone();
+      watchRenderNormalTicker();
     }
   }, (err) => { console.error("Watch tasks:", err); });
 
@@ -2688,6 +3066,7 @@ async function startWatchData() {
   watchRenderActive();
   watchRenderUrgent();
   watchRenderDone();
+  watchRenderNormalTicker();
 
   startWatchCursor();
 }
@@ -2797,7 +3176,61 @@ function watchRenderDone() {
   list.innerHTML = done.map(([_, t]) => watchTaskHtml(t)).join("");
 }
 
-/* مؤشر الاختفاء */
+/* ✅ عرض المهام العادية (غير المهمة وغير العاجلة) في شريط متتابع */
+function watchRenderNormalTicker() {
+  const track = document.getElementById("watchNormalTicker");
+  if (!track) return;
+
+  // المهام العادية = أولوية "عادي" + غير مكتملة
+  const normalTasks = Object.entries(state.allTasks)
+    .filter(([_, t]) => {
+      if (t.status === "مكتملة") return false;
+      if (t.priority === "عاجل" || t.priority === "مهم") return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const da = daysRemaining(a[1].dueDate) ?? 999;
+      const dbb = daysRemaining(b[1].dueDate) ?? 999;
+      return da - dbb;
+    });
+
+  const countEl = document.getElementById("watchNormalCount");
+  if (countEl) countEl.textContent = normalTasks.length;
+
+  if (normalTasks.length === 0) {
+    track.innerHTML = '<div class="watch-tasks-ticker-empty">لا توجد مهام عادية حالياً</div>';
+    track.style.animation = "none";
+    return;
+  }
+
+  const taskHtml = (id, t) => {
+    const statusClass = t.status === "جاري التنفيذ" ? "progress" : "new";
+    const d = daysRemaining(t.dueDate);
+    const dueText = t.dueDate ? (d < 0 ? `متأخر ${Math.abs(d)} يوم` : d === 0 ? "اليوم" : d === 1 ? "غداً" : `باقي ${d} أيام`) : "";
+    const dueClass = (d !== null && d < 0) ? 'style="color:#f04b5c;"' : '';
+    return `
+      <div class="watch-ticker-task" onclick="openModal('${id}')" style="cursor:pointer;">
+        <span class="task-priority-dot normal"></span>
+        <div class="task-info">
+          <div class="task-title">${escapeHtml(t.title)}</div>
+          <div class="task-meta">
+            <span>👤 ${escapeHtml(t.assignee || "—")}</span>
+            ${dueText ? `<span ${dueClass}>📅 ${escapeHtml(dueText)}</span>` : ""}
+          </div>
+        </div>
+        <span class="task-status-badge ${statusClass}">${escapeHtml(t.status || "جديدة")}</span>
+      </div>`;
+  };
+
+  // نكرر المهام مرتين لعمل حلقة سلسة بدون انقطاع
+  const html = normalTasks.map(([id, t]) => taskHtml(id, t)).join("");
+  track.innerHTML = html + html;
+
+  // ضبط سرعة الحركة حسب عدد المهام
+  const duration = Math.max(30, normalTasks.length * 6);
+  track.style.animation = `tasksTickerScroll ${duration}s linear infinite`;
+}
+
 function startWatchCursor() {
   const reset = () => {
     document.body.style.cursor = "default";
@@ -2813,7 +3246,7 @@ function stopWatchCursor() {
 }
 
 /* ============================================================
-   Navigation
+   Navigation & Init
    ============================================================ */
 function initializeApp_() {
   applyTheme();
