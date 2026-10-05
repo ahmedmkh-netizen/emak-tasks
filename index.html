@@ -1056,7 +1056,8 @@ header{
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v7.0 — ملف موحّد + شاشة عرض + Flasher للمهام العاجلة
+   EMAK Hub v7.1 — ملف موحّد + شاشة عرض + Flasher للمهام العاجلة
+   إصلاح: إزالة تكرار المستخدمين + تحسينات الأداء
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1084,8 +1085,6 @@ const USERNAME_DOMAIN = "@emak.local";
 const LOGO_URL = "https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png";
 const BACKUP_INTERVAL = 5 * 60 * 1000;
 const MAX_BACKUPS = 5;
-
-/* 🔑 كلمة سر شاشة العرض */
 const WATCH_PASSWORD = "watch2024";
 const WATCH_SESSION_DURATION = 12 * 60 * 60 * 1000;
 
@@ -2066,25 +2065,40 @@ function renderUsersStats() {
   set("usersStatAdmin", users.filter(u => u.role === "admin").length);
   set("usersStatInactive", users.filter(u => u.active === false).length);
 }
+
+/* ✅ إصلاح: منع تكرار المستخدمين بناءً على UID أو email أو username */
 function renderUsersList() {
   if (!state.isAdmin) return;
   const wrap = document.getElementById("usersList");
   if (!wrap) return;
   renderUsersStats();
-  let users = Object.entries(state.allUsers);
+
+  // ✅ تصفية المستخدمين الفريدين فقط — إزالة أي تكرار بناءً على uid أو email أو username
+  const seenKeys = new Set();
+  let users = Object.entries(state.allUsers).filter(([uid, u]) => {
+    if (!u || typeof u !== "object") return false;
+    const key = (u.username || u.email || uid).toLowerCase().trim();
+    if (seenKeys.has(key)) return false;
+    seenKeys.add(key);
+    return true;
+  });
+
   if (state.usersSearch) users = users.filter(([uid, u]) => {
     const hay = `${u.displayName || ""} ${u.name || ""} ${u.username || ""} ${u.email || ""}`.toLowerCase();
     return hay.includes(state.usersSearch);
   });
   if (state.usersRoleFilter !== "all") users = users.filter(([_, u]) => u.role === state.usersRoleFilter);
   if (state.usersStatusFilter !== "all") users = users.filter(([_, u]) => state.usersStatusFilter === "active" ? u.active !== false : u.active === false);
+
   users.sort((a, b) => {
     const ra = a[1].role === "admin" ? 0 : 1;
     const rb = b[1].role === "admin" ? 0 : 1;
     if (ra !== rb) return ra - rb;
     return (a[1].displayName || a[1].username || "").localeCompare(b[1].displayName || b[1].username || "", "ar");
   });
+
   if (users.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون</p>'; return; }
+
   wrap.innerHTML = users.map(([uid, u]) => {
     const isMe = uid === state.currentUser.uid;
     const tasks = Object.values(state.allTasks).filter(t => t.assigneeId === uid);
@@ -2121,6 +2135,7 @@ function renderUsersList() {
     </div>`;
   }).join("");
 }
+
 window.promoteUser = async (uid) => {
   if (!state.isAdmin) return;
   const r = await swalConfirm("ترقية إلى مدير؟");
@@ -2477,7 +2492,7 @@ window.exportCSV = () => {
   showToast("📊 تم التصدير", "success");
 };
 
-  /* ============================================================
+/* ============================================================
    فتح شاشة العرض من شاشة الدخول (بدون تسجيل دخول)
    ============================================================ */
 window.openWatchFromLogin = async function() {
@@ -2524,13 +2539,12 @@ window.openWatchFromLogin = async function() {
   });
 
   if (password) {
-    // احفظ الجلسة
     localStorage.setItem("emak_watch_session", JSON.stringify({ at: Date.now() }));
     showToast("🔓 تم فتح شاشة العرض", "success");
-    // افتح شاشة العرض مباشرة
     await openWatchScreen();
   }
 };
+
 /* ============================================================
    شاشة العرض — كلمة سر منفصلة
    ============================================================ */
@@ -2599,7 +2613,6 @@ window.openWatchScreen = async function() {
   document.getElementById("watchScreen").classList.add("active");
   document.body.style.overflow = "hidden";
 
-  // تحقق من الجلسة
   if (localStorage.getItem("emak_watch_session")) {
     document.getElementById("watchPinScreen").style.display = "none";
     document.getElementById("watchMainContent").classList.add("active");
@@ -2644,18 +2657,15 @@ document.getElementById("watchPinForm").addEventListener("submit", async (e) => 
 
 /* ============ Watch Data & Render ============ */
 async function startWatchData() {
-  // ضمان تسجيل الدخول المجهول
   if (!auth.currentUser) {
     try { await signInAnonymously(auth); } catch(e) { console.error("Anon auth:", e); }
   }
 
-  // تحديث الساعة
   updateWatchClock();
   if (state.watchClockTimer) clearInterval(state.watchClockTimer);
   state.watchClockTimer = setInterval(updateWatchClock, 1000);
   watchUpdateConnection();
 
-  // استمع للبيانات
   if (state.watchUnsubs.tasks) try { state.watchUnsubs.tasks(); } catch(e){}
   if (state.watchUnsubs.team) try { state.watchUnsubs.team(); } catch(e){}
 
@@ -2674,7 +2684,6 @@ async function startWatchData() {
     if (state.watchMode) watchRenderStats();
   }, (err) => {});
 
-  // عرض أولي
   watchRenderStats();
   watchRenderActive();
   watchRenderUrgent();
@@ -2921,7 +2930,6 @@ function initializeApp_() {
 
   setTimeout(restoreDraft, 2000);
 
-  // فتح شاشة العرض تلقائياً من ?watch=1
   if (new URLSearchParams(location.search).get("watch") === "1") {
     setTimeout(() => {
       document.getElementById("watchScreen").classList.add("active");
