@@ -504,9 +504,74 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .watch-panel-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(35,43,66,.35);}
 .watch-panel-header h2{font-size:16px;font-weight:900;color:#eef2f9;}
 .watch-panel-count{background:rgba(91,141,239,.15);color:#5b8def;padding:5px 14px;border-radius:14px;font-size:13px;font-weight:900;border:1px solid rgba(91,141,239,.25);}
-.watch-panel-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+
+/* ============ لوحة المهام مع التمرير التلقائي ============ */
+.watch-panel-body{flex:1;overflow:hidden;padding:14px;position:relative;}
 .watch-panel-body::-webkit-scrollbar{width:6px;}
 .watch-panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
+
+/* عند تفعيل التمرير التلقائي */
+.watch-panel-body.auto-scroll{
+  mask-image:linear-gradient(180deg,transparent 0%,black 50px,black calc(100% - 50px),transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 50px,black calc(100% - 50px),transparent 100%);
+}
+.watch-panel-body.auto-scroll .scroll-content{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  animation:autoScrollVertical 40s linear infinite;
+  will-change:transform;
+  padding-bottom:20px;
+}
+.watch-panel-body.auto-scroll:hover .scroll-content{
+  animation-play-state:paused;
+}
+
+@keyframes autoScrollVertical{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-50%);}
+}
+
+.watch-scroll-indicator{
+  position:absolute;
+  top:6px;
+  left:6px;
+  background:rgba(91,141,239,.2);
+  color:#5b8def;
+  padding:3px 10px;
+  border-radius:10px;
+  font-size:10px;
+  font-weight:900;
+  border:1px solid rgba(91,141,239,.35);
+  z-index:5;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.watch-scroll-indicator .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#5b8def;
+  animation:livePulse 1.5s ease-in-out infinite;
+}
+/* مؤشر التمرير للمكتملة */
+.watch-panel-body[data-panel="done"] .watch-scroll-indicator{
+  background:rgba(45,212,163,.2);
+  color:#2dd4a3;
+  border-color:rgba(45,212,163,.35);
+}
+.watch-panel-body[data-panel="done"] .watch-scroll-indicator .dot{background:#2dd4a3;}
+.watch-panel-body[data-panel="urgent"] .watch-scroll-indicator{
+  background:rgba(240,75,92,.2);
+  color:#f04b5c;
+  border-color:rgba(240,75,92,.35);
+}
+.watch-panel-body[data-panel="urgent"] .watch-scroll-indicator .dot{background:#f04b5c;}
+
+/* حالة بدون تمرير (مهام قليلة) */
+.watch-panel-body.no-scroll{overflow-y:auto;}
+.watch-panel-body.no-scroll::-webkit-scrollbar{width:6px;}
+.watch-panel-body.no-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
 
 .watch-task{background:rgba(23,29,46,.9);border:1.5px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;border-right:4px solid #2dd4a3;transition:all .25s;}
 .watch-task:hover{transform:translateX(-4px);border-color:rgba(255,255,255,.15);}
@@ -875,21 +940,21 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
           <h2>📌 المهام النشطة</h2>
           <span class="watch-panel-count" id="watchActiveCount">0</span>
         </div>
-        <div class="watch-panel-body" id="watchActiveList"><div class="watch-empty">لا توجد مهام نشطة</div></div>
+        <div class="watch-panel-body" id="watchActiveList" data-panel="active"><div class="watch-empty">لا توجد مهام نشطة</div></div>
       </section>
       <section class="watch-panel">
         <div class="watch-panel-header">
           <h2>⚠️ تحتاج انتباه</h2>
           <span class="watch-panel-count" id="watchUrgentCount">0</span>
         </div>
-        <div class="watch-panel-body" id="watchUrgentList"><div class="watch-empty">لا توجد مهام متأخرة 🎉</div></div>
+        <div class="watch-panel-body" id="watchUrgentList" data-panel="urgent"><div class="watch-empty">لا توجد مهام متأخرة 🎉</div></div>
       </section>
       <section class="watch-panel">
         <div class="watch-panel-header">
           <h2>✅ آخر المكتملة</h2>
           <span class="watch-panel-count" id="watchDoneCount">0</span>
         </div>
-        <div class="watch-panel-body" id="watchDoneList"><div class="watch-empty">لا توجد مهام مكتملة</div></div>
+        <div class="watch-panel-body" id="watchDoneList" data-panel="done"><div class="watch-empty">لا توجد مهام مكتملة</div></div>
       </section>
     </div>
 
@@ -922,7 +987,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v7.5 — فصل المهام لمنع التكرار + إصلاحات شاملة
+   EMAK Hub v7.6 — تمرير تلقائي عمودي + إصلاحات شاملة
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -952,6 +1017,7 @@ const BACKUP_INTERVAL = 5 * 60 * 1000;
 const MAX_BACKUPS = 5;
 const WATCH_PASSWORD = "watch2024";
 const WATCH_SESSION_DURATION = 12 * 60 * 60 * 1000;
+const SCROLL_SECONDS_PER_TASK = 10; // 10 ثوانٍ لكل مهمة
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -1230,7 +1296,6 @@ function setupAuthListener() {
   });
 }
 
-/* ✅ تنظيف سجلات الفريق المكررة لنفس uid */
 async function cleanupTeamDuplicates() {
   try {
     const snap = await get(ref(db, "team"));
@@ -1620,7 +1685,6 @@ window.quickToggleStatus = async function(taskId, event) {
   await changeStatus(taskId, nextStatus);
 };
 
-/* ✅ addComment - مُصدَّرة على window */
 async function addComment(taskId, fromModal = false) {
   if (!state.currentUserProfile) return swalError("سجّل الدخول أولاً");
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
@@ -1913,7 +1977,6 @@ function renderStats() {
   document.getElementById("statOverdue").textContent = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
 }
 
-/* ✅ عرض أداء الفريق مع إزالة التكرار */
 function renderTeamProgress() {
   const teamMap = {};
   const seenNames = new Set();
@@ -2914,34 +2977,67 @@ function watchTaskHtml(t) {
   </div>`;
 }
 
-/* ✅ المهام النشطة = مهام جديدة عادية فقط (غير عاجلة وغير مهمة) - لتفادي التكرار */
+/* ✅ دالة موحدة لبناء لوحة مع تمرير تلقائي */
+function buildAutoScrollPanel(panelId, tasks, emptyMsg, indicatorLabel, indicatorColor) {
+  const panelBody = document.getElementById(panelId);
+  if (!panelBody) return;
+  
+  if (tasks.length === 0) {
+    panelBody.classList.remove("auto-scroll", "no-scroll");
+    panelBody.innerHTML = `<div class="watch-empty">${emptyMsg}</div>`;
+    return;
+  }
+  
+  const html = tasks.map(([_, t]) => watchTaskHtml(t)).join("");
+  
+  // إذا كانت المهام قليلة (2 أو أقل)، لا نحتاج تمرير
+  const isFew = tasks.length <= 2;
+  
+  const contentHtml = `<div class="watch-scroll-indicator"><span class="dot"></span>${indicatorLabel}</div>` +
+    (isFew 
+      ? html 
+      : `<div class="scroll-content">${html}${html}</div>`  // نسختين للتمرير اللانهائي
+    );
+  
+  panelBody.innerHTML = contentHtml;
+  
+  if (isFew) {
+    panelBody.classList.remove("auto-scroll");
+    panelBody.classList.add("no-scroll");
+  } else {
+    panelBody.classList.remove("no-scroll");
+    panelBody.classList.add("auto-scroll");
+    // ✅ 10 ثوانٍ لكل مهمة
+    const duration = tasks.length * SCROLL_SECONDS_PER_TASK;
+    const scrollContent = panelBody.querySelector(".scroll-content");
+    if (scrollContent) {
+      scrollContent.style.animation = `autoScrollVertical ${duration}s linear infinite`;
+    }
+  }
+}
+
+/* ✅ المهام النشطة = مهام جديدة عادية فقط */
 function watchRenderActive() {
-  const list = document.getElementById("watchActiveList");
-  if (!list) return;
   const active = Object.entries(state.allTasks)
     .filter(([_, t]) => {
       if (t.status !== "جديدة") return false;
       if (t.priority === "عاجل" || t.priority === "مهم") return false;
       return true;
     })
-    .sort((a, b) => {
-      const da = daysRemaining(a[1].dueDate) ?? 999;
-      const dbb = daysRemaining(b[1].dueDate) ?? 999;
-      return da - dbb;
-    })
-    .slice(0, 25);
+    .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0)); // الأقدم أولاً
+  
   document.getElementById("watchActiveCount").textContent = active.length;
-  if (active.length === 0) { 
-    list.innerHTML = '<div class="watch-empty">لا توجد مهام عادية نشطة</div>'; 
-    return; 
-  }
-  list.innerHTML = active.map(([_, t]) => watchTaskHtml(t)).join("");
+  buildAutoScrollPanel(
+    "watchActiveList",
+    active,
+    "لا توجد مهام عادية نشطة",
+    `${active.length} مهمة`,
+    "#5b8def"
+  );
 }
 
-/* ✅ تحتاج انتباه = المهام العاجلة + المهمة + المتأخرة + الجارية */
+/* ✅ تحتاج انتباه = العاجلة + المهمة + المتأخرة + الجارية */
 function watchRenderUrgent() {
-  const list = document.getElementById("watchUrgentList");
-  if (!list) return;
   const urgent = Object.entries(state.allTasks)
     .filter(([_, t]) => {
       if (t.status === "مكتملة") return false;
@@ -2957,26 +3053,32 @@ function watchRenderUrgent() {
       const pa = pri[a[1].priority] ?? 2, pb = pri[b[1].priority] ?? 2;
       if (pa !== pb) return pa - pb;
       return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
-    })
-    .slice(0, 25);
+    });
+  
   document.getElementById("watchUrgentCount").textContent = urgent.length;
-  if (urgent.length === 0) { 
-    list.innerHTML = '<div class="watch-empty">لا توجد مهام متأخرة 🎉</div>'; 
-    return; 
-  }
-  list.innerHTML = urgent.map(([_, t]) => watchTaskHtml(t)).join("");
+  buildAutoScrollPanel(
+    "watchUrgentList",
+    urgent,
+    "لا توجد مهام متأخرة 🎉",
+    `${urgent.length} مهمة`,
+    "#f04b5c"
+  );
 }
 
+/* ✅ آخر المكتملة */
 function watchRenderDone() {
-  const list = document.getElementById("watchDoneList");
-  if (!list) return;
   const done = Object.entries(state.allTasks)
     .filter(([_, t]) => t.status === "مكتملة")
-    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0))
-    .slice(0, 25);
+    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)); // الأحدث أولاً
+  
   document.getElementById("watchDoneCount").textContent = done.length;
-  if (done.length === 0) { list.innerHTML = '<div class="watch-empty">لا توجد مهام مكتملة</div>'; return; }
-  list.innerHTML = done.map(([_, t]) => watchTaskHtml(t)).join("");
+  buildAutoScrollPanel(
+    "watchDoneList",
+    done,
+    "لا توجد مهام مكتملة",
+    `${done.length} مهمة`,
+    "#2dd4a3"
+  );
 }
 
 function watchRenderNormalTicker() {
