@@ -44,7 +44,6 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 .task-card.urgent-glow::before{background:linear-gradient(90deg,var(--urgent),#ff6b7d,var(--urgent)) !important;animation:urgentPulseTop 1.4s ease-in-out infinite;}
 .watch-task.urgent-flash{animation:urgentFlash 1.4s ease-in-out infinite;border-right-color:var(--urgent) !important;}
 .watch-task.urgent-flash .watch-task-priority.urgent{animation:urgentBadgeBlink 1.4s ease-in-out infinite;}
-.active-task-card.urgent{animation:urgentFlash 1.4s ease-in-out infinite;}
 
 ::-webkit-scrollbar{width:10px;height:10px;}
 ::-webkit-scrollbar-track{background:transparent;}
@@ -433,7 +432,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 #saveIndicator{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--bg-glass);backdrop-filter:blur(20px);color:var(--text);padding:10px 20px;border-radius:24px;font-size:12px;font-weight:800;box-shadow:var(--shadow);z-index:9998;border:1.5px solid var(--border);opacity:0;transition:.3s;}
 
 /* ============================================================
-   WATCH SCREEN — التصميم الجديد
+   WATCH SCREEN — Glass Bar Minimal
    ============================================================ */
 #watchScreen{display:none;position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;}
 #watchScreen.active{display:block;animation:fadeIn .5s;}
@@ -460,286 +459,295 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 #watchPinError{color:#f04b5c;font-size:13px;min-height:20px;font-weight:700;}
 .watch-pin-hint{color:#5b6580;font-size:12px;margin-top:18px;font-weight:600;}
 
-#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto auto;gap:14px;padding:14px;}
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto 1fr auto auto;gap:12px;padding:12px;}
 #watchMainContent.active{display:grid;}
 
 /* ============================================================
-   ✅ الرأس الجديد — الأعداد على اليسار، الشعار والساعة على اليمين
+   ✅ GLASS BAR MINIMAL — الشريط الواحد الأنيق
    ============================================================ */
-.watch-header{
+.watch-glass-bar{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:20px;
-  padding:16px 24px;
-  background:rgba(15,20,32,.8);
+  padding:12px 24px;
+  background:linear-gradient(135deg,rgba(15,20,32,.85),rgba(23,29,46,.75));
   backdrop-filter:blur(30px);
+  -webkit-backdrop-filter:blur(30px);
   border:1px solid rgba(255,255,255,.08);
-  border-radius:20px;
-  box-shadow:0 4px 40px rgba(0,0,0,.5);
-  flex-wrap:wrap;
-}
-
-/* ✅ الأعداد المجمعة على اليسار - 3 مجموعات × 2 مربعات */
-.watch-header-left{
-  display:flex;
-  gap:18px;
-  align-items:center;
-  flex-wrap:wrap;
-}
-.watch-kpi-group{
-  display:flex;
-  gap:8px;
-  align-items:stretch;
-  padding:6px;
-  background:rgba(35,43,66,.35);
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.06);
-}
-.watch-kpi-mini{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:10px 16px;
-  background:rgba(23,29,46,.9);
-  border-radius:10px;
-  min-width:85px;
+  border-radius:16px;
+  box-shadow:0 8px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);
   position:relative;
   overflow:hidden;
-  transition:all .25s;
-  border:1.5px solid transparent;
+  min-height:72px;
+  flex-shrink:0;
 }
-.watch-kpi-mini:hover{
-  transform:translateY(-2px);
-  border-color:rgba(255,255,255,.15);
-}
-.watch-kpi-mini::before{
+.watch-glass-bar::before{
   content:'';
   position:absolute;
-  top:0;right:0;left:0;height:3px;
-  border-radius:10px 10px 0 0;
-}
-/* ✅ ألوان الشريط لكل KPI */
-.watch-kpi-mini.total::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
-.watch-kpi-mini.active-kpi::before{background:linear-gradient(90deg,#5b8def,#7c8ef8);}
-.watch-kpi-mini.progress-kpi::before{background:linear-gradient(90deg,#f5a524,#ffc043);}
-.watch-kpi-mini.overdue-kpi::before{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
-.watch-kpi-mini.done-kpi::before{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
-.watch-kpi-mini.team-kpi::before{background:linear-gradient(90deg,#06b6d4,#22d3ee);}
-
-.watch-kpi-mini-icon{
-  font-size:18px;
-  margin-bottom:3px;
-  line-height:1;
-}
-.watch-kpi-mini-num{
-  font-size:22px;
-  font-weight:900;
-  line-height:1;
-  letter-spacing:-.5px;
-  margin-bottom:2px;
-}
-.watch-kpi-mini.total .watch-kpi-mini-num,
-.watch-kpi-mini.active-kpi .watch-kpi-mini-num{color:#5b8def;}
-.watch-kpi-mini.progress-kpi .watch-kpi-mini-num{color:#f5a524;}
-.watch-kpi-mini.overdue-kpi .watch-kpi-mini-num{color:#f04b5c;}
-.watch-kpi-mini.done-kpi .watch-kpi-mini-num{color:#2dd4a3;}
-.watch-kpi-mini.team-kpi .watch-kpi-mini-num{color:#06b6d4;}
-
-.watch-kpi-mini-label{
-  font-size:10px;
-  color:#8892ab;
-  font-weight:700;
-  text-align:center;
+  top:0;right:0;left:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(91,141,239,.6),rgba(45,212,163,.4),transparent);
+  opacity:.8;
 }
 
-/* ✅ الوسط - فارغ (يستخدم للتوسيط) */
-.watch-header-center{
-  flex:1;
+/* ✅ يمين — الشعار + العنوان */
+.wg-brand{
   display:flex;
   align-items:center;
-  justify-content:center;
-  gap:20px;
+  gap:14px;
+  flex-shrink:0;
 }
-
-/* ✅ اليمين - الشعار والساعة */
-.watch-header-right{
-  display:flex;
-  align-items:center;
-  gap:20px;
-}
-.watch-header-brand{
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
-/* ✅ الشعار أكبر */
-.watch-header-logo-wrap{
-  width:90px;
-  height:90px;
-  border-radius:24px;
-  padding:5px;
+.wg-logo{
+  width:50px;
+  height:50px;
+  border-radius:14px;
+  padding:3px;
   background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));
-  box-shadow:0 0 0 3px rgba(91,141,239,.4),0 0 40px rgba(91,141,239,.6);
-  animation:logoPulse 3s ease-in-out infinite;
+  box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 24px rgba(91,141,239,.5);
+  flex-shrink:0;
+  transition:all .3s;
 }
-@keyframes logoPulse{
-  0%,100%{box-shadow:0 0 0 3px rgba(91,141,239,.4),0 0 40px rgba(91,141,239,.6);}
-  50%{box-shadow:0 0 0 3px rgba(91,141,239,.6),0 0 60px rgba(91,141,239,.9);}
+.wg-logo:hover{
+  box-shadow:0 0 0 2px rgba(91,141,239,.6),0 0 32px rgba(91,141,239,.8);
 }
-.watch-header-logo{
+.wg-logo img{
   width:100%;
   height:100%;
   object-fit:contain;
-  border-radius:20px;
+  border-radius:11px;
   background:#050810;
-  padding:8px;
+  padding:5px;
+  display:block;
 }
-.watch-header-title h1{
-  font-size:26px;
+.wg-title{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.wg-title h1{
+  font-size:19px;
   font-weight:900;
   line-height:1;
+  letter-spacing:-.3px;
   background:linear-gradient(135deg,#5b8def,#2dd4a3);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   background-clip:text;
-  margin-bottom:6px;
 }
-.watch-header-title p{
-  font-size:12px;
+.wg-title p{
+  font-size:10.5px;
   color:#8892ab;
   font-weight:600;
-}
-.watch-header-clock-wrap{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:10px 18px;
-  background:rgba(35,43,66,.5);
-  border-radius:14px;
-  border:1.5px solid rgba(91,141,239,.3);
-  min-width:170px;
-}
-.watch-clock{
-  font-size:30px;
-  font-weight:900;
-  font-family:'Courier New',monospace;
-  color:#5b8def;
-  letter-spacing:2px;
-  text-shadow:0 0 24px rgba(91,141,239,.7);
-  line-height:1;
-}
-.watch-date{
-  font-size:11px;
-  color:#8892ab;
-  text-align:center;
-  font-weight:600;
-  margin-top:5px;
+  letter-spacing:.2px;
 }
 
-/* ✅ شريط الحالة وزر الإغلاق */
-.watch-header-actions{
+/* ✅ وسط — مباشر + الساعة */
+.wg-center{
   display:flex;
   align-items:center;
-  gap:10px;
+  gap:20px;
+  flex:1;
+  justify-content:center;
 }
-.watch-conn-status{
+.wg-live{
   display:inline-flex;
   align-items:center;
-  gap:7px;
-  padding:9px 16px;
-  background:rgba(45,212,163,.15);
-  border:1.5px solid rgba(45,212,163,.4);
-  border-radius:22px;
-  font-size:12px;
-  font-weight:800;
-  color:#2dd4a3;
-}
-.watch-conn-status.offline{
+  gap:6px;
+  padding:6px 12px;
   background:rgba(240,75,92,.15);
-  border-color:rgba(240,75,92,.4);
-  color:#f04b5c;
-}
-.watch-conn-dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:currentColor;
-  box-shadow:0 0 12px currentColor;
-  animation:livePulse 2s ease-in-out infinite;
-}
-.watch-live-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:9px 14px;
-  background:rgba(240,75,92,.15);
-  border:1.5px solid rgba(240,75,92,.4);
-  border-radius:22px;
-  font-size:11px;
+  border:1px solid rgba(240,75,92,.35);
+  border-radius:18px;
+  font-size:10.5px;
   font-weight:900;
   color:#f04b5c;
   letter-spacing:1px;
+  flex-shrink:0;
 }
-.watch-live-dot{
-  width:8px;
-  height:8px;
+.wg-live-dot{
+  width:7px;
+  height:7px;
   border-radius:50%;
   background:#f04b5c;
-  box-shadow:0 0 16px #f04b5c;
+  box-shadow:0 0 12px #f04b5c;
   animation:livePulse 1.5s ease-in-out infinite;
 }
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.4);}}
 
-.watch-btn-close{
-  background:rgba(255,255,255,.06);
-  border:1.5px solid rgba(255,255,255,.1);
-  color:#eef2f9;
-  padding:11px 16px;
-  border-radius:12px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:800;
-  font-family:inherit;
-  transition:all .25s;
+.wg-clock-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1px;
+  padding:0 6px;
 }
-.watch-btn-close:hover{background:#f04b5c;color:#fff;border-color:#f04b5c;transform:translateY(-2px);}
+.wg-clock{
+  font-size:22px;
+  font-weight:900;
+  font-family:'Courier New',monospace;
+  color:#5b8def;
+  letter-spacing:2px;
+  line-height:1;
+  text-shadow:0 0 20px rgba(91,141,239,.7);
+  font-variant-numeric:tabular-nums;
+}
+.wg-date{
+  font-size:10px;
+  color:#8892ab;
+  font-weight:600;
+  letter-spacing:.2px;
+}
 
-/* ✅ إزالة watch-stats القديمة لأن الأعداد انتقلت للرأس */
-.watch-stats{display:none;}
+/* ✅ يسار — 6 KPIs */
+.wg-kpis{
+  display:flex;
+  align-items:center;
+  gap:0;
+  padding:6px 8px;
+  background:rgba(23,29,46,.6);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;
+  flex-shrink:0;
+}
+.wg-kpi{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1px;
+  padding:6px 12px;
+  min-width:52px;
+  position:relative;
+  transition:all .25s;
+  cursor:default;
+  border-radius:8px;
+}
+.wg-kpi:hover{
+  background:rgba(91,141,239,.1);
+}
+.wg-kpi:not(:last-child)::after{
+  content:'';
+  position:absolute;
+  top:20%;
+  bottom:20%;
+  left:0;
+  width:1px;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.1),transparent);
+}
+.wg-kpi-icon{
+  font-size:14px;
+  line-height:1;
+  margin-bottom:1px;
+  opacity:.9;
+}
+.wg-kpi-num{
+  font-size:19px;
+  font-weight:900;
+  line-height:1;
+  letter-spacing:-.5px;
+  font-variant-numeric:tabular-nums;
+}
+.wg-kpi-label{
+  font-size:9px;
+  color:#8892ab;
+  font-weight:700;
+  letter-spacing:.1px;
+}
+
+/* ✅ ألوان KPIs */
+.wg-kpi.total .wg-kpi-num{color:#5b8def;}
+.wg-kpi.active-kpi .wg-kpi-num{color:#7c8ef8;}
+.wg-kpi.progress-kpi .wg-kpi-num{color:#f5a524;}
+.wg-kpi.overdue-kpi .wg-kpi-num{color:#f04b5c;}
+.wg-kpi.done-kpi .wg-kpi-num{color:#2dd4a3;}
+.wg-kpi.team-kpi .wg-kpi-num{color:#06b6d4;}
+
+/* ✅ يسار أقصى — متصل + إغلاق */
+.wg-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-shrink:0;
+}
+.wg-conn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  background:rgba(45,212,163,.1);
+  border:1px solid rgba(45,212,163,.3);
+  border-radius:16px;
+  font-size:10.5px;
+  font-weight:800;
+  color:#2dd4a3;
+}
+.wg-conn.offline{
+  background:rgba(240,75,92,.1);
+  border-color:rgba(240,75,92,.35);
+  color:#f04b5c;
+}
+.wg-conn-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:currentColor;
+  box-shadow:0 0 8px currentColor;
+  animation:livePulse 2s ease-in-out infinite;
+}
+
+.wg-close{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);
+  color:#eef2f9;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .25s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  font-family:inherit;
+}
+.wg-close:hover{
+  background:#f04b5c;
+  color:#fff;
+  border-color:#f04b5c;
+  transform:rotate(90deg);
+}
 
 /* Grid + Panels */
-.watch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;min-height:0;}
-.watch-panel{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:18px;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.watch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;min-height:0;}
+.watch-panel{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:16px;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
 
 .watch-panel-header{
   display:flex;justify-content:space-between;align-items:center;
-  padding:14px 18px;
+  padding:12px 16px;
   border-bottom:1px solid rgba(255,255,255,.06);
   background:rgba(35,43,66,.35);
   position:relative;
   flex-shrink:0;
 }
 .watch-panel-header::before{
-  content:'';position:absolute;top:0;right:0;left:0;height:3px;border-radius:18px 18px 0 0;
+  content:'';position:absolute;top:0;right:0;left:0;height:3px;border-radius:16px 16px 0 0;
 }
 .watch-panel[data-type="active"] .watch-panel-header::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
 .watch-panel[data-type="urgent"] .watch-panel-header::before{background:linear-gradient(90deg,#f04b5c,#c81e3c);}
 .watch-panel[data-type="done"] .watch-panel-header::before{background:linear-gradient(90deg,#2dd4a3,#22b388);}
-.watch-panel-header h2{font-size:15px;font-weight:900;color:#eef2f9;display:flex;align-items:center;gap:8px;}
-.watch-panel-count{padding:4px 12px;border-radius:14px;font-size:12px;font-weight:900;min-width:32px;text-align:center;}
+.watch-panel-header h2{font-size:14px;font-weight:900;color:#eef2f9;display:flex;align-items:center;gap:6px;}
+.watch-panel-count{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:900;min-width:28px;text-align:center;}
 .watch-panel[data-type="active"] .watch-panel-count{background:rgba(91,141,239,.15);color:#5b8def;border:1px solid rgba(91,141,239,.3);}
 .watch-panel[data-type="urgent"] .watch-panel-count{background:rgba(240,75,92,.15);color:#f04b5c;border:1px solid rgba(240,75,92,.3);}
 .watch-panel[data-type="done"] .watch-panel-count{background:rgba(45,212,163,.15);color:#2dd4a3;border:1px solid rgba(45,212,163,.3);}
 
-.watch-panel-body{flex:1;overflow:hidden;padding:12px;position:relative;min-height:0;}
+.watch-panel-body{flex:1;overflow:hidden;padding:10px;position:relative;min-height:0;}
 .watch-panel-body.auto-scroll{
   mask-image:linear-gradient(180deg,transparent 0%,black 30px,black calc(100% - 30px),transparent 100%);
   -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 30px,black calc(100% - 30px),transparent 100%);
 }
 .watch-panel-body.auto-scroll .scroll-content{
-  display:flex;flex-direction:column;gap:10px;
+  display:flex;flex-direction:column;gap:8px;
   animation:autoScrollVertical 40s linear infinite;
   will-change:transform;
   padding-bottom:20px;
@@ -749,13 +757,13 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .watch-panel-body.no-scroll{overflow-y:auto;}
 .watch-panel-body.no-scroll::-webkit-scrollbar{width:5px;}
 .watch-panel-body.no-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
-.watch-panel-body.no-scroll .scroll-content{display:flex;flex-direction:column;gap:10px;}
+.watch-panel-body.no-scroll .scroll-content{display:flex;flex-direction:column;gap:8px;}
 
 .watch-task{
   background:rgba(23,29,46,.95);
   border:1.5px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  padding:14px 16px;
+  border-radius:12px;
+  padding:12px 14px;
   transition:all .25s;
   position:relative;
   overflow:hidden;
@@ -768,21 +776,21 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .watch-task.done-task{border-right-color:#2dd4a3;background:linear-gradient(90deg,rgba(45,212,163,.10),rgba(23,29,46,.95) 60%);opacity:.85;}
 .watch-task.overdue{border-right-color:#f04b5c;}
 
-.watch-task-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;}
-.watch-task-priority{font-size:11px;padding:4px 12px;border-radius:12px;font-weight:900;}
+.watch-task-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;gap:8px;}
+.watch-task-priority{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:900;}
 .watch-task-priority.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
 .watch-task-priority.important{background:rgba(245,165,36,.25);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
 .watch-task-priority.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
-.watch-task-status{font-size:10px;padding:4px 10px;border-radius:10px;font-weight:800;background:rgba(35,43,66,.9);color:#8892ab;border:1px solid rgba(255,255,255,.05);}
+.watch-task-status{font-size:9.5px;padding:3px 9px;border-radius:9px;font-weight:800;background:rgba(35,43,66,.9);color:#8892ab;border:1px solid rgba(255,255,255,.05);}
 .watch-task-status.progress{background:rgba(245,165,36,.2);color:#f5a524;}
 .watch-task-status.done{background:rgba(45,212,163,.2);color:#2dd4a3;}
 
-.watch-task-title{font-size:14.5px;font-weight:800;line-height:1.5;margin-bottom:10px;color:#eef2f9;word-break:break-word;}
-.watch-task-meta{display:flex;gap:14px;font-size:11.5px;color:#8892ab;flex-wrap:wrap;font-weight:600;margin-bottom:8px;}
+.watch-task-title{font-size:13.5px;font-weight:800;line-height:1.5;margin-bottom:8px;color:#eef2f9;word-break:break-word;}
+.watch-task-meta{display:flex;gap:12px;font-size:11px;color:#8892ab;flex-wrap:wrap;font-weight:600;margin-bottom:7px;}
 .watch-task-meta span{display:inline-flex;align-items:center;gap:4px;}
 
-.watch-task-progress{height:4px;background:rgba(35,43,66,.9);border-radius:3px;overflow:hidden;margin-top:8px;}
-.watch-task-progress-fill{height:100%;border-radius:3px;transition:width .5s ease;}
+.watch-task-progress{height:3px;background:rgba(35,43,66,.9);border-radius:2px;overflow:hidden;margin-top:6px;}
+.watch-task-progress-fill{height:100%;border-radius:2px;transition:width .5s ease;}
 .watch-task.urgent .watch-task-progress-fill{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
 .watch-task.important .watch-task-progress-fill{background:linear-gradient(90deg,#f5a524,#ffc043);}
 .watch-task.normal .watch-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
@@ -797,63 +805,54 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .watch-empty-text{font-size:13px;color:#8892ab;}
 .watch-empty-hint{font-size:11px;color:#5b6580;font-weight:500;}
 
-/* Ticker المهام العادية */
-.watch-tasks-ticker-section{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px 0;overflow:hidden;position:relative;display:flex;align-items:center;gap:0;flex-shrink:0;min-height:74px;}
-.watch-tasks-ticker-label{display:flex;align-items:center;gap:8px;padding:8px 18px;background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;font-weight:900;font-size:12px;flex-shrink:0;border-radius:0 12px 12px 0;margin-right:0;height:100%;white-space:nowrap;align-self:stretch;}
-.watch-tasks-ticker-label .ticker-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:livePulse 1.5s ease-in-out infinite;}
-.watch-tasks-ticker-viewport{flex:1;overflow:hidden;position:relative;height:54px;mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);}
+.watch-tasks-ticker-section{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:8px 0;overflow:hidden;position:relative;display:flex;align-items:center;gap:0;flex-shrink:0;min-height:66px;}
+.watch-tasks-ticker-label{display:flex;align-items:center;gap:8px;padding:8px 16px;background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;font-weight:900;font-size:11.5px;flex-shrink:0;border-radius:0 12px 12px 0;margin-right:0;height:100%;white-space:nowrap;align-self:stretch;}
+.watch-tasks-ticker-label .ticker-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:livePulse 1.5s ease-in-out infinite;}
+.watch-tasks-ticker-viewport{flex:1;overflow:hidden;position:relative;height:50px;mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);}
 .watch-tasks-ticker-track{display:flex;align-items:center;gap:10px;height:100%;width:max-content;animation:tasksTickerScroll 60s linear infinite;padding:0 12px;}
 .watch-tasks-ticker-track:hover{animation-play-state:paused;}
 @keyframes tasksTickerScroll{0%{transform:translateX(0);}100%{transform:translateX(50%);}}
-.watch-ticker-task{display:flex;align-items:center;gap:10px;padding:9px 16px;background:rgba(23,29,46,.95);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;white-space:nowrap;flex-shrink:0;transition:all .25s;border-right:3px solid #2dd4a3;min-width:250px;}
+.watch-ticker-task{display:flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(23,29,46,.95);border:1.5px solid rgba(255,255,255,.08);border-radius:11px;white-space:nowrap;flex-shrink:0;transition:all .25s;border-right:3px solid #2dd4a3;min-width:240px;}
 .watch-ticker-task:hover{background:rgba(35,43,66,.95);transform:scale(1.03);border-color:rgba(45,212,163,.5);}
-.watch-ticker-task .task-priority-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor;}
+.watch-ticker-task .task-priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor;}
 .watch-ticker-task .task-priority-dot.normal{background:#2dd4a3;color:#2dd4a3;}
 .watch-ticker-task .task-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
-.watch-ticker-task .task-title{font-size:13px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;max-width:300px;white-space:nowrap;}
-.watch-ticker-task .task-meta{font-size:10.5px;color:#8892ab;display:flex;gap:8px;font-weight:600;}
+.watch-ticker-task .task-title{font-size:12.5px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;max-width:280px;white-space:nowrap;}
+.watch-ticker-task .task-meta{font-size:10px;color:#8892ab;display:flex;gap:8px;font-weight:600;}
 .watch-ticker-task .task-meta span{display:inline-flex;align-items:center;gap:3px;}
-.watch-ticker-task .task-status-badge{font-size:9.5px;padding:3px 9px;border-radius:9px;font-weight:800;background:rgba(91,141,239,.2);color:#5b8def;flex-shrink:0;}
+.watch-ticker-task .task-status-badge{font-size:9px;padding:3px 8px;border-radius:8px;font-weight:800;background:rgba(91,141,239,.2);color:#5b8def;flex-shrink:0;}
 .watch-ticker-task .task-status-badge.progress{background:rgba(245,165,36,.2);color:#f5a524;}
 .watch-tasks-ticker-empty{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#5b6580;font-size:12px;font-weight:700;}
 
-/* ✅ الشريط السفلي — إشعارات بدل إعلانات */
-.watch-footer{display:flex;align-items:center;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;height:44px;}
-.watch-ticker-label{
-  padding:0 20px;height:100%;display:flex;align-items:center;
-  background:linear-gradient(135deg,#5b8def,#3b6fd4);
-  color:#fff;font-weight:900;font-size:12px;flex-shrink:0;
-  gap:8px;
-}
-.watch-ticker-label .notif-dot{
-  width:7px;height:7px;border-radius:50%;
-  background:#fff;
-  animation:livePulse 1.5s ease-in-out infinite;
-}
+.watch-footer{display:flex;align-items:center;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;height:42px;flex-shrink:0;}
+.watch-ticker-label{padding:0 18px;height:100%;display:flex;align-items:center;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;font-weight:900;font-size:11.5px;flex-shrink:0;gap:8px;}
+.watch-ticker-label .notif-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:livePulse 1.5s ease-in-out infinite;}
 .watch-ticker-wrap{flex:1;overflow:hidden;}
-.watch-ticker{display:inline-block;white-space:nowrap;padding-right:100%;animation:tickerScroll 45s linear infinite;color:#8892ab;font-size:13px;font-weight:700;line-height:44px;}
+.watch-ticker{display:inline-block;white-space:nowrap;padding-right:100%;animation:tickerScroll 45s linear infinite;color:#8892ab;font-size:12.5px;font-weight:700;line-height:42px;}
 .watch-ticker span{padding-left:70px;}
 .watch-ticker span::before{content:'◆';color:#5b8def;margin-left:20px;font-size:10px;}
 @keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
 
 @media (max-width:1400px){
-  .watch-header-logo-wrap{width:76px;height:76px;}
-  .watch-header-title h1{font-size:22px;}
-  .watch-clock{font-size:26px;}
-  .watch-kpi-mini{min-width:74px;padding:8px 12px;}
-  .watch-kpi-mini-num{font-size:18px;}
-  .watch-kpi-mini-icon{font-size:16px;}
+  .wg-kpi{min-width:44px;padding:6px 9px;}
+  .wg-kpi-num{font-size:17px;}
+  .wg-kpi-label{font-size:8.5px;}
 }
 @media (max-width:1200px){
   .watch-grid{grid-template-columns:1fr 1fr;}
   .watch-grid section:last-child{grid-column:1/-1;max-height:340px;}
-  .watch-header{gap:12px;}
-  .watch-header-center{display:none;}
+  .wg-center{gap:12px;}
+  .wg-clock{font-size:18px;}
+  .wg-title h1{font-size:16px;}
+  .wg-title p{font-size:10px;}
+  .wg-logo{width:42px;height:42px;}
 }
 @media (max-width:900px){
-  .watch-header{flex-wrap:wrap;justify-content:center;}
-  .watch-header-right{order:-1;width:100%;justify-content:center;}
-  .watch-header-left{width:100%;justify-content:center;}
+  .watch-glass-bar{flex-wrap:wrap;gap:10px;padding:10px 14px;}
+  .wg-brand{order:1;}
+  .wg-actions{order:2;}
+  .wg-center{order:3;flex-basis:100%;justify-content:center;}
+  .wg-kpis{order:4;flex-basis:100%;justify-content:center;}
 }
 @media (max-width:700px){
   #tasksList{grid-template-columns:1fr;}
@@ -868,21 +867,15 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   .report-content{padding:22px;}
   .user-actions{justify-content:center;}
   .watch-grid{grid-template-columns:1fr;}
-  .watch-header{flex-direction:column;gap:14px;padding:14px;}
-  .watch-header-right{flex-direction:column;gap:12px;width:100%;}
-  .watch-header-brand{width:100%;justify-content:center;}
-  .watch-kpi-group{padding:4px;}
-  .watch-kpi-mini{min-width:60px;padding:6px 10px;}
-  .watch-kpi-mini-num{font-size:16px;}
-  .watch-kpi-mini-icon{font-size:14px;}
-  .watch-kpi-mini-label{font-size:9px;}
-  .watch-clock{font-size:22px;}
-  .watch-header-title h1{font-size:20px;}
-  .watch-header-logo-wrap{width:60px;height:60px;}
   .card-quick-actions{opacity:1;transform:translateY(0);}
   .watch-ticker-task{min-width:220px;}
   .watch-ticker-task .task-title{max-width:180px;font-size:12px;}
   .watch-tasks-ticker-label{padding:8px 12px;font-size:11px;}
+  .wg-kpi{min-width:38px;padding:5px 7px;}
+  .wg-kpi-num{font-size:15px;}
+  .wg-kpi-icon{font-size:12px;}
+  .wg-kpi-label{font-size:8px;}
+  .wg-clock{font-size:16px;}
 }
 </style>
 </head>
@@ -1132,8 +1125,8 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   <div id="watchPinScreen">
     <div class="watch-pin-card">
       <div class="watch-pin-logo"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK"></div>
-      <h1>EMAK Hub</h1>
-      <p>Hub to IT Dep. — قسم نظم المعلومات</p>
+      <h1>Hub to IT Dep.</h1>
+      <p>قسم نظم المعلومات — EMAK</p>
       <form id="watchPinForm">
         <input id="watchPinInput" type="password" placeholder="• • • •" maxlength="20" autocomplete="off" required>
         <button type="submit">🔓 دخول</button>
@@ -1144,79 +1137,76 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   </div>
 
   <div id="watchMainContent">
-    <!-- ✅ الرأس الجديد — الأعداد على اليسار، الشعار والساعة على اليمين -->
-    <header class="watch-header">
+    <!-- ✅ الشريط الواحد الأنيق — Glass Bar Minimal -->
+    <div class="watch-glass-bar">
 
-      <!-- ✅ الأعداد المجمعة على اليسار (3 مجموعات × 2 مربعات) -->
-      <div class="watch-header-left">
-        <!-- المجموعة 1: الإجمالي + المكتملة -->
-        <div class="watch-kpi-group">
-          <div class="watch-kpi-mini total">
-            <div class="watch-kpi-mini-icon">📋</div>
-            <div class="watch-kpi-mini-num" id="wTotal">0</div>
-            <div class="watch-kpi-mini-label">إجمالي</div>
-          </div>
-          <div class="watch-kpi-mini done-kpi">
-            <div class="watch-kpi-mini-icon">✅</div>
-            <div class="watch-kpi-mini-num" id="wDone">0</div>
-            <div class="watch-kpi-mini-label">مكتملة</div>
-          </div>
+      <!-- يمين: الشعار + العنوان -->
+      <div class="wg-brand">
+        <div class="wg-logo">
+          <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK">
         </div>
-
-        <!-- المجموعة 2: الجارية + المتأخرة -->
-        <div class="watch-kpi-group">
-          <div class="watch-kpi-mini progress-kpi">
-            <div class="watch-kpi-mini-icon">⏳</div>
-            <div class="watch-kpi-mini-num" id="wProgress">0</div>
-            <div class="watch-kpi-mini-label">جارية</div>
-          </div>
-          <div class="watch-kpi-mini overdue-kpi">
-            <div class="watch-kpi-mini-icon">⚠️</div>
-            <div class="watch-kpi-mini-num" id="wOverdue">0</div>
-            <div class="watch-kpi-mini-label">متأخرة</div>
-          </div>
-        </div>
-
-        <!-- المجموعة 3: اليوم + الفريق -->
-        <div class="watch-kpi-group">
-          <div class="watch-kpi-mini progress-kpi">
-            <div class="watch-kpi-mini-icon">🔥</div>
-            <div class="watch-kpi-mini-num" id="wToday">0</div>
-            <div class="watch-kpi-mini-label">اليوم</div>
-          </div>
-          <div class="watch-kpi-mini team-kpi">
-            <div class="watch-kpi-mini-icon">👥</div>
-            <div class="watch-kpi-mini-num" id="wTeam">0</div>
-            <div class="watch-kpi-mini-label">الفريق</div>
-          </div>
+        <div class="wg-title">
+          <h1>Hub to IT Dep.</h1>
+          <p>EMAK — نظام المتابعة</p>
         </div>
       </div>
 
-      <!-- الوسط فارغ (يستخدم للتوسيط التلقائي) -->
-      <div class="watch-header-center"></div>
-
-      <!-- ✅ اليمين — الشعار الكبير + الساعة + العنوان + الحالة -->
-      <div class="watch-header-right">
-        <div class="watch-header-brand">
-          <div class="watch-header-logo-wrap">
-            <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="watch-header-logo" alt="EMAK">
-          </div>
-          <div class="watch-header-title">
-            <h1>Hub to IT Dep.</h1>
-            <p>EMAK — نظام المتابعة</p>
-          </div>
+      <!-- وسط: مباشر + الساعة -->
+      <div class="wg-center">
+        <div class="wg-live">
+          <span class="wg-live-dot"></span>
+          <span>مباشر</span>
         </div>
-        <div class="watch-header-clock-wrap">
-          <div class="watch-clock" id="watchClock">--:--:--</div>
-          <div class="watch-date" id="watchDate">---</div>
-        </div>
-        <div class="watch-header-actions">
-          <div class="watch-live-badge"><span class="watch-live-dot"></span><span>مباشر</span></div>
-          <div class="watch-conn-status" id="watchConnStatus"><span class="watch-conn-dot"></span><span>متصل</span></div>
-          <button class="watch-btn-close" onclick="closeWatchScreen()" title="إغلاق">✕ إغلاق</button>
+        <div class="wg-clock-wrap">
+          <div class="wg-clock" id="watchClock">--:--:--</div>
+          <div class="wg-date" id="watchDate">---</div>
         </div>
       </div>
-    </header>
+
+      <!-- يسار: 6 KPIs -->
+      <div class="wg-kpis">
+        <div class="wg-kpi total">
+          <span class="wg-kpi-icon">📋</span>
+          <span class="wg-kpi-num" id="wTotal">0</span>
+          <span class="wg-kpi-label">إجمالي</span>
+        </div>
+        <div class="wg-kpi active-kpi">
+          <span class="wg-kpi-icon">⚡</span>
+          <span class="wg-kpi-num" id="wProgress">0</span>
+          <span class="wg-kpi-label">نشطة</span>
+        </div>
+        <div class="wg-kpi progress-kpi">
+          <span class="wg-kpi-icon">⏳</span>
+          <span class="wg-kpi-num" id="wWorking">0</span>
+          <span class="wg-kpi-label">جارية</span>
+        </div>
+        <div class="wg-kpi overdue-kpi">
+          <span class="wg-kpi-icon">⚠️</span>
+          <span class="wg-kpi-num" id="wOverdue">0</span>
+          <span class="wg-kpi-label">متأخرة</span>
+        </div>
+        <div class="wg-kpi done-kpi">
+          <span class="wg-kpi-icon">✅</span>
+          <span class="wg-kpi-num" id="wDone">0</span>
+          <span class="wg-kpi-label">مكتملة</span>
+        </div>
+        <div class="wg-kpi team-kpi">
+          <span class="wg-kpi-icon">👥</span>
+          <span class="wg-kpi-num" id="wTeam">0</span>
+          <span class="wg-kpi-label">الفريق</span>
+        </div>
+      </div>
+
+      <!-- يسار أقصى: متصل + إغلاق -->
+      <div class="wg-actions">
+        <div class="wg-conn" id="watchConnStatus">
+          <span class="wg-conn-dot"></span>
+          <span>متصل</span>
+        </div>
+        <button class="wg-close" onclick="closeWatchScreen()" title="إغلاق">✕</button>
+      </div>
+
+    </div>
 
     <div class="watch-grid">
       <section class="watch-panel" data-type="active">
@@ -1254,7 +1244,6 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
       </div>
     </div>
 
-    <!-- ✅ الشريط السفلي — إشعارات بدل إعلانات -->
     <footer class="watch-footer">
       <div class="watch-ticker-label">
         <span class="notif-dot"></span>
@@ -1275,7 +1264,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v8.1 — رأس جديد: أعداد على اليسار + شعار كبير
+   EMAK Hub v8.2 — Glass Bar Minimal
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -3218,7 +3207,7 @@ function stopWatchData() {
 function updateWatchClock() {
   const now = new Date();
   const time = now.toLocaleTimeString("ar-EG", { hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false });
-  const date = now.toLocaleDateString("ar-EG", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+  const date = now.toLocaleDateString("ar-EG", { weekday:"long", day:"numeric", month:"short" });
   const c = document.getElementById("watchClock");
   const d = document.getElementById("watchDate");
   if (c) c.textContent = time;
@@ -3231,19 +3220,30 @@ function watchUpdateConnection() {
   s.classList.toggle("offline", !online);
   s.querySelector("span:last-child").textContent = online ? "متصل" : "غير متصل";
 }
+
+/* ✅ الإحصائيات الجديدة - 6 أرقام مختلفة */
 function watchRenderStats() {
   const tasks = Object.values(state.allTasks);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  set("wTotal", tasks.length);
-  set("wDone", tasks.filter(t => t.status === "مكتملة").length);
-  set("wProgress", tasks.filter(t => t.status === "جاري التنفيذ").length);
-  set("wOverdue", tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length);
-  set("wToday", tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== "مكتملة"; }).length);
+  
+  const total = tasks.length;
+  const done = tasks.filter(t => t.status === "مكتملة").length;
+  const working = tasks.filter(t => t.status === "جاري التنفيذ").length;
+  const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
+  const activeNew = tasks.filter(t => t.status === "جديدة" && t.priority !== "عاجل" && t.priority !== "مهم").length;
+  
   const seenUids = new Set();
   Object.values(state.allTeam).forEach(m => {
     if (m && m.uid) seenUids.add(m.uid);
   });
-  set("wTeam", seenUids.size);
+  const teamCount = seenUids.size;
+  
+  set("wTotal", total);
+  set("wProgress", activeNew);  // نشطة (جديدة عادية)
+  set("wWorking", working);     // جارية
+  set("wOverdue", overdue);     // متأخرة
+  set("wDone", done);           // مكتملة
+  set("wTeam", teamCount);      // الفريق
 }
 
 function getTaskProgress(t) {
