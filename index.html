@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EMAK Hub — إدارة المهام</title>
+<title>EMAK IT Dep. — إدارة المهام</title>
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -1092,7 +1092,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK"></div>
-    <h1>EMAK Hub</h1>
+    <h1>EMAK IT Dep.</h1>
     <p>نظام إدارة المهام — قسم نظم المعلومات</p>
     <form id="loginForm">
       <div class="input-group">
@@ -1138,7 +1138,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
     <div class="header-brand">
       <div class="header-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="header-logo" alt="EMAK"></div>
       <div>
-        <h1>EMAK Hub</h1>
+        <h1>EMAK IT Dep.</h1>
         <div class="subtitle">نظم معلومات إيماك</div>
       </div>
     </div>
@@ -1332,7 +1332,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   <div id="watchPinScreen">
     <div class="watch-pin-card">
       <div class="watch-pin-logo"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK"></div>
-      <h1>Hub to IT Dep.</h1>
+      <h1>EMAK IT Dep.</h1>
       <p>قسم نظم المعلومات — EMAK</p>
       <form id="watchPinForm">
         <input id="watchPinInput" type="password" placeholder="• • • •" maxlength="20" autocomplete="off" required>
@@ -1349,7 +1349,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
     <div class="w-bar-top">
       <!-- يمين: العنوان -->
       <div class="w-bar-title">
-        <h1>Hub to IT Dep.</h1>
+        <h1>EMAK IT Dep.</h1>
         <p>EMAK — نظام المتابعة</p>
       </div>
 
@@ -1481,7 +1481,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
       <div class="w-news-label">🔔 إشعارات</div>
       <div class="w-news-track-wrap">
         <div class="w-news-track" id="wNewsTrack">
-          <span>مرحباً بكم في لوحة المتابعة — Hub to IT Dep.</span>
+          <span>مرحباً بكم في لوحة المتابعة — EMAK IT Dep.</span>
         </div>
       </div>
     </div>
@@ -1493,7 +1493,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v9.1 — Dashboard v2 + Sub Notifications
+   EMAK IT Dep. v9.1 — Dashboard v2 + Sub Notifications
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -2939,7 +2939,7 @@ function openReport() {
   const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
   document.getElementById("reportBody").innerHTML = `
     <div class="report-content">
-      <h1 style="color:#1e3a8a;font-size:30px;margin-bottom:10px;">EMAK Hub</h1>
+      <h1 style="color:#1e3a8a;font-size:30px;margin-bottom:10px;">EMAK IT Dep.</h1>
       <p style="color:#64748b;">تقرير المهام — ${today}</p>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0;">
         <div style="background:#f1f5f9;padding:18px;border-radius:14px;text-align:center;border-right:4px solid #1e3a8a;"><div style="font-size:28px;font-weight:900;color:#1e3a8a;">${entries.length}</div><div style="font-size:12px;color:#64748b;">إجمالي</div></div>
@@ -2953,7 +2953,7 @@ function openReport() {
           <div style="font-size:15px;font-weight:800;margin-bottom:6px;">${escapeHtml(t.title)}</div>
           <div style="font-size:12px;color:#64748b;">👤 ${escapeHtml(t.assignee || "—")} • ${escapeHtml(t.status)} • ${escapeHtml(t.priority || "عادي")}</div>
         </div>`).join("")}
-      <div style="margin-top:34px;padding-top:18px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;">تم إنشاء التقرير تلقائياً بواسطة EMAK Hub — ${today}</div>
+      <div style="margin-top:34px;padding-top:18px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;">تم إنشاء التقرير تلقائياً بواسطة EMAK IT Dep. — ${today}</div>
     </div>`;
   document.getElementById("reportOverlay").classList.add("active");
   document.body.style.overflow = "hidden";
@@ -2974,7 +2974,7 @@ async function downloadPDF() {
     pdf.setFillColor(30, 58, 138); pdf.rect(0, 0, pageW, 25, "F");
     if (state.logoDataUrl) { try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); } catch(e){} }
     pdf.setTextColor(255,255,255); pdf.setFontSize(20);
-    pdf.text("EMAK Hub", pageW - 40, 12, { align:"right" });
+    pdf.text("EMAK IT Dep.", pageW - 40, 12, { align:"right" });
     pdf.setFontSize(11); pdf.text("تقرير المهام", pageW - 40, 19, { align:"right" });
     y = 35;
     const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
@@ -3354,7 +3354,7 @@ function wRenderNewsTicker() {
   if (doneToday > 0) items.push(`✅ ${doneToday} مهمة أُنجزت هذا الأسبوع`);
   state.allActivity.slice(0, 5).forEach(a => { items.push(`📌 ${a.byName || "—"}: ${a.text}`); });
   if (items.length === 0) {
-    items.push("مرحباً بكم في لوحة المتابعة — Hub to IT Dep.");
+    items.push("مرحباً بكم في لوحة المتابعة — EMAK IT Dep.");
     items.push("📊 يتم التحديث تلقائياً كل لحظة");
   }
   track.innerHTML = items.map(t => `<span>${escapeHtml(t)}</span>`).join("");
