@@ -1044,7 +1044,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 <div id="toast"></div>
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v15.0 — Final Professional Edition
+   EMAK IT Dep. v16.0 — Final Edition
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1059,7 +1059,6 @@ import {
 window.addEventListener("error", (e) => console.error("[EMAK]", e.error || e.message));
 window.addEventListener("unhandledrejection", (e) => console.error("[EMAK]", e.reason));
 
-/* ============ CONFIG ============ */
 const firebaseConfig = {
   apiKey: "AIzaSyBagaYYgtQgAGyntE1go9IsGy7T85cvuSY",
   authDomain: "emak-tasks.firebaseapp.com",
@@ -1102,13 +1101,12 @@ const state = {
   watchData: { tasks: {}, team: {}, activity: [] },
   watchUnsubs: { tasks: null, team: null, activity: null },
   audioContext: null,
-  watchCharts: { line: null, doughnut: null },
+  watchCharts: { doughnut: null },
   watchKnownTaskIds: new Set(), watchFirstLoad: false,
   _daysCache: new Map(), _daysCacheDay: null,
   desktopNotifEnabled: false
 };
 
-/* ============ THEME ============ */
 function initTheme() {
   const saved = localStorage.getItem("emak_theme") || "dark";
   state.currentTheme = saved;
@@ -1147,7 +1145,6 @@ function updateChartsTheme() {
   Object.values(state.watchCharts).forEach(updateChart);
 }
 
-/* ============ UTILITIES ============ */
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c =>
     ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
@@ -1213,15 +1210,13 @@ function swalConfirm(title, text="لا يمكن التراجع!") {
   return Swal.fire({ icon:"warning", title, text, showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580", background: themeBg(), color: themeFg() });
 }
 
-/* ============ SOUND ============ */
 function playNotificationSound(priority = "normal") {
   try {
     if (!state.audioContext) state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const ctx = state.audioContext;
     if (ctx.state === "suspended") ctx.resume();
     const now = ctx.currentTime;
-    const notes = priority === "urgent"
-      ? [{ f: 880, t: 0 }, { f: 660, t: 0.15 }, { f: 880, t: 0.3 }]
+    const notes = priority === "urgent" ? [{ f: 880, t: 0 }, { f: 660, t: 0.15 }, { f: 880, t: 0.3 }]
       : priority === "important" ? [{ f: 660, t: 0 }, { f: 880, t: 0.15 }]
       : [{ f: 523, t: 0 }, { f: 659, t: 0.1 }];
     notes.forEach(({ f, t }) => {
@@ -1237,7 +1232,6 @@ function playNotificationSound(priority = "normal") {
   } catch (e) {}
 }
 
-/* ============ DESKTOP NOTIFICATIONS ============ */
 async function requestDesktopNotifPermission() {
   if (!('Notification' in window)) return;
   if (Notification.permission === 'default') { try { await Notification.requestPermission(); } catch(e){} }
@@ -1248,7 +1242,6 @@ function showDesktopNotif(title, body) {
   try { new Notification(title, { body, icon: LOGO_URL, tag: 'emak-task' }); } catch(e){}
 }
 
-/* ============ SUB NOTIFICATIONS ============ */
 function showSubNotification(task) {
   const container = document.getElementById("subNotifications");
   if (!container) return;
@@ -1332,7 +1325,6 @@ window.closeWatchSubNotification = function(notifId) {
   setTimeout(() => notif.remove(), 400);
 };
 
-/* ============ LOGO + SAFE WRITE ============ */
 async function loadLogoAsBase64() {
   try {
     const res = await fetch(LOGO_URL, { mode:"cors" });
@@ -1366,7 +1358,6 @@ async function safeWrite(operation, maxRetries = 3) {
   throw lastError;
 }
 
-/* ============ BACKUPS ============ */
 async function createBackup() {
   if (!state.currentUser || !state.currentUserProfile) return;
   try {
@@ -1396,7 +1387,6 @@ function startBackupTimer() {
   state.backupTimer = setInterval(() => { if (state.currentUser) createBackup(); }, BACKUP_INTERVAL);
 }
 
-/* ============ LOGIN ============ */
 window.togglePassword = function() {
   const inp = document.getElementById("loginPassword");
   if (!inp) return;
@@ -1605,7 +1595,6 @@ function startRealtimeListeners() {
       state.allUsers = snap.val() || {};
       if (document.getElementById("usersView").classList.contains("active")) renderUsersList();
     }, (err) => {});
-    // ✅ استماع لسجل المهام المحذوفة نهائياً
     state.unsubs.deletedTasks = onValue(ref(db, "deleted_tasks"), (snap) => {
       state.allDeletedTasks = snap.val() || {};
     }, (err) => {});
@@ -1647,7 +1636,6 @@ function setupOnlinePresence() {
   } catch(e) {}
 }
 
-/* ============ ADD TASK ============ */
 function setupAddTaskForm() {
   const form = document.getElementById("addTaskForm");
   if (!form) return;
@@ -1679,7 +1667,6 @@ function setupAddTaskForm() {
   };
 }
 
-/* ============ TASK OPS ============ */
 async function changeStatus(taskId, newStatus) {
   if (!state.currentUserProfile) return;
   const t = state.allTasks[taskId]; if (!t) return;
@@ -1772,14 +1759,12 @@ async function addComment(taskId, fromModal = false) {
 }
 window.addComment = addComment;
 
-/* ✅ حذف مهمة — يحفظ نسخة في deleted_tasks */
 async function deleteTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.allTasks[taskId]; if (!t) return;
   const r = await swalConfirm("حذف المهمة؟", `"${t.title}"`);
   if (!r.isConfirmed) return;
   try {
-    // حفظ نسخة من المهمة في deleted_tasks
     await safeWrite(() => set(ref(db, "deleted_tasks/" + taskId), {
       ...t,
       deletedAt: Date.now(),
@@ -1789,7 +1774,7 @@ async function deleteTask(taskId) {
     await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
     await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId, t.title);
     closeModal();
-    showToast("🗑️ تم الحذف (يمكن استرجاعه من السجل)", "success");
+    showToast("🗑️ تم الحذف", "success");
   } catch (err) { swalError("فشل", err.message); }
 }
 window.deleteTask = deleteTask;
@@ -1881,11 +1866,6 @@ async function logActivity(type, text, taskId=null, taskTitle="") {
   } catch(e) {}
 }
 
-/* ============================================================
-   ✅ إدارة سجل المحذوفات — خياران للمدير
-   ============================================================ */
-
-// الخيار 1: مسح سجل أحداث الحذف من تبويب النشاطات فقط
 window.clearDeletedHistory = async function() {
   if (!state.isAdmin) return swalError("غير مصرح — للمدير فقط");
   const r = await swalConfirm("مسح سجل الحذف من النشاطات؟", "سيتم مسح أحداث الحذف فقط، المهام المحذوفة تبقى في قاعدة البيانات للاسترجاع.");
@@ -1907,23 +1887,17 @@ window.clearDeletedHistory = async function() {
   }
 };
 
-// ✅ الخيار 2: حذف المهام المحذوفة نهائياً من قاعدة البيانات
 window.purgeDeletedTasks = async function() {
   if (!state.isAdmin) return swalError("غير مصرح — للمدير فقط");
   const deletedCount = Object.keys(state.allDeletedTasks || {}).length;
   if (deletedCount === 0) return showToast("لا توجد مهام محذوفة للتنظيف", "info");
-  
   const r = await swalConfirm(
     "⚠️ حذف المهام المحذوفة نهائياً؟",
     `سيتم حذف ${deletedCount} مهمة محذوفة من قاعدة البيانات نهائياً. لا يمكن التراجع!`
   );
   if (!r.isConfirmed) return;
-  
   try {
-    // حذف جميع المهام من deleted_tasks
     await safeWrite(() => remove(ref(db, "deleted_tasks")));
-    
-    // حذف أحداث الحذف من activity
     const snap = await get(ref(db, "activity"));
     const activities = snap.val() || {};
     const deleteIds = Object.entries(activities)
@@ -1932,7 +1906,6 @@ window.purgeDeletedTasks = async function() {
     for (const id of deleteIds) {
       await remove(ref(db, "activity/" + id));
     }
-    
     await logActivity("history_cleared", `حذف نهائي لـ ${deletedCount} مهمة محذوفة`);
     showToast(`⚡ تم حذف ${deletedCount} مهمة نهائياً`, "success");
   } catch (err) {
@@ -1948,7 +1921,6 @@ function updateActivityButtons() {
   if (btnPurge) btnPurge.style.display = display;
 }
 
-/* ============ MODAL ============ */
 function openModal(taskId) {
   state.openTaskId = taskId;
   renderModal(taskId);
@@ -2015,7 +1987,6 @@ function renderModal(taskId) {
     </div>`;
 }
 
-/* ============ MAIN RENDER ============ */
 function scheduleRender() {
   if (state.renderScheduled) return;
   state.renderScheduled = true;
@@ -2064,8 +2035,6 @@ function renderCharts() {
   const newT = entries.filter(t => t.status === "جديدة").length;
   const isLight = state.currentTheme === "light";
   const legendColor = isLight ? "#475569" : "#94a3b8";
-  const gridColor = isLight ? "rgba(15,23,42,.06)" : "rgba(255,255,255,.05)";
-  const tickColor = "#64748b";
   const ctx1 = document.getElementById("chartStatus");
   if (ctx1) {
     const data = [done, progress, newT];
@@ -2075,23 +2044,6 @@ function renderCharts() {
         type:"doughnut",
         data:{ labels:["مكتملة","جارية","جديدة"], datasets:[{ data, backgroundColor:["#2dd4a3","#f5a524","#5b8def"], borderColor:"transparent", borderWidth:0 }] },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:"bottom", labels:{ color:legendColor, font:{ family:"Cairo", size:12, weight:"700" }, padding:14, usePointStyle:true } } } }
-      });
-    }
-  }
-  const ctx2 = document.getElementById("chartProductivity");
-  if (ctx2) {
-    const days = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-    const counts = [0,0,0,0,0,0,0];
-    entries.filter(t => t.status === "مكتملة" && isThisWeek(t.updatedAt)).forEach(t => { const d = new Date(t.updatedAt).getDay(); counts[d]++; });
-    const reordered = [counts[6], counts[0], counts[1], counts[2], counts[3], counts[4], counts[5]];
-    if (state.charts.productivity) { state.charts.productivity.data.datasets[0].data = reordered; state.charts.productivity.update('none'); }
-    else {
-      state.charts.productivity = new Chart(ctx2, {
-        type:"bar",
-        data:{ labels:days, datasets:[{ label:"مهام مكتملة", data:reordered, backgroundColor:"#5b8def", borderRadius:10, borderSkipped:false, maxBarThickness:50 }] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } },
-          scales:{ y:{ beginAtZero:true, ticks:{ color:tickColor, stepSize:1, font:{ family:"Cairo", weight:"700" } }, grid:{ color:gridColor } },
-            x:{ ticks:{ color:tickColor, font:{ family:"Cairo", weight:"700" } }, grid:{ display:false } } } }
       });
     }
   }
@@ -2305,7 +2257,6 @@ function renderActivity() {
   `).join("");
 }
 
-/* ============ USERS ============ */
 function renderUsersStats() {
   const users = Object.values(state.allUsers);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -2487,7 +2438,6 @@ window.openChangePasswordModal = async () => {
   } catch (err) { swalError("فشل", err.message); }
 };
 
-/* ============ REPORT ============ */
 function openReport() {
   const entries = Object.entries(state.allTasks);
   const done = entries.filter(([_, t]) => t.status === "مكتملة");
@@ -2632,7 +2582,6 @@ window.exportCSV = () => {
   showToast("📊 تم", "success");
 };
 
-/* ============ WATCH SCREEN ============ */
 window.openWatchFromLogin = async function() {
   const { value: password } = await Swal.fire({
     title: "🖥️ شاشة العرض",
@@ -2793,11 +2742,11 @@ async function startWatchData() {
 
   if (state.watchChartsTimer) clearInterval(state.watchChartsTimer);
   state.watchChartsTimer = setInterval(() => {
-    if (state.watchMode) { wRenderLineChart(); wRenderDoughnutChart(); }
+    if (state.watchMode) { wRenderDoughnutChart(); }
   }, CHARTS_REFRESH_INTERVAL);
 
   wRenderStats(); wRenderTasks(); wRenderCompleted(); wRenderTopPerformers();
-  wRenderLineChart(); wRenderDoughnutChart(); wRenderNewsTicker();
+  wRenderDoughnutChart(); wRenderNewsTicker();
 }
 
 function stopWatchData() {
@@ -2870,7 +2819,7 @@ function wRenderCompleted() {
     .slice(0, 12);
   if (countEl) countEl.textContent = completed.length;
   if (completed.length === 0) {
-    wrap.innerHTML = `<div class="w-empty-state" style="padding:30px;"><div class="w-empty-icon" style="font-size:44px;">🎉</div><div class="w-empty-text" style="font-size:14px;">لا توجد مهام مكتملة بعد</div></div>`;
+    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;"><div class="w-empty-icon" style="font-size:32px;">🎉</div><div class="w-empty-text" style="font-size:11px;">لا توجد مهام مكتملة</div></div>`;
     return;
   }
   wrap.innerHTML = completed.map(([id, t]) => `
@@ -2881,58 +2830,6 @@ function wRenderCompleted() {
         <span class="w-completed-time">✓ ${timeAgo(t.updatedAt)}</span>
       </div>
     </div>`).join("");
-}
-
-function wRenderLineChart() {
-  const canvas = document.getElementById("watchLineChart");
-  if (!canvas) return;
-  const entries = Object.values(state.watchData.tasks);
-  const days = ["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"];
-  const doneCounts = [0,0,0,0,0,0,0];
-  const createdCounts = [0,0,0,0,0,0,0];
-  const now = new Date();
-  for (let i = 0; i < 7; i++) {
-    const dayStart = new Date(now);
-    dayStart.setDate(now.getDate() - (6 - i));
-    dayStart.setHours(0,0,0,0);
-    const dayEnd = new Date(dayStart);
-    dayEnd.setHours(23,59,59,999);
-    const mapIndex = dayStart.getDay() === 6 ? 0 : dayStart.getDay() + 1;
-    entries.forEach(t => {
-      if (t.status === "مكتملة" && isValidTs(t.updatedAt) && t.updatedAt >= dayStart.getTime() && t.updatedAt <= dayEnd.getTime()) doneCounts[mapIndex]++;
-      if (isValidTs(t.createdAt) && t.createdAt >= dayStart.getTime() && t.createdAt <= dayEnd.getTime()) createdCounts[mapIndex]++;
-    });
-  }
-  if (state.watchCharts.line) {
-    state.watchCharts.line.data.datasets[0].data = doneCounts;
-    state.watchCharts.line.data.datasets[1].data = createdCounts;
-    try { state.watchCharts.line.update('none'); } catch(e) {}
-  } else {
-    const isLight = state.currentTheme === "light";
-    const legendColor = isLight ? "#475569" : "#94a3b8";
-    const gridColor = isLight ? "rgba(15,23,42,.06)" : "rgba(255,255,255,.05)";
-    state.watchCharts.line = new Chart(canvas, {
-      type: "line",
-      data: {
-        labels: days,
-        datasets: [
-          { label: "مكتملة", data: doneCounts, borderColor: "#2dd4a3", backgroundColor: "rgba(45,212,163,.2)", borderWidth: 3, tension: .4, fill: true, pointBackgroundColor: "#2dd4a3", pointBorderColor: isLight ? "#ffffff" : "#050810", pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 8 },
-          { label: "جديدة", data: createdCounts, borderColor: "#5b8def", backgroundColor: "rgba(91,141,239,.15)", borderWidth: 3, tension: .4, fill: true, pointBackgroundColor: "#5b8def", pointBorderColor: isLight ? "#ffffff" : "#050810", pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 8 }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { position: "top", align: "end", labels: { color: legendColor, font: { family: "Cairo", size: 11, weight: "700" }, padding: 12, usePointStyle: true, pointStyle: "circle", boxWidth: 10, boxHeight: 10 } },
-          tooltip: { backgroundColor: "rgba(15,20,32,.95)", borderColor: "rgba(91,141,239,.5)", borderWidth: 1, titleColor: "#f8fafc", bodyColor: "#94a3b8", titleFont: { family: "Cairo", size: 12, weight: "800" }, bodyFont: { family: "Cairo", size: 11, weight: "600" }, padding: 12, cornerRadius: 10 }
-        },
-        scales: {
-          y: { beginAtZero: true, ticks: { color: "#64748b", stepSize: 1, font: { family: "JetBrains Mono", size: 10, weight: "600" } }, grid: { color: gridColor } },
-          x: { ticks: { color: "#64748b", font: { family: "Cairo", size: 11, weight: "700" } }, grid: { display: false } }
-        }
-      }
-    });
-  }
 }
 
 function wRenderDoughnutChart() {
@@ -2980,7 +2877,7 @@ function wRenderTopPerformers() {
       performers[t.assigneeId].count++;
     }
   });
-  const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 5);
+  const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 8);
   if (countEl) countEl.textContent = sorted.length;
   if (sorted.length === 0) {
     wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;"><div class="w-empty-icon" style="font-size:32px;">🏆</div><div class="w-empty-text" style="font-size:11px;">لا توجد إنجازات</div></div>`;
@@ -3059,15 +2956,14 @@ function wRenderTasks() {
     return;
   }
   const html = filtered.map(([id, t], idx) => wTaskRowHtml(id, t, idx)).join("");
-  const hasUrgent = filtered.some(([_, t]) => t.priority === "عاجل" && t.status !== "مكتملة");
-  if (hasUrgent || filtered.length <= 4) {
-    body.classList.remove("auto-scroll");
-    body.innerHTML = `<div class="w-scroll-track" style="animation:none;">${html}</div>`;
-  } else {
+  if (filtered.length > 3) {
     body.classList.add("auto-scroll");
     body.innerHTML = `<div class="w-scroll-track">${html}${html}</div>`;
     const duration = Math.min(SCROLL_MAX_SECONDS, Math.max(SCROLL_MIN_SECONDS, filtered.length * SCROLL_PER_TASK_SECONDS));
     body.style.setProperty("--scroll-duration", duration + "s");
+  } else {
+    body.classList.remove("auto-scroll");
+    body.innerHTML = `<div class="w-scroll-track" style="animation:none;">${html}</div>`;
   }
 }
 
@@ -3076,30 +2972,24 @@ function wRenderNewsTicker() {
   if (!track) return;
   const items = [];
   const tasks = Object.values(state.watchData.tasks);
-  
   const urgentTasks = tasks
     .filter(t => t.status !== "مكتملة" && t.priority === "عاجل")
     .sort((a, b) => (daysRemaining(a.dueDate) ?? 999) - (daysRemaining(b.dueDate) ?? 999))
     .slice(0, 4);
-  
   urgentTasks.forEach(t => {
     const dueText = t.dueDate ? ` — ${dueLabel(t.dueDate)}` : "";
     items.push(`🔴 عاجل: ${t.title}${dueText} (${t.assignee || "—"})`);
   });
-  
   const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
   const today = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== "مكتملة"; }).length;
   const doneWeek = tasks.filter(t => t.status === "مكتملة" && isThisWeek(t.updatedAt)).length;
-  
   if (overdue > 0) items.push(`⚠️ ${overdue} مهمة متأخرة`);
   if (today > 0) items.push(`🔥 ${today} مهمة تستحق اليوم`);
   if (doneWeek > 0) items.push(`✅ ${doneWeek} مهمة أُنجزت هذا الأسبوع`);
-  
   state.watchData.activity
     .filter(a => a.type !== "task_deleted" && a.type !== "task_cleared")
     .slice(0, 3)
     .forEach(a => { items.push(`📌 ${a.byName || "—"}: ${a.text}`); });
-  
   if (items.length === 0) {
     items.push("مرحباً بكم — EMAK IT Dep.");
     items.push("📊 يتم التحديث تلقائياً كل لحظة");
@@ -3110,7 +3000,6 @@ function wRenderNewsTicker() {
   track.innerHTML = items.map(t => `<span>${escapeHtml(t)}</span>`).join("");
 }
 
-/* ============ INIT ============ */
 function initializeApp_() {
   initTheme();
   setupLoginHandlers();
