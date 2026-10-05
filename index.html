@@ -35,8 +35,8 @@ body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;background:var(--bg);color
 mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius:4px;}
 
 @keyframes urgentFlash{
-  0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,0),0 0 10px rgba(240,75,92,.3);border-color:rgba(240,75,92,.5);background:var(--bg-2);}
-  50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 35px rgba(240,75,92,.9),0 0 60px rgba(240,75,92,.5);border-color:var(--urgent);background:linear-gradient(135deg,rgba(240,75,92,.08),var(--bg-2));}
+  0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,0),0 0 10px rgba(240,75,92,.3);border-color:rgba(240,75,92,.5);}
+  50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 35px rgba(240,75,92,.9),0 0 60px rgba(240,75,92,.5);border-color:var(--urgent);}
 }
 @keyframes urgentPulseTop{0%,100%{opacity:1;}50%{opacity:.4;}}
 @keyframes urgentBadgeBlink{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:.7;}}
@@ -51,6 +51,7 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 ::-webkit-scrollbar-thumb{background:var(--bg-4);border-radius:5px;border:2px solid transparent;background-clip:padding-box;}
 ::-webkit-scrollbar-thumb:hover{background:var(--primary);background-clip:padding-box;}
 
+/* Login */
 #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at top,#1a3a7a 0%,#0a1020 55%,#070a13 100%);position:relative;overflow:hidden;}
 #loginScreen::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 25%,rgba(91,141,239,.2),transparent 45%),radial-gradient(circle at 85% 75%,rgba(45,212,163,.15),transparent 45%);}
 .login-card{background:rgba(15,20,32,.92);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);padding:48px 40px 40px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 30px 100px rgba(0,0,0,.7);position:relative;z-index:1;animation:cardIn .6s cubic-bezier(.16,1,.3,1);}
@@ -103,10 +104,11 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 .loading-bar-fill{height:100%;width:30%;background:linear-gradient(90deg,#5b8def,#2dd4a3);border-radius:4px;animation:loadingBar 1.4s ease-in-out infinite;}
 @keyframes loadingBar{0%{width:10%;margin-right:0;}50%{width:60%;margin-right:20%;}100%{width:10%;margin-right:90%;}}
 
+/* Main */
 #mainScreen{display:none;}
 header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap;}
 .header-brand{display:flex;align-items:center;gap:16px;}
-.header-logo-wrap{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(91,141,239,.2),rgba(45,212,163,.1));padding:4px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--border-strong),0 0 20px var(--primary-glow);transition:all .3s;}
+.header-logo-wrap{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(91,141,239,.2),rgba(45,212,163,.1));padding:4px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--border-strong),0 0 20px var(--primary-glow);}
 .header-logo{width:100%;height:100%;object-fit:contain;border-radius:12px;background:var(--bg);padding:5px;}
 .header-brand h1{font-size:21px;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--primary),var(--success));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .header-brand .subtitle{font-size:11px;color:var(--text-2);margin-top:4px;font-weight:600;}
@@ -131,7 +133,6 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .nav-btn{background:transparent;color:var(--text-2);border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;white-space:nowrap;transition:all .25s;display:inline-flex;align-items:center;gap:6px;}
 .nav-btn:hover{background:var(--bg-3);color:var(--text);}
 .nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 6px 20px var(--primary-glow);}
-
 .nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff !important;border:1px solid rgba(168,85,247,.6) !important;box-shadow:0 0 0 0 rgba(168,85,247,.7),0 4px 16px rgba(168,85,247,.4);animation:watchBtnPulse 2.5s ease-in-out infinite;position:relative;padding-left:16px;font-weight:800;margin-right:auto;}
 @keyframes watchBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.7),0 4px 16px rgba(168,85,247,.4);}50%{box-shadow:0 0 0 10px rgba(168,85,247,0),0 4px 24px rgba(168,85,247,.6);}}
 .nav-btn.watch-highlight:hover{background:linear-gradient(135deg,#9333ea 0%,#6d28d9 100%);transform:translateY(-2px) scale(1.03);animation:none;box-shadow:0 0 25px rgba(168,85,247,.8),0 8px 30px rgba(168,85,247,.5);}
@@ -433,11 +434,14 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 #saveIndicator{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--bg-glass);backdrop-filter:blur(20px);color:var(--text);padding:10px 20px;border-radius:24px;font-size:12px;font-weight:800;box-shadow:var(--shadow);z-index:9998;border:1.5px solid var(--border);opacity:0;transition:.3s;}
 
+/* ============================================================
+   WATCH SCREEN v3 — التصميم المحسّن الشامل
+   ============================================================ */
 #watchScreen{display:none;position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;}
 #watchScreen.active{display:block;animation:fadeIn .5s;}
 
 .watch-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
-.watch-orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.3;animation:orbFloat 22s ease-in-out infinite;}
+.watch-orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.25;animation:orbFloat 22s ease-in-out infinite;}
 .watch-orb.o1{width:600px;height:600px;background:radial-gradient(circle,#5b8def 0%,transparent 70%);top:-150px;right:-150px;}
 .watch-orb.o2{width:700px;height:700px;background:radial-gradient(circle,#2dd4a3 0%,transparent 70%);bottom:-200px;left:-200px;animation-delay:-8s;}
 .watch-orb.o3{width:500px;height:500px;background:radial-gradient(circle,#f04b5c 0%,transparent 70%);top:40%;left:40%;animation-delay:-16s;}
@@ -458,62 +462,92 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 #watchPinError{color:#f04b5c;font-size:13px;min-height:20px;font-weight:700;}
 .watch-pin-hint{color:#5b6580;font-size:12px;margin-top:18px;font-weight:600;}
 
+/* Main Content Layout */
 #watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto auto;gap:14px;padding:14px;}
 #watchMainContent.active{display:grid;}
 
-.watch-header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding:16px 28px;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:20px;box-shadow:0 4px 40px rgba(0,0,0,.5);}
-.watch-header-right{display:flex;align-items:center;gap:18px;}
-.watch-header-logo-wrap{width:66px;height:66px;border-radius:20px;padding:4px;background:linear-gradient(135deg,rgba(91,141,239,.25),rgba(45,212,163,.15));box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 30px rgba(91,141,239,.5);}
-.watch-header-logo{width:100%;height:100%;object-fit:contain;border-radius:16px;background:#050810;padding:7px;}
-.watch-header-title h1{font-size:28px;font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.watch-header-title p{font-size:12px;color:#8892ab;margin-top:6px;font-weight:600;}
-.watch-header-center{display:flex;align-items:center;gap:20px;justify-content:center;}
-.watch-live-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(240,75,92,.15);border:1.5px solid rgba(240,75,92,.4);border-radius:22px;font-size:12px;font-weight:900;color:#f04b5c;letter-spacing:1.5px;}
-.watch-live-dot{width:9px;height:9px;border-radius:50%;background:#f04b5c;box-shadow:0 0 16px #f04b5c;animation:livePulse 1.5s ease-in-out infinite;}
+/* Header */
+.watch-header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding:14px 24px;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:18px;box-shadow:0 4px 40px rgba(0,0,0,.5);}
+.watch-header-right{display:flex;align-items:center;gap:16px;}
+.watch-header-logo-wrap{width:60px;height:60px;border-radius:18px;padding:4px;background:linear-gradient(135deg,rgba(91,141,239,.25),rgba(45,212,163,.15));box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 30px rgba(91,141,239,.5);}
+.watch-header-logo{width:100%;height:100%;object-fit:contain;border-radius:14px;background:#050810;padding:6px;}
+.watch-header-title h1{font-size:26px;font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.watch-header-title p{font-size:11px;color:#8892ab;margin-top:4px;font-weight:600;}
+.watch-header-center{display:flex;align-items:center;gap:18px;justify-content:center;}
+.watch-live-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;background:rgba(240,75,92,.15);border:1.5px solid rgba(240,75,92,.4);border-radius:22px;font-size:11px;font-weight:900;color:#f04b5c;letter-spacing:1.5px;}
+.watch-live-dot{width:8px;height:8px;border-radius:50%;background:#f04b5c;box-shadow:0 0 16px #f04b5c;animation:livePulse 1.5s ease-in-out infinite;}
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.4);}}
-.watch-clock{font-size:32px;font-weight:900;font-family:'Courier New',monospace;color:#5b8def;letter-spacing:3px;text-shadow:0 0 24px rgba(91,141,239,.7);}
-.watch-date{font-size:12px;color:#8892ab;text-align:center;font-weight:600;}
-.watch-header-left{display:flex;align-items:center;gap:12px;justify-content:flex-end;}
-.watch-conn-status{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:rgba(45,212,163,.15);border:1.5px solid rgba(45,212,163,.4);border-radius:22px;font-size:12px;font-weight:800;color:#2dd4a3;}
+.watch-clock{font-size:30px;font-weight:900;font-family:'Courier New',monospace;color:#5b8def;letter-spacing:3px;text-shadow:0 0 24px rgba(91,141,239,.7);}
+.watch-date{font-size:11px;color:#8892ab;text-align:center;font-weight:600;}
+.watch-header-left{display:flex;align-items:center;gap:10px;justify-content:flex-end;}
+.watch-conn-status{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;background:rgba(45,212,163,.15);border:1.5px solid rgba(45,212,163,.4);border-radius:22px;font-size:11px;font-weight:800;color:#2dd4a3;}
 .watch-conn-status.offline{background:rgba(240,75,92,.15);border-color:rgba(240,75,92,.4);color:#f04b5c;}
-.watch-conn-dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor;animation:livePulse 2s ease-in-out infinite;}
-.watch-btn-close{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);color:#eef2f9;padding:12px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;transition:all .25s;}
+.watch-conn-dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor;animation:livePulse 2s ease-in-out infinite;}
+.watch-btn-close{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);color:#eef2f9;padding:11px 16px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:800;font-family:inherit;transition:all .25s;}
 .watch-btn-close:hover{background:#f04b5c;color:#fff;border-color:#f04b5c;transform:translateY(-2px);}
 
-.watch-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;}
-.watch-stat{display:flex;align-items:center;gap:16px;padding:18px 22px;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:18px;position:relative;overflow:hidden;transition:all .3s;}
-.watch-stat::before{content:'';position:absolute;top:0;right:0;left:0;height:4px;border-radius:18px 18px 0 0;}
+/* Stats */
+.watch-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+.watch-stat{display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:16px;position:relative;overflow:hidden;transition:all .3s;}
+.watch-stat::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;border-radius:16px 16px 0 0;}
 .watch-stat.total::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
 .watch-stat.done::before{background:linear-gradient(90deg,#2dd4a3,#22b388);}
 .watch-stat.progress::before{background:linear-gradient(90deg,#f5a524,#d97706);}
 .watch-stat.overdue::before{background:linear-gradient(90deg,#f04b5c,#c81e3c);}
 .watch-stat.today::before{background:linear-gradient(90deg,#a855f7,#7c3aed);}
 .watch-stat.team::before{background:linear-gradient(90deg,#06b6d4,#0891b2);}
-.watch-stat-icon{width:52px;height:52px;border-radius:14px;background:rgba(35,43,66,.9);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
-.watch-stat-num{font-size:34px;font-weight:900;line-height:1;margin-bottom:5px;letter-spacing:-1.5px;}
+.watch-stat-icon{width:46px;height:46px;border-radius:12px;background:rgba(35,43,66,.9);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.watch-stat-num{font-size:28px;font-weight:900;line-height:1;margin-bottom:3px;letter-spacing:-1px;}
 .watch-stat.total .watch-stat-num{color:#5b8def;}
 .watch-stat.done .watch-stat-num{color:#2dd4a3;}
 .watch-stat.progress .watch-stat-num{color:#f5a524;}
 .watch-stat.overdue .watch-stat-num{color:#f04b5c;}
 .watch-stat.today .watch-stat-num{color:#a855f7;}
 .watch-stat.team .watch-stat-num{color:#06b6d4;}
-.watch-stat-label{font-size:12px;color:#8892ab;font-weight:700;}
+.watch-stat-label{font-size:11px;color:#8892ab;font-weight:700;}
 
-.watch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;min-height:0;}
-.watch-panel{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:20px;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
-.watch-panel-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(35,43,66,.35);}
-.watch-panel-header h2{font-size:16px;font-weight:900;color:#eef2f9;}
-.watch-panel-count{background:rgba(91,141,239,.15);color:#5b8def;padding:5px 14px;border-radius:14px;font-size:13px;font-weight:900;border:1px solid rgba(91,141,239,.25);}
+/* Grid + Panels */
+.watch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;min-height:0;}
+.watch-panel{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:18px;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
 
-/* ============ لوحة المهام مع التمرير التلقائي ============ */
-.watch-panel-body{flex:1;overflow:hidden;padding:14px;position:relative;}
-.watch-panel-body::-webkit-scrollbar{width:6px;}
-.watch-panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
+/* ✅ رأس اللوحة المُحسَّن — يحتوي على العنوان والعدد */
+.watch-panel-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 18px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(35,43,66,.35);
+  position:relative;
+  flex-shrink:0;
+}
+.watch-panel-header::before{
+  content:'';
+  position:absolute;
+  top:0;right:0;left:0;height:3px;
+  border-radius:18px 18px 0 0;
+}
+.watch-panel[data-type="active"] .watch-panel-header::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
+.watch-panel[data-type="urgent"] .watch-panel-header::before{background:linear-gradient(90deg,#f04b5c,#c81e3c);}
+.watch-panel[data-type="done"] .watch-panel-header::before{background:linear-gradient(90deg,#2dd4a3,#22b388);}
+.watch-panel-header h2{font-size:15px;font-weight:900;color:#eef2f9;display:flex;align-items:center;gap:8px;}
+.watch-panel-count{
+  padding:4px 12px;border-radius:14px;font-size:12px;font-weight:900;
+  min-width:32px;text-align:center;
+}
+.watch-panel[data-type="active"] .watch-panel-count{background:rgba(91,141,239,.15);color:#5b8def;border:1px solid rgba(91,141,239,.3);}
+.watch-panel[data-type="urgent"] .watch-panel-count{background:rgba(240,75,92,.15);color:#f04b5c;border:1px solid rgba(240,75,92,.3);}
+.watch-panel[data-type="done"] .watch-panel-count{background:rgba(45,212,163,.15);color:#2dd4a3;border:1px solid rgba(45,212,163,.3);}
 
-/* عند تفعيل التمرير التلقائي */
+/* ✅ جسم اللوحة مع التمرير التلقائي المحسّن */
+.watch-panel-body{
+  flex:1;
+  overflow:hidden;
+  padding:12px;
+  position:relative;
+  min-height:0;
+}
 .watch-panel-body.auto-scroll{
-  mask-image:linear-gradient(180deg,transparent 0%,black 50px,black calc(100% - 50px),transparent 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 50px,black calc(100% - 50px),transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0%,black 30px,black calc(100% - 30px),transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 30px,black calc(100% - 30px),transparent 100%);
 }
 .watch-panel-body.auto-scroll .scroll-content{
   display:flex;
@@ -526,96 +560,135 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .watch-panel-body.auto-scroll:hover .scroll-content{
   animation-play-state:paused;
 }
-
 @keyframes autoScrollVertical{
   0%{transform:translateY(0);}
   100%{transform:translateY(-50%);}
 }
-
-.watch-scroll-indicator{
-  position:absolute;
-  top:6px;
-  left:6px;
-  background:rgba(91,141,239,.2);
-  color:#5b8def;
-  padding:3px 10px;
-  border-radius:10px;
-  font-size:10px;
-  font-weight:900;
-  border:1px solid rgba(91,141,239,.35);
-  z-index:5;
-  pointer-events:none;
-  display:flex;
-  align-items:center;
-  gap:4px;
-}
-.watch-scroll-indicator .dot{
-  width:6px;height:6px;border-radius:50%;
-  background:#5b8def;
-  animation:livePulse 1.5s ease-in-out infinite;
-}
-/* مؤشر التمرير للمكتملة */
-.watch-panel-body[data-panel="done"] .watch-scroll-indicator{
-  background:rgba(45,212,163,.2);
-  color:#2dd4a3;
-  border-color:rgba(45,212,163,.35);
-}
-.watch-panel-body[data-panel="done"] .watch-scroll-indicator .dot{background:#2dd4a3;}
-.watch-panel-body[data-panel="urgent"] .watch-scroll-indicator{
-  background:rgba(240,75,92,.2);
-  color:#f04b5c;
-  border-color:rgba(240,75,92,.35);
-}
-.watch-panel-body[data-panel="urgent"] .watch-scroll-indicator .dot{background:#f04b5c;}
-
-/* حالة بدون تمرير (مهام قليلة) */
 .watch-panel-body.no-scroll{overflow-y:auto;}
-.watch-panel-body.no-scroll::-webkit-scrollbar{width:6px;}
+.watch-panel-body.no-scroll::-webkit-scrollbar{width:5px;}
 .watch-panel-body.no-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
+.watch-panel-body.no-scroll .scroll-content{display:flex;flex-direction:column;gap:10px;}
 
-.watch-task{background:rgba(23,29,46,.9);border:1.5px solid rgba(255,255,255,.06);border-radius:14px;padding:14px 16px;border-right:4px solid #2dd4a3;transition:all .25s;}
-.watch-task:hover{transform:translateX(-4px);border-color:rgba(255,255,255,.15);}
-.watch-task.urgent{border-right-color:#f04b5c;background:linear-gradient(90deg,rgba(240,75,92,.06),rgba(23,29,46,.9));}
-.watch-task.important{border-right-color:#f5a524;}
+/* ✅ بطاقة المهمة المُحسَّنة */
+.watch-task{
+  background:rgba(23,29,46,.95);
+  border:1.5px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  padding:14px 16px;
+  transition:all .25s;
+  position:relative;
+  overflow:hidden;
+  border-right:4px solid #5b8def;
+}
+.watch-task:hover{transform:translateX(-4px);border-color:rgba(255,255,255,.2);box-shadow:0 8px 20px rgba(0,0,0,.4);}
+
+/* ✅ ألوان داكنة وواضحة لكل أولوية */
+.watch-task.urgent{
+  border-right-color:#f04b5c;
+  background:linear-gradient(90deg,rgba(240,75,92,.12),rgba(23,29,46,.95) 60%);
+}
+.watch-task.important{
+  border-right-color:#f5a524;
+  background:linear-gradient(90deg,rgba(245,165,36,.10),rgba(23,29,46,.95) 60%);
+}
+.watch-task.normal{
+  border-right-color:#2dd4a3;
+  background:linear-gradient(90deg,rgba(45,212,163,.06),rgba(23,29,46,.95) 60%);
+}
+.watch-task.done-task{
+  border-right-color:#2dd4a3;
+  background:linear-gradient(90deg,rgba(45,212,163,.10),rgba(23,29,46,.95) 60%);
+  opacity:.85;
+}
 .watch-task.overdue{border-right-color:#f04b5c;}
-.watch-task-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;}
+
+.watch-task-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;}
 .watch-task-priority{font-size:11px;padding:4px 12px;border-radius:12px;font-weight:900;}
-.watch-task-priority.urgent{background:rgba(240,75,92,.2);color:#f04b5c;}
-.watch-task-priority.important{background:rgba(245,165,36,.2);color:#f5a524;}
-.watch-task-priority.normal{background:rgba(45,212,163,.15);color:#2dd4a3;}
-.watch-task-status{font-size:11px;padding:4px 12px;border-radius:12px;font-weight:800;background:rgba(35,43,66,.9);color:#8892ab;}
-.watch-task-title{font-size:15px;font-weight:800;line-height:1.5;margin-bottom:10px;color:#eef2f9;}
-.watch-task-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#8892ab;flex-wrap:wrap;font-weight:600;}
-.watch-task-meta span{display:inline-flex;align-items:center;gap:5px;}
+.watch-task-priority.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
+.watch-task-priority.important{background:rgba(245,165,36,.25);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
+.watch-task-priority.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
+.watch-task-status{
+  font-size:10px;padding:4px 10px;border-radius:10px;font-weight:800;
+  background:rgba(35,43,66,.9);color:#8892ab;border:1px solid rgba(255,255,255,.05);
+}
+.watch-task-status.progress{background:rgba(245,165,36,.2);color:#f5a524;}
+.watch-task-status.done{background:rgba(45,212,163,.2);color:#2dd4a3;}
 
-.watch-empty{text-align:center;padding:50px 20px;color:#5b6580;font-size:14px;font-weight:700;}
+.watch-task-title{
+  font-size:14.5px;
+  font-weight:800;
+  line-height:1.5;
+  margin-bottom:10px;
+  color:#eef2f9;
+  word-break:break-word;
+}
 
-.watch-tasks-ticker-section{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px 0;overflow:hidden;position:relative;display:flex;align-items:center;gap:0;flex-shrink:0;min-height:80px;}
-.watch-tasks-ticker-label{display:flex;align-items:center;gap:8px;padding:8px 20px;background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;font-weight:900;font-size:13px;flex-shrink:0;border-radius:0 12px 12px 0;margin-right:0;height:100%;white-space:nowrap;align-self:stretch;}
-.watch-tasks-ticker-label .ticker-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:livePulse 1.5s ease-in-out infinite;}
-.watch-tasks-ticker-viewport{flex:1;overflow:hidden;position:relative;height:56px;mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);}
-.watch-tasks-ticker-track{display:flex;align-items:center;gap:12px;height:100%;width:max-content;animation:tasksTickerScroll 60s linear infinite;padding:0 12px;}
+.watch-task-meta{
+  display:flex;gap:14px;font-size:11.5px;color:#8892ab;flex-wrap:wrap;font-weight:600;
+  margin-bottom:8px;
+}
+.watch-task-meta span{display:inline-flex;align-items:center;gap:4px;}
+
+/* ✅ شريط التقدم */
+.watch-task-progress{
+  height:4px;
+  background:rgba(35,43,66,.9);
+  border-radius:3px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.watch-task-progress-fill{
+  height:100%;
+  border-radius:3px;
+  transition:width .5s ease;
+}
+.watch-task.urgent .watch-task-progress-fill{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
+.watch-task.important .watch-task-progress-fill{background:linear-gradient(90deg,#f5a524,#ffc043);}
+.watch-task.normal .watch-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+.watch-task.done-task .watch-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+
+/* ✅ حالة فارغة */
+.watch-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 20px;color:#5b6580;font-size:13px;font-weight:700;
+  text-align:center;gap:10px;
+  height:100%;
+}
+.watch-empty-icon{
+  font-size:44px;
+  opacity:.4;
+  margin-bottom:6px;
+}
+.watch-empty-text{font-size:13px;color:#8892ab;}
+.watch-empty-hint{font-size:11px;color:#5b6580;font-weight:500;}
+
+/* Ticker المهام العادية */
+.watch-tasks-ticker-section{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:10px 0;overflow:hidden;position:relative;display:flex;align-items:center;gap:0;flex-shrink:0;min-height:74px;}
+.watch-tasks-ticker-label{display:flex;align-items:center;gap:8px;padding:8px 18px;background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;font-weight:900;font-size:12px;flex-shrink:0;border-radius:0 12px 12px 0;margin-right:0;height:100%;white-space:nowrap;align-self:stretch;}
+.watch-tasks-ticker-label .ticker-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:livePulse 1.5s ease-in-out infinite;}
+.watch-tasks-ticker-viewport{flex:1;overflow:hidden;position:relative;height:54px;mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);}
+.watch-tasks-ticker-track{display:flex;align-items:center;gap:10px;height:100%;width:max-content;animation:tasksTickerScroll 60s linear infinite;padding:0 12px;}
 .watch-tasks-ticker-track:hover{animation-play-state:paused;}
 @keyframes tasksTickerScroll{0%{transform:translateX(0);}100%{transform:translateX(50%);}}
-.watch-ticker-task{display:flex;align-items:center;gap:10px;padding:10px 18px;background:rgba(23,29,46,.95);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;white-space:nowrap;flex-shrink:0;transition:all .25s;border-right:3px solid #2dd4a3;min-width:260px;}
-.watch-ticker-task:hover{background:rgba(35,43,66,.95);transform:scale(1.03);border-color:rgba(45,212,163,.4);}
-.watch-ticker-task .task-priority-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor;}
+.watch-ticker-task{display:flex;align-items:center;gap:10px;padding:9px 16px;background:rgba(23,29,46,.95);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;white-space:nowrap;flex-shrink:0;transition:all .25s;border-right:3px solid #2dd4a3;min-width:250px;}
+.watch-ticker-task:hover{background:rgba(35,43,66,.95);transform:scale(1.03);border-color:rgba(45,212,163,.5);}
+.watch-ticker-task .task-priority-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor;}
 .watch-ticker-task .task-priority-dot.normal{background:#2dd4a3;color:#2dd4a3;}
-.watch-ticker-task .task-priority-dot.important{background:#f5a524;color:#f5a524;}
-.watch-ticker-task .task-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
-.watch-ticker-task .task-title{font-size:13.5px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;max-width:320px;white-space:nowrap;}
-.watch-ticker-task .task-meta{font-size:11px;color:#8892ab;display:flex;gap:10px;font-weight:600;}
-.watch-ticker-task .task-meta span{display:inline-flex;align-items:center;gap:4px;}
-.watch-ticker-task .task-status-badge{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:800;background:rgba(91,141,239,.15);color:#5b8def;flex-shrink:0;}
-.watch-ticker-task .task-status-badge.progress{background:rgba(245,165,36,.15);color:#f5a524;}
-.watch-tasks-ticker-empty{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#5b6580;font-size:13px;font-weight:700;}
+.watch-ticker-task .task-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.watch-ticker-task .task-title{font-size:13px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;max-width:300px;white-space:nowrap;}
+.watch-ticker-task .task-meta{font-size:10.5px;color:#8892ab;display:flex;gap:8px;font-weight:600;}
+.watch-ticker-task .task-meta span{display:inline-flex;align-items:center;gap:3px;}
+.watch-ticker-task .task-status-badge{font-size:9.5px;padding:3px 9px;border-radius:9px;font-weight:800;background:rgba(91,141,239,.2);color:#5b8def;flex-shrink:0;}
+.watch-ticker-task .task-status-badge.progress{background:rgba(245,165,36,.2);color:#f5a524;}
+.watch-tasks-ticker-empty{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#5b6580;font-size:12px;font-weight:700;}
 
-.watch-footer{display:flex;align-items:center;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;height:48px;}
-.watch-ticker-label{padding:0 24px;height:100%;display:flex;align-items:center;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;font-weight:900;font-size:13px;flex-shrink:0;}
+/* Footer Ticker */
+.watch-footer{display:flex;align-items:center;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;height:44px;}
+.watch-ticker-label{padding:0 20px;height:100%;display:flex;align-items:center;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;font-weight:900;font-size:12px;flex-shrink:0;}
 .watch-ticker-wrap{flex:1;overflow:hidden;}
-.watch-ticker{display:inline-block;white-space:nowrap;padding-right:100%;animation:tickerScroll 45s linear infinite;color:#8892ab;font-size:14px;font-weight:700;line-height:48px;}
-.watch-ticker span{padding-left:80px;}
-.watch-ticker span::before{content:'◆';color:#5b8def;margin-left:24px;font-size:11px;}
+.watch-ticker{display:inline-block;white-space:nowrap;padding-right:100%;animation:tickerScroll 45s linear infinite;color:#8892ab;font-size:13px;font-weight:700;line-height:44px;}
+.watch-ticker span{padding-left:70px;}
+.watch-ticker span::before{content:'◆';color:#5b8def;margin-left:20px;font-size:10px;}
 @keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
 
 @media (max-width:1200px){
@@ -639,8 +712,8 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   .watch-stats{grid-template-columns:repeat(2,1fr);}
   .watch-header{grid-template-columns:1fr;gap:12px;}
   .watch-header-center{order:-1;}
-  .watch-clock{font-size:24px;}
-  .watch-header-title h1{font-size:22px;}
+  .watch-clock{font-size:22px;}
+  .watch-header-title h1{font-size:20px;}
   .card-quick-actions{opacity:1;transform:translateY(0);}
   .watch-ticker-task{min-width:220px;}
   .watch-ticker-task .task-title{max-width:180px;font-size:12px;}
@@ -935,26 +1008,26 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
     </div>
 
     <div class="watch-grid">
-      <section class="watch-panel">
+      <section class="watch-panel" data-type="active">
         <div class="watch-panel-header">
           <h2>📌 المهام النشطة</h2>
           <span class="watch-panel-count" id="watchActiveCount">0</span>
         </div>
-        <div class="watch-panel-body" id="watchActiveList" data-panel="active"><div class="watch-empty">لا توجد مهام نشطة</div></div>
+        <div class="watch-panel-body" id="watchActiveList"><div class="watch-empty"><div class="watch-empty-icon">📭</div><div class="watch-empty-text">لا توجد مهام نشطة</div></div></div>
       </section>
-      <section class="watch-panel">
+      <section class="watch-panel" data-type="urgent">
         <div class="watch-panel-header">
           <h2>⚠️ تحتاج انتباه</h2>
           <span class="watch-panel-count" id="watchUrgentCount">0</span>
         </div>
-        <div class="watch-panel-body" id="watchUrgentList" data-panel="urgent"><div class="watch-empty">لا توجد مهام متأخرة 🎉</div></div>
+        <div class="watch-panel-body" id="watchUrgentList"><div class="watch-empty"><div class="watch-empty-icon">🎉</div><div class="watch-empty-text">لا توجد مهام متأخرة</div><div class="watch-empty-hint">كل شيء تحت السيطرة</div></div></div>
       </section>
-      <section class="watch-panel">
+      <section class="watch-panel" data-type="done">
         <div class="watch-panel-header">
           <h2>✅ آخر المكتملة</h2>
           <span class="watch-panel-count" id="watchDoneCount">0</span>
         </div>
-        <div class="watch-panel-body" id="watchDoneList" data-panel="done"><div class="watch-empty">لا توجد مهام مكتملة</div></div>
+        <div class="watch-panel-body" id="watchDoneList"><div class="watch-empty"><div class="watch-empty-icon">⏳</div><div class="watch-empty-text">لا توجد مهام مكتملة</div></div></div>
       </section>
     </div>
 
@@ -987,7 +1060,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <script type="module">
 /* ============================================================
-   EMAK Hub v7.6 — تمرير تلقائي عمودي + إصلاحات شاملة
+   EMAK Hub v8.0 — شاشة عرض مُحسّنة بالكامل
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1017,7 +1090,7 @@ const BACKUP_INTERVAL = 5 * 60 * 1000;
 const MAX_BACKUPS = 5;
 const WATCH_PASSWORD = "watch2024";
 const WATCH_SESSION_DURATION = 12 * 60 * 60 * 1000;
-const SCROLL_SECONDS_PER_TASK = 10; // 10 ثوانٍ لكل مهمة
+const SCROLL_SECONDS_PER_TASK = 10;
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -1322,7 +1395,6 @@ async function cleanupTeamDuplicates() {
     for (const id of toDelete) {
       try { await remove(ref(db, "team/" + id)); } catch(e){}
     }
-    if (toDelete.length > 0) console.log(`🧹 تم حذف ${toDelete.length} سجل مكرر من الفريق`);
   } catch(e) { console.error("cleanupTeamDuplicates:", e); }
 }
 
@@ -2959,32 +3031,60 @@ function watchRenderStats() {
   set("wTeam", seenUids.size);
 }
 
+/* ✅ دالة حساب نسبة التقدم للمهمة */
+function getTaskProgress(t) {
+  if (!t) return 0;
+  if (t.status === "مكتملة") return 100;
+  if (t.status === "جاري التنفيذ") {
+    // نسبة 50% + 10% لكل تعليق (بحد أقصى 90%)
+    const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
+    return Math.min(90, 50 + commentsCount * 10);
+  }
+  // جديدة: 10% + 5% لكل تعليق (بحد أقصى 30%)
+  const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
+  return Math.min(30, 10 + commentsCount * 5);
+}
+
+/* ✅ دالة بناء بطاقة المهمة في شاشة العرض */
 function watchTaskHtml(t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
   const pc = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const isUrgentFlashing = t.priority === "عاجل" && t.status !== "مكتملة";
-  return `<div class="watch-task ${pc} ${isOverdue ? 'overdue' : ''} ${isUrgentFlashing ? 'urgent-flash' : ''}">
+  const isDone = t.status === "مكتملة";
+  const statusClass = t.status === "جاري التنفيذ" ? "progress" : isDone ? "done" : "";
+  const progress = getTaskProgress(t);
+  const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
+  
+  return `<div class="watch-task ${pc} ${isOverdue ? 'overdue' : ''} ${isUrgentFlashing ? 'urgent-flash' : ''} ${isDone ? 'done-task' : ''}">
     <div class="watch-task-top">
       <span class="watch-task-priority ${pc}">${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}</span>
-      <span class="watch-task-status">${escapeHtml(t.status || "جديدة")}</span>
+      <span class="watch-task-status ${statusClass}">${escapeHtml(t.status || "جديدة")}</span>
     </div>
     <div class="watch-task-title">${escapeHtml(t.title)}</div>
     <div class="watch-task-meta">
       <span>👤 ${escapeHtml(t.assignee || "—")}</span>
-      ${t.dueDate ? `<span>📅 ${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
+      ${t.dueDate ? `<span ${isOverdue ? 'style="color:#ff6b7d;"' : ''}>📅 ${escapeHtml(dueLabel(t.dueDate))}</span>` : ""}
+      ${commentsCount > 0 ? `<span>💬 ${commentsCount}</span>` : ""}
+    </div>
+    <div class="watch-task-progress">
+      <div class="watch-task-progress-fill" style="width:${progress}%"></div>
     </div>
   </div>`;
 }
 
-/* ✅ دالة موحدة لبناء لوحة مع تمرير تلقائي */
-function buildAutoScrollPanel(panelId, tasks, emptyMsg, indicatorLabel, indicatorColor) {
+/* ✅ دالة موحدة لبناء لوحة مع تمرير تلقائي محسّن */
+function buildAutoScrollPanel(panelId, tasks, emptyMsg, emptyIcon, emptyHint) {
   const panelBody = document.getElementById(panelId);
   if (!panelBody) return;
   
   if (tasks.length === 0) {
     panelBody.classList.remove("auto-scroll", "no-scroll");
-    panelBody.innerHTML = `<div class="watch-empty">${emptyMsg}</div>`;
+    panelBody.innerHTML = `<div class="watch-empty">
+      <div class="watch-empty-icon">${emptyIcon}</div>
+      <div class="watch-empty-text">${emptyMsg}</div>
+      ${emptyHint ? `<div class="watch-empty-hint">${emptyHint}</div>` : ""}
+    </div>`;
     return;
   }
   
@@ -2993,18 +3093,12 @@ function buildAutoScrollPanel(panelId, tasks, emptyMsg, indicatorLabel, indicato
   // إذا كانت المهام قليلة (2 أو أقل)، لا نحتاج تمرير
   const isFew = tasks.length <= 2;
   
-  const contentHtml = `<div class="watch-scroll-indicator"><span class="dot"></span>${indicatorLabel}</div>` +
-    (isFew 
-      ? html 
-      : `<div class="scroll-content">${html}${html}</div>`  // نسختين للتمرير اللانهائي
-    );
-  
-  panelBody.innerHTML = contentHtml;
-  
   if (isFew) {
+    panelBody.innerHTML = `<div class="scroll-content">${html}</div>`;
     panelBody.classList.remove("auto-scroll");
     panelBody.classList.add("no-scroll");
   } else {
+    panelBody.innerHTML = `<div class="scroll-content">${html}${html}</div>`;
     panelBody.classList.remove("no-scroll");
     panelBody.classList.add("auto-scroll");
     // ✅ 10 ثوانٍ لكل مهمة
@@ -3030,9 +3124,9 @@ function watchRenderActive() {
   buildAutoScrollPanel(
     "watchActiveList",
     active,
-    "لا توجد مهام عادية نشطة",
-    `${active.length} مهمة`,
-    "#5b8def"
+    "لا توجد مهام نشطة",
+    "📭",
+    "سيتم عرض المهام الجديدة هنا"
   );
 }
 
@@ -3059,9 +3153,9 @@ function watchRenderUrgent() {
   buildAutoScrollPanel(
     "watchUrgentList",
     urgent,
-    "لا توجد مهام متأخرة 🎉",
-    `${urgent.length} مهمة`,
-    "#f04b5c"
+    "لا توجد مهام متأخرة",
+    "🎉",
+    "كل شيء تحت السيطرة"
   );
 }
 
@@ -3069,15 +3163,15 @@ function watchRenderUrgent() {
 function watchRenderDone() {
   const done = Object.entries(state.allTasks)
     .filter(([_, t]) => t.status === "مكتملة")
-    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)); // الأحدث أولاً
+    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0));
   
   document.getElementById("watchDoneCount").textContent = done.length;
   buildAutoScrollPanel(
     "watchDoneList",
     done,
     "لا توجد مهام مكتملة",
-    `${done.length} مهمة`,
-    "#2dd4a3"
+    "⏳",
+    "ستظهر المهام المنجزة هنا"
   );
 }
 
