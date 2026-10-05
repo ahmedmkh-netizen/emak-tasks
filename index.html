@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EMAK IT Dep. — إدارة المهام</title>
+<title>EMAK Hub — إدارة المهام</title>
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -34,110 +34,42 @@
 body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
 mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius:4px;}
 
-/* ============ FLASHER — نبض أحمر للمهام العاجلة ============ */
 @keyframes urgentFlash{
-  0%,100%{
-    box-shadow:0 0 0 0 rgba(240,75,92,0),0 0 10px rgba(240,75,92,.3);
-    border-color:rgba(240,75,92,.5);
-    background:var(--bg-2);
-  }
-  50%{
-    box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 35px rgba(240,75,92,.9),0 0 60px rgba(240,75,92,.5);
-    border-color:var(--urgent);
-    background:linear-gradient(135deg,rgba(240,75,92,.08),var(--bg-2));
-  }
+  0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,0),0 0 10px rgba(240,75,92,.3);border-color:rgba(240,75,92,.5);background:var(--bg-2);}
+  50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 35px rgba(240,75,92,.9),0 0 60px rgba(240,75,92,.5);border-color:var(--urgent);background:linear-gradient(135deg,rgba(240,75,92,.08),var(--bg-2));}
 }
-@keyframes urgentPulseTop{
-  0%,100%{opacity:1;}
-  50%{opacity:.4;}
-}
-@keyframes urgentBadgeBlink{
-  0%,100%{transform:scale(1);opacity:1;}
-  50%{transform:scale(1.05);opacity:.7;}
-}
+@keyframes urgentPulseTop{0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes urgentBadgeBlink{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.05);opacity:.7;}}
+.task-card.urgent-glow{animation:urgentFlash 1.4s ease-in-out infinite;}
+.task-card.urgent-glow::before{background:linear-gradient(90deg,var(--urgent),#ff6b7d,var(--urgent)) !important;animation:urgentPulseTop 1.4s ease-in-out infinite;}
+.watch-task.urgent-flash{animation:urgentFlash 1.4s ease-in-out infinite;border-right-color:var(--urgent) !important;}
+.watch-task.urgent-flash .watch-task-priority.urgent{animation:urgentBadgeBlink 1.4s ease-in-out infinite;}
+.active-task-card.urgent{animation:urgentFlash 1.4s ease-in-out infinite;}
 
-.task-card.urgent-glow{
-  animation:urgentFlash 1.4s ease-in-out infinite;
-}
-.task-card.urgent-glow::before{
-  background:linear-gradient(90deg,var(--urgent),#ff6b7d,var(--urgent)) !important;
-  animation:urgentPulseTop 1.4s ease-in-out infinite;
-}
-.watch-task.urgent-flash{
-  animation:urgentFlash 1.4s ease-in-out infinite;
-  border-right-color:var(--urgent) !important;
-}
-.watch-task.urgent-flash .watch-task-priority.urgent{
-  animation:urgentBadgeBlink 1.4s ease-in-out infinite;
-}
-.active-task-card.urgent{
-  animation:urgentFlash 1.4s ease-in-out infinite;
-}
-
-/* Scrollbar */
 ::-webkit-scrollbar{width:10px;height:10px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--bg-4);border-radius:5px;border:2px solid transparent;background-clip:padding-box;}
 ::-webkit-scrollbar-thumb:hover{background:var(--primary);background-clip:padding-box;}
 
-/* ============ Login ============ */
-#loginScreen{
-  display:flex;align-items:center;justify-content:center;
-  min-height:100vh;padding:20px;
-  background:radial-gradient(ellipse at top,#1a3a7a 0%,#0a1020 55%,#070a13 100%);
-  position:relative;overflow:hidden;
-}
-#loginScreen::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:
-    radial-gradient(circle at 15% 25%,rgba(91,141,239,.2),transparent 45%),
-    radial-gradient(circle at 85% 75%,rgba(45,212,163,.15),transparent 45%);
-}
-.login-card{
-  background:rgba(15,20,32,.92);backdrop-filter:blur(30px);
-  border:1px solid rgba(255,255,255,.08);
-  padding:48px 40px 40px;border-radius:28px;
-  text-align:center;max-width:440px;width:100%;
-  box-shadow:0 30px 100px rgba(0,0,0,.7);
-  position:relative;z-index:1;
-  animation:cardIn .6s cubic-bezier(.16,1,.3,1);
-}
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at top,#1a3a7a 0%,#0a1020 55%,#070a13 100%);position:relative;overflow:hidden;}
+#loginScreen::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 25%,rgba(91,141,239,.2),transparent 45%),radial-gradient(circle at 85% 75%,rgba(45,212,163,.15),transparent 45%);}
+.login-card{background:rgba(15,20,32,.92);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);padding:48px 40px 40px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 30px 100px rgba(0,0,0,.7);position:relative;z-index:1;animation:cardIn .6s cubic-bezier(.16,1,.3,1);}
 @keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
-.login-logo-wrap{
-  width:120px;height:120px;margin:0 auto 24px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(91,141,239,.25),rgba(45,212,163,.15));
-  padding:6px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 4px rgba(91,141,239,.25),0 0 40px rgba(91,141,239,.5);
-  animation:logoFloat 4s ease-in-out infinite;
-}
+.login-logo-wrap{width:120px;height:120px;margin:0 auto 24px;border-radius:50%;background:linear-gradient(135deg,rgba(91,141,239,.25),rgba(45,212,163,.15));padding:6px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(91,141,239,.25),0 0 40px rgba(91,141,239,.5);animation:logoFloat 4s ease-in-out infinite;}
 @keyframes logoFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 .login-logo{width:100%;height:100%;object-fit:contain;border-radius:50%;background:rgba(7,10,19,.8);padding:14px;}
-.login-card h1{
-  font-size:32px;font-weight:900;letter-spacing:-1.2px;margin-bottom:6px;
-  background:linear-gradient(135deg,#5b8def 0%,#2dd4a3 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+.login-card h1{font-size:32px;font-weight:900;letter-spacing:-1.2px;margin-bottom:6px;background:linear-gradient(135deg,#5b8def 0%,#2dd4a3 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .login-card > p{color:#8892ab;margin-bottom:28px;font-size:13px;font-weight:500;}
 #loginForm{display:flex;flex-direction:column;gap:14px;text-align:right;}
 .input-group{position:relative;display:flex;align-items:center;}
 .input-icon{position:absolute;right:16px;font-size:16px;pointer-events:none;opacity:.6;z-index:2;}
-#loginForm input[type="text"],#loginForm input[type="password"]{
-  width:100%;padding:15px 48px 15px 48px;
-  background:rgba(35,43,66,.6);color:#eef2f9;
-  border:1.5px solid rgba(255,255,255,.06);border-radius:14px;
-  font-size:14px;font-family:inherit;font-weight:500;outline:none;transition:all .25s;
-}
+#loginForm input[type="text"],#loginForm input[type="password"]{width:100%;padding:15px 48px 15px 48px;background:rgba(35,43,66,.6);color:#eef2f9;border:1.5px solid rgba(255,255,255,.06);border-radius:14px;font-size:14px;font-family:inherit;font-weight:500;outline:none;transition:all .25s;}
 #loginForm input:focus{border-color:#5b8def;box-shadow:0 0 0 4px rgba(91,141,239,.2);}
 .toggle-pass{position:absolute;left:12px;background:transparent;border:none;color:#8892ab;cursor:pointer;font-size:16px;padding:8px;border-radius:8px;}
 .toggle-pass:hover{background:rgba(255,255,255,.06);color:#eef2f9;}
 .remember-me{display:flex;align-items:center;gap:8px;font-size:13px;color:#8892ab;cursor:pointer;user-select:none;font-weight:500;}
 .remember-me input{accent-color:#5b8def;width:16px;height:16px;cursor:pointer;}
-#loginSubmitBtn{
-  background:linear-gradient(135deg,#5b8def 0%,#3b6fd4 100%);
-  color:#fff;border:none;padding:15px;border-radius:14px;
-  cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;
-  transition:all .25s;box-shadow:0 8px 24px rgba(91,141,239,.35);
-}
+#loginSubmitBtn{background:linear-gradient(135deg,#5b8def 0%,#3b6fd4 100%);color:#fff;border:none;padding:15px;border-radius:14px;cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;transition:all .25s;box-shadow:0 8px 24px rgba(91,141,239,.35);}
 #loginSubmitBtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(91,141,239,.5);}
 #loginSubmitBtn:disabled{opacity:.6;cursor:not-allowed;}
 #loginError{color:#f04b5c;font-size:12px;min-height:16px;font-weight:700;background:rgba(240,75,92,.1);border-radius:10px;padding:0 10px;border:1px solid transparent;transition:.25s;}
@@ -148,84 +80,20 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 #loginBtn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,255,255,.25);}
 #loginBtn img{width:20px;}
 .help-text{color:#5b6580;font-size:11px;margin-top:16px;font-weight:500;}
-.login-watch-section{
-  margin-top:24px;
-  padding-top:20px;
-  border-top:1px dashed rgba(255,255,255,.08);
-}
-.login-divider{
-  display:flex;align-items:center;gap:12px;margin:0 0 16px;
-  color:#5b6580;font-size:11px;font-weight:600;
-}
-.login-divider::before,
-.login-divider::after{
-  content:'';flex:1;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(168,85,247,.3),transparent);
-}
-.login-watch-btn{
-  width:100%;
-  background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);
-  color:#fff;border:none;
-  padding:16px 20px;border-radius:14px;
-  cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  transition:all .3s;
-  position:relative;overflow:hidden;
-  box-shadow:0 8px 24px rgba(168,85,247,.35);
-  animation:watchLoginPulse 2.5s ease-in-out infinite;
-}
-@keyframes watchLoginPulse{
-  0%,100%{
-    box-shadow:0 8px 24px rgba(168,85,247,.35),0 0 0 0 rgba(168,85,247,.5);
-  }
-  50%{
-    box-shadow:0 8px 32px rgba(168,85,247,.6),0 0 0 12px rgba(168,85,247,0);
-  }
-}
-.login-watch-btn::before{
-  content:'';position:absolute;
-  top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
-  animation:shine 3.5s ease-in-out infinite;
-}
-.login-watch-btn:hover{
-  transform:translateY(-3px) scale(1.02);
-  box-shadow:0 15px 40px rgba(168,85,247,.7);
-  animation:none;
-}
-.login-watch-btn:active{
-  transform:translateY(-1px) scale(.99);
-}
-.watch-btn-icon{
-  font-size:20px;
-  display:inline-block;
-  animation:watchIconFloat 2.5s ease-in-out infinite;
-}
-@keyframes watchIconFloat{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-4px);}
-}
-.watch-btn-pin{
-  background:rgba(255,255,255,.25);
-  font-size:10px;font-weight:900;
-  padding:3px 8px;border-radius:8px;
-  letter-spacing:.8px;
-  animation:pinBlink 2s ease-in-out infinite;
-}
-@keyframes pinBlink{
-  0%,100%{opacity:1;}
-  50%{opacity:.55;}
-}
-.login-watch-hint{
-  color:#5b6580;
-  font-size:11px;
-  margin-top:12px;
-  text-align:center;
-  font-weight:500;
-  line-height:1.6;
-}
+.login-watch-section{margin-top:24px;padding-top:20px;border-top:1px dashed rgba(255,255,255,.08);}
+.login-divider{display:flex;align-items:center;gap:12px;margin:0 0 16px;color:#5b6580;font-size:11px;font-weight:600;}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.3),transparent);}
+.login-watch-btn{width:100%;background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:16px 20px;border-radius:14px;cursor:pointer;font-size:15px;font-weight:800;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(168,85,247,.35);animation:watchLoginPulse 2.5s ease-in-out infinite;}
+@keyframes watchLoginPulse{0%,100%{box-shadow:0 8px 24px rgba(168,85,247,.35),0 0 0 0 rgba(168,85,247,.5);}50%{box-shadow:0 8px 32px rgba(168,85,247,.6),0 0 0 12px rgba(168,85,247,0);}}
+.login-watch-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shine 3.5s ease-in-out infinite;}
+.login-watch-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 15px 40px rgba(168,85,247,.7);animation:none;}
+.login-watch-btn:active{transform:translateY(-1px) scale(.99);}
+.watch-btn-icon{font-size:20px;display:inline-block;animation:watchIconFloat 2.5s ease-in-out infinite;}
+@keyframes watchIconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.watch-btn-pin{background:rgba(255,255,255,.25);font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;letter-spacing:.8px;animation:pinBlink 2s ease-in-out infinite;}
+@keyframes pinBlink{0%,100%{opacity:1;}50%{opacity:.55;}}
+.login-watch-hint{color:#5b6580;font-size:11px;margin-top:12px;text-align:center;font-weight:500;line-height:1.6;}
 
-/* Loading */
 #loadingScreen{display:none;position:fixed;inset:0;background:radial-gradient(ellipse at top,#1a3a7a 0%,#0a1020 55%,#070a13 100%);align-items:center;justify-content:center;z-index:5000;flex-direction:column;gap:24px;}
 .loading-logo-wrap{width:140px;height:140px;border-radius:50%;background:rgba(15,20,32,.9);padding:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 80px rgba(91,141,239,.7);animation:loadingPulse 1.6s ease-in-out infinite;}
 .loading-logo{width:100%;height:100%;object-fit:contain;border-radius:50%;}
@@ -235,14 +103,8 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 .loading-bar-fill{height:100%;width:30%;background:linear-gradient(90deg,#5b8def,#2dd4a3);border-radius:4px;animation:loadingBar 1.4s ease-in-out infinite;}
 @keyframes loadingBar{0%{width:10%;margin-right:0;}50%{width:60%;margin-right:20%;}100%{width:10%;margin-right:90%;}}
 
-/* Header */
 #mainScreen{display:none;}
-header{
-  background:var(--bg-glass);backdrop-filter:blur(24px);
-  border-bottom:1px solid var(--border);padding:14px 28px;
-  display:flex;justify-content:space-between;align-items:center;
-  position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap;
-}
+header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap;}
 .header-brand{display:flex;align-items:center;gap:16px;}
 .header-logo-wrap{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(91,141,239,.2),rgba(45,212,163,.1));padding:4px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--border-strong),0 0 20px var(--primary-glow);transition:all .3s;}
 .header-logo{width:100%;height:100%;object-fit:contain;border-radius:12px;background:var(--bg);padding:5px;}
@@ -260,38 +122,18 @@ header{
 #logoutBtn{background:rgba(240,75,92,.1);color:var(--urgent);border:1px solid rgba(240,75,92,.3);padding:9px 16px;border-radius:12px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s;}
 #logoutBtn:hover{background:var(--urgent);color:#fff;}
 
-.btn-watch-screen{
-  background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);
-  color:#fff;border:none;padding:10px 18px;border-radius:12px;
-  cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;
-  transition:all .25s;box-shadow:0 6px 20px rgba(168,85,247,.4);
-  position:relative;overflow:hidden;
-}
-.btn-watch-screen::before{
-  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
-  animation:shine 3s ease-in-out infinite;
-}
+.btn-watch-screen{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:800;font-family:inherit;transition:all .25s;box-shadow:0 6px 20px rgba(168,85,247,.4);position:relative;overflow:hidden;}
+.btn-watch-screen::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shine 3s ease-in-out infinite;}
 @keyframes shine{0%{left:-100%;}50%,100%{left:100%;}}
 .btn-watch-screen:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(168,85,247,.7);}
 
-/* Nav */
 .main-nav{display:flex;gap:6px;padding:12px 28px;background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);overflow-x:auto;}
 .nav-btn{background:transparent;color:var(--text-2);border:none;padding:10px 18px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;white-space:nowrap;transition:all .25s;display:inline-flex;align-items:center;gap:6px;}
 .nav-btn:hover{background:var(--bg-3);color:var(--text);}
 .nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 6px 20px var(--primary-glow);}
 
-.nav-btn.watch-highlight{
-  background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);
-  color:#fff !important;border:1px solid rgba(168,85,247,.6) !important;
-  box-shadow:0 0 0 0 rgba(168,85,247,.7),0 4px 16px rgba(168,85,247,.4);
-  animation:watchBtnPulse 2.5s ease-in-out infinite;
-  position:relative;padding-left:16px;font-weight:800;margin-right:auto;
-}
-@keyframes watchBtnPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.7),0 4px 16px rgba(168,85,247,.4);}
-  50%{box-shadow:0 0 0 10px rgba(168,85,247,0),0 4px 24px rgba(168,85,247,.6);}
-}
+.nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff !important;border:1px solid rgba(168,85,247,.6) !important;box-shadow:0 0 0 0 rgba(168,85,247,.7),0 4px 16px rgba(168,85,247,.4);animation:watchBtnPulse 2.5s ease-in-out infinite;position:relative;padding-left:16px;font-weight:800;margin-right:auto;}
+@keyframes watchBtnPulse{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.7),0 4px 16px rgba(168,85,247,.4);}50%{box-shadow:0 0 0 10px rgba(168,85,247,0),0 4px 24px rgba(168,85,247,.6);}}
 .nav-btn.watch-highlight:hover{background:linear-gradient(135deg,#9333ea 0%,#6d28d9 100%);transform:translateY(-2px) scale(1.03);animation:none;box-shadow:0 0 25px rgba(168,85,247,.8),0 8px 30px rgba(168,85,247,.5);}
 .watch-icon-pulse{display:inline-block;animation:iconFloat 2s ease-in-out infinite;}
 @keyframes iconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
@@ -303,11 +145,9 @@ header{
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 .container{max-width:1560px;margin:24px auto;padding:0 24px;}
 
-/* Panels */
 .card-panel{background:var(--bg-2);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow);}
 .panel-title{font-size:16px;font-weight:800;margin-bottom:18px;color:var(--text);}
 
-/* Stats */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;}
 .stat{background:var(--bg-3);border-radius:16px;padding:20px 18px;text-align:center;border:1px solid var(--border);transition:all .3s;position:relative;overflow:hidden;}
 .stat::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:16px 16px 0 0;}
@@ -323,7 +163,6 @@ header{
 .stat.progress .stat-num{color:var(--warning);}
 .stat.overdue .stat-num{color:var(--urgent);}
 
-/* Team */
 .team-row{display:grid;grid-template-columns:150px 1fr 140px;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
 .team-row:last-child{border-bottom:none;}
 .team-name{font-weight:700;font-size:14px;}
@@ -360,12 +199,7 @@ header{
 #tasksList.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
 @media (max-width:900px){#tasksList.kanban-board{grid-template-columns:1fr;}}
 
-.task-card{
-  background:var(--bg-2);border:1.5px solid var(--border);
-  border-radius:18px;padding:18px;cursor:pointer;
-  transition:all .35s cubic-bezier(.16,1,.3,1);position:relative;
-  display:flex;flex-direction:column;min-height:190px;overflow:hidden;
-}
+.task-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:18px;padding:18px;cursor:pointer;transition:all .35s cubic-bezier(.16,1,.3,1);position:relative;display:flex;flex-direction:column;min-height:190px;overflow:hidden;}
 .task-card::before{content:'';position:absolute;top:0;right:0;left:0;height:4px;border-radius:18px 18px 0 0;}
 .task-card.normal::before{background:linear-gradient(90deg,var(--success),var(--success-2));}
 .task-card.important::before{background:linear-gradient(90deg,var(--warning),#d97706);}
@@ -376,19 +210,10 @@ header{
 .pin-badge{position:absolute;top:12px;left:12px;font-size:18px;z-index:2;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
 
-/* ✅ أزرار الإجراءات السريعة على البطاقة (للمدير) */
-.card-quick-actions{
-  position:absolute;top:10px;left:10px;display:flex;gap:4px;z-index:5;
-  opacity:0;transform:translateY(-6px);transition:all .25s;
-}
+.card-quick-actions{position:absolute;top:10px;left:10px;display:flex;gap:4px;z-index:5;opacity:0;transform:translateY(-6px);transition:all .25s;}
 .task-card:hover .card-quick-actions{opacity:1;transform:translateY(0);}
 .task-card.pinned .card-quick-actions{left:38px;}
-.quick-action-btn{
-  width:30px;height:30px;border-radius:9px;border:1.5px solid var(--border-strong);
-  background:var(--bg-glass);backdrop-filter:blur(10px);
-  cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;
-  transition:all .2s;color:var(--text);padding:0;
-}
+.quick-action-btn{width:30px;height:30px;border-radius:9px;border:1.5px solid var(--border-strong);background:var(--bg-glass);backdrop-filter:blur(10px);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--text);padding:0;}
 .quick-action-btn:hover{transform:scale(1.12);}
 .quick-action-btn.edit:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
 .quick-action-btn.reassign:hover{background:var(--warning);color:#fff;border-color:var(--warning);}
@@ -418,7 +243,6 @@ header{
 .status-pill.done{background:rgba(45,212,163,.2);color:var(--success);}
 .status-pill:hover{transform:scale(1.08);}
 
-/* Kanban */
 .kanban-col{background:var(--bg-3);border:1.5px solid var(--border);border-radius:18px;padding:16px;min-height:450px;display:flex;flex-direction:column;gap:12px;}
 .kanban-col.dragover{border-color:var(--primary);background:rgba(91,141,239,.05);}
 .kanban-col-header{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
@@ -428,13 +252,10 @@ header{
 .kanban-card:hover{border-color:var(--primary);transform:translateX(-4px);}
 .kanban-card-title{font-size:13.5px;font-weight:800;margin-bottom:10px;padding-left:60px;}
 .kanban-card-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11px;}
-.kanban-quick-actions{
-  position:absolute;top:8px;left:8px;display:flex;gap:4px;opacity:0;transition:all .2s;
-}
+.kanban-quick-actions{position:absolute;top:8px;left:8px;display:flex;gap:4px;opacity:0;transition:all .2s;}
 .kanban-card:hover .kanban-quick-actions{opacity:1;}
 .kanban-quick-actions .quick-action-btn{width:26px;height:26px;font-size:11px;border-radius:7px;}
 
-/* Watch */
 .watch-subtitle{font-size:13px;color:var(--text-2);margin-bottom:18px;}
 .watch-filters{display:flex;gap:8px;flex-wrap:wrap;}
 .watch-filter{background:var(--bg-3);color:var(--text-2);border:1.5px solid var(--border);padding:9px 18px;border-radius:22px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:700;transition:all .25s;}
@@ -463,14 +284,12 @@ header{
 .active-task-meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--text-2);padding-right:10px;flex-wrap:wrap;font-weight:600;}
 .active-task-meta .overdue-text{color:var(--urgent);font-weight:800;}
 
-/* Activity */
 .activity-row{display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);}
 .activity-icon{width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
 .activity-body{flex:1;}
 .activity-text{font-size:13.5px;font-weight:700;margin-bottom:5px;}
 .activity-meta{display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;}
 
-/* Users */
 .users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
 .users-toolbar-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .btn-add-user{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:800;transition:all .25s;box-shadow:0 6px 20px var(--primary-glow);}
@@ -508,7 +327,6 @@ header{
 .btn-sm.success:hover{background:var(--success);color:#fff;}
 .empty{text-align:center;padding:50px 20px;color:var(--text-2);font-weight:600;font-size:14px;}
 
-/* Modal */
 #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
 #modalOverlay.active{display:flex;animation:fadeIn .25s;}
 .modal-box{background:var(--bg-2);border:1.5px solid var(--border-strong);border-radius:24px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:slideUp .4s cubic-bezier(.16,1,.3,1);}
@@ -558,7 +376,6 @@ header{
 .btn-pin:hover,.btn-pin.active{background:var(--warning);color:#fff;border-color:var(--warning);}
 .swal-label{font-size:12px;font-weight:800;color:var(--text-2);text-align:right;display:block;margin-bottom:4px;}
 
-/* Report */
 #reportOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;}
 #reportOverlay.active{display:flex;}
 .report-wrapper{background:var(--bg-2);border-radius:24px;max-width:900px;width:100%;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);}
@@ -609,7 +426,6 @@ header{
 .r-notes{font-size:12px;color:#64748b;margin-top:8px;font-style:italic;}
 .r-footer{margin-top:34px;padding-top:18px;border-top:2px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;font-weight:600;}
 
-/* Toast */
 #toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--bg-2);color:var(--text);padding:16px 28px;border-radius:16px;font-size:14px;font-weight:800;border:1.5px solid var(--primary);box-shadow:var(--shadow-lg);opacity:0;transition:all .35s cubic-bezier(.16,1,.3,1);z-index:9999;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.success{border-color:var(--success);}
@@ -617,13 +433,7 @@ header{
 
 #saveIndicator{position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--bg-glass);backdrop-filter:blur(20px);color:var(--text);padding:10px 20px;border-radius:24px;font-size:12px;font-weight:800;box-shadow:var(--shadow);z-index:9998;border:1.5px solid var(--border);opacity:0;transition:.3s;}
 
-/* ============================================================
-   شاشة العرض (Fullscreen داخل نفس الملف)
-   ============================================================ */
-#watchScreen{
-  display:none;position:fixed;inset:0;z-index:2000;
-  background:#050810;overflow:hidden;
-}
+#watchScreen{display:none;position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;}
 #watchScreen.active{display:block;animation:fadeIn .5s;}
 
 .watch-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
@@ -715,163 +525,25 @@ header{
 
 .watch-empty{text-align:center;padding:50px 20px;color:#5b6580;font-size:14px;font-weight:700;}
 
-/* ============ شريط المهام العادية المتتابع ============ */
-.watch-tasks-ticker-section {
-  background: rgba(15, 20, 32, .75);
-  backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, .08);
-  border-radius: 16px;
-  padding: 12px 0;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0;
-  flex-shrink: 0;
-  min-height: 80px;
-}
-
-.watch-tasks-ticker-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 20px;
-  background: linear-gradient(135deg, #2dd4a3, #22b388);
-  color: #fff;
-  font-weight: 900;
-  font-size: 13px;
-  flex-shrink: 0;
-  border-radius: 0 12px 12px 0;
-  margin-right: 0;
-  height: 100%;
-  white-space: nowrap;
-  align-self: stretch;
-}
-
-.watch-tasks-ticker-label .ticker-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #fff;
-  animation: livePulse 1.5s ease-in-out infinite;
-}
-
-.watch-tasks-ticker-viewport {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-  height: 56px;
-  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
-}
-
-.watch-tasks-ticker-track {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 100%;
-  width: max-content;
-  animation: tasksTickerScroll 60s linear infinite;
-  padding: 0 12px;
-}
-
-.watch-tasks-ticker-track:hover {
-  animation-play-state: paused;
-}
-
-@keyframes tasksTickerScroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(50%); }
-}
-
-.watch-ticker-task {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 18px;
-  background: rgba(23, 29, 46, .95);
-  border: 1.5px solid rgba(255, 255, 255, .08);
-  border-radius: 12px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: all .25s;
-  border-right: 3px solid #2dd4a3;
-  min-width: 260px;
-}
-
-.watch-ticker-task:hover {
-  background: rgba(35, 43, 66, .95);
-  transform: scale(1.03);
-  border-color: rgba(45, 212, 163, .4);
-}
-
-.watch-ticker-task .task-priority-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  box-shadow: 0 0 10px currentColor;
-}
-
-.watch-ticker-task .task-priority-dot.normal { background: #2dd4a3; color: #2dd4a3; }
-.watch-ticker-task .task-priority-dot.important { background: #f5a524; color: #f5a524; }
-
-.watch-ticker-task .task-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-
-.watch-ticker-task .task-title {
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #eef2f9;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 320px;
-  white-space: nowrap;
-}
-
-.watch-ticker-task .task-meta {
-  font-size: 11px;
-  color: #8892ab;
-  display: flex;
-  gap: 10px;
-  font-weight: 600;
-}
-
-.watch-ticker-task .task-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.watch-ticker-task .task-status-badge {
-  font-size: 10px;
-  padding: 3px 10px;
-  border-radius: 10px;
-  font-weight: 800;
-  background: rgba(91, 141, 239, .15);
-  color: #5b8def;
-  flex-shrink: 0;
-}
-
-.watch-ticker-task .task-status-badge.progress {
-  background: rgba(245, 165, 36, .15);
-  color: #f5a524;
-}
-
-.watch-tasks-ticker-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: #5b6580;
-  font-size: 13px;
-  font-weight: 700;
-}
+.watch-tasks-ticker-section{background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:12px 0;overflow:hidden;position:relative;display:flex;align-items:center;gap:0;flex-shrink:0;min-height:80px;}
+.watch-tasks-ticker-label{display:flex;align-items:center;gap:8px;padding:8px 20px;background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;font-weight:900;font-size:13px;flex-shrink:0;border-radius:0 12px 12px 0;margin-right:0;height:100%;white-space:nowrap;align-self:stretch;}
+.watch-tasks-ticker-label .ticker-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:livePulse 1.5s ease-in-out infinite;}
+.watch-tasks-ticker-viewport{flex:1;overflow:hidden;position:relative;height:56px;mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,black 5%,black 95%,transparent 100%);}
+.watch-tasks-ticker-track{display:flex;align-items:center;gap:12px;height:100%;width:max-content;animation:tasksTickerScroll 60s linear infinite;padding:0 12px;}
+.watch-tasks-ticker-track:hover{animation-play-state:paused;}
+@keyframes tasksTickerScroll{0%{transform:translateX(0);}100%{transform:translateX(50%);}}
+.watch-ticker-task{display:flex;align-items:center;gap:10px;padding:10px 18px;background:rgba(23,29,46,.95);border:1.5px solid rgba(255,255,255,.08);border-radius:12px;white-space:nowrap;flex-shrink:0;transition:all .25s;border-right:3px solid #2dd4a3;min-width:260px;}
+.watch-ticker-task:hover{background:rgba(35,43,66,.95);transform:scale(1.03);border-color:rgba(45,212,163,.4);}
+.watch-ticker-task .task-priority-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 10px currentColor;}
+.watch-ticker-task .task-priority-dot.normal{background:#2dd4a3;color:#2dd4a3;}
+.watch-ticker-task .task-priority-dot.important{background:#f5a524;color:#f5a524;}
+.watch-ticker-task .task-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.watch-ticker-task .task-title{font-size:13.5px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;max-width:320px;white-space:nowrap;}
+.watch-ticker-task .task-meta{font-size:11px;color:#8892ab;display:flex;gap:10px;font-weight:600;}
+.watch-ticker-task .task-meta span{display:inline-flex;align-items:center;gap:4px;}
+.watch-ticker-task .task-status-badge{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:800;background:rgba(91,141,239,.15);color:#5b8def;flex-shrink:0;}
+.watch-ticker-task .task-status-badge.progress{background:rgba(245,165,36,.15);color:#f5a524;}
+.watch-tasks-ticker-empty{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#5b6580;font-size:13px;font-weight:700;}
 
 .watch-footer{display:flex;align-items:center;background:rgba(15,20,32,.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;height:48px;}
 .watch-ticker-label{padding:0 24px;height:100%;display:flex;align-items:center;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;font-weight:900;font-size:13px;flex-shrink:0;}
@@ -905,9 +577,9 @@ header{
   .watch-clock{font-size:24px;}
   .watch-header-title h1{font-size:22px;}
   .card-quick-actions{opacity:1;transform:translateY(0);}
-  .watch-ticker-task { min-width: 220px; }
-  .watch-ticker-task .task-title { max-width: 180px; font-size: 12px; }
-  .watch-tasks-ticker-label { padding: 8px 12px; font-size: 11px; }
+  .watch-ticker-task{min-width:220px;}
+  .watch-ticker-task .task-title{max-width:180px;font-size:12px;}
+  .watch-tasks-ticker-label{padding:8px 12px;font-size:11px;}
 }
 </style>
 </head>
@@ -918,7 +590,7 @@ header{
 <div id="loginScreen">
   <div class="login-card">
     <div class="login-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK"></div>
-    <h1>EMAK IT Dep.</h1>
+    <h1>EMAK Hub</h1>
     <p>نظام إدارة المهام — قسم نظم المعلومات</p>
     <form id="loginForm">
       <div class="input-group">
@@ -966,7 +638,7 @@ header{
     <div class="header-brand">
       <div class="header-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="header-logo" alt="EMAK"></div>
       <div>
-        <h1>EMAK IT Dep.</h1>
+        <h1>EMAK Hub</h1>
         <div class="subtitle">نظم معلومات إيماك</div>
       </div>
     </div>
@@ -1157,7 +829,7 @@ header{
   <div id="watchPinScreen">
     <div class="watch-pin-card">
       <div class="watch-pin-logo"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK"></div>
-      <h1>EMAK IT Dep.</h1>
+      <h1>EMAK Hub</h1>
       <p>شاشة العرض — قسم نظم المعلومات</p>
       <form id="watchPinForm">
         <input id="watchPinInput" type="password" placeholder="• • • •" maxlength="20" autocomplete="off" required>
@@ -1173,7 +845,7 @@ header{
       <div class="watch-header-right">
         <div class="watch-header-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="watch-header-logo" alt="EMAK"></div>
         <div class="watch-header-title">
-          <h1>EMAK IT Dep.</h1>
+          <h1>EMAK Hub</h1>
           <p>لوحة المتابعة — نظم المعلومات</p>
         </div>
       </div>
@@ -1221,7 +893,6 @@ header{
       </section>
     </div>
 
-    <!-- ✅ شريط المهام العادية المتتابع -->
     <div class="watch-tasks-ticker-section">
       <div class="watch-tasks-ticker-label">
         <span class="ticker-dot"></span>
@@ -1235,7 +906,7 @@ header{
     </div>
 
     <footer class="watch-footer">
-      <div class="watch-ticker-label">📢 إشعارات</div>
+      <div class="watch-ticker-label">📢 إعلانات</div>
       <div class="watch-ticker-wrap">
         <div class="watch-ticker" id="watchTicker">
           <span>مرحباً بكم في لوحة المتابعة</span>
@@ -1251,7 +922,7 @@ header{
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v7.3 — مع شريط المهام العادية المتتابع في شاشة العرض
+   EMAK Hub v7.4 — إصلاح التعليقات + توحيد أسماء المستخدمين
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1559,6 +1230,50 @@ function setupAuthListener() {
   });
 }
 
+/* ✅ دالة موحّدة للحصول على اسم العرض الرسمي من users/{uid} */
+async function resolveDisplayName(uid, fallbackName = "مستخدم") {
+  try {
+    const snap = await get(ref(db, "users/" + uid));
+    if (snap.exists()) {
+      const u = snap.val();
+      return u.displayName || u.name || u.username || fallbackName;
+    }
+  } catch(e) {}
+  return fallbackName;
+}
+
+/* ✅ تنظيف سجلات الفريق المكررة لنفس uid */
+async function cleanupTeamDuplicates() {
+  try {
+    const snap = await get(ref(db, "team"));
+    if (!snap.exists()) return;
+    const team = snap.val();
+    const seen = new Map(); // uid → {id, name}
+    const toDelete = [];
+    for (const [id, m] of Object.entries(team)) {
+      if (!m || !m.uid) { toDelete.push(id); continue; }
+      const existing = seen.get(m.uid);
+      if (existing) {
+        // احتفظ بالأقدم (createdAt أصغر) — احذف الأحدث
+        const existingAt = existing.createdAt || 0;
+        const currentAt = m.createdAt || 0;
+        if (currentAt < existingAt) {
+          toDelete.push(existing.id);
+          seen.set(m.uid, { id, createdAt: currentAt, name: m.name });
+        } else {
+          toDelete.push(id);
+        }
+      } else {
+        seen.set(m.uid, { id, createdAt: m.createdAt || 0, name: m.name });
+      }
+    }
+    for (const id of toDelete) {
+      try { await remove(ref(db, "team/" + id)); } catch(e){}
+    }
+    if (toDelete.length > 0) console.log(`🧹 تم حذف ${toDelete.length} سجل مكرر من الفريق`);
+  } catch(e) { console.error("cleanupTeamDuplicates:", e); }
+}
+
 async function ensureUserProfile(user) {
   const uref = ref(db, "users/" + user.uid);
   let snap;
@@ -1576,13 +1291,38 @@ async function ensureUserProfile(user) {
     const data = snap.val();
     if (data.active === false) return data;
     try { await update(uref, { lastLogin: Date.now() }); } catch(e) {}
-    if (!data.role && data.isAdmin) {
-      try {
-        const uname = data.username || (user.email || "").split("@")[0].toLowerCase();
-        await update(uref, { role:"admin", username:uname, displayName: data.displayName || data.name || user.displayName || "مستخدم", active:true });
-        data.role = "admin"; data.username = uname; data.displayName = data.displayName || data.name;
-      } catch(e) {}
-    }
+    // ✅ تأكد أن الاسم في users هو المرجع الرسمي
+    const officialName = data.displayName || data.name || data.username || "مستخدم";
+    // ✅ تأكد من وجود سجل واحد فقط في team بنفس الاسم الرسمي
+    try {
+      const ts = await get(ref(db, "team"));
+      const team = ts.val() || {};
+      const myTeamEntries = Object.entries(team).filter(([id, m]) => m && m.uid === user.uid);
+      if (myTeamEntries.length === 0) {
+        // أضف سجل جديد إن لم يوجد
+        await push(ref(db, "team"), {
+          uid: user.uid,
+          username: data.username || (user.email || "").split("@")[0],
+          name: officialName,
+          createdAt: Date.now()
+        });
+      } else {
+        // تأكد أن الاسم في كل السجلات = الاسم الرسمي، واحذف المكرر
+        for (let i = 0; i < myTeamEntries.length; i++) {
+          const [id, m] = myTeamEntries[i];
+          if (m.name !== officialName) {
+            try { await update(ref(db, "team/" + id), { name: officialName }); } catch(e){}
+          }
+        }
+        if (myTeamEntries.length > 1) {
+          // احتفظ بالأقدم واحذف الباقي
+          myTeamEntries.sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
+          for (let i = 1; i < myTeamEntries.length; i++) {
+            try { await remove(ref(db, "team/" + myTeamEntries[i][0])); } catch(e){}
+          }
+        }
+      }
+    } catch(e) { console.warn("Team sync error:", e); }
     return data;
   }
   const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(user.email || "");
@@ -1639,6 +1379,9 @@ function startRealtimeListeners() {
     if (document.getElementById("activityView").classList.contains("active")) renderActivity();
     if (document.getElementById("watchView").classList.contains("active")) renderWatch();
   }, (err) => {});
+  
+  // ✅ تنظيف المكرر بعد بدء الاستماع
+  setTimeout(cleanupTeamDuplicates, 2000);
 }
 
 function populateAssigneeSelect() {
@@ -1646,7 +1389,15 @@ function populateAssigneeSelect() {
   if (!sel) return;
   const current = sel.value;
   const options = ['<option value="">-- المسؤول --</option>'];
-  Object.entries(state.allTeam).filter(([id, m]) => m && m.name)
+  // ✅ إزالة المكرر حسب uid
+  const seenUids = new Set();
+  Object.entries(state.allTeam)
+    .filter(([id, m]) => {
+      if (!m || !m.name || !m.uid) return false;
+      if (seenUids.has(m.uid)) return false;
+      seenUids.add(m.uid);
+      return true;
+    })
     .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .forEach(([id, m]) => { options.push(`<option value="${escapeHtml(id)}">${escapeHtml(m.name)}</option>`); });
   sel.innerHTML = options.join("");
@@ -1778,6 +1529,7 @@ async function changeStatus(taskId, newStatus) {
     showToast(`🔄 الحالة: ${newStatus}`, "info");
   } catch (err) { showToast("⚠️ سيُعاد الحفظ", "warn"); }
 }
+window.changeStatus = changeStatus;
 
 window.quickReassign = async function(taskId, event) {
   if (event) { event.stopPropagation(); event.preventDefault(); }
@@ -1785,8 +1537,15 @@ window.quickReassign = async function(taskId, event) {
   const t = state.allTasks[taskId]; if (!t) return;
   const currentAssigneeId = t.assigneeId;
 
+  // ✅ إزالة المكرر حسب uid
+  const seenUids = new Set();
   const teamOptions = Object.entries(state.allTeam)
-    .filter(([id, m]) => m && m.name)
+    .filter(([id, m]) => {
+      if (!m || !m.name || !m.uid) return false;
+      if (seenUids.has(m.uid)) return false;
+      seenUids.add(m.uid);
+      return true;
+    })
     .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .map(([id, m]) => `<option value="${escapeHtml(id)}" ${currentAssigneeId === id ? "selected" : ""}>${escapeHtml(m.name)}</option>`)
     .join("");
@@ -1882,28 +1641,42 @@ window.quickToggleStatus = async function(taskId, event) {
   await changeStatus(taskId, nextStatus);
 };
 
+/* ✅ addComment - مُصدَّرة على window لتعمل من onclick */
 async function addComment(taskId, fromModal = false) {
-  if (!state.currentUserProfile) return;
+  if (!state.currentUserProfile) return swalError("سجّل الدخول أولاً");
   const inputId = fromModal ? "modal-comment-input" : "comment-" + taskId;
   const input = document.getElementById(inputId);
-  if (!input) return;
-  const text = input.value.trim(); if (!text) return;
+  if (!input) return console.error("Comment input not found:", inputId);
+  const text = input.value.trim();
+  if (!text) return showToast("⚠️ اكتب تعليقاً أولاً", "warn");
+  
+  const t = state.allTasks[taskId];
+  if (!t) return swalError("المهمة غير موجودة");
+  
   try {
     await safeWrite(async () => {
       await set(push(ref(db, "tasks/" + taskId + "/comments")), {
-        text, author: state.currentUserProfile.displayName,
-        authorId: state.currentUser.uid, createdAt: Date.now()
+        text,
+        author: state.currentUserProfile.displayName,
+        authorId: state.currentUser.uid,
+        createdAt: Date.now()
       });
       await update(ref(db, "tasks/" + taskId), {
-        updatedAt: Date.now(), updatedBy: state.currentUser.uid,
+        updatedAt: Date.now(),
+        updatedBy: state.currentUser.uid,
         updatedByName: state.currentUserProfile.displayName
       });
     });
-    const t = state.allTasks[taskId];
-    await logActivity("comment_added", `علّق على "${t?.title || "مهمة"}": ${text.slice(0, 50)}`, taskId, t?.title);
-    input.value = ""; showToast("💬 تمت الإضافة", "success");
-  } catch (err) { showToast("⚠️ سيُحفظ", "warn"); }
+    await logActivity("comment_added", `علّق على "${t.title}": ${text.slice(0, 50)}`, taskId, t.title);
+    input.value = "";
+    showToast("💬 تم إضافة التعليق", "success");
+  } catch (err) {
+    console.error("Add comment error:", err);
+    swalError("فشل إضافة التعليق", err.message);
+  }
 }
+window.addComment = addComment;
+
 async function deleteTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.allTasks[taskId]; if (!t) return;
@@ -1931,7 +1704,16 @@ window.deleteTask = deleteTask;
 async function editTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح — فقط المدير يمكنه التعديل");
   const t = state.allTasks[taskId]; if (!t) return;
-  const teamOptions = Object.entries(state.allTeam).filter(([id, m]) => m && m.name)
+  
+  // ✅ إزالة المكرر حسب uid
+  const seenUids = new Set();
+  const teamOptions = Object.entries(state.allTeam)
+    .filter(([id, m]) => {
+      if (!m || !m.name || !m.uid) return false;
+      if (seenUids.has(m.uid)) return false;
+      seenUids.add(m.uid);
+      return true;
+    })
     .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .map(([id, m]) => `<option value="${escapeHtml(id)}" ${t.assigneeId===id?"selected":""}>${escapeHtml(m.name)}</option>`).join("");
 
@@ -2152,24 +1934,47 @@ function renderStats() {
   document.getElementById("statProgress").textContent = entries.filter(([_, t]) => t.status === "جاري التنفيذ").length;
   document.getElementById("statOverdue").textContent = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
 }
+
+/* ✅ عرض أداء الفريق مع إزالة التكرار حسب uid */
 function renderTeamProgress() {
-  const team = {};
+  const teamMap = {}; // uid → {name, total, done}
+  const seenNames = new Set();
+  
   Object.values(state.allTasks).forEach(t => {
-    const k = t.assignee || "غير محدد";
-    if (!team[k]) team[k] = { total: 0, done: 0 };
-    team[k].total++;
-    if (t.status === "مكتملة") team[k].done++;
+    const key = t.assigneeId || t.assignee || "غير محدد";
+    const name = t.assignee || "غير محدد";
+    if (!teamMap[key]) {
+      // ✅ تحقق من عدم التكرار بالاسم أيضاً (لو نفس الشخص بأسماء مختلفة)
+      const normalizedName = String(name).trim().toLowerCase();
+      if (seenNames.has(normalizedName)) {
+        // ابحث عن uid موجود بنفس الاسم
+        const existingKey = Object.keys(teamMap).find(k => 
+          String(teamMap[k].name).trim().toLowerCase() === normalizedName
+        );
+        if (existingKey) {
+          teamMap[existingKey].total++;
+          if (t.status === "مكتملة") teamMap[existingKey].done++;
+          return;
+        }
+      }
+      seenNames.add(normalizedName);
+      teamMap[key] = { name, total: 0, done: 0 };
+    }
+    teamMap[key].total++;
+    if (t.status === "مكتملة") teamMap[key].done++;
   });
-  const html = Object.entries(team).map(([name, s]) => {
+  
+  const html = Object.values(teamMap).map(s => {
     const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
     return `<div class="team-row">
-      <div class="team-name">${escapeHtml(name)}</div>
+      <div class="team-name">${escapeHtml(s.name)}</div>
       <div class="team-bar"><div class="team-fill" style="width:${pct}%"></div></div>
       <div class="team-pct">${pct}% (${s.done}/${s.total})</div>
     </div>`;
   }).join("");
   document.getElementById("teamList").innerHTML = html || '<p class="empty">لا توجد بيانات</p>';
 }
+
 function renderCharts() {
   const entries = Object.values(state.allTasks);
   const done = entries.filter(t => t.status === "مكتملة").length;
@@ -2623,7 +2428,15 @@ window.openTeamModal = async () => {
   if (!state.isAdmin) return;
   const teamSnap = await get(ref(db, "team"));
   const team = teamSnap.val() || {};
-  const html = Object.entries(team).map(([id, m]) => `
+  // ✅ إزالة المكرر حسب uid
+  const seenUids = new Set();
+  const uniqueTeam = Object.entries(team).filter(([id, m]) => {
+    if (!m || !m.uid) return false;
+    if (seenUids.has(m.uid)) return false;
+    seenUids.add(m.uid);
+    return true;
+  });
+  const html = uniqueTeam.map(([id, m]) => `
     <div class="user-row">
       <div class="user-avatar">${escapeHtml((m.name || "?").charAt(0))}</div>
       <div class="user-info-cell">
@@ -2728,7 +2541,7 @@ function openReport() {
       <div class="r-header">
         <div class="r-logo-wrap"><img src="${LOGO_URL}" class="r-logo" crossorigin="anonymous"></div>
         <div class="r-header-text">
-          <h1>EMAK IT Dep.</h1>
+          <h1>EMAK Hub</h1>
           <p>تقرير المهام — قسم نظم المعلومات</p>
           <p class="r-date">التاريخ: ${today}</p>
         </div>
@@ -2750,7 +2563,7 @@ function openReport() {
       ${progress.length > 0 ? `<div class="r-section"><h2>⏳ الجارية (${progress.length})</h2>${progress.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
       ${newT.length > 0 ? `<div class="r-section"><h2>🆕 الجديدة (${newT.length})</h2>${newT.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
       ${done.length > 0 ? `<div class="r-section"><h2>✅ المكتملة (${done.length})</h2>${done.map(([id,t])=>taskRow(id,t)).join("")}</div>` : ""}
-      <div class="r-footer">تم إنشاء التقرير تلقائياً بواسطة EMAK IT Dep. — ${today}</div>
+      <div class="r-footer">تم إنشاء التقرير تلقائياً بواسطة EMAK Hub — ${today}</div>
     </div>`;
   document.getElementById("reportOverlay").classList.add("active");
   document.body.style.overflow = "hidden";
@@ -2788,7 +2601,7 @@ async function downloadPDF() {
     pdf.setFillColor(30, 58, 138); pdf.rect(0, 0, pageW, 25, "F");
     if (state.logoDataUrl) { try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 18, 3.5, 18, 18); } catch(e){} }
     pdf.setTextColor(255,255,255); pdf.setFontSize(20);
-    pdf.text("EMAK IT Dep.", pageW - 40, 12, { align:"right" });
+    pdf.text("EMAK Hub", pageW - 40, 12, { align:"right" });
     pdf.setFontSize(11); pdf.text("تقرير المهام", pageW - 40, 19, { align:"right" });
     y = 35;
     const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
@@ -2851,7 +2664,7 @@ async function downloadPDF() {
     const totalPages = pdf.internal.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       pdf.setPage(i); pdf.setFontSize(8); pdf.setTextColor(148,163,184);
-      pdf.text(`EMAK IT Dep. — صفحة ${i} من ${totalPages}`, pageW / 2, pageH - 8, { align:"center" });
+      pdf.text(`EMAK Hub — صفحة ${i} من ${totalPages}`, pageW / 2, pageH - 8, { align:"center" });
     }
     pdf.save(`EMAK-Report-${new Date().toISOString().slice(0,10)}.pdf`);
     showToast("📄 تم التحميل", "success");
@@ -3093,6 +2906,7 @@ function watchUpdateConnection() {
   s.classList.toggle("offline", !online);
   s.querySelector("span:last-child").textContent = online ? "متصل" : "غير متصل";
 }
+/* ✅ إزالة تكرار أعضاء الفريق في الإحصائية */
 function watchRenderStats() {
   const tasks = Object.values(state.allTasks);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -3101,7 +2915,12 @@ function watchRenderStats() {
   set("wProgress", tasks.filter(t => t.status === "جاري التنفيذ").length);
   set("wOverdue", tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length);
   set("wToday", tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== "مكتملة"; }).length);
-  set("wTeam", Object.keys(state.allTeam).length);
+  // ✅ عدد فريد لأعضاء الفريق حسب uid
+  const seenUids = new Set();
+  Object.values(state.allTeam).forEach(m => {
+    if (m && m.uid) seenUids.add(m.uid);
+  });
+  set("wTeam", seenUids.size);
 }
 
 function watchTaskHtml(t) {
@@ -3176,12 +2995,10 @@ function watchRenderDone() {
   list.innerHTML = done.map(([_, t]) => watchTaskHtml(t)).join("");
 }
 
-/* ✅ عرض المهام العادية (غير المهمة وغير العاجلة) في شريط متتابع */
 function watchRenderNormalTicker() {
   const track = document.getElementById("watchNormalTicker");
   if (!track) return;
 
-  // المهام العادية = أولوية "عادي" + غير مكتملة
   const normalTasks = Object.entries(state.allTasks)
     .filter(([_, t]) => {
       if (t.status === "مكتملة") return false;
@@ -3222,11 +3039,9 @@ function watchRenderNormalTicker() {
       </div>`;
   };
 
-  // نكرر المهام مرتين لعمل حلقة سلسة بدون انقطاع
   const html = normalTasks.map(([id, t]) => taskHtml(id, t)).join("");
   track.innerHTML = html + html;
 
-  // ضبط سرعة الحركة حسب عدد المهام
   const duration = Math.max(30, normalTasks.length * 6);
   track.style.animation = `tasksTickerScroll ${duration}s linear infinite`;
 }
