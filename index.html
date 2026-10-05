@@ -46,7 +46,7 @@ mark.hl{background:rgba(245,165,36,.4);color:inherit;padding:0 2px;border-radius
 ::-webkit-scrollbar-thumb{background:var(--bg-4);border-radius:5px;border:2px solid transparent;background-clip:padding-box;}
 ::-webkit-scrollbar-thumb:hover{background:var(--primary);background-clip:padding-box;}
 
-/* ============ LOGIN & MAIN ============ */
+/* ============ LOGIN ============ */
 #loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at top,#1a3a7a 0%,#0a1020 55%,#070a13 100%);position:relative;overflow:hidden;}
 #loginScreen::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 25%,rgba(91,141,239,.2),transparent 45%),radial-gradient(circle at 85% 75%,rgba(45,212,163,.15),transparent 45%);}
 .login-card{background:rgba(15,20,32,.92);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.08);padding:48px 40px 40px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 30px 100px rgba(0,0,0,.7);position:relative;z-index:1;animation:cardIn .6s cubic-bezier(.16,1,.3,1);}
@@ -125,7 +125,6 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .view-section.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 .container{max-width:1560px;margin:24px auto;padding:0 24px;}
-
 .card-panel{background:var(--bg-2);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow);}
 .panel-title{font-size:16px;font-weight:800;margin-bottom:18px;color:var(--text);}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;}
@@ -164,7 +163,6 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .filter-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;}
 #tasksList{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
 #tasksList.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-
 .task-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:18px;padding:18px;cursor:pointer;transition:all .35s;position:relative;display:flex;flex-direction:column;min-height:190px;overflow:hidden;}
 .task-card::before{content:'';position:absolute;top:0;right:0;left:0;height:4px;}
 .task-card.normal::before{background:linear-gradient(90deg,var(--success),var(--success-2));}
@@ -191,14 +189,12 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .status-pill.new{background:rgba(91,141,239,.2);color:var(--primary);}
 .status-pill.progress{background:rgba(245,165,36,.2);color:var(--warning);}
 .status-pill.done{background:rgba(45,212,163,.2);color:var(--success);}
-
 .kanban-col{background:var(--bg-3);border:1.5px solid var(--border);border-radius:18px;padding:16px;min-height:450px;display:flex;flex-direction:column;gap:12px;}
 .kanban-col-header{display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:14px;padding-bottom:12px;border-bottom:1px solid var(--border);}
 .kanban-count{background:var(--bg-4);padding:3px 12px;border-radius:10px;font-size:12px;color:var(--text-2);font-weight:800;}
 .kanban-col-body{display:flex;flex-direction:column;gap:10px;flex:1;}
 .kanban-card{background:var(--bg-2);border:1.5px solid var(--border);border-radius:12px;padding:14px;cursor:grab;border-right:4px solid var(--primary);}
 .kanban-card-title{font-size:13.5px;font-weight:800;margin-bottom:10px;}
-
 .watch-subtitle{font-size:13px;color:var(--text-2);margin-bottom:18px;}
 .watch-filters{display:flex;gap:8px;flex-wrap:wrap;}
 .watch-filter{background:var(--bg-3);color:var(--text-2);border:1.5px solid var(--border);padding:9px 18px;border-radius:22px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;}
@@ -212,7 +208,6 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .watch-event-author{font-weight:800;color:var(--primary);}
 .active-tasks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
 .active-task-card{background:var(--bg-3);border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;}
-
 .users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
 .users-toolbar-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
 .btn-add-user{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:12px 22px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:800;}
@@ -236,7 +231,6 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .btn-sm.warn{color:var(--warning);border-color:rgba(245,165,36,.3);}
 .btn-sm.success{color:var(--success);border-color:rgba(45,212,163,.3);}
 .empty{text-align:center;padding:50px 20px;color:var(--text-2);font-weight:600;font-size:14px;}
-
 #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
 #modalOverlay.active{display:flex;}
 .modal-box{background:var(--bg-2);border:1.5px solid var(--border-strong);border-radius:24px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;}
@@ -279,7 +273,6 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .btn-del:hover{background:var(--urgent);color:#fff;}
 .btn-pin.active{background:var(--warning);color:#fff;}
 .swal-label{font-size:12px;font-weight:800;color:var(--text-2);display:block;margin-bottom:4px;}
-
 #reportOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;}
 #reportOverlay.active{display:flex;}
 .report-wrapper{background:var(--bg-2);border-radius:24px;max-width:900px;width:100%;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;}
@@ -288,158 +281,58 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 .btn-close-report{background:var(--bg-2);color:var(--text);border:1.5px solid var(--border);padding:12px 22px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:700;font-family:inherit;}
 .report-scroll{overflow-y:auto;flex:1;padding:26px;}
 .report-content{background:#fff;color:#1a1a1a;padding:44px;border-radius:16px;}
-
 #toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--bg-2);color:var(--text);padding:16px 28px;border-radius:16px;font-size:14px;font-weight:800;border:1.5px solid var(--primary);opacity:0;transition:all .35s;z-index:9999;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.success{border-color:var(--success);}
 #toast.warn{border-color:var(--warning);}
 
-/* ============================================================
-   ✅ إشعار فرعي منبثق (Sub Notification)
-   ============================================================ */
+/* ============ Sub Notifications ============ */
 #subNotifications{
-  position:fixed;
-  top:20px;
-  left:20px;
-  z-index:9999;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  max-width:380px;
-  pointer-events:none;
+  position:fixed;top:20px;left:20px;z-index:9999;
+  display:flex;flex-direction:column;gap:10px;max-width:380px;pointer-events:none;
 }
 .sub-notification{
   background:linear-gradient(135deg,rgba(15,20,32,.98),rgba(23,29,46,.95));
   backdrop-filter:blur(30px);
   border:1.5px solid rgba(91,141,239,.5);
-  border-radius:16px;
-  padding:16px 18px;
-  box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 0 1px rgba(91,141,239,.2),0 0 30px rgba(91,141,239,.3);
-  pointer-events:auto;
-  animation:subNotifIn .5s cubic-bezier(.16,1,.3,1);
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
+  border-radius:16px;padding:16px 18px;
+  box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 30px rgba(91,141,239,.3);
+  pointer-events:auto;animation:subNotifIn .5s cubic-bezier(.16,1,.3,1);
+  position:relative;overflow:hidden;display:flex;gap:12px;align-items:flex-start;
 }
 .sub-notification::before{
-  content:'';
-  position:absolute;
-  top:0;right:0;left:0;height:3px;
+  content:'';position:absolute;top:0;right:0;left:0;height:3px;
   background:linear-gradient(90deg,#5b8def,#2dd4a3);
-  animation:subNotifProgress 20s linear forwards;
-  transform-origin:right;
+  animation:subNotifProgress 20s linear forwards;transform-origin:right;
 }
-@keyframes subNotifProgress{
-  from{transform:scaleX(1);}
-  to{transform:scaleX(0);}
-}
-.sub-notification.urgent{border-color:rgba(240,75,92,.5);box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 0 1px rgba(240,75,92,.2),0 0 30px rgba(240,75,92,.4);}
+@keyframes subNotifProgress{from{transform:scaleX(1);}to{transform:scaleX(0);}}
+.sub-notification.urgent{border-color:rgba(240,75,92,.5);}
 .sub-notification.urgent::before{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
-.sub-notification.important{border-color:rgba(245,165,36,.5);box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 0 1px rgba(245,165,36,.2),0 0 30px rgba(245,165,36,.4);}
+.sub-notification.important{border-color:rgba(245,165,36,.5);}
 .sub-notification.important::before{background:linear-gradient(90deg,#f5a524,#ffc043);}
-.sub-notification.success{border-color:rgba(45,212,163,.5);}
-.sub-notification.success::before{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
-
-@keyframes subNotifIn{
-  from{opacity:0;transform:translateX(-100%) scale(.9);}
-  to{opacity:1;transform:translateX(0) scale(1);}
-}
-@keyframes subNotifOut{
-  from{opacity:1;transform:translateX(0) scale(1);max-height:200px;margin-bottom:10px;}
-  to{opacity:0;transform:translateX(-100%) scale(.9);max-height:0;margin-bottom:0;padding:0;}
-}
-.sub-notification.closing{
-  animation:subNotifOut .4s ease-in forwards;
-}
-
-.sub-notif-icon{
-  width:44px;height:44px;
-  border-radius:12px;
-  background:rgba(35,43,66,.9);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:22px;
-  flex-shrink:0;
-  border:1.5px solid rgba(255,255,255,.08);
-}
+@keyframes subNotifIn{from{opacity:0;transform:translateX(-100%) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}
+@keyframes subNotifOut{from{opacity:1;transform:translateX(0) scale(1);max-height:200px;margin-bottom:10px;}to{opacity:0;transform:translateX(-100%) scale(.9);max-height:0;margin-bottom:0;padding:0;}}
+.sub-notification.closing{animation:subNotifOut .4s ease-in forwards;}
+.sub-notif-icon{width:44px;height:44px;border-radius:12px;background:rgba(35,43,66,.9);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1.5px solid rgba(255,255,255,.08);}
 .sub-notification.urgent .sub-notif-icon{border-color:rgba(240,75,92,.4);}
 .sub-notification.important .sub-notif-icon{border-color:rgba(245,165,36,.4);}
-.sub-notification.success .sub-notif-icon{border-color:rgba(45,212,163,.4);}
-
 .sub-notif-body{flex:1;min-width:0;}
-.sub-notif-title{
-  font-size:14px;
-  font-weight:900;
-  color:#eef2f9;
-  margin-bottom:5px;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.sub-notif-badge{
-  font-size:9px;
-  padding:2px 7px;
-  border-radius:6px;
-  font-weight:900;
-  letter-spacing:.5px;
-}
+.sub-notif-title{font-size:14px;font-weight:900;color:#eef2f9;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.sub-notif-badge{font-size:9px;padding:2px 7px;border-radius:6px;font-weight:900;letter-spacing:.5px;}
 .sub-notif-badge.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
 .sub-notif-badge.important{background:rgba(245,165,36,.25);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
 .sub-notif-badge.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
-.sub-notif-message{
-  font-size:12.5px;
-  color:#8892ab;
-  line-height:1.5;
-  font-weight:600;
-  margin-bottom:6px;
-}
-.sub-notif-meta{
-  display:flex;
-  gap:10px;
-  font-size:10.5px;
-  color:#5b6580;
-  font-weight:700;
-  flex-wrap:wrap;
-}
-.sub-notif-meta span{display:inline-flex;align-items:center;gap:3px;}
-
-.sub-notif-close{
-  background:transparent;
-  border:none;
-  color:#5b6580;
-  cursor:pointer;
-  font-size:14px;
-  padding:2px;
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:all .2s;
-  flex-shrink:0;
-}
+.sub-notif-message{font-size:12.5px;color:#8892ab;line-height:1.5;font-weight:600;margin-bottom:6px;}
+.sub-notif-meta{display:flex;gap:10px;font-size:10.5px;color:#5b6580;font-weight:700;flex-wrap:wrap;}
+.sub-notif-close{background:transparent;border:none;color:#5b6580;cursor:pointer;font-size:14px;padding:2px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
 .sub-notif-close:hover{background:rgba(240,75,92,.15);color:#f04b5c;}
-
-.sub-notif-progress-text{
-  position:absolute;
-  bottom:6px;
-  left:14px;
-  font-size:9px;
-  color:#5b6580;
-  font-weight:700;
-  font-family:'JetBrains Mono',monospace;
-}
+.sub-notif-progress-text{position:absolute;bottom:6px;left:14px;font-size:9px;color:#5b6580;font-weight:700;font-family:'JetBrains Mono',monospace;}
 
 /* ============================================================
-   ✅ WATCH SCREEN — Dashboard احترافي (v2)
+   ✅ WATCH SCREEN — Dashboard احترافي
    ============================================================ */
 #watchScreen{display:none;position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;}
 #watchScreen.active{display:block;}
-
 .watch-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
 .watch-orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.2;}
 .watch-orb.o1{width:700px;height:700px;background:radial-gradient(circle,#5b8def 0%,transparent 70%);top:-200px;right:-200px;}
@@ -458,628 +351,209 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 #watchPinError{color:#f04b5c;font-size:13px;min-height:20px;font-weight:700;}
 .watch-pin-hint{color:#5b6580;font-size:12px;margin-top:18px;font-weight:600;}
 
-#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto;gap:10px;padding:10px;}
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:auto auto 1fr auto;gap:8px;padding:8px;overflow:hidden;}
 #watchMainContent.active{display:grid;}
 
-/* ============ الشريط العلوي — شعار بالمنتصف + مباشر + متصل ============ */
-.w-bar-top{
-  display:grid;
-  grid-template-columns:1fr auto 1fr;
-  align-items:center;
-  gap:20px;
-  padding:12px 20px;
-  background:linear-gradient(135deg,rgba(15,20,32,.9),rgba(23,29,46,.8));
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  min-height:80px;
-  position:relative;
-  overflow:hidden;
-}
-.w-bar-top::before{
-  content:'';
-  position:absolute;
-  top:0;right:0;left:0;height:2px;
-  background:linear-gradient(90deg,transparent,#5b8def,#2dd4a3,transparent);
-}
-
-/* يمين — العنوان */
-.w-bar-title{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  gap:2px;
-  justify-self:start;
-}
-.w-bar-title h1{
-  font-size:20px;
-  font-weight:900;
-  line-height:1;
-  letter-spacing:-.3px;
-  background:linear-gradient(135deg,#5b8def,#2dd4a3);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.w-bar-title p{
-  font-size:11px;
-  color:#8892ab;
-  font-weight:600;
-}
-
-/* وسط — الشعار الكبير */
-.w-bar-center{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:20px;
-  justify-self:center;
-}
-.w-bar-logo-big{
-  width:90px;
-  height:90px;
-  border-radius:22px;
-  padding:5px;
-  background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));
-  box-shadow:0 0 0 3px rgba(91,141,239,.4),0 0 40px rgba(91,141,239,.6);
-  animation:wLogoPulse 3s ease-in-out infinite;
-}
-@keyframes wLogoPulse{
-  0%,100%{box-shadow:0 0 0 3px rgba(91,141,239,.4),0 0 40px rgba(91,141,239,.6);}
-  50%{box-shadow:0 0 0 3px rgba(91,141,239,.7),0 0 60px rgba(91,141,239,.9);}
-}
-.w-bar-logo-big img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  border-radius:18px;
-  background:#050810;
-  padding:8px;
-  display:block;
-}
-.w-bar-clock-big{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  padding:10px 20px;
-  background:rgba(23,29,46,.6);
-  border:1.5px solid rgba(91,141,239,.3);
-  border-radius:14px;
-  min-width:180px;
-}
-.w-clock-time{
-  font-family:'JetBrains Mono',monospace;
-  font-size:26px;
-  font-weight:800;
-  color:#5b8def;
-  letter-spacing:2px;
-  line-height:1;
-  text-shadow:0 0 20px rgba(91,141,239,.6);
-  font-variant-numeric:tabular-nums;
-}
-.w-clock-date{
-  font-size:10.5px;
-  color:#8892ab;
-  font-weight:600;
-  letter-spacing:.5px;
-}
-
-/* يسار — مباشر + متصل + إغلاق */
-.w-bar-actions{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  justify-self:end;
-}
-.w-live-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:8px 16px;
-  background:rgba(240,75,92,.15);
-  border:1.5px solid rgba(240,75,92,.4);
-  border-radius:20px;
-  font-size:11.5px;
-  font-weight:900;
-  color:#f04b5c;
-  letter-spacing:1.5px;
-}
-.w-live-pill .w-live-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:#f04b5c;
-  box-shadow:0 0 12px #f04b5c;
-  animation:wLivePulse 1.5s ease-in-out infinite;
-}
-@keyframes wLivePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.4);}}
-
-.w-status-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  padding:8px 14px;
-  background:rgba(45,212,163,.1);
-  border:1.5px solid rgba(45,212,163,.3);
-  border-radius:20px;
-  font-size:11.5px;
-  font-weight:800;
-  color:#2dd4a3;
-}
-.w-status-pill.offline{background:rgba(240,75,92,.1);border-color:rgba(240,75,92,.3);color:#f04b5c;}
-.w-status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;animation:wLivePulse 2s ease-in-out infinite;}
-
-.w-close-btn{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  border:1.5px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.05);
-  color:#eef2f9;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  transition:all .25s;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
+/* Header */
+.w-bar-top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 20px;background:linear-gradient(135deg,rgba(15,20,32,.95),rgba(23,29,46,.85));backdrop-filter:blur(30px);border:1px solid rgba(91,141,239,.2);border-radius:14px;min-height:72px;box-shadow:0 4px 20px rgba(0,0,0,.4);flex-shrink:0;}
+.w-bar-brand{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.w-bar-logo{width:52px;height:52px;border-radius:14px;padding:3px;background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));box-shadow:0 0 0 2px rgba(91,141,239,.4),0 0 20px rgba(91,141,239,.5);flex-shrink:0;}
+.w-bar-logo img{width:100%;height:100%;object-fit:contain;border-radius:11px;background:#050810;padding:5px;display:block;}
+.w-bar-title{display:flex;flex-direction:column;gap:2px;}
+.w-bar-title h1{font-size:18px;font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.w-bar-title p{font-size:10px;color:#8892ab;font-weight:600;}
+.w-bar-center{display:flex;align-items:center;gap:12px;flex:1;justify-content:center;}
+.w-clock-box{display:flex;align-items:center;gap:10px;padding:8px 16px;background:rgba(35,43,66,.5);border:1.5px solid rgba(91,141,239,.25);border-radius:12px;}
+.w-clock-time{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;color:#5b8def;letter-spacing:1.5px;line-height:1;text-shadow:0 0 16px rgba(91,141,239,.7);font-variant-numeric:tabular-nums;}
+.w-clock-sep{width:1px;height:20px;background:rgba(255,255,255,.1);}
+.w-clock-date{font-size:11px;color:#8892ab;font-weight:700;}
+.w-bar-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.w-live-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(240,75,92,.15);border:1.5px solid rgba(240,75,92,.4);border-radius:16px;font-size:10.5px;font-weight:900;color:#ff6b7d;letter-spacing:1px;}
+.w-live-dot{width:7px;height:7px;border-radius:50%;background:#f04b5c;box-shadow:0 0 10px #f04b5c;animation:wLivePulse 1.5s ease-in-out infinite;}
+@keyframes wLivePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.5);}}
+.w-status-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(45,212,163,.12);border:1.5px solid rgba(45,212,163,.35);border-radius:16px;font-size:10.5px;font-weight:800;color:#3ee8b5;}
+.w-status-pill.offline{background:rgba(240,75,92,.12);border-color:rgba(240,75,92,.35);color:#ff6b7d;}
+.w-status-dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;animation:wLivePulse 2s ease-in-out infinite;}
+.w-close-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#eef2f9;font-size:13px;font-weight:700;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;}
 .w-close-btn:hover{background:#f04b5c;color:#fff;border-color:#f04b5c;transform:rotate(90deg);}
 
-/* ============ 6 بطاقات KPI ============ */
-.w-kpi-row{
-  display:grid;
-  grid-template-columns:repeat(6,1fr);
-  gap:10px;
-}
-.w-kpi-card{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  padding:14px 10px;
-  background:linear-gradient(180deg,rgba(23,29,46,.9),rgba(15,20,32,.85));
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  position:relative;
-  overflow:hidden;
-  transition:all .3s;
-}
-.w-kpi-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;}
-.w-kpi-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.15);}
-.w-kpi-card.total::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
-.w-kpi-card.active::before{background:linear-gradient(90deg,#7c8ef8,#5b8def);}
-.w-kpi-card.working::before{background:linear-gradient(90deg,#f5a524,#ffc043);}
-.w-kpi-card.overdue::before{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
-.w-kpi-card.done::before{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
-.w-kpi-card.team::before{background:linear-gradient(90deg,#06b6d4,#22d3ee);}
-.w-kpi-icon{font-size:22px;line-height:1;}
-.w-kpi-num{
-  font-family:'JetBrains Mono',monospace;
-  font-size:28px;font-weight:800;line-height:1;letter-spacing:-1px;
-  font-variant-numeric:tabular-nums;
-}
-.w-kpi-card.total .w-kpi-num{color:#5b8def;}
-.w-kpi-card.active .w-kpi-num{color:#7c8ef8;}
-.w-kpi-card.working .w-kpi-num{color:#f5a524;}
-.w-kpi-card.overdue .w-kpi-num{color:#f04b5c;}
-.w-kpi-card.done .w-kpi-num{color:#2dd4a3;}
-.w-kpi-card.team .w-kpi-num{color:#06b6d4;}
-.w-kpi-label{font-size:11px;color:#8892ab;font-weight:700;}
+/* 4 Stat cards */
+.w-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;flex-shrink:0;}
+.w-stat-card{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(135deg,rgba(23,29,46,.95),rgba(15,20,32,.85));border:1px solid rgba(255,255,255,.08);border-radius:14px;position:relative;overflow:hidden;transition:all .3s;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+.w-stat-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;}
+.w-stat-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.15);box-shadow:0 12px 28px rgba(0,0,0,.5);}
+.w-stat-card.total::before{background:linear-gradient(90deg,#5b8def,#3b6fd4);}
+.w-stat-card.active::before{background:linear-gradient(90deg,#7c8ef8,#5b8def);}
+.w-stat-card.working::before{background:linear-gradient(90deg,#f5a524,#ffc043);}
+.w-stat-card.done::before{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+.w-stat-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.w-stat-card.total .w-stat-icon{background:linear-gradient(135deg,rgba(91,141,239,.25),rgba(59,111,212,.15));color:#5b8def;box-shadow:0 0 20px rgba(91,141,239,.3);}
+.w-stat-card.active .w-stat-icon{background:linear-gradient(135deg,rgba(124,142,248,.25),rgba(91,141,239,.15));color:#7c8ef8;box-shadow:0 0 20px rgba(124,142,248,.3);}
+.w-stat-card.working .w-stat-icon{background:linear-gradient(135deg,rgba(245,165,36,.25),rgba(217,119,6,.15));color:#f5a524;box-shadow:0 0 20px rgba(245,165,36,.3);}
+.w-stat-card.done .w-stat-icon{background:linear-gradient(135deg,rgba(45,212,163,.25),rgba(34,179,136,.15));color:#2dd4a3;box-shadow:0 0 20px rgba(45,212,163,.3);}
+.w-stat-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.w-stat-num{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:900;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+.w-stat-card.total .w-stat-num{color:#5b8def;text-shadow:0 0 16px rgba(91,141,239,.5);}
+.w-stat-card.active .w-stat-num{color:#7c8ef8;text-shadow:0 0 16px rgba(124,142,248,.5);}
+.w-stat-card.working .w-stat-num{color:#f5a524;text-shadow:0 0 16px rgba(245,165,36,.5);}
+.w-stat-card.done .w-stat-num{color:#2dd4a3;text-shadow:0 0 16px rgba(45,212,163,.5);}
+.w-stat-label{font-size:12px;color:#8892ab;font-weight:700;}
 
-/* ============ التقسيم 70/30 ============ */
-.w-content-split{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 340px;
-  gap:10px;
-  min-height:0;
-}
+/* Middle Row */
+.w-middle-row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1.2fr);gap:8px;min-height:0;}
+.w-panel{background:linear-gradient(180deg,rgba(15,20,32,.9),rgba(23,29,46,.75));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:12px;display:flex;flex-direction:column;overflow:hidden;min-height:0;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.w-panel-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(35,43,66,.35),rgba(23,29,46,.2));flex-shrink:0;}
+.w-panel-title{font-size:12.5px;font-weight:900;color:#eef2f9;display:flex;align-items:center;gap:6px;}
+.w-panel-badge{background:rgba(91,141,239,.15);color:#7ca5f5;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:900;border:1px solid rgba(91,141,239,.25);}
+.w-panel-body{flex:1;overflow:hidden;padding:10px;position:relative;min-height:0;}
+.w-chart-line{width:100%;height:100%;position:relative;min-height:120px;}
+.w-chart-doughnut{width:100%;height:100%;position:relative;min-height:120px;display:flex;align-items:center;justify-content:center;}
+.w-doughnut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.w-doughnut-center-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:900;color:#2dd4a3;line-height:1;text-shadow:0 0 12px rgba(45,212,163,.6);}
+.w-doughnut-center-label{font-size:9.5px;color:#8892ab;font-weight:700;margin-top:2px;}
+.w-top-list{display:flex;flex-direction:column;gap:5px;overflow-y:auto;height:100%;padding:2px;}
+.w-top-list::-webkit-scrollbar{width:3px;}
+.w-top-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px;}
+.w-top-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:linear-gradient(135deg,rgba(23,29,46,.8),rgba(15,20,32,.6));border:1px solid rgba(255,255,255,.04);border-radius:10px;transition:all .25s;}
+.w-top-item:hover{background:linear-gradient(135deg,rgba(35,43,66,.95),rgba(23,29,46,.85));border-color:rgba(255,255,255,.1);transform:translateX(-3px);}
+.w-top-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+.w-top-rank.r1{background:linear-gradient(135deg,#ffd700,#ffb300);color:#000;box-shadow:0 0 12px rgba(255,215,0,.5);}
+.w-top-rank.r2{background:linear-gradient(135deg,#c0c0c0,#a0a0a0);color:#000;box-shadow:0 0 10px rgba(192,192,192,.4);}
+.w-top-rank.r3{background:linear-gradient(135deg,#cd7f32,#a0651e);color:#fff;box-shadow:0 0 10px rgba(205,127,50,.4);}
+.w-top-rank.rx{background:rgba(91,141,239,.15);color:#5b8def;border:1px solid rgba(91,141,239,.3);}
+.w-top-info{flex:1;min-width:0;}
+.w-top-name{font-size:12px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.w-top-count{font-size:10px;color:#8892ab;font-weight:700;}
+.w-top-score{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:900;color:#2dd4a3;text-shadow:0 0 8px rgba(45,212,163,.4);}
 
-/* عمود المهام الرئيسي */
-.w-main-panel{
-  display:flex;
-  flex-direction:column;
-  background:linear-gradient(180deg,rgba(15,20,32,.85),rgba(23,29,46,.75));
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  overflow:hidden;
-  min-height:0;
-}
-.w-main-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px 18px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  background:rgba(35,43,66,.35);
-  flex-shrink:0;
-  flex-wrap:wrap;
-  gap:10px;
-}
-.w-main-title{
-  display:flex;align-items:center;gap:8px;
-  font-size:15px;font-weight:900;color:#eef2f9;
-}
-.w-tabs{
-  display:flex;gap:4px;
-  background:rgba(15,20,32,.6);
-  padding:3px;
-  border-radius:10px;
-}
-.w-tab{
-  padding:7px 16px;
-  border:none;
-  background:transparent;
-  color:#8892ab;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:12px;
-  font-weight:800;
-  font-family:inherit;
-  transition:all .25s;
-  white-space:nowrap;
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-}
+/* Tasks Panel */
+.w-tasks-panel{display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(15,20,32,.9),rgba(23,29,46,.75));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;min-height:0;box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.w-tasks-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(35,43,66,.35),rgba(23,29,46,.2));flex-shrink:0;gap:10px;flex-wrap:wrap;}
+.w-tabs{display:flex;gap:3px;background:rgba(15,20,32,.6);padding:3px;border-radius:10px;}
+.w-tab{padding:5px 12px;border:none;background:transparent;color:#8892ab;border-radius:7px;cursor:pointer;font-size:11px;font-weight:800;font-family:inherit;transition:all .25s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;}
 .w-tab:hover{color:#eef2f9;background:rgba(255,255,255,.05);}
 .w-tab.active{color:#fff;background:linear-gradient(135deg,#5b8def,#3b6fd4);}
 .w-tab.active.urgent-tab{background:linear-gradient(135deg,#f04b5c,#c81e3c);}
 .w-tab.active.done-tab{background:linear-gradient(135deg,#2dd4a3,#22b388);}
-.w-tab-count{
-  background:rgba(255,255,255,.2);
-  padding:1px 7px;
-  border-radius:6px;
-  font-size:10px;
-  min-width:18px;
-  text-align:center;
-}
-
-.w-main-body{
-  flex:1;
-  overflow:hidden;
-  position:relative;
-  padding:10px;
-  min-height:0;
-}
-.w-main-body.auto-scroll{
-  mask-image:linear-gradient(180deg,transparent 0%,black 20px,black calc(100% - 20px),transparent 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 20px,black calc(100% - 20px),transparent 100%);
-}
-.w-main-body .w-scroll-track{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  animation:wAutoScroll 40s linear infinite;
-  will-change:transform;
-  padding-bottom:16px;
-}
-.w-main-body.auto-scroll:hover .w-scroll-track{animation-play-state:paused;}
+.w-tab-count{background:rgba(255,255,255,.2);padding:1px 6px;border-radius:6px;font-size:9.5px;min-width:16px;text-align:center;}
+.w-tasks-body{flex:1;overflow:hidden;position:relative;padding:8px;min-height:0;}
+.w-tasks-body.auto-scroll{mask-image:linear-gradient(180deg,transparent 0%,black 20px,black calc(100% - 20px),transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 20px,black calc(100% - 20px),transparent 100%);}
+.w-tasks-body .w-scroll-track{display:flex;flex-direction:column;gap:5px;animation:wAutoScroll 40s linear infinite;will-change:transform;padding-bottom:16px;}
+.w-tasks-body.auto-scroll:hover .w-scroll-track{animation-play-state:paused;}
 @keyframes wAutoScroll{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
-
-/* ============================================================
-   ✅ بطاقة مهمة أفقية أكبر (Bigger Row)
-   ============================================================ */
-.w-task-row{
-  display:grid;
-  grid-template-columns:6px 90px minmax(0,1fr) 130px 130px minmax(140px,180px) 90px;
-  align-items:center;
-  gap:14px;
-  padding:16px 18px;
-  background:rgba(23,29,46,.85);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:12px;
-  cursor:pointer;
-  transition:all .25s;
-  position:relative;
-  min-height:72px;
-}
-.w-task-row:hover{
-  background:rgba(35,43,66,.9);
-  border-color:rgba(91,141,239,.3);
-  transform:translateX(-3px);
-  box-shadow:0 8px 20px rgba(0,0,0,.3);
-}
-.w-task-bar{
-  width:6px;
-  height:100%;
-  min-height:44px;
-  border-radius:3px;
-  background:#5b8def;
-}
-.w-task-row.urgent .w-task-bar{background:#f04b5c;box-shadow:0 0 14px rgba(240,75,92,.7);}
-.w-task-row.important .w-task-bar{background:#f5a524;box-shadow:0 0 12px rgba(245,165,36,.6);}
-.w-task-row.normal .w-task-bar{background:#2dd4a3;box-shadow:0 0 12px rgba(45,212,163,.6);}
-.w-task-row.done-task{opacity:.7;}
+.w-task-row{display:grid;grid-template-columns:4px 80px minmax(0,1fr) 110px 110px minmax(120px,150px) 75px;align-items:center;gap:10px;padding:10px 12px;background:rgba(23,29,46,.85);border:1px solid rgba(255,255,255,.05);border-radius:10px;cursor:pointer;transition:all .25s;position:relative;min-height:50px;}
+.w-task-row:hover{background:rgba(35,43,66,.95);border-color:rgba(91,141,239,.3);transform:translateX(-3px);box-shadow:0 6px 20px rgba(0,0,0,.4);}
+.w-task-bar{width:4px;height:100%;min-height:34px;border-radius:2px;background:#5b8def;}
+.w-task-row.urgent .w-task-bar{background:#f04b5c;box-shadow:0 0 12px rgba(240,75,92,.7);}
+.w-task-row.important .w-task-bar{background:#f5a524;box-shadow:0 0 10px rgba(245,165,36,.6);}
+.w-task-row.normal .w-task-bar{background:#2dd4a3;box-shadow:0 0 10px rgba(45,212,163,.6);}
+.w-task-row.done-task{opacity:.65;}
 .w-task-row.done-task .w-task-bar{background:#2dd4a3;}
-.w-task-row.overdue{background:linear-gradient(90deg,rgba(240,75,92,.08),rgba(23,29,46,.85) 30%);}
-.w-task-row.urgent.urgent-flash{animation:wUrgentPulse 2s ease-in-out infinite;}
-@keyframes wUrgentPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,0);}
-  50%{box-shadow:0 0 0 4px rgba(240,75,92,.15),0 0 25px rgba(240,75,92,.4);}
-}
-
-.w-task-priority{
-  font-size:12px;
-  padding:6px 12px;
-  border-radius:10px;
-  font-weight:900;
-  text-align:center;
-  white-space:nowrap;
-}
+.w-task-row.overdue{background:linear-gradient(90deg,rgba(240,75,92,.1),rgba(23,29,46,.85) 30%);}
+.w-task-priority{font-size:10px;padding:4px 9px;border-radius:8px;font-weight:900;text-align:center;white-space:nowrap;}
 .w-task-priority.urgent{background:rgba(240,75,92,.2);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
 .w-task-priority.important{background:rgba(245,165,36,.2);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
 .w-task-priority.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
-
-.w-task-title{
-  font-size:15px;
-  font-weight:800;
-  color:#eef2f9;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  min-width:0;
-}
-
-.w-task-assignee{
-  font-size:12.5px;
-  color:#8892ab;
-  font-weight:700;
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.w-task-due{
-  font-size:12.5px;
-  color:#8892ab;
-  font-weight:700;
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  white-space:nowrap;
-}
+.w-task-title{font-size:13px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.w-task-assignee{font-size:11px;color:#8892ab;font-weight:700;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.w-task-due{font-size:11px;color:#8892ab;font-weight:700;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;}
 .w-task-due.overdue{color:#ff6b7d;font-weight:800;}
-
-.w-task-progress-wrap{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-.w-task-progress-bar{
-  flex:1;
-  height:7px;
-  background:rgba(35,43,66,.9);
-  border-radius:4px;
-  overflow:hidden;
-  min-width:0;
-}
-.w-task-progress-fill{
-  height:100%;
-  border-radius:4px;
-  transition:width .5s ease;
-  background:linear-gradient(90deg,#5b8def,#7c8ef8);
-}
+.w-task-progress-wrap{display:flex;align-items:center;gap:8px;min-width:0;}
+.w-task-progress-bar{flex:1;height:5px;background:rgba(35,43,66,.9);border-radius:3px;overflow:hidden;min-width:0;}
+.w-task-progress-fill{height:100%;border-radius:3px;transition:width .5s ease;background:linear-gradient(90deg,#5b8def,#7c8ef8);}
 .w-task-row.urgent .w-task-progress-fill{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
 .w-task-row.important .w-task-progress-fill{background:linear-gradient(90deg,#f5a524,#ffc043);}
 .w-task-row.normal .w-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
 .w-task-row.done-task .w-task-progress-fill{background:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
-.w-task-progress-text{
-  font-size:12px;
-  font-weight:800;
-  color:#8892ab;
-  font-family:'JetBrains Mono',monospace;
-  min-width:40px;
-  text-align:left;
-}
-
-.w-task-status{
-  font-size:11.5px;
-  padding:6px 12px;
-  border-radius:10px;
-  font-weight:800;
-  text-align:center;
-  white-space:nowrap;
-}
+.w-task-progress-text{font-size:10.5px;font-weight:800;color:#8892ab;font-family:'JetBrains Mono',monospace;min-width:34px;text-align:left;}
+.w-task-status{font-size:10px;padding:4px 10px;border-radius:8px;font-weight:800;text-align:center;white-space:nowrap;}
 .w-task-status.new{background:rgba(91,141,239,.15);color:#5b8def;border:1px solid rgba(91,141,239,.3);}
 .w-task-status.progress{background:rgba(245,165,36,.15);color:#f5a524;border:1px solid rgba(245,165,36,.3);}
 .w-task-status.done{background:rgba(45,212,163,.15);color:#2dd4a3;border:1px solid rgba(45,212,163,.3);}
+.w-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;color:#5b6580;gap:10px;text-align:center;height:100%;}
+.w-empty-icon{font-size:42px;opacity:.4;}
+.w-empty-text{font-size:13px;font-weight:700;color:#8892ab;}
 
-.w-empty-state{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:60px 20px;color:#5b6580;gap:12px;text-align:center;height:100%;
-}
-.w-empty-icon{font-size:48px;opacity:.4;}
-.w-empty-text{font-size:14px;font-weight:700;color:#8892ab;}
-
-/* ============ Sidebar ============ */
-.w-side{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  min-height:0;
-  overflow:hidden;
-}
-.w-side-panel{
-  background:linear-gradient(180deg,rgba(15,20,32,.85),rgba(23,29,46,.75));
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  min-height:0;
-}
-.w-side-panel.top-performers{flex:0 0 auto;max-height:42%;}
-.w-side-panel.recent-activities{flex:1;min-height:0;}
-.w-side-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 16px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  background:rgba(35,43,66,.35);
-  flex-shrink:0;
-}
-.w-side-title{
-  font-size:13px;font-weight:900;color:#eef2f9;
-  display:flex;align-items:center;gap:6px;
-}
-.w-side-badge{
-  background:rgba(91,141,239,.15);
-  color:#5b8def;
-  padding:3px 10px;
-  border-radius:10px;
-  font-size:10.5px;
-  font-weight:900;
-  border:1px solid rgba(91,141,239,.3);
-}
-.w-side-body{
-  flex:1;overflow-y:auto;padding:10px;min-height:0;
-}
-.w-side-body::-webkit-scrollbar{width:4px;}
-.w-side-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px;}
-
-.w-performer{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 11px;
-  border-radius:10px;
-  transition:all .25s;
-  background:rgba(23,29,46,.5);
-  margin-bottom:6px;
-}
-.w-performer:hover{background:rgba(35,43,66,.9);}
-.w-performer-rank{
-  width:26px;height:26px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:900;flex-shrink:0;
-}
-.w-performer-rank.r1{background:linear-gradient(135deg,#ffd700,#ffb300);color:#000;}
-.w-performer-rank.r2{background:linear-gradient(135deg,#c0c0c0,#a0a0a0);color:#000;}
-.w-performer-rank.r3{background:linear-gradient(135deg,#cd7f32,#a0651e);color:#fff;}
-.w-performer-rank.rx{background:rgba(91,141,239,.15);color:#5b8def;}
-.w-performer-info{flex:1;min-width:0;}
-.w-performer-name{font-size:12.5px;font-weight:800;color:#eef2f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.w-performer-count{font-size:10.5px;color:#8892ab;font-weight:700;}
-.w-performer-score{
-  font-size:14px;font-weight:900;color:#2dd4a3;
-  font-family:'JetBrains Mono',monospace;
-}
-
-.w-activity{
-  display:flex;gap:10px;
-  padding:9px 11px;
-  border-radius:10px;
-  transition:all .25s;
-  background:rgba(23,29,46,.5);
-  margin-bottom:5px;
-}
-.w-activity:hover{background:rgba(35,43,66,.9);}
-.w-activity-icon{
-  width:30px;height:30px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;flex-shrink:0;
-  background:rgba(35,43,66,.9);
-  border:1.5px solid rgba(255,255,255,.08);
-}
-.w-activity.creator .w-activity-icon{border-color:rgba(45,212,163,.4);}
-.w-activity.status .w-activity-icon{border-color:rgba(245,165,36,.4);}
-.w-activity.comment .w-activity-icon{border-color:rgba(91,141,239,.4);}
-.w-activity-body{flex:1;min-width:0;}
-.w-activity-text{
-  font-size:12px;color:#eef2f9;font-weight:600;
-  overflow:hidden;text-overflow:ellipsis;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-  line-height:1.5;margin-bottom:3px;
-}
-.w-activity-meta{
-  display:flex;justify-content:space-between;gap:6px;
-  font-size:10px;color:#5b6580;font-weight:700;
-}
-.w-activity-author{color:#8892ab;}
-
-/* ============ شريط الإشعارات السفلي ============ */
-.w-news-ticker{
-  display:flex;align-items:center;
-  background:linear-gradient(135deg,rgba(15,20,32,.9),rgba(23,29,46,.8));
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;
-  overflow:hidden;
-  height:44px;
-}
-.w-news-label{
-  display:flex;align-items:center;gap:6px;
-  padding:0 18px;height:100%;
-  background:linear-gradient(135deg,#5b8def,#3b6fd4);
-  color:#fff;font-weight:900;font-size:12px;
-  flex-shrink:0;letter-spacing:.5px;
-}
-.w-news-label::before{
-  content:'';width:7px;height:7px;border-radius:50%;
-  background:#fff;box-shadow:0 0 8px #fff;
-  animation:wLivePulse 1.5s ease-in-out infinite;
-}
+/* Bottom News Ticker */
+.w-news-ticker{display:flex;align-items:center;background:linear-gradient(135deg,rgba(15,20,32,.9),rgba(23,29,46,.8));backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.08);border-radius:10px;overflow:hidden;height:38px;flex-shrink:0;}
+.w-news-label{display:flex;align-items:center;gap:6px;padding:0 14px;height:100%;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;font-weight:900;font-size:11px;flex-shrink:0;letter-spacing:.5px;}
+.w-news-label::before{content:'';width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;animation:wLivePulse 1.5s ease-in-out infinite;}
 .w-news-track-wrap{flex:1;overflow:hidden;position:relative;}
-.w-news-track{
-  display:inline-block;white-space:nowrap;padding-right:100%;
-  animation:wNewsScroll 60s linear infinite;
-  color:#eef2f9;font-size:13px;font-weight:600;line-height:44px;
-}
+.w-news-track{display:inline-block;white-space:nowrap;padding-right:100%;animation:wNewsScroll 60s linear infinite;color:#eef2f9;font-size:12px;font-weight:600;line-height:38px;}
 .w-news-track:hover{animation-play-state:paused;}
-.w-news-track span{padding-left:60px;}
-.w-news-track span::before{content:'◆';color:#5b8def;margin-left:18px;font-size:10px;}
+.w-news-track span{padding-left:50px;}
+.w-news-track span::before{content:'◆';color:#5b8def;margin-left:15px;font-size:9px;}
 @keyframes wNewsScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
 
-/* ============ استجابة الشاشات ============ */
+/* Watch Sub Notifications */
+#watchSubNotifications{position:fixed;top:20px;left:20px;z-index:3000;display:flex;flex-direction:column;gap:10px;max-width:400px;pointer-events:none;}
+.watch-sub-notification{background:linear-gradient(135deg,rgba(15,20,32,.98),rgba(23,29,46,.95));backdrop-filter:blur(30px);border:1.5px solid rgba(91,141,239,.5);border-radius:16px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 30px rgba(91,141,239,.3);pointer-events:auto;animation:watchSubIn .5s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;display:flex;gap:12px;align-items:flex-start;}
+.watch-sub-notification::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,#5b8def,#2dd4a3);animation:watchSubProgress 20s linear forwards;transform-origin:right;}
+@keyframes watchSubProgress{from{transform:scaleX(1);}to{transform:scaleX(0);}}
+.watch-sub-notification.urgent{border-color:rgba(240,75,92,.6);box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 30px rgba(240,75,92,.4);}
+.watch-sub-notification.urgent::before{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
+.watch-sub-notification.important{border-color:rgba(245,165,36,.6);box-shadow:0 12px 40px rgba(0,0,0,.6),0 0 30px rgba(245,165,36,.4);}
+.watch-sub-notification.important::before{background:linear-gradient(90deg,#f5a524,#ffc043);}
+@keyframes watchSubIn{from{opacity:0;transform:translateX(-100%) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}
+@keyframes watchSubOut{from{opacity:1;transform:translateX(0) scale(1);max-height:200px;margin-bottom:10px;}to{opacity:0;transform:translateX(-100%) scale(.9);max-height:0;margin-bottom:0;padding:0;}}
+.watch-sub-notification.closing{animation:watchSubOut .4s ease-in forwards;}
+.watch-sub-icon{width:42px;height:42px;border-radius:12px;background:rgba(35,43,66,.9);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1.5px solid rgba(255,255,255,.08);}
+.watch-sub-notification.urgent .watch-sub-icon{border-color:rgba(240,75,92,.4);}
+.watch-sub-notification.important .watch-sub-icon{border-color:rgba(245,165,36,.4);}
+.watch-sub-body{flex:1;min-width:0;}
+.watch-sub-title{font-size:13.5px;font-weight:900;color:#eef2f9;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.watch-sub-badge{font-size:9px;padding:2px 7px;border-radius:6px;font-weight:900;letter-spacing:.5px;}
+.watch-sub-badge.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
+.watch-sub-badge.important{background:rgba(245,165,36,.25);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
+.watch-sub-badge.normal{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
+.watch-sub-message{font-size:12px;color:#8892ab;line-height:1.5;font-weight:600;margin-bottom:5px;}
+.watch-sub-meta{display:flex;gap:10px;font-size:10px;color:#5b6580;font-weight:700;flex-wrap:wrap;}
+.watch-sub-close{background:transparent;border:none;color:#5b6580;cursor:pointer;font-size:13px;padding:2px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.watch-sub-close:hover{background:rgba(240,75,92,.15);color:#f04b5c;}
+.watch-sub-progress-text{position:absolute;bottom:5px;left:12px;font-size:9px;color:#5b6580;font-weight:700;font-family:'JetBrains Mono',monospace;}
+
 @media (max-width:1400px){
-  .w-content-split{grid-template-columns:minmax(0,1fr) 300px;}
-  .w-kpi-num{font-size:24px;}
-  .w-kpi-icon{font-size:20px;}
-  .w-task-row{grid-template-columns:6px 80px minmax(0,1fr) 110px 110px minmax(120px,150px) 80px;gap:12px;padding:14px 16px;font-size:14px;}
-  .w-task-title{font-size:14px;}
-  .w-task-bar{min-height:40px;}
-  .w-bar-logo-big{width:76px;height:76px;}
-  .w-clock-time{font-size:22px;}
+  .w-middle-row{grid-template-columns:1fr 1fr 1fr;}
+  .w-task-row{grid-template-columns:4px 70px minmax(0,1fr) 90px 90px minmax(100px,120px) 65px;gap:8px;padding:9px 11px;}
+  .w-task-title{font-size:12.5px;}
+  .w-stat-num{font-size:28px;}
+  .w-stat-icon{width:46px;height:46px;font-size:20px;}
 }
 @media (max-width:1200px){
-  .w-content-split{grid-template-columns:minmax(0,1fr) 280px;}
-  .w-kpi-row{grid-template-columns:repeat(3,1fr);}
-  .w-task-row{grid-template-columns:5px 75px minmax(0,1fr) 100px 100px minmax(100px,130px) 75px;gap:10px;padding:12px 14px;}
-  .w-task-title{font-size:13.5px;}
-  .w-bar-logo-big{width:68px;height:68px;}
-  .w-bar-title h1{font-size:17px;}
+  .w-stat-num{font-size:24px;}
+  .w-stat-icon{width:40px;height:40px;font-size:18px;}
+  .w-stat-card{padding:10px 12px;gap:10px;}
+  .w-middle-row{grid-template-columns:1fr 1fr;}
+  .w-middle-row > :nth-child(3){grid-column:1/-1;}
+  .w-bar-title h1{font-size:16px;}
+  .w-clock-time{font-size:18px;}
 }
 @media (max-width:900px){
-  .w-content-split{grid-template-columns:1fr;grid-template-rows:1fr auto;}
-  .w-side{flex-direction:row;gap:10px;max-height:200px;}
-  .w-side-panel{flex:1;max-height:none;}
-  .w-task-row{grid-template-columns:5px 1fr 90px;gap:10px;padding:14px 16px;}
+  .w-stats-row{grid-template-columns:repeat(2,1fr);}
+  .w-middle-row{grid-template-columns:1fr;}
+  .w-task-row{grid-template-columns:4px 1fr 80px;gap:8px;padding:9px;}
   .w-task-row > .w-task-assignee,
   .w-task-row > .w-task-progress-wrap{display:none;}
-  .w-bar-logo-big{width:60px;height:60px;}
-  .w-clock-time{font-size:18px;}
-  .w-bar-title h1{font-size:15px;}
-  .w-bar-title p{font-size:9px;}
-  .w-live-pill,.w-status-pill{padding:6px 10px;font-size:10px;}
+  .w-bar-top{flex-wrap:wrap;gap:10px;padding:8px 12px;}
+  .w-bar-center{order:3;flex-basis:100%;}
+  .w-bar-brand{order:1;}
+  .w-bar-actions{order:2;margin-right:auto;}
 }
 @media (max-width:700px){
-  #watchMainContent{padding:6px;gap:8px;}
-  .w-kpi-row{grid-template-columns:repeat(2,1fr);gap:6px;}
-  .w-kpi-card{padding:10px;}
-  .w-kpi-num{font-size:22px;}
-  .w-kpi-icon{font-size:18px;}
-  .w-kpi-label{font-size:10px;}
-  .w-bar-top{padding:10px;min-height:auto;grid-template-columns:1fr;gap:10px;justify-items:center;}
-  .w-bar-center{width:100%;justify-content:center;}
-  .w-bar-title{align-items:center;width:100%;}
-  .w-bar-actions{width:100%;justify-content:center;}
-  .w-task-row{grid-template-columns:5px 65px minmax(0,1fr) 70px;font-size:12px;padding:12px 14px;gap:8px;}
+  .w-stats-row{grid-template-columns:repeat(2,1fr);gap:6px;}
+  .w-stat-card{padding:8px 10px;gap:8px;}
+  .w-stat-num{font-size:20px;}
+  .w-stat-icon{width:34px;height:34px;font-size:16px;border-radius:10px;}
+  .w-stat-label{font-size:10px;}
+  .w-bar-title h1{font-size:14px;}
+  .w-bar-title p{font-size:9px;}
+  .w-bar-logo{width:42px;height:42px;}
+  .w-clock-time{font-size:16px;}
+  .w-clock-date{font-size:9px;}
+  .w-task-row{grid-template-columns:4px 60px minmax(0,1fr) 60px;gap:6px;padding:8px;}
   .w-task-row > .w-task-due{display:none;}
-  .w-news-track{font-size:11.5px;}
+  .w-task-title{font-size:11.5px;}
+  #watchSubNotifications{left:10px;right:10px;max-width:none;}
   #subNotifications{left:10px;right:10px;max-width:none;}
 }
 </style>
@@ -1316,12 +790,11 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 </div>
 
-<!-- ============ Sub Notifications Container ============ -->
+<!-- Notifications Containers -->
 <div id="subNotifications"></div>
+<div id="watchSubNotifications"></div>
 
-<!-- ============================================================
-     ✅ WATCH SCREEN — Dashboard
-     ============================================================ -->
+<!-- WATCH SCREEN -->
 <div id="watchScreen">
   <div class="watch-bg">
     <div class="watch-orb o1"></div>
@@ -1344,27 +817,24 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
   </div>
 
   <div id="watchMainContent">
-
-    <!-- ============ الشريط العلوي: عنوان | شعار بالمنتصف + ساعة | مباشر+متصل+إغلاق ============ -->
+    <!-- Header -->
     <div class="w-bar-top">
-      <!-- يمين: العنوان -->
-      <div class="w-bar-title">
-        <h1>EMAK IT Dep.</h1>
-        <p>EMAK — نظام المتابعة</p>
-      </div>
-
-      <!-- منتصف: الشعار الكبير + الساعة -->
-      <div class="w-bar-center">
-        <div class="w-bar-logo-big">
+      <div class="w-bar-brand">
+        <div class="w-bar-logo">
           <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK">
         </div>
-        <div class="w-bar-clock-big">
+        <div class="w-bar-title">
+          <h1>EMAK IT Dep.</h1>
+          <p>نظام إدارة المهام — نظم المعلومات</p>
+        </div>
+      </div>
+      <div class="w-bar-center">
+        <div class="w-clock-box">
           <div class="w-clock-time" id="watchClock">--:--:--</div>
+          <div class="w-clock-sep"></div>
           <div class="w-clock-date" id="watchDate">---</div>
         </div>
       </div>
-
-      <!-- يسار: مباشر + متصل + إغلاق -->
       <div class="w-bar-actions">
         <div class="w-live-pill">
           <span class="w-live-dot"></span>
@@ -1378,105 +848,102 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
       </div>
     </div>
 
-    <!-- ============ 6 بطاقات KPI ============ -->
-    <div class="w-kpi-row">
-      <div class="w-kpi-card total">
-        <div class="w-kpi-icon">📋</div>
-        <div class="w-kpi-num" id="wTotal">0</div>
-        <div class="w-kpi-label">إجمالي</div>
+    <!-- 4 Stat Cards -->
+    <div class="w-stats-row">
+      <div class="w-stat-card total">
+        <div class="w-stat-icon">📋</div>
+        <div class="w-stat-info">
+          <div class="w-stat-num" id="wTotal">0</div>
+          <div class="w-stat-label">إجمالي المهام</div>
+        </div>
       </div>
-      <div class="w-kpi-card active">
-        <div class="w-kpi-icon">⚡</div>
-        <div class="w-kpi-num" id="wActive">0</div>
-        <div class="w-kpi-label">نشطة</div>
+      <div class="w-stat-card active">
+        <div class="w-stat-icon">⚡</div>
+        <div class="w-stat-info">
+          <div class="w-stat-num" id="wActive">0</div>
+          <div class="w-stat-label">قيد الانتظار</div>
+        </div>
       </div>
-      <div class="w-kpi-card working">
-        <div class="w-kpi-icon">⏳</div>
-        <div class="w-kpi-num" id="wWorking">0</div>
-        <div class="w-kpi-label">جارية</div>
+      <div class="w-stat-card working">
+        <div class="w-stat-icon">⏳</div>
+        <div class="w-stat-info">
+          <div class="w-stat-num" id="wWorking">0</div>
+          <div class="w-stat-label">قيد التنفيذ</div>
+        </div>
       </div>
-      <div class="w-kpi-card overdue">
-        <div class="w-kpi-icon">⚠️</div>
-        <div class="w-kpi-num" id="wOverdue">0</div>
-        <div class="w-kpi-label">متأخرة</div>
-      </div>
-      <div class="w-kpi-card done">
-        <div class="w-kpi-icon">✅</div>
-        <div class="w-kpi-num" id="wDone">0</div>
-        <div class="w-kpi-label">مكتملة</div>
-      </div>
-      <div class="w-kpi-card team">
-        <div class="w-kpi-icon">👥</div>
-        <div class="w-kpi-num" id="wTeam">0</div>
-        <div class="w-kpi-label">الفريق</div>
+      <div class="w-stat-card done">
+        <div class="w-stat-icon">✅</div>
+        <div class="w-stat-info">
+          <div class="w-stat-num" id="wDone">0</div>
+          <div class="w-stat-label">مكتملة</div>
+        </div>
       </div>
     </div>
 
-    <!-- ============ التقسيم 70/30 ============ -->
-    <div class="w-content-split">
-
-      <!-- عمود المهام -->
-      <div class="w-main-panel">
-        <div class="w-main-header">
-          <div class="w-main-title">
-            <span>📋</span>
-            <span>قائمة المهام</span>
-          </div>
-          <div class="w-tabs" id="wTabs">
-            <button class="w-tab active" data-tab="all">
-              الكل <span class="w-tab-count" id="wTabAllCount">0</span>
-            </button>
-            <button class="w-tab urgent-tab" data-tab="urgent">
-              🔴 عاجلة <span class="w-tab-count" id="wTabUrgentCount">0</span>
-            </button>
-            <button class="w-tab" data-tab="working">
-              ⏳ جارية <span class="w-tab-count" id="wTabWorkingCount">0</span>
-            </button>
-            <button class="w-tab done-tab" data-tab="done">
-              ✅ مكتملة <span class="w-tab-count" id="wTabDoneCount">0</span>
-            </button>
-          </div>
+    <!-- Middle Row: 3 Panels -->
+    <div class="w-middle-row">
+      <div class="w-panel">
+        <div class="w-panel-header">
+          <div class="w-panel-title"><span>📈</span><span>الإنتاجية الأسبوعية</span></div>
+          <span class="w-panel-badge">آخر 7 أيام</span>
         </div>
-        <div class="w-main-body" id="wMainBody">
-          <div class="w-scroll-track" id="wTasksList">
-            <div class="w-empty-state">
-              <div class="w-empty-icon">📭</div>
-              <div class="w-empty-text">لا توجد مهام</div>
+        <div class="w-panel-body">
+          <div class="w-chart-line"><canvas id="watchLineChart"></canvas></div>
+        </div>
+      </div>
+      <div class="w-panel">
+        <div class="w-panel-header">
+          <div class="w-panel-title"><span>🍩</span><span>حالة المهام</span></div>
+          <span class="w-panel-badge">نسبة</span>
+        </div>
+        <div class="w-panel-body">
+          <div class="w-chart-doughnut">
+            <canvas id="watchDoughnutChart"></canvas>
+            <div class="w-doughnut-center">
+              <div class="w-doughnut-center-num" id="wDonePercent">0%</div>
+              <div class="w-doughnut-center-label">مكتملة</div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Sidebar -->
-      <div class="w-side">
-        <div class="w-side-panel top-performers">
-          <div class="w-side-header">
-            <div class="w-side-title"><span>🏆</span><span>أفضل المنجزين</span></div>
-            <span class="w-side-badge">Top 5</span>
-          </div>
-          <div class="w-side-body" id="wTopPerformers">
+      <div class="w-panel">
+        <div class="w-panel-header">
+          <div class="w-panel-title"><span>🥇</span><span>أفضل المنجزين</span></div>
+          <span class="w-panel-badge" id="wTopCount">0</span>
+        </div>
+        <div class="w-panel-body">
+          <div class="w-top-list" id="wTopPerformers">
             <div class="w-empty-state" style="padding:20px;">
               <div class="w-empty-icon" style="font-size:32px;">🏆</div>
-              <div class="w-empty-text" style="font-size:12px;">لا توجد بيانات</div>
-            </div>
-          </div>
-        </div>
-        <div class="w-side-panel recent-activities">
-          <div class="w-side-header">
-            <div class="w-side-title"><span>⏱️</span><span>آخر النشاطات</span></div>
-            <span class="w-side-badge" id="wActivitiesCount">0</span>
-          </div>
-          <div class="w-side-body" id="wRecentActivities">
-            <div class="w-empty-state" style="padding:20px;">
-              <div class="w-empty-icon" style="font-size:32px;">📋</div>
-              <div class="w-empty-text" style="font-size:12px;">لا توجد نشاطات</div>
+              <div class="w-empty-text" style="font-size:11px;">لا توجد بيانات</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ============ شريط الإشعارات السفلي ============ -->
+    <!-- Bottom Tasks Table -->
+    <div class="w-tasks-panel">
+      <div class="w-tasks-header">
+        <div class="w-panel-title"><span>📋</span><span>قائمة المهام</span></div>
+        <div class="w-tabs" id="wTabs">
+          <button class="w-tab active" data-tab="all">الكل <span class="w-tab-count" id="wTabAllCount">0</span></button>
+          <button class="w-tab urgent-tab" data-tab="urgent">🔴 عاجلة <span class="w-tab-count" id="wTabUrgentCount">0</span></button>
+          <button class="w-tab" data-tab="working">⏳ جارية <span class="w-tab-count" id="wTabWorkingCount">0</span></button>
+          <button class="w-tab done-tab" data-tab="done">✅ مكتملة <span class="w-tab-count" id="wTabDoneCount">0</span></button>
+        </div>
+      </div>
+      <div class="w-tasks-body" id="wMainBody">
+        <div class="w-scroll-track" id="wTasksList">
+          <div class="w-empty-state">
+            <div class="w-empty-icon">📭</div>
+            <div class="w-empty-text">لا توجد مهام</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Ticker -->
     <div class="w-news-ticker">
       <div class="w-news-label">🔔 إشعارات</div>
       <div class="w-news-track-wrap">
@@ -1485,7 +952,6 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -1493,7 +959,7 @@ header{background:var(--bg-glass);backdrop-filter:blur(24px);border-bottom:1px s
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v9.1 — Dashboard v2 + Sub Notifications
+   EMAK IT Dep. v10.0 — Command Center Design
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1524,7 +990,7 @@ const MAX_BACKUPS = 5;
 const WATCH_PASSWORD = "watch2024";
 const WATCH_SESSION_DURATION = 12 * 60 * 60 * 1000;
 const SCROLL_SECONDS_PER_TASK = 10;
-const NOTIFICATION_DURATION = 20000; // 20 ثانية
+const NOTIFICATION_DURATION = 20000;
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -1545,9 +1011,10 @@ const state = {
   pendingWrites: 0, renderScheduled: false,
   watchMode: false, watchClockTimer: null,
   watchUnsubs: { tasks: null, team: null, activity: null },
-  knownTaskIds: new Set(),
-  notifications: [],
-  audioContext: null
+  audioContext: null,
+  watchCharts: { line: null, doughnut: null },
+  watchKnownTaskIds: new Set(),
+  watchFirstLoad: false
 };
 
 /* ============ Utils ============ */
@@ -1611,56 +1078,43 @@ function swalConfirm(title, text="لا يمكن التراجع!") {
   return Swal.fire({ icon:"warning", title, text, showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580", background: themeBg(), color: themeFg() });
 }
 
-/* ============ ✅ Sub Notification System ============ */
+/* ============ Sound ============ */
 function playNotificationSound(priority = "normal") {
   try {
     if (!state.audioContext) {
       state.audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
     const ctx = state.audioContext;
+    if (ctx.state === "suspended") ctx.resume();
     const now = ctx.currentTime;
-    
-    // نغمة بسيطة حسب الأولوية
     const notes = priority === "urgent" 
-      ? [{ f: 880, t: 0 }, { f: 660, t: 0.15 }, { f: 880, t: 0.3 }]  // عاجل - 3 نغمات
+      ? [{ f: 880, t: 0 }, { f: 660, t: 0.15 }, { f: 880, t: 0.3 }]
       : priority === "important"
-      ? [{ f: 660, t: 0 }, { f: 880, t: 0.15 }]  // مهم - نغمتان
-      : [{ f: 523, t: 0 }, { f: 659, t: 0.1 }]; // عادي - نغمتان هادئتان
-    
+      ? [{ f: 660, t: 0 }, { f: 880, t: 0.15 }]
+      : [{ f: 523, t: 0 }, { f: 659, t: 0.1 }];
     notes.forEach(({ f, t }) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
       osc.frequency.value = f;
-      gain.gain.setValueAtTime(0.08, now + t);
+      gain.gain.setValueAtTime(0.1, now + t);
       gain.gain.exponentialRampToValueAtTime(0.001, now + t + 0.25);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start(now + t);
       osc.stop(now + t + 0.3);
     });
-  } catch (e) {
-    // تجاهل الأخطاء الصامتة
-  }
+  } catch (e) {}
 }
 
-function showSubNotification(task, type = "task_created") {
+/* ============ Sub Notification (Main App) ============ */
+function showSubNotification(task) {
   const container = document.getElementById("subNotifications");
   if (!container) return;
-  
   const priority = task.priority === "عاجل" ? "urgent" : task.priority === "مهم" ? "important" : "normal";
   const notifId = "notif-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7);
-  
-  const iconMap = {
-    urgent: "🔴",
-    important: "🟡",
-    normal: "🟢"
-  };
-  const badgeMap = {
-    urgent: "عاجل",
-    important: "مهم",
-    normal: "عادي"
-  };
+  const iconMap = { urgent: "🔴", important: "🟡", normal: "🟢" };
+  const badgeMap = { urgent: "عاجل", important: "مهم", normal: "عادي" };
   
   const notif = document.createElement("div");
   notif.className = `sub-notification ${priority}`;
@@ -1681,13 +1135,9 @@ function showSubNotification(task, type = "task_created") {
     <button class="sub-notif-close" onclick="closeSubNotification('${notifId}')">✕</button>
     <div class="sub-notif-progress-text">20s</div>
   `;
-  
   container.appendChild(notif);
-  
-  // تشغيل الصوت
   playNotificationSound(priority);
   
-  // العد التنازلي
   let remaining = NOTIFICATION_DURATION / 1000;
   const progressEl = notif.querySelector(".sub-notif-progress-text");
   const countdown = setInterval(() => {
@@ -1696,17 +1146,14 @@ function showSubNotification(task, type = "task_created") {
     if (remaining <= 0) clearInterval(countdown);
   }, 1000);
   
-  // إزالة تلقائية بعد 20 ثانية
   const timeoutId = setTimeout(() => {
     clearInterval(countdown);
     closeSubNotification(notifId);
   }, NOTIFICATION_DURATION);
   
-  // تخزين المؤقت
   notif._timeoutId = timeoutId;
   notif._countdown = countdown;
   
-  // حد أقصى 5 إشعارات
   const notifs = container.querySelectorAll(".sub-notification");
   if (notifs.length > 5) {
     const oldest = notifs[0];
@@ -1715,8 +1162,71 @@ function showSubNotification(task, type = "task_created") {
     oldest.remove();
   }
 }
-
 window.closeSubNotification = function(notifId) {
+  const notif = document.getElementById(notifId);
+  if (!notif) return;
+  if (notif._timeoutId) clearTimeout(notif._timeoutId);
+  if (notif._countdown) clearInterval(notif._countdown);
+  notif.classList.add("closing");
+  setTimeout(() => notif.remove(), 400);
+};
+
+/* ============ Watch Sub Notification ============ */
+function showWatchSubNotification(task) {
+  const container = document.getElementById("watchSubNotifications");
+  if (!container) return;
+  const priority = task.priority === "عاجل" ? "urgent" : task.priority === "مهم" ? "important" : "normal";
+  const notifId = "watch-notif-" + Date.now() + "-" + Math.random().toString(36).slice(2, 7);
+  const iconMap = { urgent: "🔴", important: "🟡", normal: "🟢" };
+  const badgeMap = { urgent: "عاجل", important: "مهم", normal: "عادي" };
+  
+  const notif = document.createElement("div");
+  notif.className = `watch-sub-notification ${priority}`;
+  notif.id = notifId;
+  notif.innerHTML = `
+    <div class="watch-sub-icon">${iconMap[priority]}</div>
+    <div class="watch-sub-body">
+      <div class="watch-sub-title">
+        <span>📌 مهمة جديدة</span>
+        <span class="watch-sub-badge ${priority}">${badgeMap[priority]}</span>
+      </div>
+      <div class="watch-sub-message">${escapeHtml(task.title)}</div>
+      <div class="watch-sub-meta">
+        <span>👤 ${escapeHtml(task.assignee || "—")}</span>
+        ${task.dueDate ? `<span>📅 ${escapeHtml(dueLabel(task.dueDate))}</span>` : ""}
+      </div>
+    </div>
+    <button class="watch-sub-close" onclick="closeWatchSubNotification('${notifId}')">✕</button>
+    <div class="watch-sub-progress-text">20s</div>
+  `;
+  container.appendChild(notif);
+  playNotificationSound(priority);
+  
+  let remaining = 20;
+  const progressEl = notif.querySelector(".watch-sub-progress-text");
+  const countdown = setInterval(() => {
+    remaining--;
+    if (progressEl) progressEl.textContent = remaining + "s";
+    if (remaining <= 0) clearInterval(countdown);
+  }, 1000);
+  
+  const timeoutId = setTimeout(() => {
+    clearInterval(countdown);
+    closeWatchSubNotification(notifId);
+  }, 20000);
+  
+  notif._timeoutId = timeoutId;
+  notif._countdown = countdown;
+  
+  const notifs = container.querySelectorAll(".watch-sub-notification");
+  if (notifs.length > 5) {
+    const oldest = notifs[0];
+    if (oldest._timeoutId) clearTimeout(oldest._timeoutId);
+    if (oldest._countdown) clearInterval(oldest._countdown);
+    oldest.remove();
+  }
+}
+window.closeWatchSubNotification = function(notifId) {
   const notif = document.getElementById(notifId);
   if (!notif) return;
   if (notif._timeoutId) clearTimeout(notif._timeoutId);
@@ -1748,33 +1258,14 @@ async function loadLogoAsBase64() {
   } catch (e) { return null; }
 }
 
-function showSaveIndicator(s) {
-  let ind = document.getElementById("saveIndicator");
-  if (!ind) { ind = document.createElement("div"); ind.id = "saveIndicator"; document.body.appendChild(ind); }
-  const states = {
-    saving: { text: "💾 جارٍ الحفظ...", color: "var(--primary)" },
-    saved:  { text: "✅ تم الحفظ", color: "var(--success)" },
-    error:  { text: "⚠️ فشل الحفظ", color: "var(--urgent)" },
-    offline:{ text: "📴 غير متصل", color: "var(--warning)" }
-  };
-  const v = states[s];
-  if (!v) { ind.style.opacity = "0"; return; }
-  ind.textContent = v.text;
-  ind.style.borderColor = v.color;
-  ind.style.opacity = "1";
-  clearTimeout(ind._tid);
-  if (s === "saved") ind._tid = setTimeout(() => ind.style.opacity = "0", 1500);
-}
 async function safeWrite(operation, maxRetries = 3) {
-  if (!state.isOnline) { showSaveIndicator("offline"); return { queued: true }; }
+  if (!state.isOnline) return { queued: true };
   state.pendingWrites++;
-  showSaveIndicator("saving");
   let lastError;
   for (let i = 0; i < maxRetries; i++) {
     try {
       const result = await operation();
       state.pendingWrites--;
-      if (state.pendingWrites === 0) showSaveIndicator("saved");
       return result;
     } catch (err) {
       lastError = err;
@@ -1782,7 +1273,6 @@ async function safeWrite(operation, maxRetries = 3) {
     }
   }
   state.pendingWrites--;
-  showSaveIndicator("error");
   throw lastError;
 }
 
@@ -2022,12 +1512,10 @@ function startRealtimeListeners() {
     state.allTasks = snap.val() || {};
     const isFirstLoad = Object.keys(prevTasks).length === 0;
     
-    // ✅ إشعار المهام الجديدة (فقط بعد أول تحميل وليس المستخدم نفسه)
     if (!isFirstLoad) {
       Object.entries(state.allTasks).forEach(([id, task]) => {
         if (!prevTasks[id] && task.createdBy !== state.currentUser?.uid) {
-          // مهمة جديدة أضافها شخص آخر
-          showSubNotification(task, "task_created");
+          showSubNotification(task);
         }
       });
     }
@@ -2149,11 +1637,7 @@ function setupAddTaskForm() {
       e.target.reset(); populateAssigneeSelect();
       localStorage.removeItem("emak_task_draft");
       showToast("✅ تمت الإضافة", "success");
-      
-      // ✅ إشعار محلي فوري (حتى للمستخدم نفسه كتأكيد)
-      showSubNotification({
-        title, assignee: member.name, priority, dueDate
-      }, "task_created");
+      showSubNotification({ title, assignee: member.name, priority, dueDate });
     } catch (err) { swalError("فشل الحفظ"); }
   };
 }
@@ -2931,6 +2415,7 @@ window.openChangePasswordModal = async () => {
   }
 };
 
+/* ============ Report ============ */
 function openReport() {
   const entries = Object.entries(state.allTasks);
   const done = entries.filter(([_, t]) => t.status === "مكتملة");
@@ -3009,7 +2494,7 @@ window.exportCSV = () => {
 };
 
 /* ============================================================
-   شاشة العرض - Dashboard
+   شاشة العرض - Command Center
    ============================================================ */
 window.openWatchFromLogin = async function() {
   const { value: password } = await Swal.fire({
@@ -3109,6 +2594,7 @@ document.getElementById("watchPinForm").addEventListener("submit", async (e) => 
 
 async function startWatchData() {
   if (!auth.currentUser) { try { await signInAnonymously(auth); } catch(e) {} }
+  
   updateWatchClock();
   if (state.watchClockTimer) clearInterval(state.watchClockTimer);
   state.watchClockTimer = setInterval(updateWatchClock, 1000);
@@ -3127,21 +2613,49 @@ async function startWatchData() {
   if (state.watchUnsubs.team) try { state.watchUnsubs.team(); } catch(e){}
   if (state.watchUnsubs.activity) try { state.watchUnsubs.activity(); } catch(e){}
 
+  state.watchFirstLoad = false;
+  state.watchKnownTaskIds = new Set();
+
   state.watchUnsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
     state.allTasks = snap.val() || {};
-    if (state.watchMode) { wRenderAll(); }
+    
+    // ✅ كشف المهام الجديدة في شاشة العرض
+    if (state.watchFirstLoad) {
+      Object.entries(state.allTasks).forEach(([id, task]) => {
+        if (!state.watchKnownTaskIds.has(id)) {
+          state.watchKnownTaskIds.add(id);
+          // ✅ إشعار + صوت (فقط المهام المُنشأة من مستخدم آخر)
+          if (task.createdBy && task.createdBy !== state.currentUser?.uid) {
+            showWatchSubNotification(task);
+          } else {
+            // حتى مهام المستخدم نفسه — إشعار بدون صوت
+            showWatchSubNotification(task);
+          }
+        }
+      });
+    } else {
+      Object.keys(state.allTasks).forEach(id => state.watchKnownTaskIds.add(id));
+      state.watchFirstLoad = true;
+    }
+    
+    // حذف المحذوفة من القائمة
+    state.watchKnownTaskIds = new Set(
+      [...state.watchKnownTaskIds].filter(id => state.allTasks[id])
+    );
+    
+    if (state.watchMode) wRenderAll();
   }, (err) => {});
 
   state.watchUnsubs.team = onValue(ref(db, "team"), (snap) => {
     state.allTeam = snap.val() || {};
-    if (state.watchMode) wRenderKPI();
+    if (state.watchMode) wRenderAll();
   }, (err) => {});
 
   state.watchUnsubs.activity = onValue(ref(db, "activity"), (snap) => {
     const raw = snap.val() || {};
     state.allActivity = Object.entries(raw).map(([id, a]) => ({ id, ...a }))
       .sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 30);
-    if (state.watchMode) wRenderActivities();
+    if (state.watchMode) wRenderAll();
   }, (err) => {});
 
   wRenderAll();
@@ -3162,6 +2676,7 @@ function updateWatchClock() {
   if (c) c.textContent = time;
   if (d) d.textContent = date;
 }
+
 function watchUpdateConnection() {
   const s = document.getElementById("watchConnStatus");
   if (!s) return;
@@ -3181,21 +2696,17 @@ function getTaskProgress(t) {
   return Math.min(30, 10 + c * 5);
 }
 
-function wRenderKPI() {
+/* ============ Stats + Tabs ============ */
+function wRenderStats() {
   const tasks = Object.values(state.allTasks);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  const active = tasks.filter(t => t.status === "جديدة" && t.priority !== "عاجل" && t.priority !== "مهم").length;
+  const active = tasks.filter(t => t.status === "جديدة").length;
   const working = tasks.filter(t => t.status === "جاري التنفيذ").length;
-  const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
   const done = tasks.filter(t => t.status === "مكتملة").length;
-  const seenUids = new Set();
-  Object.values(state.allTeam).forEach(m => { if (m && m.uid) seenUids.add(m.uid); });
   set("wTotal", tasks.length);
   set("wActive", active);
   set("wWorking", working);
-  set("wOverdue", overdue);
   set("wDone", done);
-  set("wTeam", seenUids.size);
 
   const setTab = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   setTab("wTabAllCount", tasks.length);
@@ -3204,7 +2715,211 @@ function wRenderKPI() {
   setTab("wTabDoneCount", done);
 }
 
-/* ✅ بطاقة مهمة أفقية كبيرة */
+/* ============ Line Chart ============ */
+function wRenderLineChart() {
+  const canvas = document.getElementById("watchLineChart");
+  if (!canvas) return;
+  
+  const entries = Object.values(state.allTasks);
+  const days = ["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"];
+  const doneCounts = [0,0,0,0,0,0,0];
+  const createdCounts = [0,0,0,0,0,0,0];
+  
+  const now = new Date();
+  for (let i = 0; i < 7; i++) {
+    const dayStart = new Date(now);
+    dayStart.setDate(now.getDate() - (6 - i));
+    dayStart.setHours(0,0,0,0);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setHours(23,59,59,999);
+    const dayIndex = dayStart.getDay();
+    const mapIndex = dayIndex === 6 ? 0 : dayIndex + 1;
+    
+    entries.forEach(t => {
+      if (t.status === "مكتملة" && isValidTs(t.updatedAt) && t.updatedAt >= dayStart.getTime() && t.updatedAt <= dayEnd.getTime()) {
+        doneCounts[mapIndex]++;
+      }
+      if (isValidTs(t.createdAt) && t.createdAt >= dayStart.getTime() && t.createdAt <= dayEnd.getTime()) {
+        createdCounts[mapIndex]++;
+      }
+    });
+  }
+  
+  if (state.watchCharts.line) { try { state.watchCharts.line.destroy(); } catch(e){} }
+  state.watchCharts.line = new Chart(canvas, {
+    type: "line",
+    data: {
+      labels: days,
+      datasets: [
+        {
+          label: "مكتملة",
+          data: doneCounts,
+          borderColor: "#2dd4a3",
+          backgroundColor: "rgba(45,212,163,.15)",
+          borderWidth: 2.5,
+          tension: .4,
+          fill: true,
+          pointBackgroundColor: "#2dd4a3",
+          pointBorderColor: "#050810",
+          pointBorderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6
+        },
+        {
+          label: "جديدة",
+          data: createdCounts,
+          borderColor: "#5b8def",
+          backgroundColor: "rgba(91,141,239,.1)",
+          borderWidth: 2.5,
+          tension: .4,
+          fill: true,
+          pointBackgroundColor: "#5b8def",
+          pointBorderColor: "#050810",
+          pointBorderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "top",
+          align: "end",
+          labels: {
+            color: "#8892ab",
+            font: { family: "Cairo", size: 10, weight: "700" },
+            padding: 8,
+            usePointStyle: true,
+            pointStyle: "circle",
+            boxWidth: 8,
+            boxHeight: 8
+          }
+        },
+        tooltip: {
+          backgroundColor: "rgba(15,20,32,.95)",
+          borderColor: "rgba(91,141,239,.4)",
+          borderWidth: 1,
+          titleColor: "#eef2f9",
+          bodyColor: "#8892ab",
+          titleFont: { family: "Cairo", size: 11, weight: "800" },
+          bodyFont: { family: "Cairo", size: 11, weight: "600" },
+          padding: 10,
+          cornerRadius: 8
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: "#5b6580", stepSize: 1, font: { family: "JetBrains Mono", size: 9, weight: "600" } },
+          grid: { color: "rgba(255,255,255,.04)", drawBorder: false }
+        },
+        x: {
+          ticks: { color: "#5b6580", font: { family: "Cairo", size: 9, weight: "700" } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+/* ============ Doughnut Chart ============ */
+function wRenderDoughnutChart() {
+  const canvas = document.getElementById("watchDoughnutChart");
+  if (!canvas) return;
+  
+  const tasks = Object.values(state.allTasks);
+  const done = tasks.filter(t => t.status === "مكتملة").length;
+  const working = tasks.filter(t => t.status === "جاري التنفيذ").length;
+  const newT = tasks.filter(t => t.status === "جديدة").length;
+  const total = tasks.length;
+  const donePercent = total > 0 ? Math.round((done / total) * 100) : 0;
+  
+  const pctEl = document.getElementById("wDonePercent");
+  if (pctEl) pctEl.textContent = donePercent + "%";
+  
+  if (state.watchCharts.doughnut) { try { state.watchCharts.doughnut.destroy(); } catch(e){} }
+  state.watchCharts.doughnut = new Chart(canvas, {
+    type: "doughnut",
+    data: {
+      labels: ["مكتملة", "جارية", "جديدة"],
+      datasets: [{
+        data: [done, working, newT],
+        backgroundColor: ["#2dd4a3", "#f5a524", "#5b8def"],
+        borderColor: "#050810",
+        borderWidth: 3,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: "68%",
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            color: "#8892ab",
+            font: { family: "Cairo", size: 10, weight: "700" },
+            padding: 8,
+            usePointStyle: true,
+            pointStyle: "circle",
+            boxWidth: 8,
+            boxHeight: 8
+          }
+        },
+        tooltip: {
+          backgroundColor: "rgba(15,20,32,.95)",
+          borderColor: "rgba(91,141,239,.4)",
+          borderWidth: 1,
+          titleColor: "#eef2f9",
+          bodyColor: "#8892ab",
+          titleFont: { family: "Cairo", size: 11, weight: "800" },
+          bodyFont: { family: "Cairo", size: 11, weight: "600" },
+          padding: 10,
+          cornerRadius: 8
+        }
+      }
+    }
+  });
+}
+
+/* ============ Top Performers ============ */
+function wRenderTopPerformers() {
+  const wrap = document.getElementById("wTopPerformers");
+  const countEl = document.getElementById("wTopCount");
+  if (!wrap) return;
+  const performers = {};
+  Object.values(state.allTasks).forEach(t => {
+    if (t.status === "مكتملة" && t.assigneeId) {
+      if (!performers[t.assigneeId]) performers[t.assigneeId] = { name: t.assignee || "—", count: 0 };
+      performers[t.assigneeId].count++;
+    }
+  });
+  const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 5);
+  if (countEl) countEl.textContent = sorted.length;
+  
+  if (sorted.length === 0) {
+    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;"><div class="w-empty-icon" style="font-size:32px;">🏆</div><div class="w-empty-text" style="font-size:11px;">لا توجد إنجازات بعد</div></div>`;
+    return;
+  }
+  wrap.innerHTML = sorted.map(([uid, p], i) => {
+    const rankClass = i === 0 ? "r1" : i === 1 ? "r2" : i === 2 ? "r3" : "rx";
+    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
+    return `<div class="w-top-item">
+      <div class="w-top-rank ${rankClass}">${medal}</div>
+      <div class="w-top-info">
+        <div class="w-top-name">${escapeHtml(p.name)}</div>
+        <div class="w-top-count">${p.count} مهمة مكتملة</div>
+      </div>
+      <div class="w-top-score">${p.count}</div>
+    </div>`;
+  }).join("");
+}
+
+/* ============ Tasks Table ============ */
 function wTaskRowHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== "مكتملة";
@@ -3215,7 +2930,7 @@ function wTaskRowHtml(id, t) {
   const progress = getTaskProgress(t);
   const statusLabel = t.status === "جديدة" ? "جديدة" : t.status === "جاري التنفيذ" ? "جارية" : "مكتملة";
 
-  return `<div class="w-task-row ${pc} ${isOverdue ? 'overdue' : ''} ${isUrgentFlashing ? 'urgent-flash' : ''} ${isDone ? 'done-task' : ''}" onclick="openModal('${id}')">
+  return `<div class="w-task-row ${pc} ${isOverdue ? 'overdue' : ''} ${isDone ? 'done-task' : ''}" onclick="openModal('${id}')">
     <div class="w-task-bar"></div>
     <div class="w-task-priority ${pc}">${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}</div>
     <div class="w-task-title" title="${escapeHtml(t.title)}">${escapeHtml(t.title)}</div>
@@ -3268,10 +2983,10 @@ function wRenderTasks() {
 
   const html = filtered.map(([id, t]) => wTaskRowHtml(id, t)).join("");
   
-  if (filtered.length > 4) {
+  if (filtered.length > 5) {
     body.classList.add("auto-scroll");
     body.innerHTML = `<div class="w-scroll-track">${html}${html}</div>`;
-    const duration = filtered.length * SCROLL_SECONDS_PER_TASK;
+    const duration = Math.max(20, filtered.length * SCROLL_SECONDS_PER_TASK);
     const track = body.querySelector(".w-scroll-track");
     if (track) track.style.animation = `wAutoScroll ${duration}s linear infinite`;
   } else {
@@ -3280,65 +2995,7 @@ function wRenderTasks() {
   }
 }
 
-function wRenderTopPerformers() {
-  const wrap = document.getElementById("wTopPerformers");
-  if (!wrap) return;
-  const performers = {};
-  Object.values(state.allTasks).forEach(t => {
-    if (t.status === "مكتملة" && t.assigneeId) {
-      if (!performers[t.assigneeId]) performers[t.assigneeId] = { name: t.assignee || "—", count: 0 };
-      performers[t.assigneeId].count++;
-    }
-  });
-  const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 5);
-  if (sorted.length === 0) {
-    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;"><div class="w-empty-icon" style="font-size:32px;">🏆</div><div class="w-empty-text" style="font-size:12px;">لا توجد إنجازات بعد</div></div>`;
-    return;
-  }
-  wrap.innerHTML = sorted.map(([uid, p], i) => {
-    const rankClass = i === 0 ? "r1" : i === 1 ? "r2" : i === 2 ? "r3" : "rx";
-    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
-    return `<div class="w-performer">
-      <div class="w-performer-rank ${rankClass}">${medal}</div>
-      <div class="w-performer-info">
-        <div class="w-performer-name">${escapeHtml(p.name)}</div>
-        <div class="w-performer-count">${p.count} مهمة مكتملة</div>
-      </div>
-      <div class="w-performer-score">${p.count}</div>
-    </div>`;
-  }).join("");
-}
-
-function wRenderActivities() {
-  const wrap = document.getElementById("wRecentActivities");
-  const countEl = document.getElementById("wActivitiesCount");
-  if (!wrap) return;
-  const activities = state.allActivity.slice(0, 15);
-  if (countEl) countEl.textContent = activities.length;
-  if (activities.length === 0) {
-    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;"><div class="w-empty-icon" style="font-size:32px;">📋</div><div class="w-empty-text" style="font-size:12px;">لا توجد نشاطات</div></div>`;
-    return;
-  }
-  const typeMap = {
-    task_created: { icon: "➕", class: "creator" }, task_edited: { icon: "✏️", class: "creator" },
-    task_deleted: { icon: "🗑️", class: "creator" }, status_changed: { icon: "🔄", class: "status" },
-    comment_added: { icon: "💬", class: "comment" }, task_reassigned: { icon: "👤", class: "status" }
-  };
-  wrap.innerHTML = activities.map(a => {
-    const meta = typeMap[a.type] || { icon: "•", class: "" };
-    return `<div class="w-activity ${meta.class}">
-      <div class="w-activity-icon">${meta.icon}</div>
-      <div class="w-activity-body">
-        <div class="w-activity-text">${escapeHtml(a.text)}</div>
-        <div class="w-activity-meta">
-          <span class="w-activity-author">${escapeHtml(a.byName || "—")}</span>
-          <span>${timeAgo(a.at)}</span>
-        </div>
-      </div>
-    </div>`;
-  }).join("");
-}
-
+/* ============ News Ticker ============ */
 function wRenderNewsTicker() {
   const track = document.getElementById("wNewsTrack");
   if (!track) return;
@@ -3347,11 +3004,11 @@ function wRenderNewsTicker() {
   const urgent = tasks.filter(t => t.status !== "مكتملة" && t.priority === "عاجل").length;
   const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== "مكتملة"; }).length;
   const today = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== "مكتملة"; }).length;
-  const doneToday = tasks.filter(t => t.status === "مكتملة" && isThisWeek(t.updatedAt)).length;
+  const doneWeek = tasks.filter(t => t.status === "مكتملة" && isThisWeek(t.updatedAt)).length;
   if (urgent > 0) items.push(`⚠️ ${urgent} مهمة عاجلة تحتاج انتباه فوري`);
   if (overdue > 0) items.push(`🔴 ${overdue} مهمة متأخرة عن موعدها`);
   if (today > 0) items.push(`🔥 ${today} مهمة تستحق اليوم`);
-  if (doneToday > 0) items.push(`✅ ${doneToday} مهمة أُنجزت هذا الأسبوع`);
+  if (doneWeek > 0) items.push(`✅ ${doneWeek} مهمة أُنجزت هذا الأسبوع`);
   state.allActivity.slice(0, 5).forEach(a => { items.push(`📌 ${a.byName || "—"}: ${a.text}`); });
   if (items.length === 0) {
     items.push("مرحباً بكم في لوحة المتابعة — EMAK IT Dep.");
@@ -3361,10 +3018,11 @@ function wRenderNewsTicker() {
 }
 
 function wRenderAll() {
-  wRenderKPI();
+  wRenderStats();
   wRenderTasks();
   wRenderTopPerformers();
-  wRenderActivities();
+  wRenderLineChart();
+  wRenderDoughnutChart();
   wRenderNewsTicker();
 }
 
