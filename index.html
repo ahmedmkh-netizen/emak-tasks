@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#050810">
-<title>EMAK IT Dep. — لوحة التحكم الاحترافية</title>
+<title>EMAK IT Dep. — لوحة التحكم</title>
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,14 +17,14 @@
 
 <style>
 /* ============================================================
-   THEME SYSTEM v17.0 — Design Tokens
+   THEME TOKENS
    ============================================================ */
 :root{
   --bg-0:#050810;--bg-1:#0a0e1a;--bg-2:#10141f;--bg-3:#181d2e;--bg-4:#232a42;
   --text:#f8fafc;--text-2:#94a3b8;--text-3:#64748b;
   --border:rgba(255,255,255,.06);--border-2:rgba(255,255,255,.12);
   --primary:#5b8def;--primary-2:#3b6fd4;
-  --success:#2dd4a3;--warning:#f5a524;--urgent:#f04b5c;--accent:#a855f7;--cyan:#06b6d4;
+  --success:#2dd4a3;--warning:#f5a524;--urgent:#f04b5c;--accent:#a855f7;
   --surface-1:linear-gradient(135deg,rgba(35,43,66,.7),rgba(23,29,46,.5));
   --panel-bg:linear-gradient(135deg,rgba(23,29,46,.9),rgba(15,20,32,.85));
   --card-bg:linear-gradient(135deg,rgba(23,29,46,.9),rgba(15,20,32,.8));
@@ -38,9 +38,6 @@
   --shadow-sm:0 4px 16px rgba(0,0,0,.35);
   --shadow-md:0 12px 40px rgba(0,0,0,.5);
   --shadow-lg:0 40px 120px rgba(0,0,0,.8);
-  --radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;
-  --gap-xs:6px;--gap-sm:10px;--gap-md:16px;--gap-lg:22px;
-  --duration-fast:.2s;--duration-base:.35s;--duration-slow:.6s;
   --ease-out:cubic-bezier(.16,1,.3,1);
 }
 html[data-theme="light"]{
@@ -77,250 +74,110 @@ button{font-family:inherit;cursor:pointer;}
 button,input,select,textarea{font-size:inherit;}
 [hidden]{display:none !important;}
 mark.hl{background:rgba(245,165,36,.35);color:inherit;padding:0 2px;border-radius:3px;}
-
 :focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:4px;}
-
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
     animation-duration:.01ms !important;animation-iteration-count:1 !important;
     transition-duration:.01ms !important;scroll-behavior:auto !important;
   }
 }
-
 .screen{display:none;}
 .screen.active{display:flex;}
 
-/* ============ Login ============ */
-#loginScreen{
-  align-items:center;justify-content:center;
-  min-height:100vh;padding:20px;
-  background:var(--login-bg);position:relative;overflow:hidden;
-}
-#loginScreen::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(circle at 15% 25%,rgba(91,141,239,.25),transparent 45%),
-             radial-gradient(circle at 85% 75%,rgba(45,212,163,.18),transparent 45%),
-             radial-gradient(circle at 50% 50%,rgba(168,85,247,.1),transparent 60%);
-}
-.login-card{
-  background:var(--modal-bg);backdrop-filter:blur(40px);
-  border:1px solid rgba(91,141,239,.25);
-  padding:52px 44px 44px;border-radius:32px;text-align:center;
-  max-width:460px;width:100%;box-shadow:var(--shadow-lg),0 0 60px rgba(91,141,239,.3);
-  position:relative;z-index:1;animation:cardIn .8s var(--ease-out);
-}
+/* ============ LOGIN ============ */
+#loginScreen{align-items:center;justify-content:center;min-height:100vh;padding:20px;background:var(--login-bg);position:relative;overflow:hidden;}
+#loginScreen::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 25%,rgba(91,141,239,.25),transparent 45%),radial-gradient(circle at 85% 75%,rgba(45,212,163,.18),transparent 45%),radial-gradient(circle at 50% 50%,rgba(168,85,247,.1),transparent 60%);}
+.login-card{background:var(--modal-bg);backdrop-filter:blur(40px);border:1px solid rgba(91,141,239,.25);padding:52px 44px 44px;border-radius:32px;text-align:center;max-width:460px;width:100%;box-shadow:var(--shadow-lg),0 0 60px rgba(91,141,239,.3);position:relative;z-index:1;animation:cardIn .8s var(--ease-out);}
 @keyframes cardIn{from{opacity:0;transform:translateY(40px) scale(.9);}to{opacity:1;transform:translateY(0) scale(1);}}
-.login-logo-wrap{
-  width:130px;height:130px;margin:0 auto 26px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));
-  padding:8px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 4px rgba(91,141,239,.3),0 0 60px rgba(91,141,239,.7);
-  animation:logoFloat 4s ease-in-out infinite;
-}
+.login-logo-wrap{width:130px;height:130px;margin:0 auto 26px;border-radius:50%;background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));padding:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(91,141,239,.3),0 0 60px rgba(91,141,239,.7);animation:logoFloat 4s ease-in-out infinite;}
 @keyframes logoFloat{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-8px) rotate(2deg);}}
 .login-logo{width:100%;height:100%;object-fit:contain;border-radius:50%;background:var(--bg-0);padding:16px;}
-.login-card h1{
-  font-size:clamp(26px,3vw,34px);font-weight:900;letter-spacing:-1.5px;margin-bottom:8px;
-  background:linear-gradient(135deg,#5b8def 0%,#2dd4a3 50%,#a855f7 100%);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-}
+.login-card h1{font-size:clamp(26px,3vw,34px);font-weight:900;letter-spacing:-1.5px;margin-bottom:8px;background:linear-gradient(135deg,#5b8def 0%,#2dd4a3 50%,#a855f7 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 .login-card > p{color:var(--text-2);margin-bottom:32px;font-size:13.5px;font-weight:600;}
 #loginForm{display:flex;flex-direction:column;gap:14px;text-align:right;}
 .input-group{position:relative;display:flex;align-items:center;}
 .input-icon{position:absolute;inset-inline-end:18px;font-size:16px;pointer-events:none;opacity:.7;z-index:2;}
-#loginForm input{
-  width:100%;padding:16px 52px;background:var(--input-bg);color:var(--text);
-  border:1.5px solid var(--border-2);border-radius:16px;font-size:14px;
-  font-family:inherit;font-weight:500;outline:none;transition:all .3s;
-}
-#loginForm input:focus{
-  border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.25);
-  background:var(--input-bg-focus);
-}
-.toggle-pass{
-  position:absolute;inset-inline-start:14px;background:transparent;border:none;
-  color:var(--text-2);font-size:16px;padding:8px;border-radius:10px;
-}
+#loginForm input{width:100%;padding:16px 52px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border-2);border-radius:16px;font-size:14px;font-family:inherit;font-weight:500;outline:none;transition:all .3s;}
+#loginForm input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.25);background:var(--input-bg-focus);}
+.toggle-pass{position:absolute;inset-inline-start:14px;background:transparent;border:none;color:var(--text-2);font-size:16px;padding:8px;border-radius:10px;}
 .toggle-pass:hover{background:var(--border-2);color:var(--text);}
-.remember-me{
-  display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);
-  cursor:pointer;user-select:none;font-weight:600;
-}
+.remember-me{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);cursor:pointer;user-select:none;font-weight:600;}
 .remember-me input{accent-color:var(--primary);width:16px;height:16px;cursor:pointer;}
-#loginSubmitBtn{
-  background:linear-gradient(135deg,#5b8def 0%,#3b6fd4 100%);color:#fff;border:none;
-  padding:16px;border-radius:16px;font-size:15px;font-weight:800;
-  transition:all .3s;box-shadow:0 12px 32px rgba(91,141,239,.45);
-}
+#loginSubmitBtn{background:linear-gradient(135deg,#5b8def 0%,#3b6fd4 100%);color:#fff;border:none;padding:16px;border-radius:16px;font-size:15px;font-weight:800;transition:all .3s;box-shadow:0 12px 32px rgba(91,141,239,.45);}
 #loginSubmitBtn:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 20px 48px rgba(91,141,239,.7);}
 #loginSubmitBtn:disabled{opacity:.6;cursor:not-allowed;}
-#loginError{
-  color:var(--urgent);font-size:12.5px;min-height:18px;font-weight:700;
-  background:rgba(240,75,92,.1);border-radius:12px;padding:0 12px;
-  border:1px solid transparent;transition:.3s;
-}
+#loginError{color:var(--urgent);font-size:12.5px;min-height:18px;font-weight:700;background:rgba(240,75,92,.1);border-radius:12px;padding:0 12px;border:1px solid transparent;transition:.3s;}
 #loginError:not(:empty){padding:12px 16px;border-color:rgba(240,75,92,.3);}
 .divider{display:flex;align-items:center;gap:12px;margin:12px 0;color:var(--text-3);font-size:12px;font-weight:600;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border-2);}
-#loginBtn{
-  background:var(--bg-1);color:var(--text);border:1.5px solid var(--border-2);
-  padding:15px 20px;border-radius:16px;font-size:14px;font-weight:800;
-  display:flex;align-items:center;gap:10px;justify-content:center;
-  width:100%;transition:all .3s;
-}
+#loginBtn{background:var(--bg-1);color:var(--text);border:1.5px solid var(--border-2);padding:15px 20px;border-radius:16px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:10px;justify-content:center;width:100%;transition:all .3s;}
 #loginBtn:hover{transform:translateY(-2px);box-shadow:0 16px 40px var(--shadow-sm);border-color:var(--primary);}
 #loginBtn img{width:20px;}
 .help-text{color:var(--text-3);font-size:11px;margin-top:18px;font-weight:600;}
 .login-watch-section{margin-top:26px;padding-top:22px;border-top:1px dashed var(--border-2);}
 .login-divider{display:flex;align-items:center;gap:12px;margin:0 0 16px;color:var(--text-3);font-size:11px;font-weight:600;}
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.4),transparent);}
-.login-watch-btn{
-  width:100%;background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;
-  padding:16px 20px;border-radius:16px;font-size:15px;font-weight:800;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  transition:all .3s;position:relative;overflow:hidden;
-  box-shadow:0 12px 32px rgba(168,85,247,.45);
-}
-.login-watch-btn::before{
-  content:'';position:absolute;top:0;inset-inline-start:-100%;
-  width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
-  animation:shine 3.5s ease-in-out infinite;
-}
+.login-watch-btn{width:100%;background:linear-gradient(135deg,#a855f7 0%,#7c3aed 100%);color:#fff;border:none;padding:16px 20px;border-radius:16px;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 12px 32px rgba(168,85,247,.45);}
+.login-watch-btn::before{content:'';position:absolute;top:0;inset-inline-start:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shine 3.5s ease-in-out infinite;}
 @keyframes shine{0%{inset-inline-start:-100%;}50%,100%{inset-inline-start:100%;}}
 .login-watch-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 20px 48px rgba(168,85,247,.8);}
 .watch-btn-icon{font-size:20px;display:inline-block;animation:watchIconFloat 2.5s ease-in-out infinite;}
 @keyframes watchIconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
 .watch-btn-pin{background:rgba(255,255,255,.25);font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;}
 .login-watch-hint{color:var(--text-3);font-size:11px;margin-top:14px;text-align:center;font-weight:600;line-height:1.6;}
-.theme-toggle{
-  position:absolute;top:22px;inset-inline-start:22px;width:48px;height:48px;border-radius:50%;
-  background:var(--bg-1);border:1.5px solid var(--border-2);color:var(--text);
-  font-size:20px;display:flex;align-items:center;justify-content:center;
-  transition:all .3s;z-index:10;box-shadow:var(--shadow-sm);
-}
+.theme-toggle{position:absolute;top:22px;inset-inline-start:22px;width:48px;height:48px;border-radius:50%;background:var(--bg-1);border:1.5px solid var(--border-2);color:var(--text);font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .3s;z-index:10;box-shadow:var(--shadow-sm);}
 .theme-toggle:hover{transform:rotate(180deg) scale(1.1);border-color:var(--primary);}
 
-/* ============ Loading ============ */
-#loadingScreen{
-  position:fixed;inset:0;background:var(--login-bg);align-items:center;justify-content:center;
-  z-index:5000;flex-direction:column;gap:26px;
-}
+/* ============ LOADING ============ */
+#loadingScreen{position:fixed;inset:0;background:var(--login-bg);align-items:center;justify-content:center;z-index:5000;flex-direction:column;gap:26px;}
 #loadingScreen.active{display:flex;}
-.loading-logo-wrap{
-  width:150px;height:150px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));
-  padding:12px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 100px rgba(91,141,239,.8);animation:loadingPulse 1.6s ease-in-out infinite;
-}
+.loading-logo-wrap{width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));padding:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 100px rgba(91,141,239,.8);animation:loadingPulse 1.6s ease-in-out infinite;}
 .loading-logo{width:100%;height:100%;object-fit:contain;border-radius:50%;background:var(--bg-0);padding:12px;}
 @keyframes loadingPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
 .loading-text{color:var(--text);font-size:16px;font-weight:800;letter-spacing:2px;}
 .loading-bar{width:240px;height:5px;background:var(--border-2);border-radius:5px;overflow:hidden;}
-.loading-bar-fill{
-  height:100%;width:30%;background:linear-gradient(90deg,#5b8def,#2dd4a3,#a855f7);
-  border-radius:5px;animation:loadingBar 1.4s ease-in-out infinite;
-}
+.loading-bar-fill{height:100%;width:30%;background:linear-gradient(90deg,#5b8def,#2dd4a3,#a855f7);border-radius:5px;animation:loadingBar 1.4s ease-in-out infinite;}
 @keyframes loadingBar{0%{width:10%;}50%{width:60%;}100%{width:10%;}}
 
-/* ============ Header + Nav ============ */
+/* ============ HEADER + NAV ============ */
 #mainScreen{display:none;}
 #mainScreen.active{display:block;}
-header{
-  background:var(--header-bg);backdrop-filter:blur(30px);
-  border-bottom:1px solid var(--border-2);padding:14px 30px;
-  display:flex;justify-content:space-between;align-items:center;
-  position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap;
-  box-shadow:0 4px 30px var(--shadow-sm);
-}
+header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px solid var(--border-2);padding:14px 30px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap;box-shadow:0 4px 30px var(--shadow-sm);}
 .header-brand{display:flex;align-items:center;gap:16px;}
-.header-logo-wrap{
-  width:58px;height:58px;border-radius:18px;
-  background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));
-  padding:4px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 25px rgba(91,141,239,.5);
-}
+.header-logo-wrap{width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));padding:4px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 25px rgba(91,141,239,.5);}
 .header-logo{width:100%;height:100%;object-fit:contain;border-radius:14px;background:var(--bg-0);padding:5px;}
-.header-brand h1{
-  font-size:22px;font-weight:900;line-height:1;
-  background:linear-gradient(135deg,#5b8def,#2dd4a3);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-}
+.header-brand h1{font-size:22px;font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 .header-brand .subtitle{font-size:11px;color:var(--text-2);margin-top:5px;font-weight:600;}
 .user-info{display:flex;align-items:center;gap:10px;font-size:13px;flex-wrap:wrap;}
 #userName{font-weight:700;}
 .role{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:800;}
 .role.admin{background:linear-gradient(135deg,rgba(245,165,36,.25),rgba(217,119,6,.15));color:var(--warning);border:1px solid rgba(245,165,36,.4);}
 .role.user{background:linear-gradient(135deg,rgba(91,141,239,.25),rgba(59,111,212,.15));color:var(--primary);border:1px solid rgba(91,141,239,.4);}
-.icon-btn,.user-menu-btn{
-  background:var(--surface-1);color:var(--text);border:1.5px solid var(--border-2);
-  padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;transition:all .25s;
-}
-.icon-btn:hover,.user-menu-btn:hover{
-  background:linear-gradient(135deg,var(--primary),var(--primary-2));
-  color:#fff;border-color:var(--primary);transform:translateY(-2px);
-}
-.btn-report{
-  background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;
-  padding:11px 20px;border-radius:12px;font-size:13px;font-weight:800;
-  transition:all .25s;box-shadow:0 6px 16px rgba(45,212,163,.4);
-}
+.icon-btn,.user-menu-btn{background:var(--surface-1);color:var(--text);border:1.5px solid var(--border-2);padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;transition:all .25s;}
+.icon-btn:hover,.user-menu-btn:hover{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);transform:translateY(-2px);}
+.btn-report{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;box-shadow:0 6px 16px rgba(45,212,163,.4);}
 .btn-report:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(45,212,163,.6);}
-#logoutBtn{
-  background:rgba(240,75,92,.15);color:var(--urgent);border:1.5px solid rgba(240,75,92,.35);
-  padding:10px 18px;border-radius:12px;font-size:12px;font-weight:700;transition:all .25s;
-}
-#logoutBtn:hover{
-  background:linear-gradient(135deg,var(--urgent),#c81e3c);
-  color:#fff;border-color:var(--urgent);transform:translateY(-2px);
-}
-.btn-watch-screen{
-  background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;
-  padding:11px 20px;border-radius:12px;font-size:13px;font-weight:800;
-  transition:all .25s;box-shadow:0 6px 16px rgba(168,85,247,.4);
-}
+#logoutBtn{background:rgba(240,75,92,.15);color:var(--urgent);border:1.5px solid rgba(240,75,92,.35);padding:10px 18px;border-radius:12px;font-size:12px;font-weight:700;transition:all .25s;}
+#logoutBtn:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;border-color:var(--urgent);transform:translateY(-2px);}
+.btn-watch-screen{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;box-shadow:0 6px 16px rgba(168,85,247,.4);}
 .btn-watch-screen:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(168,85,247,.6);}
-.main-nav{
-  display:flex;gap:8px;padding:14px 30px;
-  background:var(--nav-bg);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);overflow-x:auto;
-}
-.nav-btn{
-  background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);
-  padding:11px 20px;border-radius:12px;font-size:13px;font-weight:700;
-  white-space:nowrap;transition:all .3s;display:inline-flex;align-items:center;gap:6px;
-}
+.main-nav{display:flex;gap:8px;padding:14px 30px;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);overflow-x:auto;}
+.nav-btn{background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);padding:11px 20px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap;transition:all .3s;display:inline-flex;align-items:center;gap:6px;}
 .nav-btn:hover{background:rgba(91,141,239,.15);color:var(--text);border-color:rgba(91,141,239,.4);}
-.nav-btn.active{
-  background:linear-gradient(135deg,var(--primary),var(--primary-2));
-  color:#fff;border-color:var(--primary);box-shadow:0 8px 24px rgba(91,141,239,.5);
-}
-.nav-btn.watch-highlight{
-  background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff !important;
-  border-color:rgba(168,85,247,.6);margin-inline-start:auto;
-  animation:watchPulse 2.5s ease-in-out infinite;
-}
-@keyframes watchPulse{
-  0%,100%{box-shadow:0 8px 24px rgba(168,85,247,.5);}
-  50%{box-shadow:0 8px 32px rgba(168,85,247,.9),0 0 0 8px rgba(168,85,247,0);}
-}
-.watch-badge{background:rgba(255,255,255,.3);color:#fff;font-size:9px;font-weight:900;padding:3px 7px;border-radius:8px;margin-inline-end:4px;}
+.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);box-shadow:0 8px 24px rgba(91,141,239,.5);}
+.nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff !important;border-color:rgba(168,85,247,.6);margin-inline-start:auto;animation:watchPulse 2.5s ease-in-out infinite;}
+@keyframes watchPulse{0%,100%{box-shadow:0 8px 24px rgba(168,85,247,.5);}50%{box-shadow:0 8px 32px rgba(168,85,247,.9),0 0 0 8px rgba(168,85,247,0);}}
+.watch-badge{background:rgba(255,255,255,.3);color:#fff;font-size:9px;font-weight:900;padding:3px 7px;border-radius:8px;}
 
-/* ============ Sections ============ */
+/* ============ SECTIONS ============ */
 .view-section{display:none;animation:fadeIn .4s ease-out;}
 .view-section.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .container{max-width:1600px;margin:26px auto;padding:0 26px;}
-.card-panel{
-  background:var(--panel-bg);border:1px solid var(--border-2);
-  border-radius:24px;padding:26px;margin-bottom:22px;box-shadow:var(--shadow-md);
-}
+.card-panel{background:var(--panel-bg);border:1px solid var(--border-2);border-radius:24px;padding:26px;margin-bottom:22px;box-shadow:var(--shadow-md);}
 .panel-title{font-size:17px;font-weight:900;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;}
-.stat{
-  background:var(--surface-1);border-radius:18px;padding:22px 20px;text-align:center;
-  border:1px solid var(--border);position:relative;overflow:hidden;transition:all .35s;
-}
+.stat{background:var(--surface-1);border-radius:18px;padding:22px 20px;text-align:center;border:1px solid var(--border);position:relative;overflow:hidden;transition:all .35s;}
 .stat::before{content:'';position:absolute;top:0;inset-inline:0;height:4px;}
 .stat:hover{transform:translateY(-5px);box-shadow:var(--shadow-md);}
 .stat.total::before{background:linear-gradient(90deg,var(--primary),var(--primary-2));}
@@ -333,7 +190,6 @@ header{
 .stat.done .stat-num{color:var(--success);}
 .stat.progress .stat-num{color:var(--warning);}
 .stat.overdue .stat-num{color:var(--urgent);}
-
 .team-row{display:grid;grid-template-columns:160px 1fr 150px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);}
 .team-row:last-child{border-bottom:none;}
 .team-name{font-weight:800;font-size:14px;}
@@ -342,60 +198,29 @@ header{
 .team-pct{font-size:13px;color:var(--text-2);text-align:end;font-weight:800;font-family:'JetBrains Mono',monospace;}
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
 .chart-box{height:320px;position:relative;}
-
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.form-grid input,.form-grid select{
-  padding:14px 18px;background:var(--input-bg);color:var(--text);
-  border:1.5px solid var(--border);border-radius:14px;font-size:14px;
-  font-family:inherit;transition:all .25s;
-}
-.form-grid input:focus,.form-grid select:focus{
-  outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.2);
-  background:var(--input-bg-focus);
-}
-.form-grid button{
-  grid-column:1/-1;background:linear-gradient(135deg,var(--primary),var(--primary-2));
-  color:#fff;border:none;padding:16px;border-radius:14px;font-size:15px;font-weight:800;
-  transition:all .3s;box-shadow:0 8px 24px rgba(91,141,239,.4);
-}
+.form-grid input,.form-grid select{padding:14px 18px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:14px;font-family:inherit;transition:all .25s;}
+.form-grid input:focus,.form-grid select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.2);background:var(--input-bg-focus);}
+.form-grid button{grid-column:1/-1;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:16px;border-radius:14px;font-size:15px;font-weight:800;transition:all .3s;box-shadow:0 8px 24px rgba(91,141,239,.4);}
 .form-grid button:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(91,141,239,.6);}
-
 .controls-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
 .search-wrap{flex:1;min-width:240px;position:relative;}
-.search-wrap input{
-  width:100%;padding:14px 18px 14px 50px;background:var(--input-bg);color:var(--text);
-  border:1.5px solid var(--border);border-radius:14px;font-size:14px;font-family:inherit;
-}
+.search-wrap input{width:100%;padding:14px 18px 14px 50px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:14px;font-family:inherit;}
 .search-wrap input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.2);}
 .search-wrap::before{content:'🔍';position:absolute;inset-inline-end:18px;top:50%;transform:translateY(-50%);font-size:15px;opacity:.7;}
-#sortSelect,.filter-select{
-  padding:14px 18px;background:var(--input-bg);color:var(--text);
-  border:1.5px solid var(--border);border-radius:14px;font-size:13px;
-  font-family:inherit;cursor:pointer;font-weight:700;
-}
+#sortSelect,.filter-select{padding:14px 18px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:13px;font-family:inherit;cursor:pointer;font-weight:700;}
 .view-toggle{display:flex;background:var(--input-bg);border:1.5px solid var(--border);border-radius:14px;padding:4px;gap:3px;}
-.view-toggle button{
-  background:transparent;border:none;color:var(--text-2);padding:10px 18px;
-  border-radius:10px;font-size:13px;font-weight:700;transition:all .25s;
-}
+.view-toggle button{background:transparent;border:none;color:var(--text-2);padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;transition:all .25s;}
 .view-toggle button.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;}
 .filters{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap;}
-.filter-btn{
-  background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);
-  padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;transition:all .25s;
-}
+.filter-btn{background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;transition:all .25s;}
 .filter-btn:hover{border-color:var(--primary);color:var(--primary);}
 .filter-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
 
-/* ============ Task Cards ============ */
+/* ============ TASKS CARDS ============ */
 #tasksList{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;}
 #tasksList.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.task-card{
-  background:var(--card-bg);border:2px solid var(--border);border-radius:22px;
-  padding:24px 22px;cursor:pointer;transition:all .4s var(--ease-out);
-  position:relative;display:flex;flex-direction:column;min-height:240px;
-  overflow:hidden;box-shadow:var(--shadow-sm);
-}
+.task-card{background:var(--card-bg);border:2px solid var(--border);border-radius:22px;padding:24px 22px;cursor:pointer;transition:all .4s var(--ease-out);position:relative;display:flex;flex-direction:column;min-height:240px;overflow:hidden;box-shadow:var(--shadow-sm);}
 .task-card::before{content:'';position:absolute;top:0;inset-inline:0;height:6px;}
 .task-card.normal::before{background:linear-gradient(90deg,var(--success),#22b388);}
 .task-card.important::before{background:linear-gradient(90deg,var(--warning),#d97706);}
@@ -404,16 +229,9 @@ header{
 .task-card.done{opacity:.65;}
 .task-card .card-title{font-size:19px;font-weight:900;margin-bottom:14px;min-height:54px;line-height:1.4;}
 .task-card .card-notes{font-size:14px;line-height:1.7;}
-.card-quick-actions{
-  position:absolute;top:12px;inset-inline-start:12px;display:flex;gap:6px;
-  opacity:0;transition:all .3s;z-index:5;
-}
+.card-quick-actions{position:absolute;top:12px;inset-inline-start:12px;display:flex;gap:6px;opacity:0;transition:all .3s;z-index:5;}
 .task-card:hover .card-quick-actions{opacity:1;}
-.quick-action-btn{
-  width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border-2);
-  background:var(--bg-1);font-size:15px;display:flex;align-items:center;justify-content:center;
-  transition:all .2s;
-}
+.quick-action-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border-2);background:var(--bg-1);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .quick-action-btn:hover{transform:scale(1.15);}
 .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
 .priority-dot{width:14px;height:14px;border-radius:50%;}
@@ -422,92 +240,46 @@ header{
 .priority-dot.normal{background:var(--success);box-shadow:0 0 12px var(--success);}
 .assignee-chip{font-size:13px;padding:7px 16px;background:var(--bg-3);border-radius:16px;color:var(--text-2);font-weight:800;}
 .card-tags{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.card-tag{
-  font-size:11px;padding:5px 14px;background:rgba(91,141,239,.2);
-  color:var(--primary);border-radius:14px;font-weight:800;border:1px solid rgba(91,141,239,.3);
-}
+.card-tag{font-size:11px;padding:5px 14px;background:rgba(91,141,239,.2);color:var(--primary);border-radius:14px;font-weight:800;border:1px solid rgba(91,141,239,.3);}
 .card-bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-.card-due{
-  font-size:13px;color:var(--text-2);padding:7px 14px;background:var(--surface-1);
-  border-radius:10px;font-weight:800;
-}
+.card-due{font-size:13px;color:var(--text-2);padding:7px 14px;background:var(--surface-1);border-radius:10px;font-weight:800;}
 .card-due.overdue{background:rgba(240,75,92,.2);color:var(--urgent);border:1px solid rgba(240,75,92,.3);}
 .status-pill{font-size:12px;font-weight:800;padding:7px 16px;border-radius:14px;}
 .status-pill.new{background:rgba(91,141,239,.2);color:var(--primary);border:1px solid rgba(91,141,239,.3);}
 .status-pill.progress{background:rgba(245,165,36,.2);color:var(--warning);border:1px solid rgba(245,165,36,.3);}
 .status-pill.done{background:rgba(45,212,163,.2);color:var(--success);border:1px solid rgba(45,212,163,.3);}
-
-/* Pulse ناعم للعاجلة بدل الوميض العنيف */
-@keyframes urgentPulseSoft{
-  0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,.5),0 0 24px rgba(240,75,92,.35);border-color:rgba(240,75,92,.65);}
-  50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 48px rgba(240,75,92,.7);border-color:#f04b5c;}
-}
+@keyframes urgentPulseSoft{0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,.5),0 0 24px rgba(240,75,92,.35);border-color:rgba(240,75,92,.65);}50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 48px rgba(240,75,92,.7);border-color:#f04b5c;}}
 .task-card.urgent-active{border:3px solid #f04b5c;animation:urgentPulseSoft 2.2s ease-in-out infinite;}
 .task-card.urgent-active .card-title{color:#fff;text-shadow:0 0 12px rgba(240,75,92,.5);}
 
-/* Kanban */
-.kanban-col{
-  background:var(--panel-bg);border:1.5px solid var(--border);border-radius:20px;
-  padding:18px;min-height:500px;display:flex;flex-direction:column;gap:14px;
-}
-.kanban-col-header{
-  display:flex;justify-content:space-between;align-items:center;
-  font-weight:900;font-size:16px;padding-bottom:14px;border-bottom:1px solid var(--border);
-}
+/* ============ KANBAN ============ */
+.kanban-col{background:var(--panel-bg);border:1.5px solid var(--border);border-radius:20px;padding:18px;min-height:500px;display:flex;flex-direction:column;gap:14px;}
+.kanban-col-header{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
 .kanban-count{background:var(--bg-3);padding:4px 14px;border-radius:12px;font-size:13px;color:var(--text-2);font-weight:900;}
 .kanban-col-body{display:flex;flex-direction:column;gap:12px;flex:1;}
-.kanban-card{
-  background:var(--card-bg);border:2px solid var(--border);border-radius:16px;
-  padding:22px 20px;cursor:grab;border-inline-end:6px solid var(--primary);
-  transition:all .3s;min-height:110px;
-}
+.kanban-card{background:var(--card-bg);border:2px solid var(--border);border-radius:16px;padding:22px 20px;cursor:grab;border-inline-end:6px solid var(--primary);transition:all .3s;min-height:110px;}
 .kanban-card:hover{transform:translateX(-5px);box-shadow:var(--shadow-md);border-color:rgba(91,141,239,.5);}
 .kanban-card.dragging{opacity:.5;cursor:grabbing;}
 .kanban-card-title{font-size:18px;font-weight:900;margin-bottom:14px;line-height:1.35;}
 .kanban-col-body.drag-over{background:rgba(91,141,239,.1);border-radius:14px;}
-.kanban-card.urgent{
-  border:3px solid #f04b5c;border-inline-end:6px solid #f04b5c;
-  background:linear-gradient(135deg,rgba(240,75,92,.15),var(--card-bg));
-  animation:urgentPulseSoft 2.2s ease-in-out infinite;
-  position:relative;overflow:hidden;
-}
+.kanban-card.urgent{border:3px solid #f04b5c;border-inline-end:6px solid #f04b5c;background:linear-gradient(135deg,rgba(240,75,92,.15),var(--card-bg));animation:urgentPulseSoft 2.2s ease-in-out infinite;position:relative;overflow:hidden;}
 .kanban-card.urgent::after{content:'⚠️';position:absolute;top:12px;inset-inline-start:12px;font-size:22px;}
 
-/* Activity */
+/* ============ ACTIVITY ============ */
 .activity-header-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:14px;flex-wrap:wrap;}
 .activity-actions{display:flex;gap:10px;flex-wrap:wrap;}
-.btn-clear-deleted{
-  background:linear-gradient(135deg,rgba(240,75,92,.2),rgba(200,30,60,.1));
-  color:var(--urgent);border:1.5px solid rgba(240,75,92,.5);
-  padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;
-  transition:all .25s;display:inline-flex;align-items:center;gap:8px;
-}
+.btn-clear-deleted{background:linear-gradient(135deg,rgba(240,75,92,.2),rgba(200,30,60,.1));color:var(--urgent);border:1.5px solid rgba(240,75,92,.5);padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;display:inline-flex;align-items:center;gap:8px;}
 .btn-clear-deleted:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;transform:translateY(-2px);}
-.btn-purge-deleted{
-  background:linear-gradient(135deg,rgba(100,116,139,.2),rgba(71,85,105,.1));
-  color:var(--text-2);border:1.5px solid var(--border-2);
-  padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;
-  transition:all .25s;display:inline-flex;align-items:center;gap:8px;
-}
+.btn-purge-deleted{background:linear-gradient(135deg,rgba(100,116,139,.2),rgba(71,85,105,.1));color:var(--text-2);border:1.5px solid var(--border-2);padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;display:inline-flex;align-items:center;gap:8px;}
 .btn-purge-deleted:hover{background:linear-gradient(135deg,#475569,#334155);color:#fff;transform:translateY(-2px);}
 
-/* Modal */
-#modalOverlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(15px);
-  display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;
-}
+/* ============ MODAL ============ */
+#modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(15px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
 html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 #modalOverlay.active{display:flex;}
-.modal-box{
-  background:var(--modal-bg);border:1.5px solid rgba(91,141,239,.3);
-  border-radius:28px;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;
-  box-shadow:var(--shadow-lg);animation:modalIn .4s var(--ease-out);
-}
+.modal-box{background:var(--modal-bg);border:1.5px solid rgba(91,141,239,.3);border-radius:28px;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .4s var(--ease-out);}
 @keyframes modalIn{from{transform:translateY(40px) scale(.95);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
-.modal-header{
-  padding:24px 28px;display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid var(--border);position:relative;
-}
+.modal-header{padding:24px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:relative;}
 .modal-header::before{content:'';position:absolute;top:0;inset-inline:0;height:5px;border-radius:28px 28px 0 0;}
 .modal-header.normal::before{background:linear-gradient(90deg,var(--success),#22b388);}
 .modal-header.important::before{background:linear-gradient(90deg,var(--warning),#d97706);}
@@ -520,22 +292,13 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .status-badge.new{background:rgba(91,141,239,.2);color:var(--primary);border:1.5px solid rgba(91,141,239,.4);}
 .status-badge.progress{background:rgba(245,165,36,.2);color:var(--warning);border:1.5px solid rgba(245,165,36,.4);}
 .status-badge.done{background:rgba(45,212,163,.2);color:var(--success);border:1.5px solid rgba(45,212,163,.4);}
-.modal-close{
-  background:var(--surface-1);color:var(--text);border:none;
-  width:40px;height:40px;border-radius:50%;font-size:16px;transition:all .3s;
-}
+.modal-close{background:var(--surface-1);color:var(--text);border:none;width:40px;height:40px;border-radius:50%;font-size:16px;transition:all .3s;}
 .modal-close:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;transform:rotate(90deg);}
 .modal-title{padding:24px 28px 16px;font-size:25px;font-weight:900;line-height:1.4;}
 .modal-tags{padding:0 28px 16px;display:flex;gap:8px;flex-wrap:wrap;}
-.tag{
-  font-size:11.5px;padding:6px 14px;background:rgba(91,141,239,.2);
-  color:var(--primary);border-radius:14px;font-weight:800;border:1px solid rgba(91,141,239,.3);
-}
+.tag{font-size:11.5px;padding:6px 14px;background:rgba(91,141,239,.2);color:var(--primary);border-radius:14px;font-weight:800;border:1px solid rgba(91,141,239,.3);}
 .modal-meta{padding:0 28px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.meta-item{
-  background:var(--surface-1);padding:16px 18px;border-radius:14px;
-  display:flex;flex-direction:column;gap:5px;border:1px solid var(--border);
-}
+.meta-item{background:var(--surface-1);padding:16px 18px;border-radius:14px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border);}
 .meta-label{font-size:11px;color:var(--text-3);font-weight:700;}
 .meta-value{font-size:13.5px;font-weight:800;}
 .modal-section{padding:20px 28px;border-top:1px solid var(--border);}
@@ -548,65 +311,30 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .modal-comment-date{color:var(--text-3);font-size:11px;}
 .modal-comment-text{font-size:13.5px;line-height:1.7;}
 .modal-comment-form{display:flex;gap:12px;}
-.modal-comment-form input{
-  flex:1;padding:14px 18px;background:var(--input-bg);color:var(--text);
-  border:1.5px solid var(--border);border-radius:14px;font-size:13.5px;font-family:inherit;
-}
-.modal-comment-form button{
-  padding:14px 26px;background:linear-gradient(135deg,var(--primary),var(--primary-2));
-  color:#fff;border:none;border-radius:14px;font-size:13.5px;font-weight:800;
-}
-.modal-actions{
-  padding:20px 28px;border-top:1px solid var(--border);display:flex;gap:12px;
-  align-items:center;background:var(--surface-1);flex-wrap:wrap;border-radius:0 0 28px 28px;
-}
-.modal-status-select{
-  padding:13px 18px;background:var(--input-bg);color:var(--text);
-  border:1.5px solid var(--border);border-radius:12px;font-size:13px;
-  font-family:inherit;margin-inline-start:auto;font-weight:700;
-}
-.btn-edit,.btn-del,.btn-pin{
-  padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:800;
-  border:1.5px solid var(--border-2);background:var(--surface-1);color:var(--text);transition:all .25s;
-}
+.modal-comment-form input{flex:1;padding:14px 18px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:13.5px;font-family:inherit;}
+.modal-comment-form button{padding:14px 26px;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;border-radius:14px;font-size:13.5px;font-weight:800;}
+.modal-actions{padding:20px 28px;border-top:1px solid var(--border);display:flex;gap:12px;align-items:center;background:var(--surface-1);flex-wrap:wrap;border-radius:0 0 28px 28px;}
+.modal-status-select{padding:13px 18px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;margin-inline-start:auto;font-weight:700;}
+.btn-edit,.btn-del,.btn-pin{padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:800;border:1.5px solid var(--border-2);background:var(--surface-1);color:var(--text);transition:all .25s;}
 .btn-edit:hover{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
 .btn-del:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;border-color:var(--urgent);}
 .btn-pin:hover,.btn-pin.active{background:linear-gradient(135deg,var(--warning),#d97706);color:#fff;border-color:var(--warning);}
 
-/* Report */
-#reportOverlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;
-  align-items:center;justify-content:center;z-index:1100;padding:20px;
-}
+/* ============ REPORT ============ */
+#reportOverlay{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;}
 #reportOverlay.active{display:flex;}
-.report-wrapper{
-  background:var(--modal-bg);border-radius:28px;max-width:960px;width:100%;
-  max-height:95vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);
-}
+.report-wrapper{background:var(--modal-bg);border-radius:28px;max-width:960px;width:100%;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);}
 .report-toolbar{padding:20px 28px;background:var(--surface-1);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-.btn-download{
-  background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;
-  padding:13px 24px;border-radius:12px;font-size:14px;font-weight:800;
-  box-shadow:0 8px 24px rgba(45,212,163,.4);transition:all .3s;
-}
+.btn-download{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;padding:13px 24px;border-radius:12px;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(45,212,163,.4);transition:all .3s;}
 .btn-download:hover{transform:translateY(-2px);}
-.btn-close-report{
-  background:var(--surface-1);color:var(--text);border:1.5px solid var(--border-2);
-  padding:13px 24px;border-radius:12px;font-size:14px;font-weight:700;
-}
+.btn-close-report{background:var(--surface-1);color:var(--text);border:1.5px solid var(--border-2);padding:13px 24px;border-radius:12px;font-size:14px;font-weight:700;}
 .btn-close-report:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;}
 .report-scroll{overflow-y:auto;flex:1;padding:28px;}
 .report-content{background:#fff;color:#1a1a1a;padding:48px;border-radius:20px;}
 
-/* Toast */
+/* ============ TOAST ============ */
 #toastHost{position:fixed;bottom:24px;inset-inline-start:24px;z-index:9000;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
-.toast{
-  display:flex;align-items:center;gap:10px;padding:14px 20px;border-radius:14px;
-  font-weight:800;font-size:14px;background:var(--modal-bg);backdrop-filter:blur(20px);
-  border:1.5px solid var(--border-2);box-shadow:var(--shadow-lg);
-  transform:translateY(20px);opacity:0;transition:all .35s var(--ease-out);
-  pointer-events:auto;max-width:380px;
-}
+.toast{display:flex;align-items:center;gap:10px;padding:14px 20px;border-radius:14px;font-weight:800;font-size:14px;background:var(--modal-bg);backdrop-filter:blur(20px);border:1.5px solid var(--border-2);box-shadow:var(--shadow-lg);transform:translateY(20px);opacity:0;transition:all .35s var(--ease-out);pointer-events:auto;max-width:380px;}
 .toast.show{transform:translateY(0);opacity:1;}
 .toast-success{border-color:rgba(45,212,163,.5);}
 .toast-success .toast-icon{color:var(--success);}
@@ -616,20 +344,10 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .toast-warning .toast-icon{color:var(--warning);}
 .toast-icon{font-size:18px;font-weight:900;flex-shrink:0;}
 
-/* Notifications Host */
+/* ============ NOTIFICATIONS ============ */
 .notif-host{position:fixed;top:22px;inset-inline-start:22px;z-index:8000;display:flex;flex-direction:column;gap:12px;max-width:420px;pointer-events:none;}
-.sub-notification,.watch-sub-notification{
-  background:var(--modal-bg);backdrop-filter:blur(40px);
-  border:1.5px solid rgba(91,141,239,.5);border-radius:18px;padding:16px 18px;
-  box-shadow:var(--shadow-lg);pointer-events:auto;
-  animation:notifIn .5s var(--ease-out);position:relative;overflow:hidden;
-  display:flex;gap:14px;align-items:flex-start;
-}
-.sub-notification::before,.watch-sub-notification::before{
-  content:'';position:absolute;top:0;inset-inline:0;height:3px;
-  background:linear-gradient(90deg,#5b8def,#2dd4a3);
-  animation:notifProgress 20s linear forwards;transform-origin:right;
-}
+.sub-notification,.watch-sub-notification{background:var(--modal-bg);backdrop-filter:blur(40px);border:1.5px solid rgba(91,141,239,.5);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow-lg);pointer-events:auto;animation:notifIn .5s var(--ease-out);position:relative;overflow:hidden;display:flex;gap:14px;align-items:flex-start;}
+.sub-notification::before,.watch-sub-notification::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:linear-gradient(90deg,#5b8def,#2dd4a3);animation:notifProgress 20s linear forwards;transform-origin:right;}
 @keyframes notifProgress{from{transform:scaleX(1);}to{transform:scaleX(0);}}
 .sub-notification.urgent,.watch-sub-notification.urgent{border-color:rgba(240,75,92,.6);}
 .sub-notification.urgent::before,.watch-sub-notification.urgent::before{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
@@ -638,55 +356,28 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 @keyframes notifIn{from{opacity:0;transform:translateX(-100%) scale(.9);}to{opacity:1;transform:translateX(0) scale(1);}}
 .sub-notification.closing,.watch-sub-notification.closing{animation:notifOut .4s ease-in forwards;}
 @keyframes notifOut{to{opacity:0;transform:translateX(-100%) scale(.9);}}
-.sub-notif-icon,.watch-sub-icon{
-  width:46px;height:46px;border-radius:14px;background:var(--bg-3);
-  display:flex;align-items:center;justify-content:center;font-size:22px;
-  flex-shrink:0;border:1.5px solid var(--border-2);
-}
+.sub-notif-icon,.watch-sub-icon{width:46px;height:46px;border-radius:14px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1.5px solid var(--border-2);}
 .sub-notif-body,.watch-sub-body{flex:1;min-width:0;}
-.sub-notif-title,.watch-sub-title{
-  font-size:13.5px;font-weight:900;margin-bottom:6px;
-  display:flex;align-items:center;gap:8px;
-}
+.sub-notif-title,.watch-sub-title{font-size:13.5px;font-weight:900;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
 .sub-notif-badge,.watch-sub-badge{font-size:9.5px;padding:3px 9px;border-radius:8px;font-weight:900;}
 .sub-notif-badge.urgent,.watch-sub-badge.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;}
 .sub-notif-badge.important,.watch-sub-badge.important{background:rgba(245,165,36,.25);color:#ffc043;}
 .sub-notif-badge.normal,.watch-sub-badge.normal{background:rgba(45,212,163,.2);color:#3ee8b5;}
 .sub-notif-message,.watch-sub-message{font-size:12px;color:var(--text-2);line-height:1.5;font-weight:600;margin-bottom:6px;}
 .sub-notif-meta,.watch-sub-meta{display:flex;gap:12px;font-size:10px;color:var(--text-3);font-weight:700;flex-wrap:wrap;}
-.sub-notif-close,.watch-sub-close{
-  background:transparent;border:none;color:var(--text-3);
-  font-size:14px;padding:2px;width:22px;height:22px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
+.sub-notif-close,.watch-sub-close{background:transparent;border:none;color:var(--text-3);font-size:14px;padding:2px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .sub-notif-close:hover,.watch-sub-close:hover{background:rgba(240,75,92,.15);color:#f04b5c;}
-.sub-notif-progress-text,.watch-sub-progress-text{
-  position:absolute;bottom:6px;inset-inline-end:14px;
-  font-size:9.5px;color:var(--text-3);font-weight:800;font-family:'JetBrains Mono',monospace;
-}
+.sub-notif-progress-text,.watch-sub-progress-text{position:absolute;bottom:6px;inset-inline-end:14px;font-size:9.5px;color:var(--text-3);font-weight:800;font-family:'JetBrains Mono',monospace;}
 
-/* Users */
+/* ============ USERS ============ */
 .users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:14px;flex-wrap:wrap;}
 .users-toolbar-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
-.btn-add-user{
-  background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;
-  padding:13px 24px;border-radius:14px;font-size:14px;font-weight:800;
-  box-shadow:0 8px 24px rgba(91,141,239,.4);transition:all .3s;
-}
+.btn-add-user{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:13px 24px;border-radius:14px;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(91,141,239,.4);transition:all .3s;}
 .btn-add-user:hover{transform:translateY(-2px);}
-.user-row{
-  display:flex;align-items:center;gap:18px;padding:18px;
-  background:var(--surface-1);border:1.5px solid var(--border);
-  border-radius:18px;margin-bottom:14px;transition:all .3s;
-}
+.user-row{display:flex;align-items:center;gap:18px;padding:18px;background:var(--surface-1);border:1.5px solid var(--border);border-radius:18px;margin-bottom:14px;transition:all .3s;}
 .user-row:hover{border-color:rgba(91,141,239,.4);transform:translateX(-4px);}
 .user-row.is-me{border-color:rgba(245,165,36,.5);background:linear-gradient(135deg,rgba(245,165,36,.08),var(--surface-1));}
-.user-avatar{
-  width:56px;height:56px;border-radius:18px;
-  background:linear-gradient(135deg,var(--primary),var(--success));
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:900;font-size:24px;flex-shrink:0;
-}
+.user-avatar{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--primary),var(--success));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:24px;flex-shrink:0;}
 .user-info-cell{flex:1;min-width:0;}
 .user-name{font-weight:900;font-size:15.5px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
 .user-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);align-items:center;margin-bottom:10px;font-weight:700;}
@@ -697,11 +388,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .status-badge.inactive{background:rgba(100,116,139,.2);color:var(--text-3);border:1px solid rgba(100,116,139,.3);}
 .user-stats-row{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);font-weight:700;}
 .user-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.btn-sm{
-  padding:10px 14px;border-radius:11px;border:1.5px solid var(--border-2);
-  background:var(--surface-1);color:var(--text);
-  font-size:14px;font-weight:700;transition:all .2s;
-}
+.btn-sm{padding:10px 14px;border-radius:11px;border:1.5px solid var(--border-2);background:var(--surface-1);color:var(--text);font-size:14px;font-weight:700;transition:all .2s;}
 .btn-sm:hover{transform:translateY(-2px);}
 .btn-sm.primary{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
 .btn-sm.danger{color:var(--urgent);border-color:rgba(240,75,92,.4);}
@@ -713,512 +400,169 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .empty{text-align:center;padding:60px 20px;color:var(--text-2);font-weight:700;font-size:14px;}
 
 /* ============================================================
-   🖥️ WATCH SCREEN v2 — Modern & Performance-First
+   🖥️ WATCH SCREEN v3 — Executive Dashboard
    ============================================================ */
-#watchScreen{position:fixed;inset:0;z-index:2000;background:var(--watch-bg);overflow:hidden;display:none;}
+#watchScreen{position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;display:none;}
 #watchScreen.active{display:block;}
-.watch-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
-.watch-bg::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(circle at 20% 30%,rgba(91,141,239,.15),transparent 50%),
-    radial-gradient(circle at 80% 70%,rgba(45,212,163,.12),transparent 50%),
-    radial-gradient(circle at 50% 50%,rgba(168,85,247,.08),transparent 60%);
-  animation:bgPulse 8s ease-in-out infinite;
-}
-@keyframes bgPulse{0%,100%{opacity:.7;}50%{opacity:1;}}
-.watch-orb{position:absolute;border-radius:50%;animation:orbFloat 25s ease-in-out infinite;will-change:transform;}
-.watch-orb.o1{width:55vmax;height:55vmax;background:radial-gradient(circle,rgba(91,141,239,.3) 0%,transparent 70%);top:-20%;inset-inline-end:-15%;}
-.watch-orb.o2{width:60vmax;height:60vmax;background:radial-gradient(circle,rgba(45,212,163,.22) 0%,transparent 70%);bottom:-25%;inset-inline-start:-20%;animation-delay:-8s;}
-.watch-orb.o3{width:40vmax;height:40vmax;background:radial-gradient(circle,rgba(168,85,247,.16) 0%,transparent 70%);top:35%;inset-inline-start:35%;animation-delay:-16s;}
-@keyframes orbFloat{
-  0%,100%{transform:translate(0,0) scale(1);}
-  33%{transform:translate(60px,-40px) scale(1.12);}
-  66%{transform:translate(-40px,50px) scale(.92);}
-}
-.watch-grid-bg{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(91,141,239,.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(91,141,239,.04) 1px,transparent 1px);
-  background-size:80px 80px;
-  mask-image:radial-gradient(circle at center,black 20%,transparent 75%);
-  -webkit-mask-image:radial-gradient(circle at center,black 20%,transparent 75%);
-}
-#watchPinScreen{
-  position:fixed;inset:0;z-index:2100;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--watch-bg);padding:20px;
-}
-.watch-pin-card{
-  background:var(--modal-bg);backdrop-filter:blur(40px);
-  border:1.5px solid rgba(91,141,239,.3);
-  padding:52px 44px;border-radius:32px;text-align:center;
-  max-width:460px;width:100%;box-shadow:var(--shadow-lg);
-}
-.watch-pin-logo{
-  width:130px;height:130px;margin:0 auto 26px;border-radius:50%;padding:8px;
-  background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));
-  box-shadow:0 0 0 4px rgba(91,141,239,.3),0 0 60px rgba(91,141,239,.7);
-}
-.watch-pin-logo img{width:100%;height:100%;object-fit:contain;border-radius:50%;background:var(--bg-0);padding:14px;}
-.watch-pin-card h1{
-  font-size:clamp(26px,3vw,34px);font-weight:900;margin-bottom:10px;
-  background:linear-gradient(135deg,#5b8def,#2dd4a3,#a855f7);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-}
-.watch-pin-card > p{color:var(--text-2);font-size:13.5px;margin-bottom:30px;font-weight:700;}
-#watchPinForm{display:flex;flex-direction:column;gap:16px;}
-#watchPinInput{
-  width:100%;padding:20px;background:var(--input-bg);color:var(--text);
-  border:1.5px solid var(--border-2);border-radius:16px;
-  font-size:24px;text-align:center;letter-spacing:10px;
-  font-family:monospace;font-weight:800;outline:none;
-  transition:all .3s;
-}
-#watchPinInput:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.3);}
-#watchPinForm button{
-  padding:18px;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;
-  border:none;border-radius:16px;font-size:16px;font-weight:900;
-  transition:transform .3s;box-shadow:0 12px 32px rgba(91,141,239,.5);
-}
-#watchPinForm button:hover{transform:translateY(-3px);}
-#watchPinError{color:var(--urgent);font-size:13px;min-height:22px;font-weight:800;}
-.watch-pin-hint{color:var(--text-3);font-size:12px;margin-top:22px;font-weight:700;}
 
-#watchMainContent{
-  position:relative;z-index:1;height:100vh;display:none;
-  grid-template-areas:"topbar" "stats" "completed" "middle" "tasks" "ticker";
-  grid-template-rows:auto auto auto minmax(0,.85fr) minmax(0,1.35fr) auto;
-  gap:clamp(10px,1.3vh,18px);
-  padding:clamp(12px,1.6vw,22px);
-  font-size:clamp(13px,.45vw + 10.5px,17px);
-}
+.watch-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.watch-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(91,141,239,.14),transparent 45%),radial-gradient(circle at 85% 80%,rgba(45,212,163,.10),transparent 45%);}
+.watch-orb{display:none;}
+.watch-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(91,141,239,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(91,141,239,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(circle at center,black 30%,transparent 80%);-webkit-mask-image:radial-gradient(circle at center,black 30%,transparent 80%);}
+
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:64px auto minmax(0,1fr) auto;gap:16px;padding:16px 20px;font-size:clamp(13px,.4vw + 11px,16px);}
 #watchMainContent.active{display:grid;}
-.w-bar-top{grid-area:topbar;}
-.w-stats-row{grid-area:stats;}
-.w-completed-panel{grid-area:completed;}
-.w-middle-row{grid-area:middle;}
-.w-tasks-panel{grid-area:tasks;}
-.w-news-ticker{grid-area:ticker;}
 
-.w-bar-top{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:clamp(12px,1.5vw,24px);
-  padding:clamp(12px,1.2vw,18px) clamp(16px,1.8vw,28px);
-  background:linear-gradient(135deg,rgba(15,20,35,.85),rgba(25,32,50,.75));
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:var(--radius-lg);
-  box-shadow:var(--shadow-md),inset 0 1px 0 rgba(255,255,255,.06);
-  position:relative;overflow:hidden;min-height:84px;
-}
-.w-bar-top::before{
-  content:'';position:absolute;top:0;inset-inline:0;height:2px;
-  background:linear-gradient(90deg,transparent,#5b8def 20%,#2dd4a3 50%,#a855f7 80%,transparent);
-}
-.w-bar-brand{display:flex;align-items:center;gap:16px;flex-shrink:0;}
-.w-bar-logo{
-  width:clamp(48px,4vw,64px);height:clamp(48px,4vw,64px);
-  border-radius:18px;padding:4px;
-  background:linear-gradient(135deg,rgba(91,141,239,.4),rgba(45,212,163,.3));
-  box-shadow:0 0 0 3px rgba(91,141,239,.4),0 0 40px rgba(91,141,239,.7);
-  flex-shrink:0;
-}
-.w-bar-logo img{width:100%;height:100%;object-fit:contain;border-radius:14px;background:var(--bg-0);padding:7px;}
-.w-bar-title h1{
-  font-size:clamp(16px,1.4vw,22px);font-weight:900;line-height:1;
-  background:linear-gradient(135deg,#5b8def,#2dd4a3);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
-}
-.w-bar-title p{font-size:11px;color:var(--text-2);font-weight:700;margin-top:4px;}
-.w-bar-center{display:flex;align-items:center;gap:14px;flex:1;justify-content:center;}
-.w-clock-box{
-  display:flex;align-items:center;gap:14px;padding:10px 22px;
-  background:var(--surface-1);border:1.5px solid rgba(91,141,239,.3);border-radius:16px;
-}
-.w-clock-time{
-  font-family:'JetBrains Mono',monospace;
-  font-size:clamp(20px,2vw,30px);font-weight:900;
-  color:var(--primary);letter-spacing:3px;line-height:1;
-  font-variant-numeric:tabular-nums;
-  text-shadow:0 0 24px rgba(91,141,239,.9);
-}
-.w-clock-sep{width:1.5px;height:24px;background:var(--border-2);}
-.w-clock-date{font-size:clamp(11px,.9vw,13px);color:var(--text-2);font-weight:700;}
-.w-bar-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.w-live-pill,.w-status-pill{
-  display:inline-flex;align-items:center;gap:8px;padding:9px 16px;
-  border-radius:20px;font-size:12px;font-weight:800;letter-spacing:.5px;
-}
-.w-live-pill{background:rgba(240,75,92,.2);border:1.5px solid rgba(240,75,92,.5);color:#ff6b7d;}
-.w-status-pill{background:rgba(45,212,163,.2);border:1.5px solid rgba(45,212,163,.5);color:#3ee8b5;}
-.w-status-pill.offline{background:rgba(240,75,92,.2);border-color:rgba(240,75,92,.5);color:#ff6b7d;}
-.w-live-dot,.w-status-dot{
-  width:8px;height:8px;border-radius:50%;background:currentColor;
-  box-shadow:0 0 12px currentColor;animation:pulseDot 1.6s ease-in-out infinite;
-}
-@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.5);}}
-.w-icon-btn{
-  width:clamp(38px,3vw,46px);height:clamp(38px,3vw,46px);
-  border-radius:50%;border:1.5px solid var(--border-2);
-  background:var(--surface-1);color:var(--text);font-size:16px;font-weight:800;
-  display:flex;align-items:center;justify-content:center;transition:all .3s;
-}
-.w-icon-btn:hover{background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;transform:scale(1.1);}
-.w-icon-btn.danger:hover{background:linear-gradient(135deg,#f04b5c,#c81e3c);transform:rotate(90deg) scale(1.1);}
+/* ═══ Header ═══ */
+.w-header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 20px;background:rgba(15,20,35,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:16px;}
+.w-brand{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.w-brand img{width:44px;height:44px;object-fit:contain;border-radius:12px;background:rgba(5,8,16,.6);padding:6px;border:1.5px solid rgba(91,141,239,.4);}
+.w-brand h1{font-size:clamp(16px,1.3vw,20px);font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.w-brand span{font-size:11px;color:#64748b;font-weight:700;}
+.w-clock{display:flex;align-items:center;gap:14px;flex:1;justify-content:center;}
+.w-clock span{font-family:'JetBrains Mono',monospace;font-size:clamp(22px,2vw,30px);font-weight:800;color:#5b8def;letter-spacing:2px;font-variant-numeric:tabular-nums;text-shadow:0 0 20px rgba(91,141,239,.6);}
+.w-clock em{font-style:normal;font-size:clamp(11px,.9vw,13px);color:#94a3b8;font-weight:700;padding-inline-start:14px;border-inline-start:1px solid rgba(255,255,255,.1);}
+.w-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.w-live,.w-conn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;font-size:11.5px;font-weight:800;}
+.w-live{background:rgba(240,75,92,.15);color:#ff6b7d;border:1px solid rgba(240,75,92,.3);}
+.w-conn{background:rgba(45,212,163,.15);color:#3ee8b5;border:1px solid rgba(45,212,163,.3);}
+.w-conn.offline{background:rgba(240,75,92,.15);color:#ff6b7d;border-color:rgba(240,75,92,.3);}
+.w-live i,.w-conn i{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;animation:blink 1.6s ease-in-out infinite;}
+@keyframes blink{50%{opacity:.3;}}
+.w-btn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#94a3b8;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer;}
+.w-btn:hover{background:rgba(91,141,239,.15);color:#5b8def;border-color:rgba(91,141,239,.4);}
+.w-btn.danger:hover{background:rgba(240,75,92,.2);color:#ff6b7d;border-color:rgba(240,75,92,.4);}
 
-.w-stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.2vw,16px);}
-.w-stat-card{
-  position:relative;display:flex;align-items:center;
-  gap:clamp(12px,1vw,18px);
-  padding:clamp(14px,1.4vw,22px);
-  border-radius:clamp(14px,1.2vw,20px);
-  overflow:hidden;isolation:isolate;cursor:pointer;
-  box-shadow:var(--shadow-sm);
-  transition:transform .45s var(--ease-out),box-shadow .45s;
-  will-change:transform;
-}
-.w-stat-card.total{background:linear-gradient(135deg,#3b6fd4 0%,#5b8def 50%,#7ca5f5 100%);}
-.w-stat-card.active{background:linear-gradient(135deg,#f5a524 0%,#fbbf24 50%,#ffc043 100%);}
-.w-stat-card.working{background:linear-gradient(135deg,#8b5cf6 0%,#a855f7 50%,#c084fc 100%);}
-.w-stat-card.done{background:linear-gradient(135deg,#22b388 0%,#2dd4a3 50%,#3ee8b5 100%);}
-.w-stat-card::after{
-  content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
-  background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.18) 50%,transparent 58%);
-  transform:translateX(160%);
-  animation:cardShine 6s ease-in-out infinite;
-}
-.w-stat-card:nth-child(2)::after{animation-delay:1s;}
-.w-stat-card:nth-child(3)::after{animation-delay:2s;}
-.w-stat-card:nth-child(4)::after{animation-delay:3s;}
-@keyframes cardShine{0%,60%{transform:translateX(160%);}100%{transform:translateX(-160%);}}
-.w-stat-card:hover{transform:translateY(-6px) scale(1.015);box-shadow:0 22px 50px rgba(0,0,0,.35);}
-.w-stat-icon{
-  width:clamp(48px,4vw,62px);height:clamp(48px,4vw,62px);
-  border-radius:16px;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-size:clamp(22px,2vw,28px);
-  background:rgba(255,255,255,.2);backdrop-filter:blur(10px);
-  border:1.5px solid rgba(255,255,255,.25);
-}
-.w-stat-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
-.w-stat-num{
-  font-family:'JetBrains Mono',monospace;
-  font-size:clamp(26px,2.6vw,38px);font-weight:900;
-  line-height:1;letter-spacing:-2px;color:#fff;
-  text-shadow:0 4px 16px rgba(0,0,0,.3);
-  font-variant-numeric:tabular-nums;
-}
-.w-stat-label{font-size:clamp(11px,.9vw,13px);color:rgba(255,255,255,.9);font-weight:800;}
-.w-stat-spark{width:clamp(70px,6vw,110px);height:clamp(30px,2.6vw,44px);margin-inline-start:auto;flex-shrink:0;opacity:.95;}
+/* ═══ KPI ═══ */
+.w-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.w-kpi{position:relative;padding:clamp(16px,1.4vh,24px) 24px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:clamp(90px,12vh,130px);overflow:hidden;transition:transform .35s var(--ease-out);border:1px solid transparent;}
+.w-kpi::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:rgba(255,255,255,.4);}
+.w-kpi:hover{transform:translateY(-4px);}
+.w-kpi-num{font-family:'JetBrains Mono',monospace;font-size:clamp(38px,4.5vw,64px);font-weight:900;line-height:1;letter-spacing:-3px;font-variant-numeric:tabular-nums;text-shadow:0 4px 20px rgba(0,0,0,.4);}
+.w-kpi-label{font-size:clamp(11px,1vw,14px);font-weight:800;letter-spacing:.3px;opacity:.95;}
+.kpi-total{background:linear-gradient(135deg,#3b6fd4 0%,#4f7ee0 100%);color:#fff;}
+.kpi-wait{background:linear-gradient(135deg,#d97706 0%,#f5a524 100%);color:#fff;}
+.kpi-work{background:linear-gradient(135deg,#7c3aed 0%,#a855f7 100%);color:#fff;}
+.kpi-done{background:linear-gradient(135deg,#059669 0%,#2dd4a3 100%);color:#fff;}
 
-.w-completed-panel{
-  background:var(--panel-bg);border:2px solid rgba(45,212,163,.4);
-  border-radius:var(--radius-lg);overflow:hidden;
-  box-shadow:0 8px 32px rgba(45,212,163,.15);
-}
-.w-completed-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:clamp(12px,1.2vw,18px) clamp(16px,1.6vw,22px);
-  background:linear-gradient(135deg,rgba(45,212,163,.2),rgba(34,179,136,.1));
-  border-bottom:1px solid rgba(45,212,163,.3);
-}
-.w-completed-body{
-  display:flex;gap:14px;overflow-x:auto;padding:16px;
-  min-height:120px;scroll-behavior:smooth;
-}
-.w-completed-body::-webkit-scrollbar{height:8px;}
-.w-completed-body::-webkit-scrollbar-track{background:var(--bg-3);border-radius:4px;}
-.w-completed-body::-webkit-scrollbar-thumb{background:linear-gradient(90deg,#2dd4a3,#22b388);border-radius:4px;}
-.w-completed-card{
-  flex-shrink:0;min-width:clamp(260px,22vw,340px);max-width:clamp(300px,26vw,400px);
-  background:linear-gradient(135deg,rgba(45,212,163,.15),var(--surface-1));
-  border:2px solid rgba(45,212,163,.45);border-radius:16px;padding:18px 20px;
-  cursor:pointer;transition:all .35s var(--ease-out);
-  position:relative;overflow:hidden;min-height:110px;
-  display:flex;flex-direction:column;justify-content:space-between;
-}
-.w-completed-card::before{
-  content:'✓';position:absolute;top:10px;inset-inline-start:14px;
-  color:#2dd4a3;font-size:20px;font-weight:900;
-  text-shadow:0 0 12px rgba(45,212,163,.8);
-}
-.w-completed-card::after{
-  content:'';position:absolute;top:0;inset-inline:0;height:3px;
-  background:linear-gradient(90deg,#2dd4a3,#3ee8b5);
-}
-.w-completed-card:hover{transform:translateY(-4px) scale(1.02);border-color:#2dd4a3;box-shadow:0 12px 32px rgba(45,212,163,.4);}
-.w-completed-title{
-  font-size:clamp(14px,1.1vw,17px);font-weight:900;color:var(--text);
-  margin-bottom:10px;line-height:1.4;padding-inline-start:28px;
-  overflow:hidden;text-overflow:ellipsis;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-  min-height:44px;
-}
-.w-completed-meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text-2);font-weight:800;gap:10px;}
-.w-completed-time{color:#2dd4a3;font-weight:900;background:rgba(45,212,163,.15);padding:4px 10px;border-radius:8px;}
+/* ═══ Body ═══ */
+.w-body{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:16px;min-height:0;}
 
-.w-middle-row{
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.1fr);
-  gap:clamp(10px,1.2vw,14px);min-height:0;
-}
-.w-panel{
-  background:var(--panel-bg);backdrop-filter:blur(24px);
-  border:1.5px solid var(--border-2);border-radius:var(--radius-lg);
-  display:flex;flex-direction:column;overflow:hidden;min-height:0;
-  box-shadow:var(--shadow-sm);
-}
-.w-panel-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 16px;border-bottom:1px solid var(--border);
-  background:var(--surface-1);flex-shrink:0;
-}
-.w-panel-title{font-size:13px;font-weight:900;display:flex;align-items:center;gap:8px;}
-.w-panel-badge{
-  background:rgba(91,141,239,.2);color:var(--primary);
-  padding:4px 12px;border-radius:12px;font-size:11px;font-weight:900;
-  border:1px solid rgba(91,141,239,.3);
-}
-.w-panel-body{flex:1;overflow:hidden;padding:12px;position:relative;min-height:0;}
-.w-chart-line,.w-chart-doughnut{width:100%;height:100%;position:relative;min-height:140px;}
-.w-chart-doughnut{display:flex;align-items:center;justify-content:center;}
-.w-doughnut-center{
-  position:absolute;top:50%;inset-inline-start:50%;transform:translate(-50%,-50%);
-  text-align:center;pointer-events:none;
-}
-.w-doughnut-center-num{
-  font-family:'JetBrains Mono',monospace;
-  font-size:clamp(22px,2vw,30px);font-weight:900;color:var(--success);line-height:1;
-}
-.w-doughnut-center-label{font-size:10px;color:var(--text-2);font-weight:800;margin-top:5px;}
-.w-top-list{display:flex;flex-direction:column;gap:6px;overflow-y:auto;height:100%;padding:2px;}
-.w-top-item{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;
-  background:var(--surface-1);border:1.5px solid var(--border);border-radius:12px;
-  transition:all .3s;
-}
-.w-top-item:hover{background:rgba(35,43,66,.8);border-color:rgba(91,141,239,.4);transform:translateX(-4px);}
-.w-top-rank{
-  width:32px;height:32px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:900;flex-shrink:0;
-}
+.w-tasks-zone{display:flex;flex-direction:column;background:rgba(15,20,35,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:18px;overflow:hidden;min-height:0;}
+.w-zone-head{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0;gap:16px;flex-wrap:wrap;}
+.w-zone-head h2{font-size:clamp(14px,1.1vw,17px);font-weight:900;color:#f8fafc;}
+.w-tabs{display:flex;gap:6px;}
+.w-tab{padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#94a3b8;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all .2s;font-family:inherit;}
+.w-tab:hover{background:rgba(255,255,255,.08);color:#f8fafc;}
+.w-tab.active{background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(91,141,239,.4);}
+.w-tab span{background:rgba(255,255,255,.2);padding:1px 8px;border-radius:6px;font-size:10.5px;font-weight:900;min-width:20px;text-align:center;}
+
+.w-tasks-body{flex:1;overflow:hidden;position:relative;min-height:0;padding:14px;mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);}
+.w-scroll-track{display:flex;flex-direction:column;gap:10px;will-change:transform;}
+
+/* ═══ Task Row — النظيف ═══ */
+.w-task-row{display:grid;grid-template-columns:6px auto minmax(0,1fr) auto auto;align-items:center;gap:20px;padding:18px 24px;background:rgba(23,29,46,.6);border:1px solid rgba(255,255,255,.06);border-radius:14px;cursor:pointer;min-height:78px;transition:all .25s;position:relative;overflow:hidden;}
+.w-task-row:hover{background:rgba(35,43,66,.75);border-color:rgba(91,141,239,.35);transform:translateX(-4px);}
+.w-task-row::before{content:'';position:absolute;inset-inline-end:0;top:0;bottom:0;width:6px;background:var(--accent-bar,#5b8def);}
+.w-task-row.p-urgent::before{background:linear-gradient(180deg,#f04b5c,#ff6b7d);}
+.w-task-row.p-important::before{background:linear-gradient(180deg,#f5a524,#ffc043);}
+.w-task-row.p-normal::before{background:linear-gradient(180deg,#2dd4a3,#3ee8b5);}
+.w-task-priority{padding:6px 14px;border-radius:10px;font-size:12px;font-weight:900;white-space:nowrap;flex-shrink:0;}
+.w-task-priority.urgent{background:rgba(240,75,92,.18);color:#ff6b7d;}
+.w-task-priority.important{background:rgba(245,165,36,.18);color:#ffc043;}
+.w-task-priority.normal{background:rgba(45,212,163,.15);color:#3ee8b5;}
+.w-task-title{font-size:clamp(15px,1.3vw,19px);font-weight:800;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;line-height:1.3;}
+.w-task-assignee{font-size:clamp(12px,1vw,14px);font-weight:800;color:#94a3b8;white-space:nowrap;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.w-task-status{padding:8px 16px;border-radius:10px;font-size:12.5px;font-weight:900;white-space:nowrap;min-width:80px;text-align:center;flex-shrink:0;}
+.w-task-status.new{background:rgba(91,141,239,.18);color:#7ca5f5;}
+.w-task-status.progress{background:rgba(245,165,36,.18);color:#f5b84a;}
+.w-task-status.done{background:rgba(45,212,163,.18);color:#3ee8b5;}
+.w-task-row.urgent-highlight{background:linear-gradient(90deg,rgba(240,75,92,.10) 0%,rgba(23,29,46,.6) 60%);border-color:rgba(240,75,92,.35);box-shadow:0 0 20px rgba(240,75,92,.15);}
+.w-task-row.urgent-highlight .w-task-title{color:#fff;}
+
+/* ═══ Side zone ═══ */
+.w-side-zone{display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:16px;min-height:0;}
+.w-card{background:rgba(15,20,35,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:18px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.w-card header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;}
+.w-card header h3{font-size:13px;font-weight:900;color:#f8fafc;}
+.w-badge{padding:3px 10px;border-radius:8px;background:rgba(91,141,239,.18);color:#5b8def;font-size:11px;font-weight:900;}
+
+.w-donut-wrap{flex:1;position:relative;display:flex;align-items:center;justify-content:center;padding:12px;min-height:0;}
+.w-donut-wrap canvas{max-height:100%;}
+.w-donut-center{position:absolute;top:50%;inset-inline-start:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.w-donut-center strong{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(26px,2.4vw,38px);font-weight:900;color:#2dd4a3;line-height:1;}
+.w-donut-center span{display:block;font-size:10.5px;color:#64748b;font-weight:800;margin-top:4px;}
+
+.w-top-list{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:0;}
+.w-top-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:12px;transition:all .2s;}
+.w-top-item:hover{background:rgba(91,141,239,.08);border-color:rgba(91,141,239,.25);transform:translateX(-4px);}
+.w-top-rank{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
 .w-top-rank.r1{background:linear-gradient(135deg,#ffd700,#ffb300);color:#000;}
 .w-top-rank.r2{background:linear-gradient(135deg,#e0e0e0,#a0a0a0);color:#000;}
 .w-top-rank.r3{background:linear-gradient(135deg,#cd7f32,#a0651e);color:#fff;}
-.w-top-rank.rx{background:rgba(91,141,239,.2);color:var(--primary);border:1.5px solid rgba(91,141,239,.4);}
-.w-top-avatar{
-  width:34px;height:34px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:900;font-size:14px;color:#fff;
-  background:linear-gradient(135deg,var(--primary),var(--success));
-  flex-shrink:0;
-}
+.w-top-rank.rx{background:rgba(91,141,239,.15);color:#5b8def;}
+.w-top-avatar{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex-shrink:0;}
 .w-top-info{flex:1;min-width:0;}
-.w-top-name{
-  font-size:12.5px;font-weight:900;color:var(--text);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:2px;
-}
-.w-top-count{font-size:10px;color:var(--text-2);font-weight:700;}
-.w-top-score{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:900;color:var(--success);}
+.w-top-info strong{display:block;font-size:13px;font-weight:800;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.w-top-info small{display:block;font-size:10.5px;color:#64748b;font-weight:700;margin-top:2px;}
+.w-top-score{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:900;color:#2dd4a3;}
 
-.w-tasks-panel{
-  display:flex;flex-direction:column;
-  background:var(--panel-bg);backdrop-filter:blur(24px);
-  border:1.5px solid var(--border-2);border-radius:var(--radius-lg);
-  overflow:hidden;min-height:0;box-shadow:var(--shadow-sm);
-}
-.w-tasks-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 16px;border-bottom:1px solid var(--border);
-  background:var(--surface-1);flex-shrink:0;gap:12px;flex-wrap:wrap;
-}
-.w-tabs{display:flex;gap:4px;background:var(--input-bg);padding:4px;border-radius:12px;border:1px solid var(--border);}
-.w-tab{
-  padding:7px 14px;border:none;background:transparent;color:var(--text-2);
-  border-radius:9px;font-size:11.5px;font-weight:800;transition:all .3s;
-  display:inline-flex;align-items:center;gap:6px;
-}
-.w-tab:hover{color:var(--text);background:var(--border-2);}
-.w-tab.active{color:#fff;background:linear-gradient(135deg,#5b8def,#3b6fd4);}
-.w-tab.active.urgent-tab{background:linear-gradient(135deg,#f04b5c,#c81e3c);}
-.w-tab.active.done-tab{background:linear-gradient(135deg,#2dd4a3,#22b388);}
-.w-tab-count{background:rgba(255,255,255,.25);padding:1px 7px;border-radius:7px;font-size:9.5px;min-width:18px;text-align:center;font-weight:900;}
+/* ═══ Footer ═══ */
+.w-footer{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;height:78px;flex-shrink:0;}
+.w-recent{display:flex;align-items:center;gap:16px;padding:0 20px;background:rgba(15,20,35,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;}
+.w-recent-title{font-size:12.5px;font-weight:900;color:#2dd4a3;white-space:nowrap;flex-shrink:0;}
+.w-recent-list{display:flex;gap:10px;overflow-x:auto;flex:1;padding:8px 0;scrollbar-width:none;}
+.w-recent-list::-webkit-scrollbar{display:none;}
+.w-recent-item{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(45,212,163,.08);border:1px solid rgba(45,212,163,.2);border-radius:10px;font-size:12px;font-weight:800;color:#f8fafc;white-space:nowrap;}
+.w-recent-item::before{content:'✓';color:#2dd4a3;font-weight:900;}
+.w-recent-item em{font-style:normal;font-size:10.5px;color:#64748b;font-weight:700;padding-inline-start:8px;border-inline-start:1px solid rgba(255,255,255,.08);}
+.w-ticker{display:flex;align-items:center;background:rgba(15,20,35,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;}
+.w-ticker-icon{padding:0 16px;height:100%;display:flex;align-items:center;background:rgba(91,141,239,.15);color:#5b8def;font-size:16px;flex-shrink:0;}
+.w-ticker-wrap{flex:1;overflow:hidden;position:relative;}
+.w-ticker-track{display:inline-block;white-space:nowrap;padding-inline-end:100%;animation:tickerScroll 60s linear infinite;color:#cbd5e1;font-size:12.5px;font-weight:700;line-height:78px;}
+.w-ticker-track:hover{animation-play-state:paused;}
+@keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
+.w-ticker-track span{padding-inline-start:60px;}
+.w-ticker-track span::before{content:'◆';color:#5b8def;margin-inline-end:20px;font-size:9px;vertical-align:middle;}
 
-.w-tasks-body{flex:1;overflow:hidden;position:relative;padding:10px;min-height:0;}
-.w-tasks-body.auto-scroll{
-  mask-image:linear-gradient(180deg,transparent 0%,black 30px,black calc(100% - 30px),transparent 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 30px,black calc(100% - 30px),transparent 100%);
-}
-.w-scroll-track{display:flex;flex-direction:column;gap:10px;will-change:transform;padding-bottom:20px;}
+/* Empty state */
+.w-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:10px;height:100%;text-align:center;color:#64748b;}
+.w-empty-state div:first-child{font-size:44px;opacity:.4;}
+.w-empty-state div:last-child{font-size:13px;font-weight:800;color:#94a3b8;}
 
-.w-task-row{
-  display:grid;
-  grid-template-columns:
-    6px
-    minmax(86px,auto)
-    minmax(0,3fr)
-    minmax(105px,1fr)
-    minmax(105px,1fr)
-    minmax(150px,1.4fr)
-    minmax(90px,.9fr);
-  align-items:center;
-  gap:clamp(12px,1.2vw,20px);
-  padding:clamp(14px,1.4vw,24px) clamp(16px,1.5vw,26px);
-  background:rgba(23,29,46,.55);
-  backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:16px;
-  cursor:pointer;
-  min-height:clamp(72px,7vh,100px);
-  position:relative;overflow:hidden;
-  transition:all .35s var(--ease-out);
-  will-change:transform;
-}
-.w-task-row::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(91,141,239,.06) 50%,transparent);
-  transform:translateX(-100%);transition:transform .8s;pointer-events:none;
-}
-.w-task-row:hover::before{transform:translateX(100%);}
-.w-task-row:hover{
-  background:rgba(30,40,65,.75);transform:translateX(-8px);
-  border-color:rgba(91,141,239,.4);box-shadow:0 16px 48px rgba(0,0,0,.5);
-}
-.w-task-bar{
-  width:6px;height:100%;min-height:clamp(44px,5vh,70px);border-radius:5px;
-  background:var(--primary);box-shadow:0 0 12px rgba(91,141,239,.5);
-}
-.w-task-row.urgent .w-task-bar{background:linear-gradient(180deg,#f04b5c,#ff6b7d);box-shadow:0 0 20px rgba(240,75,92,.9);}
-.w-task-row.important .w-task-bar{background:linear-gradient(180deg,#f5a524,#ffc043);box-shadow:0 0 16px rgba(245,165,36,.8);}
-.w-task-row.normal .w-task-bar{background:linear-gradient(180deg,#2dd4a3,#3ee8b5);box-shadow:0 0 16px rgba(45,212,163,.8);}
-.w-task-priority{
-  font-size:clamp(12px,1vw,15px);padding:10px 16px;border-radius:12px;
-  font-weight:900;text-align:center;white-space:nowrap;
-}
-.w-task-priority.urgent{background:rgba(240,75,92,.3);color:#ff6b7d;border:2px solid rgba(240,75,92,.6);}
-.w-task-priority.important{background:rgba(245,165,36,.3);color:#ffc043;border:2px solid rgba(245,165,36,.6);}
-.w-task-priority.normal{background:rgba(45,212,163,.25);color:#3ee8b5;border:2px solid rgba(45,212,163,.5);}
-.w-task-title{
-  font-size:clamp(15px,1.4vw,20px);font-weight:900;color:var(--text);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  min-width:0;line-height:1.3;
-}
-.w-task-assignee,.w-task-due{
-  font-size:clamp(13px,1.1vw,16px);color:var(--text-2);
-  font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.w-task-due.overdue{color:#ff6b7d;font-weight:900;text-shadow:0 0 12px rgba(240,75,92,.6);}
-.w-task-progress-wrap{display:flex;align-items:center;gap:14px;min-width:0;}
-.w-task-progress-bar{
-  flex:1;height:10px;background:var(--bg-3);border-radius:5px;
-  overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.4);
-}
-.w-task-progress-fill{
-  height:100%;border-radius:5px;transition:width .6s ease;
-  background:linear-gradient(90deg,#5b8def,#7c8ef8);
-}
-.w-task-row.urgent .w-task-progress-fill{
-  background:linear-gradient(90deg,#f04b5c,#ff6b7d,#f04b5c);
-  background-size:200% 100%;
-  animation:progressFlow 2s linear infinite;
-}
-@keyframes progressFlow{0%{background-position:0 0;}100%{background-position:200% 0;}}
-.w-task-progress-text{
-  font-size:clamp(12px,1vw,15px);font-weight:900;color:var(--text-2);
-  font-family:'JetBrains Mono',monospace;min-width:52px;text-align:end;
-}
-.w-task-status{
-  font-size:clamp(11px,.9vw,14px);padding:10px 16px;border-radius:12px;
-  font-weight:900;text-align:center;white-space:nowrap;
-}
-.w-task-status.new{background:rgba(91,141,239,.25);color:#7ca5f5;border:2px solid rgba(91,141,239,.4);}
-.w-task-status.progress{background:rgba(245,165,36,.25);color:#f5b84a;border:2px solid rgba(245,165,36,.4);}
-.w-task-status.done{background:rgba(45,212,163,.25);color:#3ee8b5;border:2px solid rgba(45,212,163,.4);}
-.w-task-row.urgent-highlight{
-  border:2px solid #f04b5c;
-  background:linear-gradient(90deg,rgba(240,75,92,.12) 0%,rgba(23,29,46,.55) 40%);
-  animation:urgentPulseSoft 2.2s ease-in-out infinite;
-}
-.w-task-row.urgent-highlight .w-task-title{color:#fff;text-shadow:0 0 12px rgba(240,75,92,.5);}
-.w-task-row.urgent-highlight .w-task-bar{
-  background:linear-gradient(180deg,#f04b5c,#ff6b7d,#f04b5c);
-  background-size:100% 200%;animation:barFlow 1.5s linear infinite;
-}
-@keyframes barFlow{0%{background-position:0 0;}100%{background-position:0 200%;}}
+/* ═══ PIN Screen ═══ */
+#watchPinScreen{position:fixed;inset:0;z-index:2100;display:flex;align-items:center;justify-content:center;background:#050810;padding:20px;}
+.watch-pin-card{background:rgba(15,20,35,.95);backdrop-filter:blur(40px);border:1.5px solid rgba(91,141,239,.3);padding:52px 44px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 40px 120px rgba(0,0,0,.8);}
+.watch-pin-logo{width:120px;height:120px;margin:0 auto 24px;border-radius:50%;padding:8px;background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));box-shadow:0 0 0 4px rgba(91,141,239,.3),0 0 60px rgba(91,141,239,.6);}
+.watch-pin-logo img{width:100%;height:100%;object-fit:contain;border-radius:50%;background:#050810;padding:14px;}
+.watch-pin-card h1{font-size:30px;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,#5b8def,#2dd4a3,#a855f7);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.watch-pin-card > p{color:#94a3b8;font-size:13px;margin-bottom:28px;font-weight:700;}
+#watchPinForm{display:flex;flex-direction:column;gap:14px;}
+#watchPinInput{width:100%;padding:18px;background:rgba(35,43,66,.7);color:#f8fafc;border:1.5px solid rgba(255,255,255,.12);border-radius:14px;font-size:22px;text-align:center;letter-spacing:10px;font-family:monospace;font-weight:800;outline:none;transition:all .25s;}
+#watchPinInput:focus{border-color:#5b8def;box-shadow:0 0 0 4px rgba(91,141,239,.25);}
+#watchPinForm button{padding:16px;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;transition:all .2s;box-shadow:0 12px 32px rgba(91,141,239,.45);}
+#watchPinForm button:hover{transform:translateY(-2px);}
+#watchPinError{color:#f04b5c;font-size:12.5px;min-height:20px;font-weight:800;}
+.watch-pin-hint{color:#64748b;font-size:12px;margin-top:20px;font-weight:700;}
 
-.w-empty-state{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:60px 20px;color:var(--text-3);gap:14px;text-align:center;height:100%;
-}
-.w-empty-icon{font-size:56px;opacity:.4;}
-.w-empty-text{font-size:14px;font-weight:800;color:var(--text-2);}
-
-.w-news-ticker{
-  display:flex;align-items:center;background:var(--panel-bg);
-  backdrop-filter:blur(24px);border:1.5px solid rgba(91,141,239,.2);
-  border-radius:14px;overflow:hidden;height:48px;flex-shrink:0;
-}
-.w-news-label{
-  display:flex;align-items:center;gap:8px;padding:0 20px;height:100%;
-  background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;
-  font-weight:900;font-size:13px;flex-shrink:0;
-}
-.w-news-track-wrap{flex:1;overflow:hidden;position:relative;}
-.w-news-track{
-  display:inline-block;white-space:nowrap;padding-inline-end:100%;
-  animation:newsScroll 60s linear infinite;
-  color:var(--text);font-size:clamp(12px,1vw,15px);
-  font-weight:800;line-height:48px;
-}
-.w-news-track:hover{animation-play-state:paused;}
-@keyframes newsScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
-
-body.watch-kiosk .w-bar-top,
-body.watch-kiosk .w-news-ticker{display:none !important;}
-body.watch-kiosk #watchMainContent{
-  grid-template-areas:"stats" "completed" "middle" "tasks";
-  grid-template-rows:auto auto minmax(0,.9fr) minmax(0,1.4fr);
-}
+body.watch-kiosk .w-footer{display:none !important;}
+body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
 
 /* Responsive */
-@media (max-width:1400px){
-  .w-middle-row{grid-template-columns:1fr 1fr 1fr;}
-  .w-task-row{grid-template-columns:6px .7fr 2.5fr .9fr 1fr 1.2fr .8fr;gap:10px;padding:12px 14px;}
-}
 @media (max-width:1200px){
-  .w-middle-row{grid-template-columns:1fr 1fr;}
-  .w-middle-row > :nth-child(3){grid-column:1/-1;}
-  .charts-grid{grid-template-columns:1fr;}
+  .w-body{grid-template-columns:1fr;}
+  .w-side-zone{display:none;}
+  .w-kpi-num{font-size:44px;}
 }
-@media (max-width:900px){
-  .w-stats-row{grid-template-columns:repeat(2,1fr);}
+@media (max-width:800px){
+  .w-kpis{grid-template-columns:repeat(2,1fr);}
+  .w-footer{grid-template-columns:1fr;height:auto;}
+  .w-ticker{display:none;}
+  .w-task-row{grid-template-columns:6px auto 1fr auto;gap:12px;padding:14px 16px;}
+  .w-task-assignee{display:none;}
+}
+@media (max-width:1400px){
   .w-middle-row{grid-template-columns:1fr;}
-  .w-task-row{grid-template-columns:6px 1fr 100px;gap:10px;padding:12px;}
-  .w-task-row > .w-task-assignee,
-  .w-task-row > .w-task-due,
-  .w-task-row > .w-task-progress-wrap{display:none;}
-  .w-bar-top{flex-wrap:wrap;gap:12px;padding:12px 16px;}
-  .charts-grid,.form-grid,.modal-meta{grid-template-columns:1fr;}
-}
-@media (max-width:700px){
-  .w-stats-row{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .w-stat-card{padding:12px;gap:10px;}
-  .w-stat-num{font-size:22px;}
-  .w-stat-icon{width:40px;height:40px;font-size:18px;}
-  .w-task-row{grid-template-columns:6px 70px minmax(0,1fr) 70px;gap:8px;padding:10px;}
-  .w-task-row > .w-task-due{display:none;}
-  .w-task-title{font-size:12px;}
-  header{padding:12px 16px;}
-  .main-nav{padding:10px 16px;}
-  .container{padding:0 16px;margin:16px auto;}
-  .card-panel{padding:18px;border-radius:18px;}
-  .stat-num{font-size:28px;}
-  .user-row{flex-direction:column;align-items:stretch;}
-  .user-actions{justify-content:flex-end;}
-  #tasksList{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -1468,7 +812,7 @@ body.watch-kiosk #watchMainContent{
 <div id="watchSubNotifications" class="notif-host"></div>
 <div id="toastHost"></div>
 
-<!-- ============ WATCH SCREEN ============ -->
+<!-- ============ WATCH SCREEN v3 ============ -->
 <div id="watchScreen">
   <div class="watch-bg" aria-hidden="true">
     <div class="watch-orb o1"></div>
@@ -1492,125 +836,98 @@ body.watch-kiosk #watchMainContent{
   </div>
 
   <div id="watchMainContent">
-    <header class="w-bar-top">
-      <div class="w-bar-brand">
-        <div class="w-bar-logo"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK"></div>
-        <div class="w-bar-title">
+    <!-- Header -->
+    <header class="w-header">
+      <div class="w-brand">
+        <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK">
+        <div>
           <h1>EMAK IT Dep.</h1>
-          <p>نظام إدارة المهام — نظم المعلومات</p>
+          <span>نظم المعلومات</span>
         </div>
       </div>
-      <div class="w-bar-center">
-        <div class="w-clock-box">
-          <time class="w-clock-time" id="watchClock">--:--:--</time>
-          <span class="w-clock-sep"></span>
-          <span class="w-clock-date" id="watchDate">---</span>
-        </div>
+      <div class="w-clock">
+        <span id="watchClock">--:--:--</span>
+        <em id="watchDate">---</em>
       </div>
-      <div class="w-bar-actions">
-        <span class="w-live-pill"><span class="w-live-dot"></span><span>مباشر</span></span>
-        <span class="w-status-pill" id="watchConnStatus"><span class="w-status-dot"></span><span>متصل</span></span>
-        <button class="w-icon-btn" data-action="toggle-kiosk" title="وضع الشاشة الكاملة">🖥️</button>
-        <button class="w-icon-btn danger" data-action="close-watch" title="إغلاق">✕</button>
+      <div class="w-actions">
+        <span class="w-live"><i></i> مباشر</span>
+        <span class="w-conn" id="watchConnStatus"><i></i> متصل</span>
+        <button class="w-btn" data-action="toggle-kiosk" title="وضع كامل">⛶</button>
+        <button class="w-btn danger" data-action="close-watch" title="إغلاق">✕</button>
       </div>
     </header>
 
-    <section class="w-stats-row">
-      <article class="w-stat-card total">
-        <div class="w-stat-icon">📋</div>
-        <div class="w-stat-info">
-          <div class="w-stat-num" id="wTotal">0</div>
-          <div class="w-stat-label">إجمالي المهام</div>
-        </div>
-      </article>
-      <article class="w-stat-card active">
-        <div class="w-stat-icon">⚡</div>
-        <div class="w-stat-info">
-          <div class="w-stat-num" id="wActive">0</div>
-          <div class="w-stat-label">قيد الانتظار</div>
-        </div>
-      </article>
-      <article class="w-stat-card working">
-        <div class="w-stat-icon">⏳</div>
-        <div class="w-stat-info">
-          <div class="w-stat-num" id="wWorking">0</div>
-          <div class="w-stat-label">قيد التنفيذ</div>
-        </div>
-      </article>
-      <article class="w-stat-card done">
-        <div class="w-stat-icon">✅</div>
-        <div class="w-stat-info">
-          <div class="w-stat-num" id="wDone">0</div>
-          <div class="w-stat-label">مكتملة</div>
-        </div>
-      </article>
-    </section>
-
-    <section class="w-completed-panel">
-      <header class="w-completed-header">
-        <div class="w-panel-title"><span>🎉</span><span>آخر ما تم إنجازه</span></div>
-        <span class="w-panel-badge" id="wCompletedCount">0</span>
-      </header>
-      <div class="w-completed-body" id="wCompletedList"></div>
-    </section>
-
-    <section class="w-middle-row">
-      <div class="w-panel">
-        <header class="w-panel-header">
-          <div class="w-panel-title"><span>📈</span><span>الإنتاجية الأسبوعية</span></div>
-          <span class="w-panel-badge">آخر 7 أيام</span>
-        </header>
-        <div class="w-panel-body"><div class="w-chart-line"><canvas id="watchLineChart"></canvas></div></div>
+    <!-- KPI -->
+    <section class="w-kpis">
+      <div class="w-kpi kpi-total">
+        <div class="w-kpi-num" id="wTotal">0</div>
+        <div class="w-kpi-label">إجمالي المهام</div>
       </div>
-      <div class="w-panel">
-        <header class="w-panel-header">
-          <div class="w-panel-title"><span>🍩</span><span>حالة المهام</span></div>
-          <span class="w-panel-badge">نسبة</span>
+      <div class="w-kpi kpi-wait">
+        <div class="w-kpi-num" id="wActive">0</div>
+        <div class="w-kpi-label">قيد الانتظار</div>
+      </div>
+      <div class="w-kpi kpi-work">
+        <div class="w-kpi-num" id="wWorking">0</div>
+        <div class="w-kpi-label">قيد التنفيذ</div>
+      </div>
+      <div class="w-kpi kpi-done">
+        <div class="w-kpi-num" id="wDone">0</div>
+        <div class="w-kpi-label">مكتملة</div>
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="w-body">
+      <div class="w-tasks-zone">
+        <header class="w-zone-head">
+          <h2>📋 المهام الحالية</h2>
+          <div class="w-tabs">
+            <button class="w-tab active" data-tab="all">الكل <span id="wTabAllCount">0</span></button>
+            <button class="w-tab" data-tab="urgent">🔴 عاجل <span id="wTabUrgentCount">0</span></button>
+            <button class="w-tab" data-tab="working">⏳ جاري <span id="wTabWorkingCount">0</span></button>
+          </div>
         </header>
-        <div class="w-panel-body">
-          <div class="w-chart-doughnut">
+        <div class="w-tasks-body" id="wMainBody">
+          <div class="w-scroll-track" id="wTasksList"></div>
+        </div>
+      </div>
+
+      <aside class="w-side-zone">
+        <div class="w-card">
+          <header><h3>🍩 نسبة الإنجاز</h3></header>
+          <div class="w-donut-wrap">
             <canvas id="watchDoughnutChart"></canvas>
-            <div class="w-doughnut-center">
-              <div class="w-doughnut-center-num" id="wDonePercent">0%</div>
-              <div class="w-doughnut-center-label">مكتملة</div>
+            <div class="w-donut-center">
+              <strong id="wDonePercent">0%</strong>
+              <span>مكتملة</span>
             </div>
           </div>
         </div>
-      </div>
-      <div class="w-panel">
-        <header class="w-panel-header">
-          <div class="w-panel-title"><span>🥇</span><span>أفضل المنجزين</span></div>
-          <span class="w-panel-badge" id="wTopCount">0</span>
-        </header>
-        <div class="w-panel-body"><div class="w-top-list" id="wTopPerformers"></div></div>
-      </div>
-    </section>
-
-    <section class="w-tasks-panel">
-      <header class="w-tasks-header">
-        <div class="w-panel-title"><span>📋</span><span>قائمة المهام</span></div>
-        <div class="w-tabs" id="wTabs">
-          <button class="w-tab active" data-tab="all">الكل <span class="w-tab-count" id="wTabAllCount">0</span></button>
-          <button class="w-tab urgent-tab" data-tab="urgent">🔴 عاجلة <span class="w-tab-count" id="wTabUrgentCount">0</span></button>
-          <button class="w-tab" data-tab="working">⏳ جارية <span class="w-tab-count" id="wTabWorkingCount">0</span></button>
-          <button class="w-tab done-tab" data-tab="done">✅ مكتملة <span class="w-tab-count" id="wTabDoneCount">0</span></button>
+        <div class="w-card">
+          <header><h3>🏆 أفضل المنجزين</h3><span id="wTopCount" class="w-badge">0</span></header>
+          <div class="w-top-list" id="wTopPerformers"></div>
         </div>
-      </header>
-      <div class="w-tasks-body" id="wMainBody">
-        <div class="w-scroll-track" id="wTasksList"></div>
-      </div>
+      </aside>
     </section>
 
-    <footer class="w-news-ticker">
-      <div class="w-news-label">🔔 إشعارات</div>
-      <div class="w-news-track-wrap"><div class="w-news-track" id="wNewsTrack"></div></div>
+    <!-- Footer -->
+    <footer class="w-footer">
+      <div class="w-recent">
+        <span class="w-recent-title">🎉 آخر ما تم إنجازه</span>
+        <div class="w-recent-list" id="wCompletedList"></div>
+      </div>
+      <div class="w-ticker">
+        <span class="w-ticker-icon">🔔</span>
+        <div class="w-ticker-wrap"><div class="w-ticker-track" id="wNewsTrack"></div></div>
+      </div>
     </footer>
   </div>
 </div>
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v17.0 — Final Professional Edition
+   EMAK IT Dep. v18.0 — Executive Dashboard
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1646,14 +963,13 @@ const CONSTANTS = Object.freeze({
   NOTIFICATION_DURATION: 20000,
   SCROLL_MIN_SECONDS: 25,
   SCROLL_MAX_SECONDS: 90,
-  CHARTS_REFRESH_INTERVAL: 30000,
   MAX_NOTIFICATIONS: 5,
   PRIORITY_MAP: { "عاجل": 0, "مهم": 1, "عادي": 2 },
   STATUS: Object.freeze({ NEW: "جديدة", PROGRESS: "جاري التنفيذ", DONE: "مكتملة" })
 });
 
 /* ============================================================
-   INIT FIREBASE
+   INIT
    ============================================================ */
 const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
@@ -1665,7 +981,6 @@ const googleProvider = new GoogleAuthProvider();
    ============================================================ */
 const $  = (sel, ctx = document) => ctx.querySelector(sel);
 const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
-
 const esc = (s = '') => String(s).replace(/[&<>"']/g, c => (
   { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
 ));
@@ -1673,11 +988,9 @@ const escapeRegex = (str) => String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const highlight = (text, query) => {
   const safe = esc(text);
   if (!query) return safe;
-  try {
-    return safe.replace(new RegExp(`(${escapeRegex(query)})`, "gi"), '<mark class="hl">$1</mark>');
-  } catch { return safe; }
+  try { return safe.replace(new RegExp(`(${escapeRegex(query)})`, "gi"), '<mark class="hl">$1</mark>'); }
+  catch { return safe; }
 };
-
 const debounce = (fn, ms = 300) => {
   let t;
   return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
@@ -1693,10 +1006,8 @@ const Storage = {
 };
 
 const isValidTs = (ts) => typeof ts === "number" && isFinite(ts) && ts > 0;
-const formatDate = (ts) => isValidTs(ts)
-  ? new Date(ts).toLocaleDateString("ar-EG", { year:"numeric", month:"short", day:"numeric" }) : "";
-const formatDateTime = (ts) => isValidTs(ts)
-  ? new Date(ts).toLocaleString("ar-EG", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }) : "";
+const formatDate = (ts) => isValidTs(ts) ? new Date(ts).toLocaleDateString("ar-EG", { year:"numeric", month:"short", day:"numeric" }) : "";
+const formatDateTime = (ts) => isValidTs(ts) ? new Date(ts).toLocaleString("ar-EG", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }) : "";
 const timeAgo = (ts) => {
   if (!isValidTs(ts)) return "";
   const s = Math.floor((Date.now() - ts) / 1000);
@@ -1726,10 +1037,10 @@ const daysRemaining = (dueDate) => {
 const dueLabel = (dueDate) => {
   const d = daysRemaining(dueDate);
   if (d === null) return "";
-  if (d < 0) return `متأخر ${Math.abs(d)} يوم`;
-  if (d === 0) return "يستحق اليوم";
+  if (d < 0) return `متأخر ${Math.abs(d)} ي`;
+  if (d === 0) return "اليوم";
   if (d === 1) return "غداً";
-  if (d <= 3) return `باقي ${d} أيام`;
+  if (d <= 3) return `${d} أيام`;
   return dueDate;
 };
 const isThisWeek = (ts) => isValidTs(ts) && (Date.now() - ts) <= 7 * 86400000;
@@ -1774,15 +1085,7 @@ function toggleTheme() {
   showToast(next === 'dark' ? '🌙 الوضع الليلي' : '☀️ الوضع النهاري', 'info');
 }
 function updateChartsTheme() {
-  const isLight = state.theme === 'light';
-  const legendColor = isLight ? '#475569' : '#94a3b8';
-  const gridColor = isLight ? 'rgba(15,23,42,.06)' : 'rgba(255,255,255,.05)';
-  state.charts.forEach(chart => {
-    if (chart.options.plugins?.legend?.labels) chart.options.plugins.legend.labels.color = legendColor;
-    if (chart.options.scales?.x?.grid) chart.options.scales.x.grid.color = gridColor;
-    if (chart.options.scales?.y?.grid) chart.options.scales.y.grid.color = gridColor;
-    try { chart.update('none'); } catch {}
-  });
+  state.charts.forEach(chart => { try { chart.update('none'); } catch {} });
 }
 function themeBg() { return state.theme === 'light' ? '#ffffff' : '#10141f'; }
 function themeFg() { return state.theme === 'light' ? '#0f172a' : '#f8fafc'; }
@@ -1806,16 +1109,10 @@ function showToast(msg, type = 'success', ms = 3200) {
 }
 
 /* ============================================================
-   SWEETALERT WRAPPERS
+   SWEETALERT
    ============================================================ */
-const swalSuccess = (title, text="") => Swal.fire({
-  icon:"success", title, text, timer:1800, showConfirmButton:false,
-  background: themeBg(), color: themeFg()
-});
-const swalError = (title, text="") => Swal.fire({
-  icon:"error", title, text, confirmButtonColor:"#f04b5c",
-  background: themeBg(), color: themeFg()
-});
+const swalSuccess = (title, text="") => Swal.fire({ icon:"success", title, text, timer:1800, showConfirmButton:false, background: themeBg(), color: themeFg() });
+const swalError = (title, text="") => Swal.fire({ icon:"error", title, text, confirmButtonColor:"#f04b5c", background: themeBg(), color: themeFg() });
 const swalConfirm = (title, text="لا يمكن التراجع!") => Swal.fire({
   icon:"warning", title, text, showCancelButton:true,
   confirmButtonText:"نعم", cancelButtonText:"إلغاء",
@@ -1864,7 +1161,7 @@ const DesktopNotif = {
 };
 
 /* ============================================================
-   CHARTS MANAGER (upsert — no rebuild)
+   CHARTS
    ============================================================ */
 const Charts = {
   upsert(id, config) {
@@ -1925,9 +1222,6 @@ async function safeWrite(operation, maxRetries = 3) {
   throw lastError;
 }
 
-/* ============================================================
-   LOGO AS BASE64
-   ============================================================ */
 async function loadLogoAsBase64() {
   try {
     const res = await fetch(CONSTANTS.LOGO_URL, { mode:"cors" });
@@ -1948,7 +1242,7 @@ class SmoothAutoScroller {
     this.container = container;
     this.track = track;
     this.offset = 0;
-    this.speed = 0.5;
+    this.speed = 0.4;
     this.paused = false;
     this.halfHeight = 0;
     this.rafId = null;
@@ -1974,10 +1268,6 @@ class SmoothAutoScroller {
     });
   }
   stop() { if (this.rafId) { cancelAnimationFrame(this.rafId); this.rafId = null; } }
-  updateDuration(totalHeight) {
-    const duration = Math.min(CONSTANTS.SCROLL_MAX_SECONDS, Math.max(CONSTANTS.SCROLL_MIN_SECONDS, totalHeight / 60));
-    this.speed = totalHeight / (duration * 60);
-  }
   destroy() {
     this.stop();
     this.container.removeEventListener('mouseenter', this._onEnter);
@@ -2139,8 +1429,7 @@ async function ensureUserProfile(user) {
       const myEntries = Object.entries(team).filter(([id, m]) => m && m.uid === user.uid);
       if (myEntries.length === 0) {
         await push(ref(db, "team"), {
-          uid: user.uid,
-          username: data.username || (user.email || "").split("@")[0],
+          uid: user.uid, username: data.username || (user.email || "").split("@")[0],
           name: officialName, createdAt: Date.now()
         });
       } else {
@@ -2186,35 +1475,26 @@ async function ensureUserProfile(user) {
 function setupAuthListener() {
   onAuthStateChanged(auth, async (user) => {
     if (user && user.isAnonymous) return;
-
     const loginScreen = $('#loginScreen');
     const mainScreen = $('#mainScreen');
     const loadingScreen = $('#loadingScreen');
     clearAllListeners();
-
     if (!user) {
-      state.user = null;
-      state.profile = null;
-      state.isAdmin = false;
+      state.user = null; state.profile = null; state.isAdmin = false;
       loginScreen.classList.add('active');
       mainScreen.classList.remove('active');
       loadingScreen.classList.remove('active');
       return;
     }
-
     state.user = user;
     loadingScreen.classList.add('active');
     loginScreen.classList.remove('active');
-
     try {
-      if (!state.logoDataUrl) {
-        try { state.logoDataUrl = await loadLogoAsBase64(); } catch {}
-      }
+      if (!state.logoDataUrl) { try { state.logoDataUrl = await loadLogoAsBase64(); } catch {} }
       const profile = await ensureUserProfile(user);
       state.profile = profile;
       state.isAdmin = profile.role === 'admin';
       state.pinnedTaskId = Storage.get(`pinnedTask_${user.uid}`);
-
       if (profile.active === false) {
         await signOut(auth);
         loadingScreen.classList.remove('active');
@@ -2225,11 +1505,9 @@ function setupAuthListener() {
       loginScreen.classList.add('active');
       return swalError("خطأ", err.message);
     }
-
     setTimeout(() => {
       loadingScreen.classList.remove('active');
       mainScreen.classList.add('active');
-
       $('#userName').textContent = state.profile.displayName || state.profile.username;
       $('#userRole').textContent = state.isAdmin ? "👑 مدير" : "👤 موظف";
       $('#userRole').className = "role " + (state.isAdmin ? "admin" : "user");
@@ -2237,7 +1515,6 @@ function setupAuthListener() {
       $('#usersNavBtn').hidden = !state.isAdmin;
       $('#teamNavBtn').hidden = !state.isAdmin;
       updateActivityButtons();
-
       startRealtimeListeners();
       startBackupTimer();
       setupOnlinePresence();
@@ -2252,28 +1529,23 @@ function setupAuthListener() {
    ============================================================ */
 function startRealtimeListeners() {
   clearAllListeners();
-
   state.unsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
     const prev = { ...state.tasks };
     state.tasks = snap.val() || {};
     const isFirst = Object.keys(prev).length === 0;
     if (!isFirst) {
       Object.entries(state.tasks).forEach(([id, task]) => {
-        if (!prev[id] && task.createdBy !== state.user?.uid) {
-          showSubNotification(task);
-        }
+        if (!prev[id] && task.createdBy !== state.user?.uid) showSubNotification(task);
       });
     }
     scheduleRender();
     if (state.openTaskId && state.tasks[state.openTaskId]) renderModal(state.openTaskId);
     else if (state.openTaskId && !state.tasks[state.openTaskId]) closeModal();
   });
-
   state.unsubs.team = onValue(ref(db, "team"), (snap) => {
     state.team = snap.val() || {};
     populateAssigneeSelect();
   });
-
   if (state.isAdmin) {
     state.unsubs.users = onValue(ref(db, "users"), (snap) => {
       state.users = snap.val() || {};
@@ -2283,7 +1555,6 @@ function startRealtimeListeners() {
       state.deletedTasks = snap.val() || {};
     });
   }
-
   state.unsubs.activity = onValue(ref(db, "activity"), (snap) => {
     const raw = snap.val() || {};
     state.activity = Object.entries(raw).map(([id, a]) => ({ id, ...a }))
@@ -2291,7 +1562,6 @@ function startRealtimeListeners() {
     if ($('#activityView')?.classList.contains('active')) renderActivity();
     if ($('#watchView')?.classList.contains('active')) renderWatch();
   });
-
   setTimeout(cleanupTeamDuplicates, 2000);
 }
 
@@ -2329,7 +1599,6 @@ function renderStats() {
     return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
   }).length;
 }
-
 function renderTeamProgress() {
   const teamMap = {};
   Object.values(state.tasks).forEach(t => {
@@ -2348,29 +1617,20 @@ function renderTeamProgress() {
   }).join("");
   $('#teamList').innerHTML = html || '<p class="empty">لا توجد بيانات</p>';
 }
-
 function renderCharts() {
   const tasks = Object.values(state.tasks);
   const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
   const progress = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
   const newT = tasks.filter(t => t.status === CONSTANTS.STATUS.NEW).length;
-
   Charts.upsert('chartStatus', {
     type: 'doughnut',
     data: {
       labels: ["مكتملة","جارية","جديدة"],
-      datasets: [{
-        data: [done, progress, newT],
-        backgroundColor: ["#2dd4a3","#f5a524","#5b8def"],
-        borderColor: "transparent", borderWidth: 0
-      }]
+      datasets: [{ data: [done, progress, newT], backgroundColor: ["#2dd4a3","#f5a524","#5b8def"], borderColor: "transparent", borderWidth: 0 }]
     },
     options: { cutout: '65%' }
   });
-
-  // Productivity chart — 7 days
-  const days = [];
-  const counts = [];
+  const days = [], counts = [];
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
@@ -2382,36 +1642,23 @@ function renderCharts() {
     type: 'line',
     data: {
       labels: days,
-      datasets: [{
-        label: "مهام مكتملة",
-        data: counts,
-        borderColor: "#5b8def",
-        backgroundColor: "rgba(91,141,239,.15)",
-        borderWidth: 3, tension: 0.4, fill: true,
-        pointRadius: 5, pointBackgroundColor: "#5b8def", pointBorderColor: "#fff", pointBorderWidth: 2
-      }]
+      datasets: [{ label: "مهام مكتملة", data: counts, borderColor: "#5b8def", backgroundColor: "rgba(91,141,239,.15)", borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: "#5b8def", pointBorderColor: "#fff", pointBorderWidth: 2 }]
     },
     options: {
       plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1, color: "#64748b" },
-             grid: { color: state.theme === 'light' ? 'rgba(15,23,42,.06)' : 'rgba(255,255,255,.05)' } },
-        x: { ticks: { color: "#64748b" }, grid: { display: false } }
-      }
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: "#64748b" } }, x: { ticks: { color: "#64748b" }, grid: { display: false } } }
     }
   });
 }
 
 /* ============================================================
-   TASKS RENDERING
+   TASKS
    ============================================================ */
 function renderTasks() {
   if (!state.profile) return;
   const list = $('#tasksList');
   if (!list) return;
-
   let entries = Object.entries(state.tasks);
-
   entries.sort((a, b) => {
     if (a[0] === state.pinnedTaskId) return -1;
     if (b[0] === state.pinnedTaskId) return 1;
@@ -2434,61 +1681,44 @@ function renderTasks() {
     if (state.sort === 'title') return (a[1].title || "").localeCompare(b[1].title || "", "ar");
     return 0;
   });
-
   let filtered = entries.filter(([_, t]) => {
     if (state.filter === 'all') return true;
     if (state.filter === 'pending') return t.status !== CONSTANTS.STATUS.DONE;
     if (state.filter === 'done') return t.status === CONSTANTS.STATUS.DONE;
-    if (state.filter === 'overdue') {
-      const d = daysRemaining(t.dueDate);
-      return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-    }
+    if (state.filter === 'overdue') { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }
     if (state.filter === 'week') return isThisWeek(t.createdAt);
     if (state.filter === 'month') return isThisMonth(t.createdAt);
     if (state.filter === 'mine') return t.assigneeId && t.assigneeId === state.user?.uid;
     return true;
   });
-
   if (state.search) {
     filtered = filtered.filter(([_, t]) => {
       const hay = `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""}`.toLowerCase();
       return hay.includes(state.search);
     });
   }
-
   if (state.view === 'kanban') renderKanban(list, filtered);
   else {
     list.className = "";
-    if (filtered.length === 0) {
-      list.innerHTML = '<p class="empty" style="grid-column:1/-1;">لا توجد مهام</p>';
-      return;
-    }
+    if (filtered.length === 0) { list.innerHTML = '<p class="empty" style="grid-column:1/-1;">لا توجد مهام</p>'; return; }
     list.innerHTML = filtered.map(([id, t]) => taskCardHtml(id, t)).join("");
   }
 }
-
 function taskCardHtml(id, t) {
-  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done"
-    : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
-  const priorityClass = t.priority === "عاجل" ? "urgent"
-    : t.priority === "مهم" ? "important" : "normal";
+  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done" : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
+  const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const isUrgentActive = t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE;
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
   const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
-  const tagsHtml = t.tags
-    ? t.tags.split(",").map(x => x.trim()).filter(Boolean).slice(0,2)
-        .map(x => `<span class="card-tag">${esc(x)}</span>`).join("")
-    : "";
+  const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).slice(0,2).map(x => `<span class="card-tag">${esc(x)}</span>`).join("") : "";
   const quickActions = state.isAdmin ? `
     <div class="card-quick-actions">
       <button class="quick-action-btn" data-quick="edit" data-id="${id}" title="تعديل">✏️</button>
       <button class="quick-action-btn" data-quick="reassign" data-id="${id}" title="تغيير المسؤول">👤</button>
       <button class="quick-action-btn" data-quick="delete" data-id="${id}" title="حذف">🗑️</button>
     </div>` : "";
-
-  return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''}"
-               data-task-id="${id}" tabindex="0" role="button">
+  return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${id}" tabindex="0" role="button">
     ${quickActions}
     <div class="card-top">
       <span class="priority-dot ${priorityClass}"></span>
@@ -2506,12 +1736,10 @@ function taskCardHtml(id, t) {
     </div>
   </div>`;
 }
-
 function renderKanban(list, filtered) {
   list.className = "kanban-board";
   const cols = { [CONSTANTS.STATUS.NEW]: [], [CONSTANTS.STATUS.PROGRESS]: [], [CONSTANTS.STATUS.DONE]: [] };
   filtered.forEach(([id, t]) => { if (cols[t.status]) cols[t.status].push([id, t]); });
-
   list.innerHTML = Object.entries(cols).map(([status, items]) => `
     <div class="kanban-col" data-status="${esc(status)}">
       <div class="kanban-col-header">
@@ -2522,8 +1750,7 @@ function renderKanban(list, filtered) {
         ${items.map(([id, t]) => {
           const isUrgentActive = t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE;
           const due = daysRemaining(t.dueDate);
-          return `<div class="kanban-card ${isUrgentActive ? 'urgent' : ''}"
-                       draggable="true" data-task-id="${id}" tabindex="0" role="button">
+          return `<div class="kanban-card ${isUrgentActive ? 'urgent' : ''}" draggable="true" data-task-id="${id}" tabindex="0" role="button">
             <div class="kanban-card-title">${esc(t.title)}</div>
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-2);font-weight:700;gap:8px;margin-top:8px;">
               <span>👤 ${esc(t.assignee || "—")}</span>
@@ -2534,9 +1761,7 @@ function renderKanban(list, filtered) {
       </div>
     </div>
   `).join("");
-
   if (!state.isAdmin) return;
-
   list.querySelectorAll(".kanban-card").forEach(card => {
     card.ondragstart = (e) => {
       e.dataTransfer.setData("taskId", card.dataset.taskId);
@@ -2562,7 +1787,7 @@ function renderKanban(list, filtered) {
 }
 
 /* ============================================================
-   MODALS
+   MODAL
    ============================================================ */
 function openModal(taskId) {
   state.openTaskId = taskId;
@@ -2575,22 +1800,16 @@ function closeModal() {
   $('#modalOverlay').classList.remove('active');
   document.body.style.overflow = "";
 }
-
 function renderModal(taskId) {
   const t = state.tasks[taskId];
   if (!t) return closeModal();
-  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done"
-    : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
-  const priorityClass = t.priority === "عاجل" ? "urgent"
-    : t.priority === "مهم" ? "important" : "normal";
+  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done" : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
+  const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-  const comments = t.comments
-    ? Object.entries(t.comments).sort((a,b) => (a[1].createdAt||0)-(b[1].createdAt||0))
-    : [];
+  const comments = t.comments ? Object.entries(t.comments).sort((a,b) => (a[1].createdAt||0)-(b[1].createdAt||0)) : [];
   const commentsHtml = comments.length > 0
-    ? comments.map(([cid, c]) => `
-      <div class="modal-comment">
+    ? comments.map(([cid, c]) => `<div class="modal-comment">
         <div class="modal-comment-head">
           <span class="modal-comment-author">${esc(c.author)}</span>
           <span class="modal-comment-date">${formatDateTime(c.createdAt)}</span>
@@ -2598,17 +1817,11 @@ function renderModal(taskId) {
         <div class="modal-comment-text">${esc(c.text)}</div>
       </div>`).join("")
     : '<p style="text-align:center;color:#64748b;padding:24px;">لا توجد تعليقات</p>';
-  const tagsHtml = t.tags
-    ? t.tags.split(",").map(x => x.trim()).filter(Boolean)
-        .map(x => `<span class="tag">${esc(x)}</span>`).join("")
-    : "";
-
+  const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).map(x => `<span class="tag">${esc(x)}</span>`).join("") : "";
   $('#modalBody').innerHTML = `
     <div class="modal-header ${priorityClass}">
       <div class="modal-badges">
-        <span class="priority-badge ${priorityClass}">
-          ${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}
-        </span>
+        <span class="priority-badge ${priorityClass}">${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}</span>
         <span class="status-badge ${statusClass}">${esc(t.status)}</span>
       </div>
       <button class="modal-close" data-action="close-modal" aria-label="إغلاق">✕</button>
@@ -2616,29 +1829,12 @@ function renderModal(taskId) {
     <h2 class="modal-title">${esc(t.title)}</h2>
     ${tagsHtml ? `<div class="modal-tags">${tagsHtml}</div>` : ""}
     <div class="modal-meta">
-      <div class="meta-item">
-        <span class="meta-label">👤 المسؤول</span>
-        <span class="meta-value">${esc(t.assignee || "—")}</span>
-      </div>
-      ${t.dueDate ? `
-      <div class="meta-item">
-        <span class="meta-label">📅 التسليم</span>
-        <span class="meta-value" style="${isOverdue ? 'color:var(--urgent);' : ''}">${esc(dueLabel(t.dueDate))}</span>
-      </div>` : ""}
-      <div class="meta-item">
-        <span class="meta-label">✏️ آخر تعديل</span>
-        <span class="meta-value">${t.updatedByName ? esc(t.updatedByName) : "—"}</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">🆕 أُنشئت</span>
-        <span class="meta-value">${formatDate(t.createdAt)}</span>
-      </div>
+      <div class="meta-item"><span class="meta-label">👤 المسؤول</span><span class="meta-value">${esc(t.assignee || "—")}</span></div>
+      ${t.dueDate ? `<div class="meta-item"><span class="meta-label">📅 التسليم</span><span class="meta-value" style="${isOverdue ? 'color:var(--urgent);' : ''}">${esc(dueLabel(t.dueDate))}</span></div>` : ""}
+      <div class="meta-item"><span class="meta-label">✏️ آخر تعديل</span><span class="meta-value">${t.updatedByName ? esc(t.updatedByName) : "—"}</span></div>
+      <div class="meta-item"><span class="meta-label">🆕 أُنشئت</span><span class="meta-value">${formatDate(t.createdAt)}</span></div>
     </div>
-    ${t.notes ? `
-    <div class="modal-section">
-      <div class="modal-section-title">📝 ملاحظات</div>
-      <div class="modal-notes">${esc(t.notes)}</div>
-    </div>` : ""}
+    ${t.notes ? `<div class="modal-section"><div class="modal-section-title">📝 ملاحظات</div><div class="modal-notes">${esc(t.notes)}</div></div>` : ""}
     <div class="modal-section">
       <div class="modal-section-title">💬 التعليقات (${comments.length})</div>
       <div class="modal-comments-list">${commentsHtml}</div>
@@ -2658,8 +1854,7 @@ function renderModal(taskId) {
       </select>
       ${state.isAdmin ? `
         <button class="btn-edit" data-action="edit-task" data-id="${taskId}">✏️ تعديل</button>
-        <button class="btn-edit" style="background:linear-gradient(135deg,#f5a524,#d97706);color:#fff;"
-                data-action="reassign-task" data-id="${taskId}">👤 تغيير المسؤول</button>
+        <button class="btn-edit" style="background:linear-gradient(135deg,#f5a524,#d97706);color:#fff;" data-action="reassign-task" data-id="${taskId}">👤 تغيير المسؤول</button>
         <button class="btn-del" data-action="delete-task" data-id="${taskId}">🗑️ حذف</button>
       ` : ""}
     </div>`;
@@ -2674,39 +1869,29 @@ async function changeStatus(taskId, newStatus) {
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), {
       status: newStatus, updatedAt: Date.now(),
-      updatedBy: state.user.uid,
-      updatedByName: state.profile.displayName
+      updatedBy: state.user.uid, updatedByName: state.profile.displayName
     }));
     await logActivity("status_changed", `غيّر حالة "${t.title}" إلى ${newStatus}`, taskId, t.title);
     showToast(`🔄 الحالة: ${newStatus}`, 'info');
   } catch { showToast('⚠️ سيُعاد الحفظ', 'warning'); }
 }
-
 async function quickReassign(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.tasks[taskId];
   if (!t) return;
   const seen = new Set();
   const teamOptions = Object.entries(state.team)
-    .filter(([_, m]) => {
-      if (!m || !m.name || !m.uid) return false;
-      if (seen.has(m.uid)) return false;
-      seen.add(m.uid); return true;
-    })
+    .filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; })
     .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .map(([id, m]) => `<option value="${esc(id)}" ${t.assigneeId === id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
-
   const { value: newId } = await Swal.fire({
     title: "👤 تغيير المسؤول",
     html: `<div style="display:flex;flex-direction:column;gap:12px;text-align:right;direction:rtl;">
       <p style="color:#94a3b8;font-size:13px;font-weight:600;">المهمة: <b>${esc(t.title)}</b></p>
-      <select id="swal-new-assignee" class="swal2-select" style="margin:0;width:100%;">
-        <option value="">-- اختر --</option>${teamOptions}
-      </select>
+      <select id="swal-new-assignee" class="swal2-select" style="margin:0;width:100%;"><option value="">-- اختر --</option>${teamOptions}</select>
     </div>`,
     showCancelButton: true, confirmButtonText: "تغيير", cancelButtonText: "إلغاء",
-    confirmButtonColor: "#f5a524", background: themeBg(), color: themeFg(),
-    focusConfirm: false,
+    confirmButtonColor: "#f5a524", background: themeBg(), color: themeFg(), focusConfirm: false,
     preConfirm: () => {
       const v = document.getElementById("swal-new-assignee").value;
       if (!v) { Swal.showValidationMessage("اختر المسؤول"); return false; }
@@ -2719,16 +1904,13 @@ async function quickReassign(taskId) {
   if (!m) return swalError("عضو غير موجود");
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), {
-      assigneeId: newId, assignee: m.name,
-      updatedAt: Date.now(),
-      updatedBy: state.user.uid,
-      updatedByName: state.profile.displayName
+      assigneeId: newId, assignee: m.name, updatedAt: Date.now(),
+      updatedBy: state.user.uid, updatedByName: state.profile.displayName
     }));
     await logActivity("task_reassigned", `أعاد إسناد "${t.title}" إلى ${m.name}`, taskId, t.title);
     showToast(`✅ تم الإسناد`, 'success');
   } catch (err) { swalError("فشل", err.message); }
 }
-
 async function deleteTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.tasks[taskId];
@@ -2737,9 +1919,7 @@ async function deleteTask(taskId) {
   if (!r.isConfirmed) return;
   try {
     await safeWrite(() => set(ref(db, "deleted_tasks/" + taskId), {
-      ...t, deletedAt: Date.now(),
-      deletedBy: state.user.uid,
-      deletedByName: state.profile.displayName
+      ...t, deletedAt: Date.now(), deletedBy: state.user.uid, deletedByName: state.profile.displayName
     }));
     await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
     await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId, t.title);
@@ -2747,43 +1927,33 @@ async function deleteTask(taskId) {
     showToast('🗑️ تم الحذف', 'success');
   } catch (err) { swalError("فشل", err.message); }
 }
-
 async function editTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.tasks[taskId];
   if (!t) return;
   const seen = new Set();
   const teamOptions = Object.entries(state.team)
-    .filter(([_, m]) => {
-      if (!m || !m.name || !m.uid) return false;
-      if (seen.has(m.uid)) return false;
-      seen.add(m.uid); return true;
-    })
+    .filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; })
     .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .map(([id, m]) => `<option value="${esc(id)}" ${t.assigneeId === id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
-
   const { value: formValues } = await Swal.fire({
     title: "✏️ تعديل المهمة", width: 640,
     html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
       <label style="font-size:12px;font-weight:800;color:#94a3b8;">العنوان *</label>
       <input id="swal-title" class="swal2-input" value="${esc(t.title)}" style="margin:0;width:100%;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div><label style="font-size:12px;font-weight:800;color:#94a3b8;">المسؤول *</label>
-          <select id="swal-assignee" class="swal2-select" style="margin:0;width:100%;">${teamOptions}</select></div>
-        <div><label style="font-size:12px;font-weight:800;color:#94a3b8;">الأولوية</label>
-          <select id="swal-priority" class="swal2-select" style="margin:0;width:100%;">
-            <option value="عادي" ${t.priority==="عادي"?"selected":""}>🟢 عادي</option>
-            <option value="مهم" ${t.priority==="مهم"?"selected":""}>🟡 مهم</option>
-            <option value="عاجل" ${t.priority==="عاجل"?"selected":""}>🔴 عاجل</option>
-          </select></div>
-        <div><label style="font-size:12px;font-weight:800;color:#94a3b8;">الحالة</label>
-          <select id="swal-status" class="swal2-select" style="margin:0;width:100%;">
-            <option value="جديدة" ${t.status==="جديدة"?"selected":""}>🆕 جديدة</option>
-            <option value="جاري التنفيذ" ${t.status==="جاري التنفيذ"?"selected":""}>⏳ جاري التنفيذ</option>
-            <option value="مكتملة" ${t.status==="مكتملة"?"selected":""}>✅ مكتملة</option>
-          </select></div>
-        <div><label style="font-size:12px;font-weight:800;color:#94a3b8;">تاريخ التسليم</label>
-          <input id="swal-due" type="date" class="swal2-input" value="${t.dueDate||""}" style="margin:0;width:100%;"></div>
+        <div><label style="font-size:12px;font-weight:800;color:#94a3b8;">المسؤول *</label><select id="swal-assignee" class="swal2-select" style="margin:0;width:100%;">${teamOptions}</select></div>
+        <div><label style="font-size:12px;font-weight:800;color:#94a3b8;">الأولوية</label><select id="swal-priority" class="swal2-select" style="margin:0;width:100%;">
+          <option value="عادي" ${t.priority==="عادي"?"selected":""}>🟢 عادي</option>
+          <option value="مهم" ${t.priority==="مهم"?"selected":""}>🟡 مهم</option>
+          <option value="عاجل" ${t.priority==="عاجل"?"selected":""}>🔴 عاجل</option>
+        </select></div>
+        <div><label style="font-size:12px;font-weight:800;color:#94a3b8;">الحالة</label><select id="swal-status" class="swal2-select" style="margin:0;width:100%;">
+          <option value="جديدة" ${t.status==="جديدة"?"selected":""}>🆕 جديدة</option>
+          <option value="جاري التنفيذ" ${t.status==="جاري التنفيذ"?"selected":""}>⏳ جاري</option>
+          <option value="مكتملة" ${t.status==="مكتملة"?"selected":""}>✅ مكتملة</option>
+        </select></div>
+        <div><label style="font-size:12px;font-weight:800;color:#94a3b8;">تاريخ التسليم</label><input id="swal-due" type="date" class="swal2-input" value="${t.dueDate||""}" style="margin:0;width:100%;"></div>
       </div>
       <label style="font-size:12px;font-weight:800;color:#94a3b8;">الوسوم</label>
       <input id="swal-tags" class="swal2-input" value="${esc(t.tags||"")}" style="margin:0;width:100%;">
@@ -2791,8 +1961,7 @@ async function editTask(taskId) {
       <textarea id="swal-notes" class="swal2-textarea" style="margin:0;width:100%;min-height:80px;">${esc(t.notes||"")}</textarea>
     </div>`,
     showCancelButton: true, confirmButtonText: "💾 حفظ", cancelButtonText: "إلغاء",
-    confirmButtonColor: "#5b8def", background: themeBg(), color: themeFg(),
-    focusConfirm: false,
+    confirmButtonColor: "#5b8def", background: themeBg(), color: themeFg(), focusConfirm: false,
     preConfirm: () => {
       const title = document.getElementById("swal-title").value.trim();
       if (!title) { Swal.showValidationMessage("العنوان مطلوب"); return false; }
@@ -2813,16 +1982,13 @@ async function editTask(taskId) {
   if (!m) return swalError("بيانات ناقصة");
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), {
-      ...formValues, assignee: m.name,
-      updatedAt: Date.now(),
-      updatedBy: state.user.uid,
-      updatedByName: state.profile.displayName
+      ...formValues, assignee: m.name, updatedAt: Date.now(),
+      updatedBy: state.user.uid, updatedByName: state.profile.displayName
     }));
     await logActivity("task_edited", `عدّل "${formValues.title}"`, taskId, formValues.title);
     showToast("✏️ تم الحفظ", 'success');
   } catch (err) { swalError("فشل", err.message); }
 }
-
 async function addComment(taskId) {
   const input = document.getElementById("modal-comment-input");
   if (!input) return;
@@ -2836,9 +2002,7 @@ async function addComment(taskId) {
         authorId: state.user.uid, createdAt: Date.now()
       });
       await update(ref(db, "tasks/" + taskId), {
-        updatedAt: Date.now(),
-        updatedBy: state.user.uid,
-        updatedByName: state.profile.displayName
+        updatedAt: Date.now(), updatedBy: state.user.uid, updatedByName: state.profile.displayName
       });
     });
     await logActivity("comment_added", `علّق على "${t?.title}"`, taskId, t?.title);
@@ -2846,7 +2010,6 @@ async function addComment(taskId) {
     showToast("💬 تم", 'success');
   } catch (err) { swalError("فشل", err.message); }
 }
-
 function togglePin(taskId) {
   if (state.pinnedTaskId === taskId) {
     state.pinnedTaskId = null;
@@ -2860,40 +2023,26 @@ function togglePin(taskId) {
   renderTasks();
   if (state.openTaskId === taskId) renderModal(taskId);
 }
-
 async function logActivity(type, text, taskId = null, taskTitle = "") {
   if (!state.user) return;
   try {
     await push(ref(db, "activity"), {
       type, text, taskId, taskTitle,
-      uid: state.user.uid,
-      byName: state.profile?.displayName || "—",
-      at: Date.now()
+      uid: state.user.uid, byName: state.profile?.displayName || "—", at: Date.now()
     });
   } catch {}
 }
 
 /* ============================================================
-   WATCH — RENDER FUNCTIONS
+   WATCH — RENDER
    ============================================================ */
-function getTaskProgress(t) {
-  if (!t) return 0;
-  if (t.status === CONSTANTS.STATUS.DONE) return 100;
-  const c = t.comments ? Object.keys(t.comments).length : 0;
-  if (t.status === CONSTANTS.STATUS.PROGRESS) return Math.min(90, 50 + c * 10);
-  return Math.min(30, 10 + c * 5);
-}
-
 function wRenderStats() {
   const tasks = Object.values(state.watchData.tasks || {});
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   const active = tasks.filter(t => t.status === CONSTANTS.STATUS.NEW).length;
   const working = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
   const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
-  const urgent = tasks.filter(t =>
-    t.status !== CONSTANTS.STATUS.DONE &&
-    (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)
-  ).length;
+  const urgent = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)).length;
   set("wTotal", tasks.length);
   set("wActive", active);
   set("wWorking", working);
@@ -2901,41 +2050,24 @@ function wRenderStats() {
   set("wTabAllCount", tasks.length);
   set("wTabUrgentCount", urgent);
   set("wTabWorkingCount", working);
-  set("wTabDoneCount", done);
 }
-
 function wRenderCompleted() {
   const wrap = document.getElementById("wCompletedList");
-  const countEl = document.getElementById("wCompletedCount");
   if (!wrap) return;
   const completed = Object.entries(state.watchData.tasks || {})
     .filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE)
     .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0))
-    .slice(0, 12);
-  if (countEl) countEl.textContent = completed.length;
+    .slice(0, 10);
   if (completed.length === 0) {
-    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;">
-      <div class="w-empty-icon" style="font-size:32px;">🎉</div>
-      <div class="w-empty-text" style="font-size:11px;">لا توجد مهام مكتملة</div>
-    </div>`;
+    wrap.innerHTML = '<span style="color:#64748b;font-size:12px;font-weight:700;">لا توجد مهام مكتملة بعد</span>';
     return;
   }
-  const fragment = document.createDocumentFragment();
-  completed.forEach(([id, t]) => {
-    const card = document.createElement('div');
-    card.className = 'w-completed-card';
-    card.dataset.taskId = id;
-    card.innerHTML = `
-      <div class="w-completed-title">${esc(t.title)}</div>
-      <div class="w-completed-meta">
-        <span style="color:var(--text);font-weight:800;">👤 ${esc(t.assignee || "—")}</span>
-        <span class="w-completed-time">✓ ${timeAgo(t.updatedAt)}</span>
-      </div>`;
-    fragment.appendChild(card);
-  });
-  wrap.replaceChildren(fragment);
+  wrap.innerHTML = completed.map(([id, t]) => `
+    <div class="w-recent-item" data-task-id="${id}" style="cursor:pointer;">
+      ${esc(t.title)}
+      <em>${esc(t.assignee || "—")} · ${timeAgo(t.updatedAt)}</em>
+    </div>`).join("");
 }
-
 function wRenderDoughnut() {
   const tasks = Object.values(state.watchData.tasks || {});
   const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
@@ -2945,35 +2077,23 @@ function wRenderDoughnut() {
   const donePercent = total > 0 ? Math.round((done / total) * 100) : 0;
   const pctEl = document.getElementById("wDonePercent");
   if (pctEl) pctEl.textContent = donePercent + "%";
-
   Charts.upsert('watchDoughnutChart', {
     type: 'doughnut',
     data: {
       labels: ["مكتملة","جارية","جديدة"],
-      datasets: [{
-        data: [done, working, newT],
-        backgroundColor: ["#2dd4a3","#f5a524","#5b8def"],
-        borderColor: state.theme === 'light' ? '#ffffff' : '#050810',
-        borderWidth: 4, hoverOffset: 12
-      }]
+      datasets: [{ data: [done, working, newT], backgroundColor: ["#2dd4a3","#f5a524","#5b8def"], borderColor: "#050810", borderWidth: 4, hoverOffset: 8 }]
     },
     options: {
       cutout: '68%',
       plugins: {
         legend: {
           position: 'bottom',
-          labels: {
-            color: state.theme === 'light' ? '#475569' : '#94a3b8',
-            font: { family: 'Cairo', size: 11, weight: '700' },
-            padding: 12, usePointStyle: true,
-            pointStyle: 'circle', boxWidth: 10, boxHeight: 10
-          }
+          labels: { color: '#94a3b8', font: { family: 'Cairo', size: 11, weight: '700' }, padding: 10, usePointStyle: true, pointStyle: 'circle', boxWidth: 8, boxHeight: 8 }
         }
       }
     }
   });
 }
-
 function wRenderTopPerformers() {
   const wrap = document.getElementById("wTopPerformers");
   const countEl = document.getElementById("wTopCount");
@@ -2985,108 +2105,53 @@ function wRenderTopPerformers() {
       performers[t.assigneeId].count++;
     }
   });
-  const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 8);
+  const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 6);
   if (countEl) countEl.textContent = sorted.length;
   if (sorted.length === 0) {
-    wrap.innerHTML = `<div class="w-empty-state" style="padding:20px;">
-      <div class="w-empty-icon" style="font-size:32px;">🏆</div>
-      <div class="w-empty-text" style="font-size:11px;">لا توجد إنجازات</div>
-    </div>`;
+    wrap.innerHTML = '<div class="w-empty-state" style="padding:20px;"><div style="font-size:32px;">🏆</div><div style="font-size:11px;">لا توجد إنجازات</div></div>';
     return;
   }
-  const fragment = document.createDocumentFragment();
-  sorted.forEach(([uid, p], i) => {
+  wrap.innerHTML = sorted.map(([uid, p], i) => {
     const rankClass = i === 0 ? "r1" : i === 1 ? "r2" : i === 2 ? "r3" : "rx";
     const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
-    const el = document.createElement('div');
-    el.className = 'w-top-item';
-    el.innerHTML = `
+    return `<div class="w-top-item">
       <div class="w-top-rank ${rankClass}">${medal}</div>
       <div class="w-top-avatar">${esc(p.name.charAt(0))}</div>
       <div class="w-top-info">
-        <div class="w-top-name">${esc(p.name)}</div>
-        <div class="w-top-count">${p.count} مهمة مكتملة</div>
+        <strong>${esc(p.name)}</strong>
+        <small>${p.count} مهمة مكتملة</small>
       </div>
-      <div class="w-top-score">${p.count}</div>`;
-    fragment.appendChild(el);
-  });
-  wrap.replaceChildren(fragment);
+      <div class="w-top-score">${p.count}</div>
+    </div>`;
+  }).join("");
 }
-
-function wRenderLineChart() {
-  const tasks = Object.values(state.watchData.tasks || {});
-  const days = [], counts = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const key = d.toDateString();
-    days.push(d.toLocaleDateString("ar-EG", { weekday: "short" }));
-    counts.push(tasks.filter(t => t.status === CONSTANTS.STATUS.DONE && new Date(t.updatedAt || 0).toDateString() === key).length);
-  }
-  Charts.upsert('watchLineChart', {
-    type: 'line',
-    data: {
-      labels: days,
-      datasets: [{
-        label: "مكتملة",
-        data: counts,
-        borderColor: "#2dd4a3",
-        backgroundColor: "rgba(45,212,163,.15)",
-        borderWidth: 3, tension: 0.4, fill: true,
-        pointRadius: 4, pointBackgroundColor: "#2dd4a3", pointBorderColor: "#fff", pointBorderWidth: 2
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1, color: "#64748b" },
-             grid: { color: state.theme === 'light' ? 'rgba(15,23,42,.06)' : 'rgba(255,255,255,.05)' } },
-        x: { ticks: { color: "#64748b" }, grid: { display: false } }
-      }
-    }
-  });
-}
-
 function wTaskRowHtml(id, t, index = 0) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-  const pc = t.priority === "عاجل" ? "urgent"
-    : t.priority === "مهم" ? "important" : "normal";
+  const pc = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const isDone = t.status === CONSTANTS.STATUS.DONE;
   const isUrgentActive = t.priority === "عاجل" && !isDone;
   const statusClass = t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : isDone ? "done" : "new";
-  const progress = getTaskProgress(t);
-  const statusLabel = t.status === CONSTANTS.STATUS.NEW ? "جديدة"
-    : t.status === CONSTANTS.STATUS.PROGRESS ? "جارية" : "مكتملة";
+  const statusLabel = t.status === CONSTANTS.STATUS.NEW ? "جديدة" : t.status === CONSTANTS.STATUS.PROGRESS ? "جارية" : "مكتملة";
   const urgentClass = isUrgentActive ? "urgent-highlight" : "";
-  return `<article class="w-task-row ${pc} ${urgentClass} ${isOverdue ? 'overdue' : ''} ${isDone ? 'done-task' : ''}"
-                   data-task-id="${esc(id)}" style="animation-delay:${index * 30}ms" tabindex="0" role="button">
+  const dueText = t.dueDate ? dueLabel(t.dueDate) : "—";
+  return `<article class="w-task-row p-${pc} ${urgentClass} ${isOverdue ? 'overdue' : ''}"
+                   data-task-id="${esc(id)}" style="animation-delay:${index * 20}ms" tabindex="0" role="button">
     <div class="w-task-bar"></div>
     <div class="w-task-priority ${pc}">
       ${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}
     </div>
     <div class="w-task-title" title="${esc(t.title)}">${esc(t.title)}</div>
-    <div class="w-task-assignee">👤 ${esc(t.assignee || "—")}</div>
-    <div class="w-task-due ${isOverdue ? 'overdue' : ''}">
-      📅 ${esc(dueLabel(t.dueDate) || "—")}
-    </div>
-    <div class="w-task-progress-wrap">
-      <div class="w-task-progress-bar">
-        <div class="w-task-progress-fill" style="width:${progress}%"></div>
-      </div>
-      <div class="w-task-progress-text">${progress}%</div>
-    </div>
+    <div class="w-task-assignee">👤 ${esc(t.assignee || "—")}${t.dueDate ? ` · 📅 ${esc(dueText)}` : ""}</div>
     <div class="w-task-status ${statusClass}">${statusLabel}</div>
   </article>`;
 }
-
 function wRenderTasks() {
   const body = document.getElementById("wMainBody");
   if (!body) return;
   const allTasks = Object.entries(state.watchData.tasks || {});
   let filtered = [];
   const tab = state.watchTab;
-
   if (tab === "all") {
     filtered = allTasks.sort((a, b) => {
       const aUrgent = a[1].priority === "عاجل" && a[1].status !== CONSTANTS.STATUS.DONE;
@@ -3101,49 +2166,33 @@ function wRenderTasks() {
       return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
     });
   } else if (tab === "urgent") {
-    filtered = allTasks.filter(([_, t]) =>
-      t.status !== CONSTANTS.STATUS.DONE &&
-      (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)
-    );
+    filtered = allTasks.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
   } else if (tab === "working") {
     filtered = allTasks.filter(([_, t]) => t.status === CONSTANTS.STATUS.PROGRESS);
   } else if (tab === "done") {
-    filtered = allTasks
-      .filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE)
-      .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0))
-      .slice(0, 20);
+    filtered = allTasks.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE).sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)).slice(0, 20);
   }
-
   if (filtered.length === 0) {
     body.classList.remove("auto-scroll");
     state.scroller?.destroy?.();
     state.scroller = null;
-    body.innerHTML = `<div class="w-empty-state">
-      <div class="w-empty-icon">📭</div>
-      <div class="w-empty-text">لا توجد مهام</div>
-    </div>`;
+    body.innerHTML = '<div class="w-empty-state"><div>📭</div><div>لا توجد مهام</div></div>';
     return;
   }
-
   const html = filtered.map(([id, t], i) => wTaskRowHtml(id, t, i)).join("");
-
-  if (filtered.length > 3) {
-    body.classList.add("auto-scroll");
+  if (filtered.length > 4) {
     body.innerHTML = `<div class="w-scroll-track">${html}${html}</div>`;
     const track = body.querySelector('.w-scroll-track');
     state.scroller?.destroy?.();
     const scroller = new SmoothAutoScroller(body, track);
-    scroller.updateDuration(filtered.length * 90);
     scroller.start();
     state.scroller = scroller;
   } else {
-    body.classList.remove("auto-scroll");
     state.scroller?.destroy?.();
     state.scroller = null;
     body.innerHTML = `<div class="w-scroll-track">${html}</div>`;
   }
 }
-
 function wRenderNewsTicker() {
   const track = document.getElementById("wNewsTrack");
   if (!track) return;
@@ -3152,19 +2201,12 @@ function wRenderNewsTicker() {
   const urgentTasks = tasks
     .filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عاجل")
     .sort((a, b) => (daysRemaining(a.dueDate) ?? 999) - (daysRemaining(b.dueDate) ?? 999))
-    .slice(0, 4);
+    .slice(0, 3);
   urgentTasks.forEach(t => {
-    const dueText = t.dueDate ? ` — ${dueLabel(t.dueDate)}` : "";
-    items.push(`🔴 عاجل: ${t.title}${dueText} (${t.assignee || "—"})`);
+    items.push(`🔴 عاجل: ${t.title}${t.dueDate ? ` — ${dueLabel(t.dueDate)}` : ""}`);
   });
-  const overdue = tasks.filter(t => {
-    const d = daysRemaining(t.dueDate);
-    return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-  }).length;
-  const today = tasks.filter(t => {
-    const d = daysRemaining(t.dueDate);
-    return d === 0 && t.status !== CONSTANTS.STATUS.DONE;
-  }).length;
+  const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
+  const today = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
   const doneWeek = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE && isThisWeek(t.updatedAt)).length;
   if (overdue > 0) items.push(`⚠️ ${overdue} مهمة متأخرة`);
   if (today > 0) items.push(`🔥 ${today} مهمة تستحق اليوم`);
@@ -3173,22 +2215,17 @@ function wRenderNewsTicker() {
     .filter(a => a.type !== 'task_deleted' && a.type !== 'task_cleared')
     .slice(0, 3)
     .forEach(a => items.push(`📌 ${a.byName || "—"}: ${a.text}`));
-  if (items.length === 0) {
-    items.push("مرحباً بكم — EMAK IT Dep.");
-    items.push("📊 يتم التحديث تلقائياً كل لحظة");
-  }
+  if (items.length === 0) items.push("مرحباً بكم — EMAK IT Dep.");
   const signature = items.join("|");
   if (track._signature === signature) return;
   track._signature = signature;
   track.innerHTML = items.map(t => `<span>${esc(t)}</span>`).join("");
 }
-
 function wRenderAll() {
   wRenderStats();
   wRenderCompleted();
   wRenderDoughnut();
   wRenderTopPerformers();
-  wRenderLineChart();
   wRenderTasks();
   wRenderNewsTicker();
 }
@@ -3220,13 +2257,11 @@ function startWatchClock() {
 function stopWatchClock() { if (_clockTimer) { clearInterval(_clockTimer); _clockTimer = null; } }
 
 /* ============================================================
-   WATCH SCREEN — OPEN/CLOSE/DATA
+   WATCH — OPEN/CLOSE/DATA
    ============================================================ */
 async function promptWatchPassword() {
   const session = Storage.get('emak_watch_session');
-  if (session && Date.now() - session.at < CONSTANTS.WATCH_SESSION_DURATION) {
-    return openWatchScreen();
-  }
+  if (session && Date.now() - session.at < CONSTANTS.WATCH_SESSION_DURATION) return openWatchScreen();
   const { value: password } = await Swal.fire({
     title: "🖥️ شاشة العرض",
     html: `<div style="text-align:center;direction:rtl;">
@@ -3241,9 +2276,7 @@ async function promptWatchPassword() {
       const inp = document.getElementById("watch-pass-input");
       if (inp) {
         inp.focus();
-        inp.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); }
-        });
+        inp.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); } });
       }
     },
     preConfirm: () => {
@@ -3259,12 +2292,10 @@ async function promptWatchPassword() {
     openWatchScreen();
   }
 }
-
 async function openWatchScreen() {
   state.watchMode = true;
   $('#watchScreen').classList.add('active');
   document.body.style.overflow = 'hidden';
-
   const session = Storage.get('emak_watch_session');
   if (session && Date.now() - session.at < CONSTANTS.WATCH_SESSION_DURATION) {
     $('#watchPinScreen').style.display = 'none';
@@ -3276,7 +2307,6 @@ async function openWatchScreen() {
     setTimeout(() => $('#watchPinInput')?.focus(), 200);
   }
 }
-
 function closeWatchScreen() {
   state.watchMode = false;
   $('#watchScreen').classList.remove('active');
@@ -3286,20 +2316,14 @@ function closeWatchScreen() {
   stopWatchData();
   if (document.fullscreenElement) document.exitFullscreen?.();
 }
-
 function toggleKioskMode() {
   document.body.classList.toggle('watch-kiosk');
   const isKiosk = document.body.classList.contains('watch-kiosk');
   showToast(isKiosk ? "🖥️ وضع كامل" : "↩️ الوضع العادي", 'info');
-  setTimeout(() => Charts.upsert('watchDoughnutChart', state.charts.get('watchDoughnutChart')?.data ? {
-    type: 'doughnut', data: state.charts.get('watchDoughnutChart').data, options: {}
-  } : {}), 350);
 }
-
 async function startWatchData() {
   if (!auth.currentUser) { try { await signInAnonymously(auth); } catch {} }
   startWatchClock();
-
   $$('.w-tab').forEach(tab => {
     tab.onclick = () => {
       $$('.w-tab').forEach(t => t.classList.remove('active'));
@@ -3308,23 +2332,18 @@ async function startWatchData() {
       wRenderTasks();
     };
   });
-
   Object.keys(state.watchUnsubs).forEach(k => {
     if (state.watchUnsubs[k]) { try { state.watchUnsubs[k](); } catch {} state.watchUnsubs[k] = null; }
   });
-
   state.watchFirstLoad = false;
   state.watchKnownTaskIds = new Set();
-
   state.watchUnsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
     state.watchData.tasks = snap.val() || {};
     if (state.watchFirstLoad) {
       Object.entries(state.watchData.tasks).forEach(([id, task]) => {
         if (!state.watchKnownTaskIds.has(id)) {
           state.watchKnownTaskIds.add(id);
-          if (task.priority === "عاجل" || task.priority === "مهم") {
-            showWatchSubNotification(task);
-          }
+          if (task.priority === "عاجل" || task.priority === "مهم") showWatchSubNotification(task);
         }
       });
     } else {
@@ -3334,21 +2353,15 @@ async function startWatchData() {
     state.watchKnownTaskIds = new Set([...state.watchKnownTaskIds].filter(id => state.watchData.tasks[id]));
     if (state.watchMode) wRenderAll();
   });
-
-  state.watchUnsubs.team = onValue(ref(db, "team"), (snap) => {
-    state.watchData.team = snap.val() || {};
-  });
-
+  state.watchUnsubs.team = onValue(ref(db, "team"), (snap) => { state.watchData.team = snap.val() || {}; });
   state.watchUnsubs.activity = onValue(ref(db, "activity"), (snap) => {
     const raw = snap.val() || {};
     state.watchData.activity = Object.entries(raw).map(([id, a]) => ({ id, ...a }))
       .sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 30);
     if (state.watchMode) wRenderNewsTicker();
   });
-
   wRenderAll();
 }
-
 function stopWatchData() {
   Object.keys(state.watchUnsubs).forEach(k => {
     if (state.watchUnsubs[k]) { try { state.watchUnsubs[k](); } catch {} state.watchUnsubs[k] = null; }
@@ -3358,7 +2371,7 @@ function stopWatchData() {
 }
 
 /* ============================================================
-   USERS RENDER
+   USERS
    ============================================================ */
 function renderUsersStats() {
   const users = Object.values(state.users);
@@ -3368,7 +2381,6 @@ function renderUsersStats() {
   set("usersStatAdmin", users.filter(u => u.role === "admin").length);
   set("usersStatInactive", users.filter(u => u.active === false).length);
 }
-
 function renderUsersList() {
   if (!state.isAdmin) return;
   const wrap = $("#usersList");
@@ -3381,18 +2393,13 @@ function renderUsersList() {
     if (seen.has(key)) return false;
     seen.add(key); return true;
   });
-  if (state.usersSearch) {
-    users = users.filter(([uid, u]) => {
-      const hay = `${u.displayName || ""} ${u.name || ""} ${u.username || ""} ${u.email || ""}`.toLowerCase();
-      return hay.includes(state.usersSearch);
-    });
-  }
+  if (state.usersSearch) users = users.filter(([uid, u]) => {
+    const hay = `${u.displayName || ""} ${u.name || ""} ${u.username || ""} ${u.email || ""}`.toLowerCase();
+    return hay.includes(state.usersSearch);
+  });
   if (state.usersRoleFilter !== "all") users = users.filter(([_, u]) => u.role === state.usersRoleFilter);
-  if (state.usersStatusFilter !== "all") {
-    users = users.filter(([_, u]) => state.usersStatusFilter === "active" ? u.active !== false : u.active === false);
-  }
+  if (state.usersStatusFilter !== "all") users = users.filter(([_, u]) => state.usersStatusFilter === "active" ? u.active !== false : u.active === false);
   if (users.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون</p>'; return; }
-
   wrap.innerHTML = users.map(([uid, u]) => {
     const isMe = uid === state.user.uid;
     const tasks = Object.values(state.tasks).filter(t => t.assigneeId === uid);
@@ -3419,45 +2426,12 @@ function renderUsersList() {
       <div class="user-actions">
         ${u.role !== "admin" ? `<button class="btn-sm primary" data-user-action="promote" data-uid="${uid}" title="ترقية">⬆️</button>` : ""}
         ${u.role === "admin" && !isMe ? `<button class="btn-sm" data-user-action="demote" data-uid="${uid}" title="إزالة الإدارة">⬇️</button>` : ""}
-        ${u.active !== false
-          ? `<button class="btn-sm warn" data-user-action="deactivate" data-uid="${uid}" title="تعطيل">⛔</button>`
-          : `<button class="btn-sm success" data-user-action="activate" data-uid="${uid}" title="تفعيل">✅</button>`}
+        ${u.active !== false ? `<button class="btn-sm warn" data-user-action="deactivate" data-uid="${uid}" title="تعطيل">⛔</button>` : `<button class="btn-sm success" data-user-action="activate" data-uid="${uid}" title="تفعيل">✅</button>`}
         ${!isMe ? `<button class="btn-sm danger" data-user-action="delete" data-uid="${uid}" title="حذف">🗑️</button>` : ""}
       </div>
     </div>`;
   }).join("");
 }
-
-/* ============================================================
-   ACTIVITY RENDER
-   ============================================================ */
-function renderActivity() {
-  const wrap = $("#activityList");
-  if (!wrap) return;
-  const events = state.activity
-    .filter(e => e.type !== "task_deleted" && e.type !== "task_cleared")
-    .slice(0, 100);
-  if (events.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد نشاط</p>'; return; }
-  const icons = {
-    task_created: "➕", task_edited: "✏️", status_changed: "🔄",
-    comment_added: "💬", user_created: "👤", user_promoted: "👑",
-    task_reassigned: "👤", password_changed: "🔑", history_cleared: "🗑️"
-  };
-  wrap.innerHTML = events.map(e => `
-    <div style="display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);">
-      <div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
-        ${icons[e.type] || "•"}
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div>
-        <div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;">
-          <span>${esc(e.byName || "—")}</span><span>•</span><span>${formatDateTime(e.at)}</span>
-        </div>
-      </div>
-    </div>
-  `).join("");
-}
-
 function updateActivityButtons() {
   const btnClear = $("#clearDeletedBtn");
   const btnPurge = $("#purgeDeletedBtn");
@@ -3467,8 +2441,30 @@ function updateActivityButtons() {
 }
 
 /* ============================================================
-   WATCH VIEW (timeline)
+   ACTIVITY
    ============================================================ */
+function renderActivity() {
+  const wrap = $("#activityList");
+  if (!wrap) return;
+  const events = state.activity.filter(e => e.type !== "task_deleted" && e.type !== "task_cleared").slice(0, 100);
+  if (events.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد نشاط</p>'; return; }
+  const icons = {
+    task_created: "➕", task_edited: "✏️", status_changed: "🔄",
+    comment_added: "💬", user_created: "👤", user_promoted: "👑",
+    task_reassigned: "👤", password_changed: "🔑", history_cleared: "🗑️"
+  };
+  wrap.innerHTML = events.map(e => `
+    <div style="display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);">
+      <div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[e.type] || "•"}</div>
+      <div style="flex:1;">
+        <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div>
+        <div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;">
+          <span>${esc(e.byName || "—")}</span><span>•</span><span>${formatDateTime(e.at)}</span>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
 function renderWatch() {
   const timeline = $("#watchTimeline");
   if (!timeline) return;
@@ -3481,9 +2477,7 @@ function renderWatch() {
   const icons = { task_created: "➕", task_edited: "✏️", task_deleted: "🗑️", status_changed: "🔄", comment_added: "💬" };
   timeline.innerHTML = events.map(e => `
     <div style="display:flex;gap:14px;padding:14px;border-radius:12px;background:var(--surface-1);margin-bottom:10px;">
-      <div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">
-        ${icons[e.type] || "•"}
-      </div>
+      <div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[e.type] || "•"}</div>
       <div style="flex:1;">
         <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div>
         <div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;">
@@ -3494,7 +2488,6 @@ function renderWatch() {
   `).join("");
   renderActiveTasks();
 }
-
 function renderActiveTasks() {
   const wrap = $("#activeTasksList");
   if (!wrap) return;
@@ -3510,7 +2503,7 @@ function renderActiveTasks() {
   wrap.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">' +
     active.map(([id, t]) => {
       const isOverdue = daysRemaining(t.dueDate) < 0 && t.status !== CONSTANTS.STATUS.DONE;
-      return `<div style="background:var(--surface-1);border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;transition:all .25s;" data-task-id="${id}">
+      return `<div style="background:var(--surface-1);border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;" data-task-id="${id}">
         <div style="font-size:14px;font-weight:800;margin-bottom:10px;">${esc(t.title)}</div>
         <div style="font-size:12px;color:var(--text-2);display:flex;justify-content:space-between;">
           <span>👤 ${esc(t.assignee || "—")}</span>
@@ -3527,24 +2520,17 @@ function openReport() {
   const entries = Object.entries(state.tasks);
   const done = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE);
   const progress = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.PROGRESS);
-  const overdue = entries.filter(([_, t]) => {
-    const d = daysRemaining(t.dueDate);
-    return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-  });
+  const overdue = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; });
   const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
   $("#reportBody").innerHTML = `
     <div class="report-content">
       <h1 style="color:#1e3a8a;font-size:30px;">EMAK IT Dep.</h1>
       <p style="color:#64748b;">تقرير المهام — ${today}</p>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:30px 0;">
-        <div style="background:#f1f5f9;padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #1e3a8a;">
-          <div style="font-size:28px;font-weight:900;color:#1e3a8a;">${entries.length}</div><div>إجمالي</div></div>
-        <div style="background:rgba(34,197,94,.08);padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #22c55e;">
-          <div style="font-size:28px;font-weight:900;color:#16a34a;">${done.length}</div><div>مكتملة</div></div>
-        <div style="background:rgba(245,158,11,.08);padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #f59e0b;">
-          <div style="font-size:28px;font-weight:900;color:#d97706;">${progress.length}</div><div>جارية</div></div>
-        <div style="background:rgba(220,38,38,.08);padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #dc2626;">
-          <div style="font-size:28px;font-weight:900;color:#dc2626;">${overdue.length}</div><div>متأخرة</div></div>
+        <div style="background:#f1f5f9;padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #1e3a8a;"><div style="font-size:28px;font-weight:900;color:#1e3a8a;">${entries.length}</div><div>إجمالي</div></div>
+        <div style="background:rgba(34,197,94,.08);padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #22c55e;"><div style="font-size:28px;font-weight:900;color:#16a34a;">${done.length}</div><div>مكتملة</div></div>
+        <div style="background:rgba(245,158,11,.08);padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #f59e0b;"><div style="font-size:28px;font-weight:900;color:#d97706;">${progress.length}</div><div>جارية</div></div>
+        <div style="background:rgba(220,38,38,.08);padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #dc2626;"><div style="font-size:28px;font-weight:900;color:#dc2626;">${overdue.length}</div><div>متأخرة</div></div>
       </div>
       <h2 style="color:#1e3a8a;font-size:19px;">جميع المهام</h2>
       ${entries.map(([id, t]) => `
@@ -3560,7 +2546,6 @@ function closeReport() {
   $("#reportOverlay").classList.remove("active");
   document.body.style.overflow = "";
 }
-
 async function downloadPDF() {
   const btn = $("#downloadPdfBtn");
   btn.disabled = true; btn.textContent = "⏳ جارٍ التوليد...";
@@ -3573,25 +2558,17 @@ async function downloadPDF() {
     const done = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE);
     const progress = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.PROGRESS);
     const newT = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.NEW);
-    const overdue = entries.filter(([_, t]) => {
-      const d = daysRemaining(t.dueDate);
-      return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-    });
+    const overdue = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; });
     const urgent = entries.filter(([_, t]) => t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE);
-
     pdf.setFillColor(30, 58, 138); pdf.rect(0, 0, pageW, 30, "F");
     pdf.setFillColor(45, 212, 163); pdf.rect(0, 30, pageW / 3, 2, "F");
     pdf.setFillColor(91, 141, 239); pdf.rect(pageW / 3, 30, pageW / 3, 2, "F");
     pdf.setFillColor(168, 85, 247); pdf.rect(2 * pageW / 3, 30, pageW / 3, 2, "F");
-
-    if (state.logoDataUrl) {
-      try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 22, 4, 22, 22); } catch {}
-    }
+    if (state.logoDataUrl) { try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 22, 4, 22, 22); } catch {} }
     pdf.setTextColor(255, 255, 255); pdf.setFontSize(22);
     pdf.text("EMAK IT Dep.", pageW - 45, 13, { align: "right" });
     pdf.setFontSize(11);
-    pdf.text("نظام إدارة المهام — قسم نظم المعلومات", pageW - 45, 21, { align: "right" });
-
+    pdf.text("نظام إدارة المهام", pageW - 45, 21, { align: "right" });
     y = 42;
     const today = new Date().toLocaleDateString("ar-EG", { year:"numeric", month:"long", day:"numeric" });
     const cardW = (pageW - 2 * margin - 12) / 4;
@@ -3611,10 +2588,6 @@ async function downloadPDF() {
       pdf.text(card.label, x + cardW / 2, y + 17, { align: "center" });
     });
     y += 32;
-    pdf.setTextColor(30, 58, 138); pdf.setFontSize(13); pdf.setFont("helvetica", "bold");
-    pdf.text(`عاجلة: ${urgent.length}  •  جديدة: ${newT.length}`, pageW - margin, y, { align: "right" });
-    y += 10;
-
     const writeSection = (title, tasks, color) => {
       if (tasks.length === 0) return;
       if (y > pageH - 40) { pdf.addPage(); y = margin; }
@@ -3638,24 +2611,18 @@ async function downloadPDF() {
         const title2 = t.title.length > 55 ? t.title.substring(0, 52) + "..." : t.title;
         pdf.text(title2, pageW - margin - 8, y + 6, { align: "right" });
         pdf.setFontSize(9); pdf.setTextColor(100, 116, 139); pdf.setFont("helvetica", "normal");
-        const statusText = t.status === CONSTANTS.STATUS.DONE ? "مكتملة ✓" : t.status;
-        const dueText = t.dueDate ? `  |  📅 ${isOverdue ? "متأخر " + Math.abs(d) + " يوم" : t.dueDate}` : "";
-        pdf.text(`👤 ${t.assignee || "—"}  |  ${t.priority || "عادي"}  |  ${statusText}${dueText}`,
-                 pageW - margin - 8, y + 13, { align: "right" });
-        if (lines.length > 0) {
-          pdf.setTextColor(71, 85, 105); pdf.setFontSize(8);
-          pdf.text(lines, pageW - margin - 8, y + 18, { align: "right" });
-        }
+        const statusText = t.status === CONSTANTS.STATUS.DONE ? "مكتملة" : t.status;
+        const dueText = t.dueDate ? `  |  ${isOverdue ? "متأخر " + Math.abs(d) + " يوم" : t.dueDate}` : "";
+        pdf.text(`${t.assignee || "—"}  |  ${t.priority || "عادي"}  |  ${statusText}${dueText}`, pageW - margin - 8, y + 13, { align: "right" });
         y += taskH + 3;
       });
       y += 6;
     };
-    writeSection("🔴 مهام عاجلة", urgent, [240, 75, 92]);
-    writeSection("⚠️ مهام متأخرة", overdue, [220, 38, 38]);
-    writeSection("⏳ مهام جارية", progress, [245, 165, 36]);
-    writeSection("🆕 مهام جديدة", newT, [91, 141, 239]);
-    writeSection("✅ مهام مكتملة", done.slice(0, 30), [45, 212, 163]);
-
+    writeSection("مهام عاجلة", urgent, [240, 75, 92]);
+    writeSection("مهام متأخرة", overdue, [220, 38, 38]);
+    writeSection("مهام جارية", progress, [245, 165, 36]);
+    writeSection("مهام جديدة", newT, [91, 141, 239]);
+    writeSection("مهام مكتملة", done.slice(0, 30), [45, 212, 163]);
     const totalPages = pdf.internal.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       pdf.setPage(i); pdf.setFontSize(8); pdf.setTextColor(148, 163, 184);
@@ -3670,12 +2637,9 @@ async function downloadPDF() {
     btn.textContent = "📄 تحميل PDF";
   }
 }
-
 function exportCSV() {
   const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم"]];
-  Object.values(state.tasks).forEach(t => {
-    rows.push([t.title || "", t.assignee || "", t.status || "", t.priority || "", t.dueDate || ""]);
-  });
+  Object.values(state.tasks).forEach(t => rows.push([t.title || "", t.assignee || "", t.status || "", t.priority || "", t.dueDate || ""]));
   const csv = "\uFEFF" + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob = new Blob([csv], { type:"text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -3706,8 +2670,7 @@ async function openAddUserModal() {
       </select>
     </div>`,
     showCancelButton:true, confirmButtonText:"إنشاء", cancelButtonText:"إلغاء",
-    confirmButtonColor:"#5b8def", focusConfirm:false,
-    background: themeBg(), color: themeFg(),
+    confirmButtonColor:"#5b8def", focusConfirm:false, background: themeBg(), color: themeFg(),
     preConfirm: () => {
       const username = document.getElementById("nu-username").value.trim().toLowerCase();
       const displayName = document.getElementById("nu-name").value.trim();
@@ -3730,10 +2693,7 @@ async function openAddUserModal() {
     const cred = await createUserWithEmailAndPassword(secondaryAuth, username + CONSTANTS.USERNAME_DOMAIN, password);
     const newUid = cred.user.uid;
     await signOut(secondaryAuth);
-    await set(ref(db, "users/" + newUid), {
-      username, displayName, email: username + CONSTANTS.USERNAME_DOMAIN,
-      role, active: true, createdAt: Date.now(), lastLogin: null
-    });
+    await set(ref(db, "users/" + newUid), { username, displayName, email: username + CONSTANTS.USERNAME_DOMAIN, role, active: true, createdAt: Date.now(), lastLogin: null });
     await set(ref(db, "usernames/" + username), { uid: newUid, createdAt: Date.now() });
     await push(ref(db, "team"), { uid: newUid, username, name: displayName, createdAt: Date.now() });
     await logActivity("user_created", `أنشأ مستخدم: ${displayName}`);
@@ -3743,8 +2703,7 @@ async function openAddUserModal() {
         <p><b>المستخدم:</b> <code>${esc(username)}</code></p>
         <p><b>كلمة المرور:</b> <code>${esc(password)}</code></p>
       </div>`,
-      confirmButtonText:"حسناً", confirmButtonColor:"#5b8def",
-      background: themeBg(), color: themeFg()
+      confirmButtonText:"حسناً", confirmButtonColor:"#5b8def", background: themeBg(), color: themeFg()
     });
   } catch (err) {
     const msgs = { "auth/email-already-in-use": "محجوز", "auth/weak-password": "ضعيفة" };
@@ -3753,17 +2712,12 @@ async function openAddUserModal() {
     if (secondaryApp) { try { await deleteApp(secondaryApp); } catch {} }
   }
 }
-
 async function openTeamModal() {
   if (!state.isAdmin) return;
   const teamSnap = await get(ref(db, "team"));
   const team = teamSnap.val() || {};
   const seen = new Set();
-  const unique = Object.entries(team).filter(([id, m]) => {
-    if (!m || !m.uid) return false;
-    if (seen.has(m.uid)) return false;
-    seen.add(m.uid); return true;
-  });
+  const unique = Object.entries(team).filter(([id, m]) => { if (!m || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; });
   const html = unique.map(([id, m]) => `
     <div style="display:flex;align-items:center;gap:12px;padding:12px;background:${state.theme === 'light' ? '#f1f5f9' : '#181d2e'};border-radius:12px;margin-bottom:8px;">
       <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;">${esc((m.name || "?").charAt(0))}</div>
@@ -3788,16 +2742,10 @@ async function openTeamModal() {
     }
   });
 }
-
 async function openChangePasswordModal() {
   if (!state.user) return;
   const isGoogleUser = state.user.providerData.some(p => p.providerId === "google.com");
-  if (isGoogleUser) {
-    return Swal.fire({
-      icon:"info", title:"حساب جوجل", text:"كلمة المرور من جوجل.",
-      confirmButtonText:"حسناً", background: themeBg(), color: themeFg()
-    });
-  }
+  if (isGoogleUser) return Swal.fire({ icon:"info", title:"حساب جوجل", text:"كلمة المرور من جوجل.", confirmButtonText:"حسناً", background: themeBg(), color: themeFg() });
   const { value: formValues } = await Swal.fire({
     title: "🔑 كلمة المرور",
     html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
@@ -3809,8 +2757,7 @@ async function openChangePasswordModal() {
       <input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;">
     </div>`,
     showCancelButton:true, confirmButtonText:"تغيير", cancelButtonText:"إلغاء",
-    confirmButtonColor:"#5b8def", focusConfirm:false,
-    background: themeBg(), color: themeFg(),
+    confirmButtonColor:"#5b8def", focusConfirm:false, background: themeBg(), color: themeFg(),
     preConfirm: () => {
       const cur = document.getElementById("cp-current").value;
       const nw = document.getElementById("cp-new").value;
@@ -3829,59 +2776,49 @@ async function openChangePasswordModal() {
     swalSuccess("✅ تم التغيير");
   } catch (err) { swalError("فشل", err.message); }
 }
-
 async function clearDeletedHistory() {
-  if (!state.isAdmin) return swalError("غير مصرح — للمدير فقط");
+  if (!state.isAdmin) return swalError("غير مصرح");
   const r = await swalConfirm("مسح سجل الحذف من النشاطات؟", "سيتم مسح أحداث الحذف فقط.");
   if (!r.isConfirmed) return;
   try {
     const snap = await get(ref(db, "activity"));
     const activities = snap.val() || {};
-    const deleteIds = Object.entries(activities)
-      .filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared")
-      .map(([id]) => id);
+    const deleteIds = Object.entries(activities).filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared").map(([id]) => id);
     if (deleteIds.length === 0) return showToast("لا يوجد سجل حذف", 'info');
     for (const id of deleteIds) await remove(ref(db, "activity/" + id));
-    await logActivity("history_cleared", `مسح ${deleteIds.length} حدث حذف من السجل`);
+    await logActivity("history_cleared", `مسح ${deleteIds.length} حدث حذف`);
     showToast(`🗑️ تم مسح ${deleteIds.length} حدث`, 'success');
   } catch (err) { swalError("فشل", err.message); }
 }
-
 async function purgeDeletedTasks() {
-  if (!state.isAdmin) return swalError("غير مصرح — للمدير فقط");
-  const deletedCount = Object.keys(state.deletedTasks || {}).length;
-  if (deletedCount === 0) return showToast("لا توجد مهام محذوفة للتنظيف", 'info');
-  const r = await swalConfirm(
-    "⚠️ حذف المهام المحذوفة نهائياً؟",
-    `سيتم حذف ${deletedCount} مهمة نهائياً. لا يمكن التراجع!`
-  );
+  if (!state.isAdmin) return swalError("غير مصرح");
+  const count = Object.keys(state.deletedTasks || {}).length;
+  if (count === 0) return showToast("لا توجد مهام محذوفة", 'info');
+  const r = await swalConfirm("حذف المهام المحذوفة نهائياً؟", `سيتم حذف ${count} مهمة.`);
   if (!r.isConfirmed) return;
   try {
     await safeWrite(() => remove(ref(db, "deleted_tasks")));
     const snap = await get(ref(db, "activity"));
     const activities = snap.val() || {};
-    const deleteIds = Object.entries(activities)
-      .filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared")
-      .map(([id]) => id);
+    const deleteIds = Object.entries(activities).filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared").map(([id]) => id);
     for (const id of deleteIds) await remove(ref(db, "activity/" + id));
-    await logActivity("history_cleared", `حذف نهائي لـ ${deletedCount} مهمة محذوفة`);
-    showToast(`⚡ تم حذف ${deletedCount} مهمة نهائياً`, 'success');
+    await logActivity("history_cleared", `حذف نهائي لـ ${count} مهمة`);
+    showToast(`⚡ تم حذف ${count} مهمة`, 'success');
   } catch (err) { swalError("فشل", err.message); }
 }
 
 /* ============================================================
-   BACKUP + PRESENCE + TEAM CLEANUP
+   BACKUP + PRESENCE
    ============================================================ */
 async function createBackup() {
   if (!state.user || !state.profile) return;
   try {
-    const backup = {
+    await set(push(ref(db, "backups")), {
       createdAt: Date.now(), createdBy: state.user.uid,
       byName: state.profile.displayName || "—",
       tasksCount: Object.keys(state.tasks).length,
       data: { tasks: state.tasks, team: state.team }
-    };
-    await set(push(ref(db, "backups")), backup);
+    });
     await cleanupOldBackups();
   } catch {}
 }
@@ -3889,9 +2826,7 @@ async function cleanupOldBackups() {
   try {
     const snap = await get(ref(db, "backups"));
     if (!snap.exists()) return;
-    const list = Object.entries(snap.val())
-      .map(([id, b]) => ({ id, at: b.createdAt || 0 }))
-      .sort((a, b) => b.at - a.at);
+    const list = Object.entries(snap.val()).map(([id, b]) => ({ id, at: b.createdAt || 0 })).sort((a, b) => b.at - a.at);
     if (list.length > CONSTANTS.MAX_BACKUPS) {
       for (const old of list.slice(CONSTANTS.MAX_BACKUPS)) {
         try { await remove(ref(db, "backups/" + old.id)); } catch {}
@@ -3901,11 +2836,8 @@ async function cleanupOldBackups() {
 }
 function startBackupTimer() {
   if (state.backupTimer) clearInterval(state.backupTimer);
-  state.backupTimer = setInterval(() => {
-    if (state.user) createBackup();
-  }, CONSTANTS.BACKUP_INTERVAL);
+  state.backupTimer = setInterval(() => { if (state.user) createBackup(); }, CONSTANTS.BACKUP_INTERVAL);
 }
-
 function setupOnlinePresence() {
   if (!state.user) return;
   try {
@@ -3914,7 +2846,6 @@ function setupOnlinePresence() {
     onDisconnect(userRef).set({ online: false, at: Date.now() });
   } catch {}
 }
-
 async function cleanupTeamDuplicates() {
   try {
     const snap = await get(ref(db, "team"));
@@ -3959,8 +2890,7 @@ function setupAddTaskForm() {
       await safeWrite(() => set(newRef, {
         title, priority, dueDate, notes, tags, assigneeId,
         assignee: member.name, status: CONSTANTS.STATUS.NEW,
-        createdBy: state.user.uid,
-        createdByName: state.profile.displayName,
+        createdBy: state.user.uid, createdByName: state.profile.displayName,
         createdAt: Date.now(), updatedAt: Date.now()
       }));
       await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key, title);
@@ -3971,7 +2901,6 @@ function setupAddTaskForm() {
     } catch { swalError("فشل الحفظ"); }
   };
 }
-
 function populateAssigneeSelect() {
   const sel = $("#taskAssignee");
   if (!sel) return;
@@ -3979,11 +2908,7 @@ function populateAssigneeSelect() {
   const options = ['<option value="">-- المسؤول --</option>'];
   const seen = new Set();
   Object.entries(state.team)
-    .filter(([_, m]) => {
-      if (!m || !m.name || !m.uid) return false;
-      if (seen.has(m.uid)) return false;
-      seen.add(m.uid); return true;
-    })
+    .filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; })
     .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
     .forEach(([id, m]) => options.push(`<option value="${esc(id)}">${esc(m.name)}</option>`));
   sel.innerHTML = options.join("");
@@ -3991,7 +2916,7 @@ function populateAssigneeSelect() {
 }
 
 /* ============================================================
-   USER ACTIONS (delegation)
+   DELEGATION
    ============================================================ */
 document.addEventListener('click', async (e) => {
   const btn = e.target.closest('[data-user-action]');
@@ -4031,17 +2956,12 @@ document.addEventListener('click', async (e) => {
       if (u.username) await remove(ref(db, "usernames/" + u.username));
       const teamSnap = await get(ref(db, "team"));
       const team = teamSnap.val() || {};
-      for (const [tid, m] of Object.entries(team)) {
-        if (m.uid === uid) await remove(ref(db, "team/" + tid));
-      }
+      for (const [tid, m] of Object.entries(team)) if (m.uid === uid) await remove(ref(db, "team/" + tid));
       showToast("🗑️ تم الحذف", 'success');
     } catch (err) { swalError("فشل", err.message); }
   }
 });
 
-/* ============================================================
-   GLOBAL EVENT DELEGATION
-   ============================================================ */
 document.addEventListener('click', async (e) => {
   const actionEl = e.target.closest('[data-action]');
   if (!actionEl) return;
@@ -4067,12 +2987,10 @@ document.addEventListener('click', async (e) => {
     case 'add-comment': e.preventDefault(); await addComment(actionEl.dataset.id); break;
   }
 });
-
 document.addEventListener('change', async (e) => {
   const sel = e.target.closest('[data-action="change-status"]');
   if (sel) await changeStatus(sel.dataset.id, sel.value);
 });
-
 document.addEventListener('click', async (e) => {
   const btn = e.target.closest('[data-quick]');
   if (!btn) return;
@@ -4082,20 +3000,17 @@ document.addEventListener('click', async (e) => {
   else if (quick === 'reassign') await quickReassign(id);
   else if (quick === 'delete') await deleteTask(id);
 });
-
 document.addEventListener('click', (e) => {
   if (e.target.closest('[data-quick]')) return;
   if (e.target.closest('[data-action]')) return;
   if (e.target.closest('[data-user-action]')) return;
-
+  if (e.target.closest('[data-team-remove]')) return;
   const card = e.target.closest('.task-card[data-task-id]');
   if (card) { openModal(card.dataset.taskId); return; }
-
   const wRow = e.target.closest('.w-task-row[data-task-id]');
   if (wRow) { openModal(wRow.dataset.taskId); return; }
-
-  const wCompleted = e.target.closest('.w-completed-card[data-task-id]');
-  if (wCompleted) { openModal(wCompleted.dataset.taskId); return; }
+  const wRecent = e.target.closest('.w-recent-item[data-task-id]');
+  if (wRecent) { openModal(wRecent.dataset.taskId); return; }
 });
 
 /* ============================================================
@@ -4116,7 +3031,6 @@ function setupNav() {
       updateActivityButtons();
     };
   });
-
   $$('.filter-btn[data-filter]').forEach(btn => {
     btn.onclick = () => {
       $$('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
@@ -4125,7 +3039,6 @@ function setupNav() {
       renderAll();
     };
   });
-
   $$('.filter-btn[data-watch]').forEach(btn => {
     btn.onclick = () => {
       $$('.filter-btn[data-watch]').forEach(b => b.classList.remove('active'));
@@ -4134,27 +3047,16 @@ function setupNav() {
       renderWatch();
     };
   });
-
   const sb = $("#searchBox");
-  if (sb) sb.addEventListener('input', debounce((e) => {
-    state.search = e.target.value.trim().toLowerCase();
-    renderTasks();
-  }, 250));
-
+  if (sb) sb.addEventListener('input', debounce((e) => { state.search = e.target.value.trim().toLowerCase(); renderTasks(); }, 250));
   const usb = $("#usersSearchBox");
-  if (usb) usb.addEventListener('input', debounce((e) => {
-    state.usersSearch = e.target.value.trim().toLowerCase();
-    renderUsersList();
-  }, 200));
-
+  if (usb) usb.addEventListener('input', debounce((e) => { state.usersSearch = e.target.value.trim().toLowerCase(); renderUsersList(); }, 200));
   const urf = $("#usersRoleFilter");
   if (urf) urf.addEventListener('change', (e) => { state.usersRoleFilter = e.target.value; renderUsersList(); });
   const usf = $("#usersStatusFilter");
   if (usf) usf.addEventListener('change', (e) => { state.usersStatusFilter = e.target.value; renderUsersList(); });
-
   const ss = $("#sortSelect");
   if (ss) ss.addEventListener('change', (e) => { state.sort = e.target.value; renderTasks(); });
-
   $$('.view-toggle button').forEach(b => {
     b.onclick = () => {
       $$('.view-toggle button').forEach(x => x.classList.remove('active'));
@@ -4163,23 +3065,17 @@ function setupNav() {
       renderTasks();
     };
   });
-
   const lb = $("#logoutBtn");
   if (lb) lb.onclick = async () => {
     const r = await swalConfirm("تسجيل الخروج؟");
     if (r.isConfirmed) { clearAllListeners(); signOut(auth); }
   };
-
-  $("#modalOverlay").addEventListener('click', (e) => {
-    if (e.target.id === 'modalOverlay') closeModal();
-  });
-  $("#reportOverlay").addEventListener('click', (e) => {
-    if (e.target.id === 'reportOverlay') closeReport();
-  });
+  $("#modalOverlay").addEventListener('click', (e) => { if (e.target.id === 'modalOverlay') closeModal(); });
+  $("#reportOverlay").addEventListener('click', (e) => { if (e.target.id === 'reportOverlay') closeReport(); });
 }
 
 /* ============================================================
-   LOGIN HANDLERS
+   LOGIN
    ============================================================ */
 function setupLoginHandlers() {
   const form = $("#loginForm");
@@ -4190,13 +3086,9 @@ function setupLoginHandlers() {
       const password = $("#loginPassword").value;
       const errBox = $("#loginError");
       errBox.textContent = "";
-      if (!/^[a-z0-9_]{3,20}$/.test(username)) {
-        errBox.textContent = "اسم المستخدم: 3-20 حرف";
-        return;
-      }
+      if (!/^[a-z0-9_]{3,20}$/.test(username)) { errBox.textContent = "3-20 حرف"; return; }
       const btn = $("#loginSubmitBtn");
-      btn.disabled = true;
-      btn.textContent = "⏳ جارٍ الدخول...";
+      btn.disabled = true; btn.textContent = "⏳ جارٍ الدخول...";
       try {
         await signInWithEmailAndPassword(auth, username + CONSTANTS.USERNAME_DOMAIN, password);
         if ($("#rememberMe").checked) Storage.set('emak_last_username', username);
@@ -4205,17 +3097,13 @@ function setupLoginHandlers() {
         const msgs = {
           "auth/user-not-found": "اسم المستخدم غير موجود",
           "auth/wrong-password": "كلمة المرور غير صحيحة",
-          "auth/invalid-credential": "اسم المستخدم أو كلمة المرور غير صحيحة",
+          "auth/invalid-credential": "بيانات غير صحيحة",
           "auth/too-many-requests": "محاولات كثيرة. حاول لاحقاً"
         };
         errBox.textContent = msgs[err.code] || "فشل تسجيل الدخول";
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "تسجيل الدخول";
-      }
+      } finally { btn.disabled = false; btn.textContent = "تسجيل الدخول"; }
     };
   }
-
   const gbtn = $("#loginBtn");
   if (gbtn) {
     gbtn.onclick = async () => {
@@ -4226,19 +3114,14 @@ function setupLoginHandlers() {
       }
     };
   }
-
   document.querySelectorAll('[data-toggle-pass]').forEach(btn => {
     btn.onclick = () => {
       const inp = $("#loginPassword");
       if (!inp) return;
-      inp.type = inp.type === "password" ? "text" : "password";
+      inp.type = inp.type === "text" ? "password" : "text";
     };
   });
-
-  document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
-    btn.onclick = toggleTheme;
-  });
-
+  document.querySelectorAll('[data-theme-toggle]').forEach(btn => btn.onclick = toggleTheme);
   const watchLoginBtn = document.querySelector('[data-watch-login]');
   if (watchLoginBtn) {
     watchLoginBtn.onclick = async () => {
@@ -4256,9 +3139,7 @@ function setupLoginHandlers() {
           const inp = document.getElementById("login-watch-pass");
           if (inp) {
             inp.focus();
-            inp.addEventListener("keypress", (e) => {
-              if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); }
-            });
+            inp.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); } });
           }
         },
         preConfirm: () => {
@@ -4275,7 +3156,6 @@ function setupLoginHandlers() {
       }
     };
   }
-
   const watchPinForm = $("#watchPinForm");
   if (watchPinForm) {
     watchPinForm.addEventListener('submit', async (e) => {
@@ -4298,7 +3178,6 @@ function setupLoginHandlers() {
       }
     });
   }
-
   const last = Storage.get('emak_last_username');
   if (last) {
     const el = $("#loginUsername");
@@ -4309,7 +3188,7 @@ function setupLoginHandlers() {
 }
 
 /* ============================================================
-   KEYBOARD + ONLINE/OFFLINE
+   GLOBAL EVENTS
    ============================================================ */
 function setupGlobalEvents() {
   document.addEventListener('keydown', (e) => {
@@ -4321,15 +3200,14 @@ function setupGlobalEvents() {
     if (e.target.matches("input, textarea, select")) return;
     if (e.key === 'Escape') { closeModal(); closeReport(); }
   });
-
   window.addEventListener('online', () => {
     const s = $("#watchConnStatus");
-    if (s) { s.classList.remove('offline'); s.querySelector("span:last-child").textContent = "متصل"; }
+    if (s) { s.classList.remove('offline'); s.querySelector("i") && (s.querySelector("i").nextSibling); s.innerHTML = '<i></i> متصل'; }
     showToast("🌐 متصل", 'success');
   });
   window.addEventListener('offline', () => {
     const s = $("#watchConnStatus");
-    if (s) { s.classList.add('offline'); s.querySelector("span:last-child").textContent = "غير متصل"; }
+    if (s) { s.classList.add('offline'); s.innerHTML = '<i></i> غير متصل'; }
     showToast("📡 غير متصل", 'warning');
   });
 }
@@ -4344,7 +3222,6 @@ function init() {
   setupAddTaskForm();
   setupGlobalEvents();
   setupAuthListener();
-
   if (new URLSearchParams(location.search).get("watch") === "1") {
     setTimeout(() => {
       $("#watchScreen").classList.add('active');
@@ -4363,7 +3240,6 @@ function init() {
     }, 800);
   }
 }
-
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
