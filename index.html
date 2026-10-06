@@ -62,25 +62,14 @@ html[data-theme="light"]{
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
-body{
-  font-family:'Cairo','Segoe UI',Tahoma,sans-serif;
-  font-size:clamp(13px,.45vw + 10.5px,17px);
-  background:var(--body-bg);color:var(--text);min-height:100vh;
-  overflow-x:hidden;line-height:1.6;
-  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
-}
+body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;font-size:clamp(13px,.45vw + 10.5px,17px);background:var(--body-bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 img{max-width:100%;display:block;}
 button{font-family:inherit;cursor:pointer;}
 button,input,select,textarea{font-size:inherit;}
 [hidden]{display:none !important;}
 mark.hl{background:rgba(245,165,36,.35);color:inherit;padding:0 2px;border-radius:3px;}
 :focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:4px;}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{
-    animation-duration:.01ms !important;animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;scroll-behavior:auto !important;
-  }
-}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}}
 .screen{display:none;}
 .screen.active{display:flex;}
 
@@ -217,7 +206,7 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .filter-btn:hover{border-color:var(--primary);color:var(--primary);}
 .filter-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
 
-/* ============ TASKS CARDS ============ */
+/* ============ TASK CARDS (Main App) ============ */
 #tasksList{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;}
 #tasksList.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
 .task-card{background:var(--card-bg);border:2px solid var(--border);border-radius:22px;padding:24px 22px;cursor:pointer;transition:all .4s var(--ease-out);position:relative;display:flex;flex-direction:column;min-height:240px;overflow:hidden;box-shadow:var(--shadow-sm);}
@@ -400,137 +389,151 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .empty{text-align:center;padding:60px 20px;color:var(--text-2);font-weight:700;font-size:14px;}
 
 /* ============================================================
-   🖥️ WATCH SCREEN v3 — Executive Dashboard
+   🖥️ WATCH SCREEN v4 — Compact Grid Cards
    ============================================================ */
 #watchScreen{position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;display:none;}
 #watchScreen.active{display:block;}
-
 .watch-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.watch-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(91,141,239,.14),transparent 45%),radial-gradient(circle at 85% 80%,rgba(45,212,163,.10),transparent 45%);}
+.watch-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(91,141,239,.10),transparent 45%),radial-gradient(circle at 85% 80%,rgba(45,212,163,.08),transparent 45%);}
 .watch-orb{display:none;}
-.watch-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(91,141,239,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(91,141,239,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(circle at center,black 30%,transparent 80%);-webkit-mask-image:radial-gradient(circle at center,black 30%,transparent 80%);}
+.watch-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(91,141,239,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(91,141,239,.02) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(circle at center,black 30%,transparent 80%);-webkit-mask-image:radial-gradient(circle at center,black 30%,transparent 80%);}
 
-#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:64px auto minmax(0,1fr) auto;gap:16px;padding:16px 20px;font-size:clamp(13px,.4vw + 11px,16px);}
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:56px auto minmax(0,1fr) 60px;gap:12px;padding:12px 16px;font-size:clamp(13px,.4vw + 11px,16px);}
 #watchMainContent.active{display:grid;}
 
-/* ═══ Header ═══ */
-.w-header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 20px;background:rgba(15,20,35,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:16px;}
-.w-brand{display:flex;align-items:center;gap:14px;flex-shrink:0;}
-.w-brand img{width:44px;height:44px;object-fit:contain;border-radius:12px;background:rgba(5,8,16,.6);padding:6px;border:1.5px solid rgba(91,141,239,.4);}
-.w-brand h1{font-size:clamp(16px,1.3vw,20px);font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-.w-brand span{font-size:11px;color:#64748b;font-weight:700;}
-.w-clock{display:flex;align-items:center;gap:14px;flex:1;justify-content:center;}
-.w-clock span{font-family:'JetBrains Mono',monospace;font-size:clamp(22px,2vw,30px);font-weight:800;color:#5b8def;letter-spacing:2px;font-variant-numeric:tabular-nums;text-shadow:0 0 20px rgba(91,141,239,.6);}
-.w-clock em{font-style:normal;font-size:clamp(11px,.9vw,13px);color:#94a3b8;font-weight:700;padding-inline-start:14px;border-inline-start:1px solid rgba(255,255,255,.1);}
-.w-actions{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.w-live,.w-conn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:20px;font-size:11.5px;font-weight:800;}
+.w-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 16px;background:rgba(15,20,35,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:14px;}
+.w-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.w-brand img{width:38px;height:38px;object-fit:contain;border-radius:10px;background:rgba(5,8,16,.6);padding:5px;border:1.5px solid rgba(91,141,239,.4);}
+.w-brand h1{font-size:15px;font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.w-brand span{font-size:10px;color:#64748b;font-weight:700;}
+.w-clock{display:flex;align-items:center;gap:12px;flex:1;justify-content:center;}
+.w-clock span{font-family:'JetBrains Mono',monospace;font-size:clamp(20px,1.8vw,26px);font-weight:800;color:#5b8def;letter-spacing:2px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(91,141,239,.5);}
+.w-clock em{font-style:normal;font-size:11px;color:#94a3b8;font-weight:700;padding-inline-start:12px;border-inline-start:1px solid rgba(255,255,255,.1);}
+.w-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.w-live,.w-conn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:18px;font-size:11px;font-weight:800;}
 .w-live{background:rgba(240,75,92,.15);color:#ff6b7d;border:1px solid rgba(240,75,92,.3);}
 .w-conn{background:rgba(45,212,163,.15);color:#3ee8b5;border:1px solid rgba(45,212,163,.3);}
 .w-conn.offline{background:rgba(240,75,92,.15);color:#ff6b7d;border-color:rgba(240,75,92,.3);}
-.w-live i,.w-conn i{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor;animation:blink 1.6s ease-in-out infinite;}
+.w-live i,.w-conn i{width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor;animation:blink 1.6s ease-in-out infinite;}
 @keyframes blink{50%{opacity:.3;}}
-.w-btn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#94a3b8;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer;}
+.w-btn{width:32px;height:32px;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#94a3b8;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer;}
 .w-btn:hover{background:rgba(91,141,239,.15);color:#5b8def;border-color:rgba(91,141,239,.4);}
 .w-btn.danger:hover{background:rgba(240,75,92,.2);color:#ff6b7d;border-color:rgba(240,75,92,.4);}
 
-/* ═══ KPI ═══ */
-.w-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.w-kpi{position:relative;padding:clamp(16px,1.4vh,24px) 24px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:clamp(90px,12vh,130px);overflow:hidden;transition:transform .35s var(--ease-out);border:1px solid transparent;}
-.w-kpi::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:rgba(255,255,255,.4);}
-.w-kpi:hover{transform:translateY(-4px);}
-.w-kpi-num{font-family:'JetBrains Mono',monospace;font-size:clamp(38px,4.5vw,64px);font-weight:900;line-height:1;letter-spacing:-3px;font-variant-numeric:tabular-nums;text-shadow:0 4px 20px rgba(0,0,0,.4);}
-.w-kpi-label{font-size:clamp(11px,1vw,14px);font-weight:800;letter-spacing:.3px;opacity:.95;}
-.kpi-total{background:linear-gradient(135deg,#3b6fd4 0%,#4f7ee0 100%);color:#fff;}
-.kpi-wait{background:linear-gradient(135deg,#d97706 0%,#f5a524 100%);color:#fff;}
-.kpi-work{background:linear-gradient(135deg,#7c3aed 0%,#a855f7 100%);color:#fff;}
-.kpi-done{background:linear-gradient(135deg,#059669 0%,#2dd4a3 100%);color:#fff;}
+/* KPI - 6 cards in row */
+.w-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
+.w-kpi{position:relative;padding:10px 14px;border-radius:14px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;min-height:58px;overflow:hidden;transition:transform .3s var(--ease-out);border:1px solid transparent;}
+.w-kpi::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:rgba(255,255,255,.35);}
+.w-kpi:hover{transform:translateY(-3px);}
+.w-kpi-num{font-family:'JetBrains Mono',monospace;font-size:clamp(22px,2vw,32px);font-weight:900;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;text-shadow:0 2px 12px rgba(0,0,0,.3);}
+.w-kpi-label{font-size:clamp(11px,.9vw,13px);font-weight:800;opacity:.95;white-space:nowrap;}
+.kpi-total{background:linear-gradient(135deg,#3b6fd4,#4f7ee0);color:#fff;}
+.kpi-wait{background:linear-gradient(135deg,#d97706,#f5a524);color:#fff;}
+.kpi-work{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;}
+.kpi-done{background:linear-gradient(135deg,#059669,#2dd4a3);color:#fff;}
+.kpi-urgent{background:linear-gradient(135deg,#dc2626,#f04b5c);color:#fff;}
+.kpi-important{background:linear-gradient(135deg,#ca8a04,#facc15);color:#fff;}
 
-/* ═══ Body ═══ */
-.w-body{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:16px;min-height:0;}
-
-.w-tasks-zone{display:flex;flex-direction:column;background:rgba(15,20,35,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:18px;overflow:hidden;min-height:0;}
-.w-zone-head{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0;gap:16px;flex-wrap:wrap;}
-.w-zone-head h2{font-size:clamp(14px,1.1vw,17px);font-weight:900;color:#f8fafc;}
-.w-tabs{display:flex;gap:6px;}
-.w-tab{padding:8px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#94a3b8;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all .2s;font-family:inherit;}
+/* Tasks area */
+.w-tasks-zone{display:flex;flex-direction:column;background:rgba(15,20,35,.4);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;min-height:0;}
+.w-zone-head{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0;gap:14px;flex-wrap:wrap;}
+.w-zone-head h2{font-size:14px;font-weight:900;color:#f8fafc;}
+.w-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+.w-tab{padding:6px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#94a3b8;font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:all .2s;font-family:inherit;}
 .w-tab:hover{background:rgba(255,255,255,.08);color:#f8fafc;}
-.w-tab.active{background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(91,141,239,.4);}
-.w-tab span{background:rgba(255,255,255,.2);padding:1px 8px;border-radius:6px;font-size:10.5px;font-weight:900;min-width:20px;text-align:center;}
+.w-tab.active{background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;border-color:transparent;}
+.w-tab[data-tab="urgent"].active{background:linear-gradient(135deg,#f04b5c,#c81e3c);}
+.w-tab[data-tab="important"].active{background:linear-gradient(135deg,#f5a524,#d97706);}
+.w-tab span{background:rgba(255,255,255,.2);padding:1px 7px;border-radius:5px;font-size:10px;font-weight:900;min-width:18px;text-align:center;}
 
-.w-tasks-body{flex:1;overflow:hidden;position:relative;min-height:0;padding:14px;mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);}
-.w-scroll-track{display:flex;flex-direction:column;gap:10px;will-change:transform;}
+.w-tasks-body{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;min-height:0;padding:14px;scrollbar-width:thin;scrollbar-color:rgba(91,141,239,.3) transparent;}
+.w-tasks-body::-webkit-scrollbar{width:6px;}
+.w-tasks-body::-webkit-scrollbar-track{background:transparent;}
+.w-tasks-body::-webkit-scrollbar-thumb{background:rgba(91,141,239,.3);border-radius:3px;}
 
-/* ═══ Task Row — النظيف ═══ */
-.w-task-row{display:grid;grid-template-columns:6px auto minmax(0,1fr) auto auto;align-items:center;gap:20px;padding:18px 24px;background:rgba(23,29,46,.6);border:1px solid rgba(255,255,255,.06);border-radius:14px;cursor:pointer;min-height:78px;transition:all .25s;position:relative;overflow:hidden;}
-.w-task-row:hover{background:rgba(35,43,66,.75);border-color:rgba(91,141,239,.35);transform:translateX(-4px);}
-.w-task-row::before{content:'';position:absolute;inset-inline-end:0;top:0;bottom:0;width:6px;background:var(--accent-bar,#5b8def);}
-.w-task-row.p-urgent::before{background:linear-gradient(180deg,#f04b5c,#ff6b7d);}
-.w-task-row.p-important::before{background:linear-gradient(180deg,#f5a524,#ffc043);}
-.w-task-row.p-normal::before{background:linear-gradient(180deg,#2dd4a3,#3ee8b5);}
-.w-task-priority{padding:6px 14px;border-radius:10px;font-size:12px;font-weight:900;white-space:nowrap;flex-shrink:0;}
-.w-task-priority.urgent{background:rgba(240,75,92,.18);color:#ff6b7d;}
-.w-task-priority.important{background:rgba(245,165,36,.18);color:#ffc043;}
-.w-task-priority.normal{background:rgba(45,212,163,.15);color:#3ee8b5;}
-.w-task-title{font-size:clamp(15px,1.3vw,19px);font-weight:800;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;line-height:1.3;}
-.w-task-assignee{font-size:clamp(12px,1vw,14px);font-weight:800;color:#94a3b8;white-space:nowrap;display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.w-task-status{padding:8px 16px;border-radius:10px;font-size:12.5px;font-weight:900;white-space:nowrap;min-width:80px;text-align:center;flex-shrink:0;}
-.w-task-status.new{background:rgba(91,141,239,.18);color:#7ca5f5;}
-.w-task-status.progress{background:rgba(245,165,36,.18);color:#f5b84a;}
-.w-task-status.done{background:rgba(45,212,163,.18);color:#3ee8b5;}
-.w-task-row.urgent-highlight{background:linear-gradient(90deg,rgba(240,75,92,.10) 0%,rgba(23,29,46,.6) 60%);border-color:rgba(240,75,92,.35);box-shadow:0 0 20px rgba(240,75,92,.15);}
-.w-task-row.urgent-highlight .w-task-title{color:#fff;}
+.w-tasks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
 
-/* ═══ Side zone ═══ */
-.w-side-zone{display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1fr);gap:16px;min-height:0;}
-.w-card{background:rgba(15,20,35,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:18px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
-.w-card header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;}
-.w-card header h3{font-size:13px;font-weight:900;color:#f8fafc;}
-.w-badge{padding:3px 10px;border-radius:8px;background:rgba(91,141,239,.18);color:#5b8def;font-size:11px;font-weight:900;}
+/* Task Card */
+.w-task-card{
+  position:relative;
+  background:linear-gradient(135deg,rgba(23,29,46,.85),rgba(15,20,32,.75));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  padding:14px 16px 12px;
+  cursor:pointer;
+  transition:all .25s var(--ease-out);
+  overflow:hidden;
+  min-height:128px;
+  display:flex;flex-direction:column;
+  gap:8px;
+  isolation:isolate;
+}
+.w-task-card::before{
+  content:'';position:absolute;
+  top:0;inset-inline-end:0;bottom:0;width:5px;
+  background:var(--accent-bar,#5b8def);
+  z-index:1;
+}
+.w-task-card:hover{
+  background:linear-gradient(135deg,rgba(35,43,66,.9),rgba(23,29,46,.85));
+  border-color:rgba(91,141,239,.4);
+  transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+.w-task-card.p-urgent{--accent-bar:linear-gradient(180deg,#f04b5c,#ff6b7d);background:linear-gradient(135deg,rgba(240,75,92,.12),rgba(15,20,32,.75));border-color:rgba(240,75,92,.25);}
+.w-task-card.p-important{--accent-bar:linear-gradient(180deg,#f5a524,#ffc043);background:linear-gradient(135deg,rgba(245,165,36,.10),rgba(15,20,32,.75));border-color:rgba(245,165,36,.22);}
+.w-task-card.p-normal{--accent-bar:linear-gradient(180deg,#2dd4a3,#3ee8b5);}
+.w-task-card.urgent-active{box-shadow:0 0 24px rgba(240,75,92,.25);animation:urgentPulseCard 2.4s ease-in-out infinite;}
+@keyframes urgentPulseCard{
+  0%,100%{box-shadow:0 0 24px rgba(240,75,92,.25),inset 0 0 0 1px rgba(240,75,92,.3);}
+  50%{box-shadow:0 0 40px rgba(240,75,92,.5),inset 0 0 0 1px rgba(240,75,92,.6);}
+}
+.w-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.w-card-tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.w-card-priority{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:900;white-space:nowrap;}
+.w-card-priority.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
+.w-card-priority.important{background:rgba(245,165,36,.22);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
+.w-card-priority.normal{background:rgba(45,212,163,.18);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
+.w-card-overdue{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:900;background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);animation:blink 1.6s ease-in-out infinite;}
+.w-card-title{font-size:clamp(15px,1.2vw,18px);font-weight:900;color:#f8fafc;line-height:1.35;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:48px;}
+.w-task-card.p-urgent .w-card-title{color:#fff;text-shadow:0 0 12px rgba(240,75,92,.4);}
+.w-card-info{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);}
+.w-card-assignee{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.w-card-assignee .avatar{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:12px;flex-shrink:0;}
+.w-card-due{font-size:11.5px;font-weight:800;color:#94a3b8;white-space:nowrap;}
+.w-card-due.overdue{color:#ff6b7d;font-weight:900;}
+.w-card-status{padding:5px 12px;border-radius:8px;font-size:11.5px;font-weight:900;white-space:nowrap;flex-shrink:0;}
+.w-card-status.new{background:rgba(91,141,239,.2);color:#7ca5f5;border:1px solid rgba(91,141,239,.3);}
+.w-card-status.progress{background:rgba(245,165,36,.2);color:#f5b84a;border:1px solid rgba(245,165,36,.3);}
+.w-card-status.done{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.3);}
 
-.w-donut-wrap{flex:1;position:relative;display:flex;align-items:center;justify-content:center;padding:12px;min-height:0;}
-.w-donut-wrap canvas{max-height:100%;}
-.w-donut-center{position:absolute;top:50%;inset-inline-start:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
-.w-donut-center strong{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(26px,2.4vw,38px);font-weight:900;color:#2dd4a3;line-height:1;}
-.w-donut-center span{display:block;font-size:10.5px;color:#64748b;font-weight:800;margin-top:4px;}
-
-.w-top-list{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:0;}
-.w-top-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:12px;transition:all .2s;}
-.w-top-item:hover{background:rgba(91,141,239,.08);border-color:rgba(91,141,239,.25);transform:translateX(-4px);}
-.w-top-rank{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
-.w-top-rank.r1{background:linear-gradient(135deg,#ffd700,#ffb300);color:#000;}
-.w-top-rank.r2{background:linear-gradient(135deg,#e0e0e0,#a0a0a0);color:#000;}
-.w-top-rank.r3{background:linear-gradient(135deg,#cd7f32,#a0651e);color:#fff;}
-.w-top-rank.rx{background:rgba(91,141,239,.15);color:#5b8def;}
-.w-top-avatar{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex-shrink:0;}
-.w-top-info{flex:1;min-width:0;}
-.w-top-info strong{display:block;font-size:13px;font-weight:800;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.w-top-info small{display:block;font-size:10.5px;color:#64748b;font-weight:700;margin-top:2px;}
-.w-top-score{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:900;color:#2dd4a3;}
-
-/* ═══ Footer ═══ */
-.w-footer{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px;height:78px;flex-shrink:0;}
-.w-recent{display:flex;align-items:center;gap:16px;padding:0 20px;background:rgba(15,20,35,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;}
-.w-recent-title{font-size:12.5px;font-weight:900;color:#2dd4a3;white-space:nowrap;flex-shrink:0;}
-.w-recent-list{display:flex;gap:10px;overflow-x:auto;flex:1;padding:8px 0;scrollbar-width:none;}
-.w-recent-list::-webkit-scrollbar{display:none;}
-.w-recent-item{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:8px 14px;background:rgba(45,212,163,.08);border:1px solid rgba(45,212,163,.2);border-radius:10px;font-size:12px;font-weight:800;color:#f8fafc;white-space:nowrap;}
-.w-recent-item::before{content:'✓';color:#2dd4a3;font-weight:900;}
-.w-recent-item em{font-style:normal;font-size:10.5px;color:#64748b;font-weight:700;padding-inline-start:8px;border-inline-start:1px solid rgba(255,255,255,.08);}
-.w-ticker{display:flex;align-items:center;background:rgba(15,20,35,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;}
-.w-ticker-icon{padding:0 16px;height:100%;display:flex;align-items:center;background:rgba(91,141,239,.15);color:#5b8def;font-size:16px;flex-shrink:0;}
-.w-ticker-wrap{flex:1;overflow:hidden;position:relative;}
-.w-ticker-track{display:inline-block;white-space:nowrap;padding-inline-end:100%;animation:tickerScroll 60s linear infinite;color:#cbd5e1;font-size:12.5px;font-weight:700;line-height:78px;}
+/* Footer tickers */
+.w-footer{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex-shrink:0;}
+.w-ticker{display:flex;align-items:center;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;height:60px;}
+.w-ticker-done{border-color:rgba(45,212,163,.25);}
+.w-ticker-news{border-color:rgba(91,141,239,.25);}
+.w-ticker-label{display:flex;align-items:center;gap:6px;padding:0 14px;height:100%;font-size:11.5px;font-weight:900;flex-shrink:0;white-space:nowrap;}
+.w-ticker-done .w-ticker-label{background:rgba(45,212,163,.18);color:#3ee8b5;border-inline-end:1px solid rgba(45,212,163,.2);}
+.w-ticker-news .w-ticker-label{background:rgba(91,141,239,.18);color:#7ca5f5;border-inline-end:1px solid rgba(91,141,239,.2);}
+.w-ticker-wrap{flex:1;overflow:hidden;position:relative;height:100%;}
+.w-ticker-track{display:inline-flex;align-items:center;height:100%;white-space:nowrap;padding-inline-end:100%;animation:tickerScroll 45s linear infinite;font-size:12.5px;font-weight:800;color:#cbd5e1;}
+.w-ticker-news .w-ticker-track{animation-duration:60s;}
 .w-ticker-track:hover{animation-play-state:paused;}
 @keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
-.w-ticker-track span{padding-inline-start:60px;}
-.w-ticker-track span::before{content:'◆';color:#5b8def;margin-inline-end:20px;font-size:9px;vertical-align:middle;}
+.w-ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 20px;height:100%;}
+.w-ticker-item::after{content:'◆';color:rgba(91,141,239,.4);margin-inline-start:20px;font-size:8px;vertical-align:middle;}
+.w-ticker-done .w-ticker-item::before{content:'✓';color:#2dd4a3;font-weight:900;font-size:13px;}
+.w-ticker-item em{font-style:normal;font-size:11px;color:#64748b;font-weight:700;margin-inline-start:4px;}
+.w-ticker-item.is-urgent{color:#ff6b7d;}
+.w-ticker-item.is-urgent::after{color:rgba(240,75,92,.5);}
+.w-ticker-item.is-warning{color:#ffc043;}
+.w-ticker-empty{padding:0 20px;color:#64748b;font-size:12px;font-weight:700;}
 
-/* Empty state */
-.w-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:10px;height:100%;text-align:center;color:#64748b;}
+.w-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:10px;height:100%;text-align:center;color:#64748b;grid-column:1/-1;}
 .w-empty-state div:first-child{font-size:44px;opacity:.4;}
 .w-empty-state div:last-child{font-size:13px;font-weight:800;color:#94a3b8;}
 
-/* ═══ PIN Screen ═══ */
+/* PIN Screen */
 #watchPinScreen{position:fixed;inset:0;z-index:2100;display:flex;align-items:center;justify-content:center;background:#050810;padding:20px;}
 .watch-pin-card{background:rgba(15,20,35,.95);backdrop-filter:blur(40px);border:1.5px solid rgba(91,141,239,.3);padding:52px 44px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 40px 120px rgba(0,0,0,.8);}
 .watch-pin-logo{width:120px;height:120px;margin:0 auto 24px;border-radius:50%;padding:8px;background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));box-shadow:0 0 0 4px rgba(91,141,239,.3),0 0 60px rgba(91,141,239,.6);}
@@ -546,89 +549,66 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .watch-pin-hint{color:#64748b;font-size:12px;margin-top:20px;font-weight:700;}
 
 body.watch-kiosk .w-footer{display:none !important;}
-body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
+body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
-/* Responsive */
-@media (max-width:1200px){
-  .w-body{grid-template-columns:1fr;}
-  .w-side-zone{display:none;}
-  .w-kpi-num{font-size:44px;}
-}
-@media (max-width:800px){
-  .w-kpis{grid-template-columns:repeat(2,1fr);}
-  .w-footer{grid-template-columns:1fr;height:auto;}
-  .w-ticker{display:none;}
-  .w-task-row{grid-template-columns:6px auto 1fr auto;gap:12px;padding:14px 16px;}
-  .w-task-assignee{display:none;}
-}
 @media (max-width:1400px){
-  .w-middle-row{grid-template-columns:1fr;}
+  .w-kpis{grid-template-columns:repeat(3,1fr);}
+  .w-tasks-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
+}
+@media (max-width:1200px){
+  .w-tasks-grid{grid-template-columns:repeat(2,1fr);}
+  .charts-grid{grid-template-columns:1fr;}
+}
+@media (max-width:900px){
+  .w-tasks-grid{grid-template-columns:1fr;}
+  .w-footer{grid-template-columns:1fr;}
+  .w-kpis{grid-template-columns:repeat(2,1fr);}
+  .w-clock{display:none;}
 }
 </style>
 </head>
 <body>
 
-<!-- ============ LOGIN ============ -->
+<!-- LOGIN -->
 <div id="loginScreen" class="screen active">
   <button class="theme-toggle" data-theme-toggle aria-label="تبديل الثيم">🌙</button>
   <div class="login-card">
-    <div class="login-logo-wrap">
-      <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK" loading="eager">
-    </div>
+    <div class="login-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK" loading="eager"></div>
     <h1>EMAK IT Dep.</h1>
     <p>نظام إدارة المهام — قسم نظم المعلومات</p>
     <form id="loginForm" novalidate>
-      <div class="input-group">
-        <span class="input-icon" aria-hidden="true">👤</span>
-        <input id="loginUsername" type="text" placeholder="اسم المستخدم" autocomplete="username" required>
-      </div>
-      <div class="input-group">
-        <span class="input-icon" aria-hidden="true">🔒</span>
-        <input id="loginPassword" type="password" placeholder="كلمة المرور" autocomplete="current-password" required>
-        <button type="button" class="toggle-pass" data-toggle-pass aria-label="إظهار كلمة المرور">👁️</button>
-      </div>
+      <div class="input-group"><span class="input-icon" aria-hidden="true">👤</span><input id="loginUsername" type="text" placeholder="اسم المستخدم" autocomplete="username" required></div>
+      <div class="input-group"><span class="input-icon" aria-hidden="true">🔒</span><input id="loginPassword" type="password" placeholder="كلمة المرور" autocomplete="current-password" required><button type="button" class="toggle-pass" data-toggle-pass aria-label="إظهار كلمة المرور">👁️</button></div>
       <label class="remember-me"><input type="checkbox" id="rememberMe"> تذكرني على هذا الجهاز</label>
       <button type="submit" id="loginSubmitBtn">تسجيل الدخول</button>
       <div id="loginError" role="alert" aria-live="polite"></div>
     </form>
     <div class="divider"><span>أو</span></div>
-    <button id="loginBtn" type="button">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
-      الدخول بحساب جوجل
-    </button>
+    <button id="loginBtn" type="button"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt=""> الدخول بحساب جوجل</button>
     <p class="help-text">نسيت كلمة المرور؟ تواصل مع المدير</p>
     <div class="login-watch-section">
       <div class="login-divider"><span>أو</span></div>
       <button type="button" class="login-watch-btn" data-watch-login>
-        <span class="watch-btn-icon">🖥️</span>
-        <span>دخول شاشة العرض</span>
-        <span class="watch-btn-pin">PIN</span>
+        <span class="watch-btn-icon">🖥️</span><span>دخول شاشة العرض</span><span class="watch-btn-pin">PIN</span>
       </button>
       <p class="login-watch-hint">💡 شاشة العرض لا تحتاج تسجيل دخول — فقط كلمة سر</p>
     </div>
   </div>
 </div>
 
-<!-- ============ LOADING ============ -->
+<!-- LOADING -->
 <div id="loadingScreen" class="screen">
-  <div class="loading-logo-wrap">
-    <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="loading-logo" alt="EMAK">
-  </div>
+  <div class="loading-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="loading-logo" alt="EMAK"></div>
   <div class="loading-text">جارٍ التحميل...</div>
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
 </div>
 
-<!-- ============ MAIN APP ============ -->
+<!-- MAIN -->
 <div id="mainScreen">
   <header>
     <div class="header-brand">
-      <div class="header-logo-wrap">
-        <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="header-logo" alt="EMAK">
-      </div>
-      <div>
-        <h1>EMAK IT Dep.</h1>
-        <div class="subtitle">نظم معلومات إيماك</div>
-      </div>
+      <div class="header-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="header-logo" alt="EMAK"></div>
+      <div><h1>EMAK IT Dep.</h1><div class="subtitle">نظم معلومات إيماك</div></div>
     </div>
     <div class="user-info">
       <span id="userName"></span>
@@ -641,7 +621,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
     </div>
   </header>
 
-  <nav class="main-nav" id="mainNav">
+  <nav class="main-nav">
     <button class="nav-btn active" data-view="dashboard">🏠 الرئيسية</button>
     <button class="nav-btn" data-view="tasks">📋 المهام</button>
     <button class="nav-btn" data-view="watch">👁️ متابعة</button>
@@ -649,9 +629,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
     <button class="nav-btn" id="teamNavBtn" data-action="open-team" hidden>🔧 الفريق</button>
     <button class="nav-btn" data-view="activity">📜 السجل</button>
     <button class="nav-btn" data-action="export-csv">📊 Excel</button>
-    <button class="nav-btn watch-highlight" data-action="open-watch">
-      <span>🖥️</span> شاشة العرض <span class="watch-badge">PIN</span>
-    </button>
+    <button class="nav-btn watch-highlight" data-action="open-watch"><span>🖥️</span> شاشة العرض <span class="watch-badge">PIN</span></button>
   </nav>
 
   <section class="view-section active" id="dashboardView">
@@ -686,11 +664,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
         <form id="addTaskForm" class="form-grid">
           <input id="taskTitle" type="text" placeholder="عنوان المهمة *" required>
           <select id="taskAssignee" required><option value="">-- المسؤول --</option></select>
-          <select id="taskPriority" required>
-            <option value="عادي">🟢 عادي</option>
-            <option value="مهم">🟡 مهم</option>
-            <option value="عاجل">🔴 عاجل</option>
-          </select>
+          <select id="taskPriority" required><option value="عادي">🟢 عادي</option><option value="مهم">🟡 مهم</option><option value="عاجل">🔴 عاجل</option></select>
           <input id="taskDue" type="date">
           <input id="taskNotes" type="text" placeholder="ملاحظات">
           <input id="taskTags" type="text" placeholder="وسوم (فاصلة)">
@@ -758,16 +732,8 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
           <div class="panel-title" style="margin:0;">👥 إدارة المستخدمين</div>
           <div class="users-toolbar-actions">
             <div class="search-wrap" style="max-width:240px;"><input id="usersSearchBox" type="search" placeholder="ابحث..."></div>
-            <select id="usersRoleFilter" class="filter-select">
-              <option value="all">كل الأدوار</option>
-              <option value="admin">👑 مدير</option>
-              <option value="employee">👤 موظف</option>
-            </select>
-            <select id="usersStatusFilter" class="filter-select">
-              <option value="all">كل الحالات</option>
-              <option value="active">نشط</option>
-              <option value="inactive">معطّل</option>
-            </select>
+            <select id="usersRoleFilter" class="filter-select"><option value="all">كل الأدوار</option><option value="admin">👑 مدير</option><option value="employee">👤 موظف</option></select>
+            <select id="usersStatusFilter" class="filter-select"><option value="all">كل الحالات</option><option value="active">نشط</option><option value="inactive">معطّل</option></select>
             <button class="btn-add-user" data-action="add-user">➕ إضافة مستخدم</button>
           </div>
         </div>
@@ -792,7 +758,6 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
   </section>
 </div>
 
-<!-- Modal / Report -->
 <div id="modalOverlay"><div class="modal-box" id="modalBox"><div id="modalBody"></div></div></div>
 <div id="reportOverlay">
   <div class="report-wrapper">
@@ -807,17 +772,14 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
   </div>
 </div>
 
-<!-- Notifications -->
 <div id="subNotifications" class="notif-host"></div>
 <div id="watchSubNotifications" class="notif-host"></div>
 <div id="toastHost"></div>
 
-<!-- ============ WATCH SCREEN v3 ============ -->
+<!-- WATCH SCREEN -->
 <div id="watchScreen">
   <div class="watch-bg" aria-hidden="true">
-    <div class="watch-orb o1"></div>
-    <div class="watch-orb o2"></div>
-    <div class="watch-orb o3"></div>
+    <div class="watch-orb o1"></div><div class="watch-orb o2"></div><div class="watch-orb o3"></div>
     <div class="watch-grid-bg"></div>
   </div>
 
@@ -836,14 +798,10 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
   </div>
 
   <div id="watchMainContent">
-    <!-- Header -->
     <header class="w-header">
       <div class="w-brand">
         <img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK">
-        <div>
-          <h1>EMAK IT Dep.</h1>
-          <span>نظم المعلومات</span>
-        </div>
+        <div><h1>EMAK IT Dep.</h1><span>نظم المعلومات</span></div>
       </div>
       <div class="w-clock">
         <span id="watchClock">--:--:--</span>
@@ -857,68 +815,37 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
       </div>
     </header>
 
-    <!-- KPI -->
     <section class="w-kpis">
-      <div class="w-kpi kpi-total">
-        <div class="w-kpi-num" id="wTotal">0</div>
-        <div class="w-kpi-label">إجمالي المهام</div>
-      </div>
-      <div class="w-kpi kpi-wait">
-        <div class="w-kpi-num" id="wActive">0</div>
-        <div class="w-kpi-label">قيد الانتظار</div>
-      </div>
-      <div class="w-kpi kpi-work">
-        <div class="w-kpi-num" id="wWorking">0</div>
-        <div class="w-kpi-label">قيد التنفيذ</div>
-      </div>
-      <div class="w-kpi kpi-done">
-        <div class="w-kpi-num" id="wDone">0</div>
-        <div class="w-kpi-label">مكتملة</div>
+      <div class="w-kpi kpi-total"><span class="w-kpi-num" id="wTotal">0</span><span class="w-kpi-label">إجمالي</span></div>
+      <div class="w-kpi kpi-wait"><span class="w-kpi-num" id="wActive">0</span><span class="w-kpi-label">انتظار</span></div>
+      <div class="w-kpi kpi-work"><span class="w-kpi-num" id="wWorking">0</span><span class="w-kpi-label">تنفيذ</span></div>
+      <div class="w-kpi kpi-done"><span class="w-kpi-num" id="wDone">0</span><span class="w-kpi-label">مكتملة</span></div>
+      <div class="w-kpi kpi-urgent"><span class="w-kpi-num" id="wUrgent">0</span><span class="w-kpi-label">🔴 عاجل</span></div>
+      <div class="w-kpi kpi-important"><span class="w-kpi-num" id="wImportant">0</span><span class="w-kpi-label">🟡 مهم</span></div>
+    </section>
+
+    <section class="w-tasks-zone">
+      <header class="w-zone-head">
+        <h2>📋 المهام النشطة</h2>
+        <div class="w-tabs">
+          <button class="w-tab active" data-tab="all">الكل <span id="wTabAllCount">0</span></button>
+          <button class="w-tab" data-tab="urgent">🔴 عاجل <span id="wTabUrgentCount">0</span></button>
+          <button class="w-tab" data-tab="important">🟡 مهم <span id="wTabImportantCount">0</span></button>
+          <button class="w-tab" data-tab="working">⏳ جاري <span id="wTabWorkingCount">0</span></button>
+        </div>
+      </header>
+      <div class="w-tasks-body" id="wMainBody">
+        <div class="w-tasks-grid" id="wTasksList"></div>
       </div>
     </section>
 
-    <!-- Body -->
-    <section class="w-body">
-      <div class="w-tasks-zone">
-        <header class="w-zone-head">
-          <h2>📋 المهام الحالية</h2>
-          <div class="w-tabs">
-            <button class="w-tab active" data-tab="all">الكل <span id="wTabAllCount">0</span></button>
-            <button class="w-tab" data-tab="urgent">🔴 عاجل <span id="wTabUrgentCount">0</span></button>
-            <button class="w-tab" data-tab="working">⏳ جاري <span id="wTabWorkingCount">0</span></button>
-          </div>
-        </header>
-        <div class="w-tasks-body" id="wMainBody">
-          <div class="w-scroll-track" id="wTasksList"></div>
-        </div>
-      </div>
-
-      <aside class="w-side-zone">
-        <div class="w-card">
-          <header><h3>🍩 نسبة الإنجاز</h3></header>
-          <div class="w-donut-wrap">
-            <canvas id="watchDoughnutChart"></canvas>
-            <div class="w-donut-center">
-              <strong id="wDonePercent">0%</strong>
-              <span>مكتملة</span>
-            </div>
-          </div>
-        </div>
-        <div class="w-card">
-          <header><h3>🏆 أفضل المنجزين</h3><span id="wTopCount" class="w-badge">0</span></header>
-          <div class="w-top-list" id="wTopPerformers"></div>
-        </div>
-      </aside>
-    </section>
-
-    <!-- Footer -->
     <footer class="w-footer">
-      <div class="w-recent">
-        <span class="w-recent-title">🎉 آخر ما تم إنجازه</span>
-        <div class="w-recent-list" id="wCompletedList"></div>
+      <div class="w-ticker w-ticker-done">
+        <span class="w-ticker-label">🎉 آخر ما تم إنجازه</span>
+        <div class="w-ticker-wrap"><div class="w-ticker-track" id="wCompletedList"></div></div>
       </div>
-      <div class="w-ticker">
-        <span class="w-ticker-icon">🔔</span>
+      <div class="w-ticker w-ticker-news">
+        <span class="w-ticker-label">🔔 إشعارات</span>
         <div class="w-ticker-wrap"><div class="w-ticker-track" id="wNewsTrack"></div></div>
       </div>
     </footer>
@@ -927,7 +854,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:64px auto minmax(0,1fr);}
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v18.0 — Executive Dashboard
+   EMAK IT Dep. v19.0
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -939,9 +866,6 @@ import {
   getDatabase, ref, push, set, onValue, update, remove, get, onDisconnect
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-/* ============================================================
-   CONFIG
-   ============================================================ */
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBagaYYgtQgAGyntE1go9IsGy7T85cvuSY",
   authDomain: "emak-tasks.firebaseapp.com",
@@ -961,50 +885,31 @@ const CONSTANTS = Object.freeze({
   WATCH_PASSWORD: "watch2024",
   WATCH_SESSION_DURATION: 12 * 60 * 60 * 1000,
   NOTIFICATION_DURATION: 20000,
-  SCROLL_MIN_SECONDS: 25,
-  SCROLL_MAX_SECONDS: 90,
   MAX_NOTIFICATIONS: 5,
   PRIORITY_MAP: { "عاجل": 0, "مهم": 1, "عادي": 2 },
   STATUS: Object.freeze({ NEW: "جديدة", PROGRESS: "جاري التنفيذ", DONE: "مكتملة" })
 });
 
-/* ============================================================
-   INIT
-   ============================================================ */
 const app = initializeApp(FIREBASE_CONFIG);
 const auth = getAuth(app);
 const db = getDatabase(app);
 const googleProvider = new GoogleAuthProvider();
 
-/* ============================================================
-   HELPERS
-   ============================================================ */
-const $  = (sel, ctx = document) => ctx.querySelector(sel);
-const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
-const esc = (s = '') => String(s).replace(/[&<>"']/g, c => (
-  { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
-));
+const $ = (s, c = document) => c.querySelector(s);
+const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+const esc = (s = '') => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 const escapeRegex = (str) => String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const highlight = (text, query) => {
   const safe = esc(text);
   if (!query) return safe;
-  try { return safe.replace(new RegExp(`(${escapeRegex(query)})`, "gi"), '<mark class="hl">$1</mark>'); }
-  catch { return safe; }
+  try { return safe.replace(new RegExp(`(${escapeRegex(query)})`, "gi"), '<mark class="hl">$1</mark>'); } catch { return safe; }
 };
-const debounce = (fn, ms = 300) => {
-  let t;
-  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
-};
-
+const debounce = (fn, ms = 300) => { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; };
 const Storage = {
-  get(key, fallback = null) {
-    try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : fallback; }
-    catch { return fallback; }
-  },
+  get(key, fallback = null) { try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : fallback; } catch { return fallback; } },
   set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; } },
   remove(key) { try { localStorage.removeItem(key); } catch {} }
 };
-
 const isValidTs = (ts) => typeof ts === "number" && isFinite(ts) && ts > 0;
 const formatDate = (ts) => isValidTs(ts) ? new Date(ts).toLocaleDateString("ar-EG", { year:"numeric", month:"short", day:"numeric" }) : "";
 const formatDateTime = (ts) => isValidTs(ts) ? new Date(ts).toLocaleString("ar-EG", { day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" }) : "";
@@ -1017,7 +922,6 @@ const timeAgo = (ts) => {
   if (s < 604800) return `قبل ${Math.floor(s/86400)} ي`;
   return formatDate(ts);
 };
-
 const _daysCache = new Map();
 let _daysCacheDay = null;
 const daysRemaining = (dueDate) => {
@@ -1046,9 +950,6 @@ const dueLabel = (dueDate) => {
 const isThisWeek = (ts) => isValidTs(ts) && (Date.now() - ts) <= 7 * 86400000;
 const isThisMonth = (ts) => isValidTs(ts) && (Date.now() - ts) <= 30 * 86400000;
 
-/* ============================================================
-   STATE
-   ============================================================ */
 const state = {
   user: null, profile: null, isAdmin: false,
   tasks: {}, team: {}, users: {}, activity: [], deletedTasks: {},
@@ -1060,39 +961,25 @@ const state = {
   watchUnsubs: { tasks:null, team:null, activity:null },
   watchMode: false, watchData: { tasks:{}, team:{}, activity:[] },
   watchKnownTaskIds: new Set(), watchFirstLoad: false,
-  backupTimer: null, scroller: null,
-  charts: new Map()
+  backupTimer: null, charts: new Map()
 };
 
-/* ============================================================
-   THEME
-   ============================================================ */
-function initTheme() {
-  const saved = Storage.get('emak_theme', 'dark');
-  applyTheme(saved);
-}
+function initTheme() { const saved = Storage.get('emak_theme', 'dark'); applyTheme(saved); }
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   state.theme = theme;
   Storage.set('emak_theme', theme);
   const icon = theme === 'dark' ? '🌙' : '☀️';
   $$('[data-theme-toggle]').forEach(btn => btn.textContent = icon);
-  updateChartsTheme();
 }
 function toggleTheme() {
   const next = state.theme === 'dark' ? 'light' : 'dark';
   applyTheme(next);
   showToast(next === 'dark' ? '🌙 الوضع الليلي' : '☀️ الوضع النهاري', 'info');
 }
-function updateChartsTheme() {
-  state.charts.forEach(chart => { try { chart.update('none'); } catch {} });
-}
 function themeBg() { return state.theme === 'light' ? '#ffffff' : '#10141f'; }
 function themeFg() { return state.theme === 'light' ? '#0f172a' : '#f8fafc'; }
 
-/* ============================================================
-   TOAST
-   ============================================================ */
 function showToast(msg, type = 'success', ms = 3200) {
   const host = $('#toastHost');
   if (!host) return;
@@ -1107,22 +994,10 @@ function showToast(msg, type = 'success', ms = 3200) {
     el.addEventListener('transitionend', () => el.remove(), { once:true });
   }, ms);
 }
-
-/* ============================================================
-   SWEETALERT
-   ============================================================ */
 const swalSuccess = (title, text="") => Swal.fire({ icon:"success", title, text, timer:1800, showConfirmButton:false, background: themeBg(), color: themeFg() });
 const swalError = (title, text="") => Swal.fire({ icon:"error", title, text, confirmButtonColor:"#f04b5c", background: themeBg(), color: themeFg() });
-const swalConfirm = (title, text="لا يمكن التراجع!") => Swal.fire({
-  icon:"warning", title, text, showCancelButton:true,
-  confirmButtonText:"نعم", cancelButtonText:"إلغاء",
-  confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580",
-  background: themeBg(), color: themeFg()
-});
+const swalConfirm = (title, text="لا يمكن التراجع!") => Swal.fire({ icon:"warning", title, text, showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580", background: themeBg(), color: themeFg() });
 
-/* ============================================================
-   AUDIO + DESKTOP NOTIF
-   ============================================================ */
 let _audioCtx = null;
 function playNotificationSound(priority = 'normal') {
   try {
@@ -1160,9 +1035,6 @@ const DesktopNotif = {
   }
 };
 
-/* ============================================================
-   CHARTS
-   ============================================================ */
 const Charts = {
   upsert(id, config) {
     const el = document.getElementById(id);
@@ -1177,38 +1049,19 @@ const Charts = {
     const isLight = state.theme === 'light';
     const legendColor = isLight ? '#475569' : '#94a3b8';
     const baseOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       animation: { duration: 600, easing: 'easeOutQuart' },
       plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: legendColor, font: { family: 'Cairo', size: 12, weight: '700' },
-                    padding: 14, usePointStyle: true, pointStyle: 'circle', boxWidth: 10, boxHeight: 10 }
-        },
-        tooltip: {
-          backgroundColor: 'rgba(15,20,32,.95)',
-          borderColor: 'rgba(91,141,239,.5)', borderWidth: 1,
-          titleColor: '#f8fafc', bodyColor: '#94a3b8',
-          titleFont: { family: 'Cairo', size: 12, weight: '800' },
-          bodyFont: { family: 'Cairo', size: 11, weight: '600' },
-          padding: 12, cornerRadius: 10
-        }
+        legend: { position: 'bottom', labels: { color: legendColor, font: { family: 'Cairo', size: 12, weight: '700' }, padding: 14, usePointStyle: true, pointStyle: 'circle', boxWidth: 10, boxHeight: 10 } },
+        tooltip: { backgroundColor: 'rgba(15,20,32,.95)', borderColor: 'rgba(91,141,239,.5)', borderWidth: 1, titleColor: '#f8fafc', bodyColor: '#94a3b8', titleFont: { family: 'Cairo', size: 12, weight: '800' }, bodyFont: { family: 'Cairo', size: 11, weight: '600' }, padding: 12, cornerRadius: 10 }
       }
     };
-    chart = new Chart(el, {
-      type: config.type,
-      data: config.data,
-      options: { ...baseOptions, ...(config.options || {}) }
-    });
+    chart = new Chart(el, { type: config.type, data: config.data, options: { ...baseOptions, ...(config.options || {}) } });
     state.charts.set(id, chart);
     return chart;
   }
 };
 
-/* ============================================================
-   SAFE WRITE
-   ============================================================ */
 async function safeWrite(operation, maxRetries = 3) {
   let lastError;
   for (let i = 0; i < maxRetries; i++) {
@@ -1221,7 +1074,6 @@ async function safeWrite(operation, maxRetries = 3) {
   }
   throw lastError;
 }
-
 async function loadLogoAsBase64() {
   try {
     const res = await fetch(CONSTANTS.LOGO_URL, { mode:"cors" });
@@ -1234,50 +1086,6 @@ async function loadLogoAsBase64() {
   } catch { return null; }
 }
 
-/* ============================================================
-   SMOOTH AUTO SCROLLER
-   ============================================================ */
-class SmoothAutoScroller {
-  constructor(container, track) {
-    this.container = container;
-    this.track = track;
-    this.offset = 0;
-    this.speed = 0.4;
-    this.paused = false;
-    this.halfHeight = 0;
-    this.rafId = null;
-    this._onEnter = () => this.paused = true;
-    this._onLeave = () => this.paused = false;
-    container.addEventListener('mouseenter', this._onEnter);
-    container.addEventListener('mouseleave', this._onLeave);
-  }
-  start() {
-    this.stop();
-    requestAnimationFrame(() => {
-      this.halfHeight = this.track.scrollHeight / 2;
-      if (this.halfHeight <= 0) return;
-      const step = () => {
-        if (!this.paused && this.halfHeight > 0) {
-          this.offset += this.speed;
-          if (this.offset >= this.halfHeight) this.offset = 0;
-          this.track.style.transform = `translate3d(0, -${this.offset}px, 0)`;
-        }
-        this.rafId = requestAnimationFrame(step);
-      };
-      step();
-    });
-  }
-  stop() { if (this.rafId) { cancelAnimationFrame(this.rafId); this.rafId = null; } }
-  destroy() {
-    this.stop();
-    this.container.removeEventListener('mouseenter', this._onEnter);
-    this.container.removeEventListener('mouseleave', this._onLeave);
-  }
-}
-
-/* ============================================================
-   SUB NOTIFICATIONS
-   ============================================================ */
 function showSubNotification(task) {
   const container = $('#subNotifications');
   if (!container) return;
@@ -1291,10 +1099,7 @@ function showSubNotification(task) {
   notif.innerHTML = `
     <div class="sub-notif-icon">${iconMap[priority]}</div>
     <div class="sub-notif-body">
-      <div class="sub-notif-title">
-        <span>📌 مهمة جديدة</span>
-        <span class="sub-notif-badge ${priority}">${badgeMap[priority]}</span>
-      </div>
+      <div class="sub-notif-title"><span>📌 مهمة جديدة</span><span class="sub-notif-badge ${priority}">${badgeMap[priority]}</span></div>
       <div class="sub-notif-message">${esc(task.title)}</div>
       <div class="sub-notif-meta">
         <span>👤 ${esc(task.assignee || "—")}</span>
@@ -1309,15 +1114,8 @@ function showSubNotification(task) {
   if (priority === "urgent") DesktopNotif.show("🔴 مهمة عاجلة", task.title);
   let remaining = 20;
   const progressEl = notif.querySelector(".sub-notif-progress-text");
-  const countdown = setInterval(() => {
-    remaining--;
-    if (progressEl) progressEl.textContent = remaining + "s";
-    if (remaining <= 0) clearInterval(countdown);
-  }, 1000);
-  const timeoutId = setTimeout(() => {
-    clearInterval(countdown);
-    closeSubNotification(notifId);
-  }, CONSTANTS.NOTIFICATION_DURATION);
+  const countdown = setInterval(() => { remaining--; if (progressEl) progressEl.textContent = remaining + "s"; if (remaining <= 0) clearInterval(countdown); }, 1000);
+  const timeoutId = setTimeout(() => { clearInterval(countdown); closeSubNotification(notifId); }, CONSTANTS.NOTIFICATION_DURATION);
   notif._timeoutId = timeoutId;
   notif._countdown = countdown;
   const notifs = container.querySelectorAll(".sub-notification");
@@ -1336,7 +1134,6 @@ function closeSubNotification(notifId) {
   notif.classList.add("closing");
   setTimeout(() => notif.remove(), 400);
 }
-
 function showWatchSubNotification(task) {
   const container = $('#watchSubNotifications');
   if (!container) return;
@@ -1350,10 +1147,7 @@ function showWatchSubNotification(task) {
   notif.innerHTML = `
     <div class="watch-sub-icon">${iconMap[priority]}</div>
     <div class="watch-sub-body">
-      <div class="watch-sub-title">
-        <span>📌 مهمة جديدة</span>
-        <span class="watch-sub-badge ${priority}">${badgeMap[priority]}</span>
-      </div>
+      <div class="watch-sub-title"><span>📌 مهمة جديدة</span><span class="watch-sub-badge ${priority}">${badgeMap[priority]}</span></div>
       <div class="watch-sub-message">${esc(task.title)}</div>
       <div class="watch-sub-meta">
         <span>👤 ${esc(task.assignee || "—")}</span>
@@ -1367,15 +1161,8 @@ function showWatchSubNotification(task) {
   playNotificationSound(priority);
   let remaining = 20;
   const progressEl = notif.querySelector(".watch-sub-progress-text");
-  const countdown = setInterval(() => {
-    remaining--;
-    if (progressEl) progressEl.textContent = remaining + "s";
-    if (remaining <= 0) clearInterval(countdown);
-  }, 1000);
-  const timeoutId = setTimeout(() => {
-    clearInterval(countdown);
-    closeWatchSubNotification(notifId);
-  }, 20000);
+  const countdown = setInterval(() => { remaining--; if (progressEl) progressEl.textContent = remaining + "s"; if (remaining <= 0) clearInterval(countdown); }, 1000);
+  const timeoutId = setTimeout(() => { clearInterval(countdown); closeWatchSubNotification(notifId); }, 20000);
   notif._timeoutId = timeoutId;
   notif._countdown = countdown;
   const notifs = container.querySelectorAll(".watch-sub-notification");
@@ -1395,29 +1182,17 @@ function closeWatchSubNotification(notifId) {
   setTimeout(() => notif.remove(), 400);
 }
 
-/* ============================================================
-   AUTH
-   ============================================================ */
 function clearAllListeners() {
   Object.keys(state.unsubs).forEach(k => {
     if (state.unsubs[k]) { try { state.unsubs[k](); } catch {} state.unsubs[k] = null; }
   });
   if (state.backupTimer) { clearInterval(state.backupTimer); state.backupTimer = null; }
 }
-
 async function ensureUserProfile(user) {
   const uref = ref(db, "users/" + user.uid);
   let snap;
   try { snap = await get(uref); }
-  catch {
-    return {
-      username: (user.email || "").split("@")[0] || "user",
-      displayName: user.displayName || "مستخدم",
-      email: user.email || "",
-      role: CONSTANTS.SUPER_ADMIN_EMAILS.includes(user.email) ? "admin" : "employee",
-      active: true, createdAt: Date.now()
-    };
-  }
+  catch { return { username: (user.email || "").split("@")[0] || "user", displayName: user.displayName || "مستخدم", email: user.email || "", role: CONSTANTS.SUPER_ADMIN_EMAILS.includes(user.email) ? "admin" : "employee", active: true, createdAt: Date.now() }; }
   if (snap.exists()) {
     const data = snap.val();
     if (data.active === false) return data;
@@ -1428,19 +1203,12 @@ async function ensureUserProfile(user) {
       const team = ts.val() || {};
       const myEntries = Object.entries(team).filter(([id, m]) => m && m.uid === user.uid);
       if (myEntries.length === 0) {
-        await push(ref(db, "team"), {
-          uid: user.uid, username: data.username || (user.email || "").split("@")[0],
-          name: officialName, createdAt: Date.now()
-        });
+        await push(ref(db, "team"), { uid: user.uid, username: data.username || (user.email || "").split("@")[0], name: officialName, createdAt: Date.now() });
       } else {
-        for (const [id, m] of myEntries) {
-          if (m.name !== officialName) { try { await update(ref(db, "team/" + id), { name: officialName }); } catch {} }
-        }
+        for (const [id, m] of myEntries) if (m.name !== officialName) { try { await update(ref(db, "team/" + id), { name: officialName }); } catch {} }
         if (myEntries.length > 1) {
           myEntries.sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
-          for (let i = 1; i < myEntries.length; i++) {
-            try { await remove(ref(db, "team/" + myEntries[i][0])); } catch {}
-          }
+          for (let i = 1; i < myEntries.length; i++) try { await remove(ref(db, "team/" + myEntries[i][0])); } catch {}
         }
       }
     } catch {}
@@ -1449,18 +1217,11 @@ async function ensureUserProfile(user) {
   const isSuperAdmin = CONSTANTS.SUPER_ADMIN_EMAILS.includes(user.email || "");
   const username = (user.email || "").split("@")[0].toLowerCase().replace(/[^a-z0-9_]/g, "") || "user";
   const displayName = user.displayName || username;
-  const profile = {
-    username, displayName, email: user.email || "",
-    role: isSuperAdmin ? "admin" : "employee",
-    active: true, createdAt: Date.now(), lastLogin: Date.now()
-  };
+  const profile = { username, displayName, email: user.email || "", role: isSuperAdmin ? "admin" : "employee", active: true, createdAt: Date.now(), lastLogin: Date.now() };
   try {
     await set(uref, profile);
     if (username) {
-      try {
-        const us = await get(ref(db, "usernames/" + username));
-        if (!us.exists()) await set(ref(db, "usernames/" + username), { uid: user.uid, createdAt: Date.now() });
-      } catch {}
+      try { const us = await get(ref(db, "usernames/" + username)); if (!us.exists()) await set(ref(db, "usernames/" + username), { uid: user.uid, createdAt: Date.now() }); } catch {}
     }
     try {
       const ts = await get(ref(db, "team"));
@@ -1495,11 +1256,7 @@ function setupAuthListener() {
       state.profile = profile;
       state.isAdmin = profile.role === 'admin';
       state.pinnedTaskId = Storage.get(`pinnedTask_${user.uid}`);
-      if (profile.active === false) {
-        await signOut(auth);
-        loadingScreen.classList.remove('active');
-        return swalError("هذا الحساب معطّل", "تواصل مع المدير");
-      }
+      if (profile.active === false) { await signOut(auth); loadingScreen.classList.remove('active'); return swalError("هذا الحساب معطّل", "تواصل مع المدير"); }
     } catch (err) {
       loadingScreen.classList.remove('active');
       loginScreen.classList.add('active');
@@ -1524,9 +1281,6 @@ function setupAuthListener() {
   });
 }
 
-/* ============================================================
-   REALTIME
-   ============================================================ */
 function startRealtimeListeners() {
   clearAllListeners();
   state.unsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
@@ -1542,32 +1296,20 @@ function startRealtimeListeners() {
     if (state.openTaskId && state.tasks[state.openTaskId]) renderModal(state.openTaskId);
     else if (state.openTaskId && !state.tasks[state.openTaskId]) closeModal();
   });
-  state.unsubs.team = onValue(ref(db, "team"), (snap) => {
-    state.team = snap.val() || {};
-    populateAssigneeSelect();
-  });
+  state.unsubs.team = onValue(ref(db, "team"), (snap) => { state.team = snap.val() || {}; populateAssigneeSelect(); });
   if (state.isAdmin) {
-    state.unsubs.users = onValue(ref(db, "users"), (snap) => {
-      state.users = snap.val() || {};
-      if ($('#usersView')?.classList.contains('active')) renderUsersList();
-    });
-    state.unsubs.deletedTasks = onValue(ref(db, "deleted_tasks"), (snap) => {
-      state.deletedTasks = snap.val() || {};
-    });
+    state.unsubs.users = onValue(ref(db, "users"), (snap) => { state.users = snap.val() || {}; if ($('#usersView')?.classList.contains('active')) renderUsersList(); });
+    state.unsubs.deletedTasks = onValue(ref(db, "deleted_tasks"), (snap) => { state.deletedTasks = snap.val() || {}; });
   }
   state.unsubs.activity = onValue(ref(db, "activity"), (snap) => {
     const raw = snap.val() || {};
-    state.activity = Object.entries(raw).map(([id, a]) => ({ id, ...a }))
-      .sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 100);
+    state.activity = Object.entries(raw).map(([id, a]) => ({ id, ...a })).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 100);
     if ($('#activityView')?.classList.contains('active')) renderActivity();
     if ($('#watchView')?.classList.contains('active')) renderWatch();
   });
   setTimeout(cleanupTeamDuplicates, 2000);
 }
 
-/* ============================================================
-   RENDER SCHEDULER
-   ============================================================ */
 let _renderScheduled = false;
 function scheduleRender() {
   if (_renderScheduled) return;
@@ -1585,19 +1327,12 @@ function renderAll() {
   if ($('#watchView')?.classList.contains('active')) try { renderWatch(); } catch {}
   if ($('#activityView')?.classList.contains('active')) try { renderActivity(); } catch {}
 }
-
-/* ============================================================
-   STATS
-   ============================================================ */
 function renderStats() {
   const tasks = Object.values(state.tasks);
   $('#statTotal').textContent = tasks.length;
   $('#statDone').textContent = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
   $('#statProgress').textContent = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
-  $('#statOverdue').textContent = tasks.filter(t => {
-    const d = daysRemaining(t.dueDate);
-    return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-  }).length;
+  $('#statOverdue').textContent = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
 }
 function renderTeamProgress() {
   const teamMap = {};
@@ -1609,11 +1344,7 @@ function renderTeamProgress() {
   });
   const html = Object.values(teamMap).map(s => {
     const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
-    return `<div class="team-row">
-      <div class="team-name">${esc(s.name)}</div>
-      <div class="team-bar"><div class="team-fill" style="width:${pct}%"></div></div>
-      <div class="team-pct">${pct}% (${s.done}/${s.total})</div>
-    </div>`;
+    return `<div class="team-row"><div class="team-name">${esc(s.name)}</div><div class="team-bar"><div class="team-fill" style="width:${pct}%"></div></div><div class="team-pct">${pct}% (${s.done}/${s.total})</div></div>`;
   }).join("");
   $('#teamList').innerHTML = html || '<p class="empty">لا توجد بيانات</p>';
 }
@@ -1624,10 +1355,7 @@ function renderCharts() {
   const newT = tasks.filter(t => t.status === CONSTANTS.STATUS.NEW).length;
   Charts.upsert('chartStatus', {
     type: 'doughnut',
-    data: {
-      labels: ["مكتملة","جارية","جديدة"],
-      datasets: [{ data: [done, progress, newT], backgroundColor: ["#2dd4a3","#f5a524","#5b8def"], borderColor: "transparent", borderWidth: 0 }]
-    },
+    data: { labels: ["مكتملة","جارية","جديدة"], datasets: [{ data: [done, progress, newT], backgroundColor: ["#2dd4a3","#f5a524","#5b8def"], borderColor: "transparent", borderWidth: 0 }] },
     options: { cutout: '65%' }
   });
   const days = [], counts = [];
@@ -1640,20 +1368,11 @@ function renderCharts() {
   }
   Charts.upsert('chartProductivity', {
     type: 'line',
-    data: {
-      labels: days,
-      datasets: [{ label: "مهام مكتملة", data: counts, borderColor: "#5b8def", backgroundColor: "rgba(91,141,239,.15)", borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: "#5b8def", pointBorderColor: "#fff", pointBorderWidth: 2 }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: "#64748b" } }, x: { ticks: { color: "#64748b" }, grid: { display: false } } }
-    }
+    data: { labels: days, datasets: [{ label: "مهام مكتملة", data: counts, borderColor: "#5b8def", backgroundColor: "rgba(91,141,239,.15)", borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: "#5b8def", pointBorderColor: "#fff", pointBorderWidth: 2 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: "#64748b" } }, x: { ticks: { color: "#64748b" }, grid: { display: false } } } }
   });
 }
 
-/* ============================================================
-   TASKS
-   ============================================================ */
 function renderTasks() {
   if (!state.profile) return;
   const list = $('#tasksList');
@@ -1673,11 +1392,7 @@ function renderTasks() {
       return (b[1].createdAt || 0) - (a[1].createdAt || 0);
     }
     if (state.sort === 'date') return (b[1].createdAt || 0) - (a[1].createdAt || 0);
-    if (state.sort === 'due') {
-      if (!a[1].dueDate) return 1;
-      if (!b[1].dueDate) return -1;
-      return new Date(a[1].dueDate) - new Date(b[1].dueDate);
-    }
+    if (state.sort === 'due') { if (!a[1].dueDate) return 1; if (!b[1].dueDate) return -1; return new Date(a[1].dueDate) - new Date(b[1].dueDate); }
     if (state.sort === 'title') return (a[1].title || "").localeCompare(b[1].title || "", "ar");
     return 0;
   });
@@ -1691,12 +1406,7 @@ function renderTasks() {
     if (state.filter === 'mine') return t.assigneeId && t.assigneeId === state.user?.uid;
     return true;
   });
-  if (state.search) {
-    filtered = filtered.filter(([_, t]) => {
-      const hay = `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""}`.toLowerCase();
-      return hay.includes(state.search);
-    });
-  }
+  if (state.search) filtered = filtered.filter(([_, t]) => `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""}`.toLowerCase().includes(state.search));
   if (state.view === 'kanban') renderKanban(list, filtered);
   else {
     list.className = "";
@@ -1712,18 +1422,10 @@ function taskCardHtml(id, t) {
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
   const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
   const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).slice(0,2).map(x => `<span class="card-tag">${esc(x)}</span>`).join("") : "";
-  const quickActions = state.isAdmin ? `
-    <div class="card-quick-actions">
-      <button class="quick-action-btn" data-quick="edit" data-id="${id}" title="تعديل">✏️</button>
-      <button class="quick-action-btn" data-quick="reassign" data-id="${id}" title="تغيير المسؤول">👤</button>
-      <button class="quick-action-btn" data-quick="delete" data-id="${id}" title="حذف">🗑️</button>
-    </div>` : "";
+  const quickActions = state.isAdmin ? `<div class="card-quick-actions"><button class="quick-action-btn" data-quick="edit" data-id="${id}" title="تعديل">✏️</button><button class="quick-action-btn" data-quick="reassign" data-id="${id}" title="تغيير المسؤول">👤</button><button class="quick-action-btn" data-quick="delete" data-id="${id}" title="حذف">🗑️</button></div>` : "";
   return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${id}" tabindex="0" role="button">
     ${quickActions}
-    <div class="card-top">
-      <span class="priority-dot ${priorityClass}"></span>
-      <span class="assignee-chip">👤 ${esc(t.assignee || "—")}</span>
-    </div>
+    <div class="card-top"><span class="priority-dot ${priorityClass}"></span><span class="assignee-chip">👤 ${esc(t.assignee || "—")}</span></div>
     <h3 class="card-title">${highlight(t.title, state.search)}</h3>
     ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
     ${t.notes ? `<p class="card-notes">${esc(t.notes)}</p>` : ""}
@@ -1742,10 +1444,7 @@ function renderKanban(list, filtered) {
   filtered.forEach(([id, t]) => { if (cols[t.status]) cols[t.status].push([id, t]); });
   list.innerHTML = Object.entries(cols).map(([status, items]) => `
     <div class="kanban-col" data-status="${esc(status)}">
-      <div class="kanban-col-header">
-        <span>${status === CONSTANTS.STATUS.NEW ? "🆕" : status === CONSTANTS.STATUS.PROGRESS ? "⏳" : "✅"} ${esc(status)}</span>
-        <span class="kanban-count">${items.length}</span>
-      </div>
+      <div class="kanban-col-header"><span>${status === CONSTANTS.STATUS.NEW ? "🆕" : status === CONSTANTS.STATUS.PROGRESS ? "⏳" : "✅"} ${esc(status)}</span><span class="kanban-count">${items.length}</span></div>
       <div class="kanban-col-body" data-status="${esc(status)}">
         ${items.map(([id, t]) => {
           const isUrgentActive = t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE;
@@ -1759,15 +1458,10 @@ function renderKanban(list, filtered) {
           </div>`;
         }).join("") || '<p class="empty" style="padding:20px;font-size:13px;">لا توجد مهام</p>'}
       </div>
-    </div>
-  `).join("");
+    </div>`).join("");
   if (!state.isAdmin) return;
   list.querySelectorAll(".kanban-card").forEach(card => {
-    card.ondragstart = (e) => {
-      e.dataTransfer.setData("taskId", card.dataset.taskId);
-      e.dataTransfer.effectAllowed = "move";
-      card.classList.add("dragging");
-    };
+    card.ondragstart = (e) => { e.dataTransfer.setData("taskId", card.dataset.taskId); e.dataTransfer.effectAllowed = "move"; card.classList.add("dragging"); };
     card.ondragend = () => card.classList.remove("dragging");
   });
   list.querySelectorAll(".kanban-col-body").forEach(body => {
@@ -1786,20 +1480,8 @@ function renderKanban(list, filtered) {
   });
 }
 
-/* ============================================================
-   MODAL
-   ============================================================ */
-function openModal(taskId) {
-  state.openTaskId = taskId;
-  renderModal(taskId);
-  $('#modalOverlay').classList.add('active');
-  document.body.style.overflow = "hidden";
-}
-function closeModal() {
-  state.openTaskId = null;
-  $('#modalOverlay').classList.remove('active');
-  document.body.style.overflow = "";
-}
+function openModal(taskId) { state.openTaskId = taskId; renderModal(taskId); $('#modalOverlay').classList.add('active'); document.body.style.overflow = "hidden"; }
+function closeModal() { state.openTaskId = null; $('#modalOverlay').classList.remove('active'); document.body.style.overflow = ""; }
 function renderModal(taskId) {
   const t = state.tasks[taskId];
   if (!t) return closeModal();
@@ -1808,15 +1490,7 @@ function renderModal(taskId) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
   const comments = t.comments ? Object.entries(t.comments).sort((a,b) => (a[1].createdAt||0)-(b[1].createdAt||0)) : [];
-  const commentsHtml = comments.length > 0
-    ? comments.map(([cid, c]) => `<div class="modal-comment">
-        <div class="modal-comment-head">
-          <span class="modal-comment-author">${esc(c.author)}</span>
-          <span class="modal-comment-date">${formatDateTime(c.createdAt)}</span>
-        </div>
-        <div class="modal-comment-text">${esc(c.text)}</div>
-      </div>`).join("")
-    : '<p style="text-align:center;color:#64748b;padding:24px;">لا توجد تعليقات</p>';
+  const commentsHtml = comments.length > 0 ? comments.map(([cid, c]) => `<div class="modal-comment"><div class="modal-comment-head"><span class="modal-comment-author">${esc(c.author)}</span><span class="modal-comment-date">${formatDateTime(c.createdAt)}</span></div><div class="modal-comment-text">${esc(c.text)}</div></div>`).join("") : '<p style="text-align:center;color:#64748b;padding:24px;">لا توجد تعليقات</p>';
   const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).map(x => `<span class="tag">${esc(x)}</span>`).join("") : "";
   $('#modalBody').innerHTML = `
     <div class="modal-header ${priorityClass}">
@@ -1844,9 +1518,7 @@ function renderModal(taskId) {
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn-pin ${state.pinnedTaskId === taskId ? 'active' : ''}" data-action="toggle-pin" data-id="${taskId}">
-        ${state.pinnedTaskId === taskId ? '⭐ مثبتة' : '☆ تثبيت'}
-      </button>
+      <button class="btn-pin ${state.pinnedTaskId === taskId ? 'active' : ''}" data-action="toggle-pin" data-id="${taskId}">${state.pinnedTaskId === taskId ? '⭐ مثبتة' : '☆ تثبيت'}</button>
       <select class="modal-status-select" data-action="change-status" data-id="${taskId}">
         <option ${t.status === "جديدة" ? "selected" : ""}>جديدة</option>
         <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
@@ -1860,17 +1532,11 @@ function renderModal(taskId) {
     </div>`;
 }
 
-/* ============================================================
-   TASK OPERATIONS
-   ============================================================ */
 async function changeStatus(taskId, newStatus) {
   const t = state.tasks[taskId];
   if (!t) return;
   try {
-    await safeWrite(() => update(ref(db, "tasks/" + taskId), {
-      status: newStatus, updatedAt: Date.now(),
-      updatedBy: state.user.uid, updatedByName: state.profile.displayName
-    }));
+    await safeWrite(() => update(ref(db, "tasks/" + taskId), { status: newStatus, updatedAt: Date.now(), updatedBy: state.user.uid, updatedByName: state.profile.displayName }));
     await logActivity("status_changed", `غيّر حالة "${t.title}" إلى ${newStatus}`, taskId, t.title);
     showToast(`🔄 الحالة: ${newStatus}`, 'info');
   } catch { showToast('⚠️ سيُعاد الحفظ', 'warning'); }
@@ -1880,16 +1546,10 @@ async function quickReassign(taskId) {
   const t = state.tasks[taskId];
   if (!t) return;
   const seen = new Set();
-  const teamOptions = Object.entries(state.team)
-    .filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; })
-    .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
-    .map(([id, m]) => `<option value="${esc(id)}" ${t.assigneeId === id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
+  const teamOptions = Object.entries(state.team).filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; }).sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar")).map(([id, m]) => `<option value="${esc(id)}" ${t.assigneeId === id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
   const { value: newId } = await Swal.fire({
     title: "👤 تغيير المسؤول",
-    html: `<div style="display:flex;flex-direction:column;gap:12px;text-align:right;direction:rtl;">
-      <p style="color:#94a3b8;font-size:13px;font-weight:600;">المهمة: <b>${esc(t.title)}</b></p>
-      <select id="swal-new-assignee" class="swal2-select" style="margin:0;width:100%;"><option value="">-- اختر --</option>${teamOptions}</select>
-    </div>`,
+    html: `<div style="display:flex;flex-direction:column;gap:12px;text-align:right;direction:rtl;"><p style="color:#94a3b8;font-size:13px;font-weight:600;">المهمة: <b>${esc(t.title)}</b></p><select id="swal-new-assignee" class="swal2-select" style="margin:0;width:100%;"><option value="">-- اختر --</option>${teamOptions}</select></div>`,
     showCancelButton: true, confirmButtonText: "تغيير", cancelButtonText: "إلغاء",
     confirmButtonColor: "#f5a524", background: themeBg(), color: themeFg(), focusConfirm: false,
     preConfirm: () => {
@@ -1903,10 +1563,7 @@ async function quickReassign(taskId) {
   const m = state.team[newId];
   if (!m) return swalError("عضو غير موجود");
   try {
-    await safeWrite(() => update(ref(db, "tasks/" + taskId), {
-      assigneeId: newId, assignee: m.name, updatedAt: Date.now(),
-      updatedBy: state.user.uid, updatedByName: state.profile.displayName
-    }));
+    await safeWrite(() => update(ref(db, "tasks/" + taskId), { assigneeId: newId, assignee: m.name, updatedAt: Date.now(), updatedBy: state.user.uid, updatedByName: state.profile.displayName }));
     await logActivity("task_reassigned", `أعاد إسناد "${t.title}" إلى ${m.name}`, taskId, t.title);
     showToast(`✅ تم الإسناد`, 'success');
   } catch (err) { swalError("فشل", err.message); }
@@ -1918,9 +1575,7 @@ async function deleteTask(taskId) {
   const r = await swalConfirm("حذف المهمة؟", `"${t.title}"`);
   if (!r.isConfirmed) return;
   try {
-    await safeWrite(() => set(ref(db, "deleted_tasks/" + taskId), {
-      ...t, deletedAt: Date.now(), deletedBy: state.user.uid, deletedByName: state.profile.displayName
-    }));
+    await safeWrite(() => set(ref(db, "deleted_tasks/" + taskId), { ...t, deletedAt: Date.now(), deletedBy: state.user.uid, deletedByName: state.profile.displayName }));
     await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
     await logActivity("task_deleted", `حذف مهمة: ${t.title}`, taskId, t.title);
     closeModal();
@@ -1932,10 +1587,7 @@ async function editTask(taskId) {
   const t = state.tasks[taskId];
   if (!t) return;
   const seen = new Set();
-  const teamOptions = Object.entries(state.team)
-    .filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; })
-    .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
-    .map(([id, m]) => `<option value="${esc(id)}" ${t.assigneeId === id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
+  const teamOptions = Object.entries(state.team).filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; }).sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar")).map(([id, m]) => `<option value="${esc(id)}" ${t.assigneeId === id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
   const { value: formValues } = await Swal.fire({
     title: "✏️ تعديل المهمة", width: 640,
     html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
@@ -1967,24 +1619,14 @@ async function editTask(taskId) {
       if (!title) { Swal.showValidationMessage("العنوان مطلوب"); return false; }
       const assigneeId = document.getElementById("swal-assignee").value;
       if (!assigneeId) { Swal.showValidationMessage("اختر المسؤول"); return false; }
-      return {
-        title, assigneeId,
-        priority: document.getElementById("swal-priority").value,
-        status: document.getElementById("swal-status").value,
-        dueDate: document.getElementById("swal-due").value,
-        tags: document.getElementById("swal-tags").value.trim(),
-        notes: document.getElementById("swal-notes").value.trim()
-      };
+      return { title, assigneeId, priority: document.getElementById("swal-priority").value, status: document.getElementById("swal-status").value, dueDate: document.getElementById("swal-due").value, tags: document.getElementById("swal-tags").value.trim(), notes: document.getElementById("swal-notes").value.trim() };
     }
   });
   if (!formValues) return;
   const m = state.team[formValues.assigneeId];
   if (!m) return swalError("بيانات ناقصة");
   try {
-    await safeWrite(() => update(ref(db, "tasks/" + taskId), {
-      ...formValues, assignee: m.name, updatedAt: Date.now(),
-      updatedBy: state.user.uid, updatedByName: state.profile.displayName
-    }));
+    await safeWrite(() => update(ref(db, "tasks/" + taskId), { ...formValues, assignee: m.name, updatedAt: Date.now(), updatedBy: state.user.uid, updatedByName: state.profile.displayName }));
     await logActivity("task_edited", `عدّل "${formValues.title}"`, taskId, formValues.title);
     showToast("✏️ تم الحفظ", 'success');
   } catch (err) { swalError("فشل", err.message); }
@@ -1997,13 +1639,8 @@ async function addComment(taskId) {
   const t = state.tasks[taskId];
   try {
     await safeWrite(async () => {
-      await set(push(ref(db, "tasks/" + taskId + "/comments")), {
-        text, author: state.profile.displayName,
-        authorId: state.user.uid, createdAt: Date.now()
-      });
-      await update(ref(db, "tasks/" + taskId), {
-        updatedAt: Date.now(), updatedBy: state.user.uid, updatedByName: state.profile.displayName
-      });
+      await set(push(ref(db, "tasks/" + taskId + "/comments")), { text, author: state.profile.displayName, authorId: state.user.uid, createdAt: Date.now() });
+      await update(ref(db, "tasks/" + taskId), { updatedAt: Date.now(), updatedBy: state.user.uid, updatedByName: state.profile.displayName });
     });
     await logActivity("comment_added", `علّق على "${t?.title}"`, taskId, t?.title);
     input.value = "";
@@ -2011,30 +1648,18 @@ async function addComment(taskId) {
   } catch (err) { swalError("فشل", err.message); }
 }
 function togglePin(taskId) {
-  if (state.pinnedTaskId === taskId) {
-    state.pinnedTaskId = null;
-    Storage.remove(`pinnedTask_${state.user.uid}`);
-    showToast("📌 إلغاء التثبيت", 'info');
-  } else {
-    state.pinnedTaskId = taskId;
-    Storage.set(`pinnedTask_${state.user.uid}`, taskId);
-    showToast("⭐ تم التثبيت", 'success');
-  }
+  if (state.pinnedTaskId === taskId) { state.pinnedTaskId = null; Storage.remove(`pinnedTask_${state.user.uid}`); showToast("📌 إلغاء التثبيت", 'info'); }
+  else { state.pinnedTaskId = taskId; Storage.set(`pinnedTask_${state.user.uid}`, taskId); showToast("⭐ تم التثبيت", 'success'); }
   renderTasks();
   if (state.openTaskId === taskId) renderModal(taskId);
 }
 async function logActivity(type, text, taskId = null, taskTitle = "") {
   if (!state.user) return;
-  try {
-    await push(ref(db, "activity"), {
-      type, text, taskId, taskTitle,
-      uid: state.user.uid, byName: state.profile?.displayName || "—", at: Date.now()
-    });
-  } catch {}
+  try { await push(ref(db, "activity"), { type, text, taskId, taskTitle, uid: state.user.uid, byName: state.profile?.displayName || "—", at: Date.now() }); } catch {}
 }
 
 /* ============================================================
-   WATCH — RENDER
+   WATCH v4 — Compact Grid
    ============================================================ */
 function wRenderStats() {
   const tasks = Object.values(state.watchData.tasks || {});
@@ -2043,89 +1668,20 @@ function wRenderStats() {
   const working = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
   const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
   const urgent = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)).length;
+  const important = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم").length;
   set("wTotal", tasks.length);
   set("wActive", active);
   set("wWorking", working);
   set("wDone", done);
-  set("wTabAllCount", tasks.length);
+  set("wUrgent", urgent);
+  set("wImportant", important);
+  set("wTabAllCount", tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE).length);
   set("wTabUrgentCount", urgent);
+  set("wTabImportantCount", important);
   set("wTabWorkingCount", working);
 }
-function wRenderCompleted() {
-  const wrap = document.getElementById("wCompletedList");
-  if (!wrap) return;
-  const completed = Object.entries(state.watchData.tasks || {})
-    .filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE)
-    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0))
-    .slice(0, 10);
-  if (completed.length === 0) {
-    wrap.innerHTML = '<span style="color:#64748b;font-size:12px;font-weight:700;">لا توجد مهام مكتملة بعد</span>';
-    return;
-  }
-  wrap.innerHTML = completed.map(([id, t]) => `
-    <div class="w-recent-item" data-task-id="${id}" style="cursor:pointer;">
-      ${esc(t.title)}
-      <em>${esc(t.assignee || "—")} · ${timeAgo(t.updatedAt)}</em>
-    </div>`).join("");
-}
-function wRenderDoughnut() {
-  const tasks = Object.values(state.watchData.tasks || {});
-  const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
-  const working = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
-  const newT = tasks.filter(t => t.status === CONSTANTS.STATUS.NEW).length;
-  const total = tasks.length;
-  const donePercent = total > 0 ? Math.round((done / total) * 100) : 0;
-  const pctEl = document.getElementById("wDonePercent");
-  if (pctEl) pctEl.textContent = donePercent + "%";
-  Charts.upsert('watchDoughnutChart', {
-    type: 'doughnut',
-    data: {
-      labels: ["مكتملة","جارية","جديدة"],
-      datasets: [{ data: [done, working, newT], backgroundColor: ["#2dd4a3","#f5a524","#5b8def"], borderColor: "#050810", borderWidth: 4, hoverOffset: 8 }]
-    },
-    options: {
-      cutout: '68%',
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#94a3b8', font: { family: 'Cairo', size: 11, weight: '700' }, padding: 10, usePointStyle: true, pointStyle: 'circle', boxWidth: 8, boxHeight: 8 }
-        }
-      }
-    }
-  });
-}
-function wRenderTopPerformers() {
-  const wrap = document.getElementById("wTopPerformers");
-  const countEl = document.getElementById("wTopCount");
-  if (!wrap) return;
-  const performers = {};
-  Object.values(state.watchData.tasks || {}).forEach(t => {
-    if (t.status === CONSTANTS.STATUS.DONE && t.assigneeId) {
-      if (!performers[t.assigneeId]) performers[t.assigneeId] = { name: t.assignee || "—", count: 0 };
-      performers[t.assigneeId].count++;
-    }
-  });
-  const sorted = Object.entries(performers).sort((a, b) => b[1].count - a[1].count).slice(0, 6);
-  if (countEl) countEl.textContent = sorted.length;
-  if (sorted.length === 0) {
-    wrap.innerHTML = '<div class="w-empty-state" style="padding:20px;"><div style="font-size:32px;">🏆</div><div style="font-size:11px;">لا توجد إنجازات</div></div>';
-    return;
-  }
-  wrap.innerHTML = sorted.map(([uid, p], i) => {
-    const rankClass = i === 0 ? "r1" : i === 1 ? "r2" : i === 2 ? "r3" : "rx";
-    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
-    return `<div class="w-top-item">
-      <div class="w-top-rank ${rankClass}">${medal}</div>
-      <div class="w-top-avatar">${esc(p.name.charAt(0))}</div>
-      <div class="w-top-info">
-        <strong>${esc(p.name)}</strong>
-        <small>${p.count} مهمة مكتملة</small>
-      </div>
-      <div class="w-top-score">${p.count}</div>
-    </div>`;
-  }).join("");
-}
-function wTaskRowHtml(id, t, index = 0) {
+
+function wTaskCardHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
   const pc = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
@@ -2133,19 +1689,27 @@ function wTaskRowHtml(id, t, index = 0) {
   const isUrgentActive = t.priority === "عاجل" && !isDone;
   const statusClass = t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : isDone ? "done" : "new";
   const statusLabel = t.status === CONSTANTS.STATUS.NEW ? "جديدة" : t.status === CONSTANTS.STATUS.PROGRESS ? "جارية" : "مكتملة";
-  const urgentClass = isUrgentActive ? "urgent-highlight" : "";
-  const dueText = t.dueDate ? dueLabel(t.dueDate) : "—";
-  return `<article class="w-task-row p-${pc} ${urgentClass} ${isOverdue ? 'overdue' : ''}"
-                   data-task-id="${esc(id)}" style="animation-delay:${index * 20}ms" tabindex="0" role="button">
-    <div class="w-task-bar"></div>
-    <div class="w-task-priority ${pc}">
-      ${t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}
+  const priorityLabel = t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي";
+  const assigneeInitial = (t.assignee || "?").charAt(0).toUpperCase();
+  return `<article class="w-task-card p-${pc} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${esc(id)}" tabindex="0" role="button">
+    <div class="w-card-head">
+      <div class="w-card-tags">
+        <span class="w-card-priority ${pc}">${priorityLabel}</span>
+        ${isOverdue ? '<span class="w-card-overdue">⚠️ متأخر</span>' : ''}
+      </div>
+      <span class="w-card-status ${statusClass}">${statusLabel}</span>
     </div>
-    <div class="w-task-title" title="${esc(t.title)}">${esc(t.title)}</div>
-    <div class="w-task-assignee">👤 ${esc(t.assignee || "—")}${t.dueDate ? ` · 📅 ${esc(dueText)}` : ""}</div>
-    <div class="w-task-status ${statusClass}">${statusLabel}</div>
+    <h3 class="w-card-title">${esc(t.title)}</h3>
+    <div class="w-card-info">
+      <div class="w-card-assignee">
+        <span class="avatar">${esc(assigneeInitial)}</span>
+        <span>${esc(t.assignee || "—")}</span>
+      </div>
+      ${t.dueDate ? `<span class="w-card-due ${isOverdue ? 'overdue' : ''}">📅 ${esc(dueLabel(t.dueDate))}</span>` : ''}
+    </div>
   </article>`;
 }
+
 function wRenderTasks() {
   const body = document.getElementById("wMainBody");
   if (!body) return;
@@ -2153,46 +1717,55 @@ function wRenderTasks() {
   let filtered = [];
   const tab = state.watchTab;
   if (tab === "all") {
-    filtered = allTasks.sort((a, b) => {
-      const aUrgent = a[1].priority === "عاجل" && a[1].status !== CONSTANTS.STATUS.DONE;
-      const bUrgent = b[1].priority === "عاجل" && b[1].status !== CONSTANTS.STATUS.DONE;
+    filtered = allTasks.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE).sort((a, b) => {
+      const aUrgent = a[1].priority === "عاجل";
+      const bUrgent = b[1].priority === "عاجل";
       if (aUrgent && !bUrgent) return -1;
       if (bUrgent && !aUrgent) return 1;
-      if (a[1].status === CONSTANTS.STATUS.DONE && b[1].status !== CONSTANTS.STATUS.DONE) return 1;
-      if (b[1].status === CONSTANTS.STATUS.DONE && a[1].status !== CONSTANTS.STATUS.DONE) return -1;
-      const pa = CONSTANTS.PRIORITY_MAP[a[1].priority] ?? 2;
-      const pb = CONSTANTS.PRIORITY_MAP[b[1].priority] ?? 2;
-      if (pa !== pb) return pa - pb;
+      const aImp = a[1].priority === "مهم";
+      const bImp = b[1].priority === "مهم";
+      if (aImp && !bImp) return -1;
+      if (bImp && !aImp) return 1;
       return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
     });
   } else if (tab === "urgent") {
     filtered = allTasks.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
+  } else if (tab === "important") {
+    filtered = allTasks.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم");
   } else if (tab === "working") {
     filtered = allTasks.filter(([_, t]) => t.status === CONSTANTS.STATUS.PROGRESS);
-  } else if (tab === "done") {
-    filtered = allTasks.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE).sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)).slice(0, 20);
   }
+  const grid = document.getElementById("wTasksList");
   if (filtered.length === 0) {
-    body.classList.remove("auto-scroll");
-    state.scroller?.destroy?.();
-    state.scroller = null;
-    body.innerHTML = '<div class="w-empty-state"><div>📭</div><div>لا توجد مهام</div></div>';
+    grid.innerHTML = '<div class="w-empty-state"><div>📭</div><div>لا توجد مهام</div></div>';
     return;
   }
-  const html = filtered.map(([id, t], i) => wTaskRowHtml(id, t, i)).join("");
-  if (filtered.length > 4) {
-    body.innerHTML = `<div class="w-scroll-track">${html}${html}</div>`;
-    const track = body.querySelector('.w-scroll-track');
-    state.scroller?.destroy?.();
-    const scroller = new SmoothAutoScroller(body, track);
-    scroller.start();
-    state.scroller = scroller;
-  } else {
-    state.scroller?.destroy?.();
-    state.scroller = null;
-    body.innerHTML = `<div class="w-scroll-track">${html}</div>`;
-  }
+  grid.innerHTML = filtered.map(([id, t]) => wTaskCardHtml(id, t)).join("");
 }
+
+function wRenderCompleted() {
+  const track = document.getElementById("wCompletedList");
+  if (!track) return;
+  const completed = Object.entries(state.watchData.tasks || {})
+    .filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE)
+    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0))
+    .slice(0, 15);
+  if (completed.length === 0) {
+    track.innerHTML = '<span class="w-ticker-empty">لا توجد مهام مكتملة بعد</span>';
+    return;
+  }
+  // Duplicate for smooth loop
+  const items = completed.map(([id, t]) => `
+    <span class="w-ticker-item" data-task-id="${id}" style="cursor:pointer;">
+      ${esc(t.title)}
+      <em>${esc(t.assignee || "—")} · ${timeAgo(t.updatedAt)}</em>
+    </span>`).join("");
+  const signature = completed.map(([id, t]) => id + t.updatedAt).join("|");
+  if (track._signature === signature) return;
+  track._signature = signature;
+  track.innerHTML = items + items;
+}
+
 function wRenderNewsTicker() {
   const track = document.getElementById("wNewsTrack");
   if (!track) return;
@@ -2201,38 +1774,35 @@ function wRenderNewsTicker() {
   const urgentTasks = tasks
     .filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عاجل")
     .sort((a, b) => (daysRemaining(a.dueDate) ?? 999) - (daysRemaining(b.dueDate) ?? 999))
-    .slice(0, 3);
+    .slice(0, 4);
   urgentTasks.forEach(t => {
-    items.push(`🔴 عاجل: ${t.title}${t.dueDate ? ` — ${dueLabel(t.dueDate)}` : ""}`);
+    items.push({ text: `🔴 عاجل: ${t.title}${t.dueDate ? ` — ${dueLabel(t.dueDate)}` : ""}`, cls: "is-urgent" });
   });
   const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
   const today = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
   const doneWeek = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE && isThisWeek(t.updatedAt)).length;
-  if (overdue > 0) items.push(`⚠️ ${overdue} مهمة متأخرة`);
-  if (today > 0) items.push(`🔥 ${today} مهمة تستحق اليوم`);
-  if (doneWeek > 0) items.push(`✅ ${doneWeek} مهمة أُنجزت هذا الأسبوع`);
+  if (overdue > 0) items.push({ text: `⚠️ ${overdue} مهمة متأخرة`, cls: "is-warning" });
+  if (today > 0) items.push({ text: `🔥 ${today} مهمة تستحق اليوم`, cls: "is-warning" });
+  if (doneWeek > 0) items.push({ text: `✅ ${doneWeek} مهمة أُنجزت هذا الأسبوع`, cls: "" });
   (state.watchData.activity || [])
     .filter(a => a.type !== 'task_deleted' && a.type !== 'task_cleared')
     .slice(0, 3)
-    .forEach(a => items.push(`📌 ${a.byName || "—"}: ${a.text}`));
-  if (items.length === 0) items.push("مرحباً بكم — EMAK IT Dep.");
-  const signature = items.join("|");
+    .forEach(a => items.push({ text: `📌 ${a.byName || "—"}: ${a.text}`, cls: "" }));
+  if (items.length === 0) items.push({ text: "مرحباً بكم — EMAK IT Dep.", cls: "" });
+  const signature = items.map(i => i.text).join("|");
   if (track._signature === signature) return;
   track._signature = signature;
-  track.innerHTML = items.map(t => `<span>${esc(t)}</span>`).join("");
+  const html = items.map(i => `<span class="w-ticker-item ${i.cls}">${esc(i.text)}</span>`).join("");
+  track.innerHTML = html + html;
 }
+
 function wRenderAll() {
   wRenderStats();
   wRenderCompleted();
-  wRenderDoughnut();
-  wRenderTopPerformers();
   wRenderTasks();
   wRenderNewsTicker();
 }
 
-/* ============================================================
-   WATCH CLOCK
-   ============================================================ */
 let _clockTimer = null;
 let _lastClockTime = "";
 function startWatchClock() {
@@ -2256,29 +1826,16 @@ function startWatchClock() {
 }
 function stopWatchClock() { if (_clockTimer) { clearInterval(_clockTimer); _clockTimer = null; } }
 
-/* ============================================================
-   WATCH — OPEN/CLOSE/DATA
-   ============================================================ */
 async function promptWatchPassword() {
   const session = Storage.get('emak_watch_session');
   if (session && Date.now() - session.at < CONSTANTS.WATCH_SESSION_DURATION) return openWatchScreen();
   const { value: password } = await Swal.fire({
     title: "🖥️ شاشة العرض",
-    html: `<div style="text-align:center;direction:rtl;">
-      <p style="color:#94a3b8;font-size:13px;margin-bottom:16px;">أدخل كلمة السر</p>
-      <input id="watch-pass-input" type="password" class="swal2-input" placeholder="••••••••"
-             style="margin:0;width:100%;text-align:center;font-size:18px;letter-spacing:4px;font-family:monospace;">
-    </div>`,
+    html: `<div style="text-align:center;direction:rtl;"><p style="color:#94a3b8;font-size:13px;margin-bottom:16px;">أدخل كلمة السر</p><input id="watch-pass-input" type="password" class="swal2-input" placeholder="••••••••" style="margin:0;width:100%;text-align:center;font-size:18px;letter-spacing:4px;font-family:monospace;"></div>`,
     showCancelButton: true, confirmButtonText: "🔓", cancelButtonText: "إلغاء",
     confirmButtonColor: "#a855f7", cancelButtonColor: "#5b6580",
     background: themeBg(), color: themeFg(), focusConfirm: false,
-    didOpen: () => {
-      const inp = document.getElementById("watch-pass-input");
-      if (inp) {
-        inp.focus();
-        inp.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); } });
-      }
-    },
+    didOpen: () => { const inp = document.getElementById("watch-pass-input"); if (inp) { inp.focus(); inp.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); } }); } },
     preConfirm: () => {
       const entered = document.getElementById("watch-pass-input").value;
       if (!entered) { Swal.showValidationMessage("أدخل"); return false; }
@@ -2286,11 +1843,7 @@ async function promptWatchPassword() {
       return entered;
     }
   });
-  if (password) {
-    Storage.set('emak_watch_session', { at: Date.now() });
-    showToast("🔓 تم", 'success');
-    openWatchScreen();
-  }
+  if (password) { Storage.set('emak_watch_session', { at: Date.now() }); showToast("🔓 تم", 'success'); openWatchScreen(); }
 }
 async function openWatchScreen() {
   state.watchMode = true;
@@ -2356,8 +1909,7 @@ async function startWatchData() {
   state.watchUnsubs.team = onValue(ref(db, "team"), (snap) => { state.watchData.team = snap.val() || {}; });
   state.watchUnsubs.activity = onValue(ref(db, "activity"), (snap) => {
     const raw = snap.val() || {};
-    state.watchData.activity = Object.entries(raw).map(([id, a]) => ({ id, ...a }))
-      .sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 30);
+    state.watchData.activity = Object.entries(raw).map(([id, a]) => ({ id, ...a })).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 30);
     if (state.watchMode) wRenderNewsTicker();
   });
   wRenderAll();
@@ -2366,13 +1918,8 @@ function stopWatchData() {
   Object.keys(state.watchUnsubs).forEach(k => {
     if (state.watchUnsubs[k]) { try { state.watchUnsubs[k](); } catch {} state.watchUnsubs[k] = null; }
   });
-  state.scroller?.destroy?.();
-  state.scroller = null;
 }
 
-/* ============================================================
-   USERS
-   ============================================================ */
 function renderUsersStats() {
   const users = Object.values(state.users);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -2393,10 +1940,7 @@ function renderUsersList() {
     if (seen.has(key)) return false;
     seen.add(key); return true;
   });
-  if (state.usersSearch) users = users.filter(([uid, u]) => {
-    const hay = `${u.displayName || ""} ${u.name || ""} ${u.username || ""} ${u.email || ""}`.toLowerCase();
-    return hay.includes(state.usersSearch);
-  });
+  if (state.usersSearch) users = users.filter(([uid, u]) => `${u.displayName || ""} ${u.name || ""} ${u.username || ""} ${u.email || ""}`.toLowerCase().includes(state.usersSearch));
   if (state.usersRoleFilter !== "all") users = users.filter(([_, u]) => u.role === state.usersRoleFilter);
   if (state.usersStatusFilter !== "all") users = users.filter(([_, u]) => state.usersStatusFilter === "active" ? u.active !== false : u.active === false);
   if (users.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون</p>'; return; }
@@ -2411,17 +1955,8 @@ function renderUsersList() {
       <div class="user-avatar">${esc(displayName.charAt(0))}</div>
       <div class="user-info-cell">
         <div class="user-name">${esc(displayName)}${isMe ? "<span style='font-size:10px;padding:3px 10px;background:#f5a524;color:#fff;border-radius:10px;font-weight:800;'>أنت</span>" : ""}</div>
-        <div class="user-meta">
-          <span style="font-family:monospace;color:var(--text-3);">@${esc(u.username || "—")}</span>
-          <span class="role-badge ${u.role === "admin" ? "admin" : "user"}">${u.role === "admin" ? "👑 مدير" : "👤 موظف"}</span>
-          <span class="status-badge ${u.active !== false ? "active" : "inactive"}">${u.active !== false ? "● نشط" : "○ معطّل"}</span>
-        </div>
-        <div class="user-stats-row">
-          <span>📋 <b>${tasks.length}</b></span>
-          <span style="color:#2dd4a3;">✅ <b>${doneTasks}</b></span>
-          <span style="color:#f5a524;">⏳ <b>${activeTasks}</b></span>
-          <span style="color:var(--text-3);">🕐 ${lastLogin}</span>
-        </div>
+        <div class="user-meta"><span style="font-family:monospace;color:var(--text-3);">@${esc(u.username || "—")}</span><span class="role-badge ${u.role === "admin" ? "admin" : "user"}">${u.role === "admin" ? "👑 مدير" : "👤 موظف"}</span><span class="status-badge ${u.active !== false ? "active" : "inactive"}">${u.active !== false ? "● نشط" : "○ معطّل"}</span></div>
+        <div class="user-stats-row"><span>📋 <b>${tasks.length}</b></span><span style="color:#2dd4a3;">✅ <b>${doneTasks}</b></span><span style="color:#f5a524;">⏳ <b>${activeTasks}</b></span><span style="color:var(--text-3);">🕐 ${lastLogin}</span></div>
       </div>
       <div class="user-actions">
         ${u.role !== "admin" ? `<button class="btn-sm primary" data-user-action="promote" data-uid="${uid}" title="ترقية">⬆️</button>` : ""}
@@ -2439,31 +1974,13 @@ function updateActivityButtons() {
   if (btnClear) btnClear.style.display = display;
   if (btnPurge) btnPurge.style.display = display;
 }
-
-/* ============================================================
-   ACTIVITY
-   ============================================================ */
 function renderActivity() {
   const wrap = $("#activityList");
   if (!wrap) return;
   const events = state.activity.filter(e => e.type !== "task_deleted" && e.type !== "task_cleared").slice(0, 100);
   if (events.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد نشاط</p>'; return; }
-  const icons = {
-    task_created: "➕", task_edited: "✏️", status_changed: "🔄",
-    comment_added: "💬", user_created: "👤", user_promoted: "👑",
-    task_reassigned: "👤", password_changed: "🔑", history_cleared: "🗑️"
-  };
-  wrap.innerHTML = events.map(e => `
-    <div style="display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);">
-      <div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[e.type] || "•"}</div>
-      <div style="flex:1;">
-        <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div>
-        <div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;">
-          <span>${esc(e.byName || "—")}</span><span>•</span><span>${formatDateTime(e.at)}</span>
-        </div>
-      </div>
-    </div>
-  `).join("");
+  const icons = { task_created: "➕", task_edited: "✏️", status_changed: "🔄", comment_added: "💬", user_created: "👤", user_promoted: "👑", task_reassigned: "👤", password_changed: "🔑", history_cleared: "🗑️" };
+  wrap.innerHTML = events.map(e => `<div style="display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[e.type] || "•"}</div><div style="flex:1;"><div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div><div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;"><span>${esc(e.byName || "—")}</span><span>•</span><span>${formatDateTime(e.at)}</span></div></div></div>`).join("");
 }
 function renderWatch() {
   const timeline = $("#watchTimeline");
@@ -2475,47 +1992,25 @@ function renderWatch() {
   events = events.slice(0, 50);
   if (events.length === 0) { timeline.innerHTML = '<p class="empty">لا توجد تحديثات</p>'; return; }
   const icons = { task_created: "➕", task_edited: "✏️", task_deleted: "🗑️", status_changed: "🔄", comment_added: "💬" };
-  timeline.innerHTML = events.map(e => `
-    <div style="display:flex;gap:14px;padding:14px;border-radius:12px;background:var(--surface-1);margin-bottom:10px;">
-      <div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[e.type] || "•"}</div>
-      <div style="flex:1;">
-        <div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div>
-        <div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;">
-          <span>${esc(e.byName || "—")}</span><span>•</span><span>${timeAgo(e.at)}</span>
-        </div>
-      </div>
-    </div>
-  `).join("");
+  timeline.innerHTML = events.map(e => `<div style="display:flex;gap:14px;padding:14px;border-radius:12px;background:var(--surface-1);margin-bottom:10px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[e.type] || "•"}</div><div style="flex:1;"><div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div><div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;"><span>${esc(e.byName || "—")}</span><span>•</span><span>${timeAgo(e.at)}</span></div></div></div>`).join("");
   renderActiveTasks();
 }
 function renderActiveTasks() {
   const wrap = $("#activeTasksList");
   if (!wrap) return;
-  const active = Object.entries(state.tasks)
-    .filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE)
-    .sort((a, b) => {
-      const pa = CONSTANTS.PRIORITY_MAP[a[1].priority] ?? 2;
-      const pb = CONSTANTS.PRIORITY_MAP[b[1].priority] ?? 2;
-      if (pa !== pb) return pa - pb;
-      return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
-    }).slice(0, 8);
+  const active = Object.entries(state.tasks).filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE).sort((a, b) => {
+    const pa = CONSTANTS.PRIORITY_MAP[a[1].priority] ?? 2;
+    const pb = CONSTANTS.PRIORITY_MAP[b[1].priority] ?? 2;
+    if (pa !== pb) return pa - pb;
+    return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
+  }).slice(0, 8);
   if (active.length === 0) { wrap.innerHTML = '<p class="empty">لا توجد مهام 🎉</p>'; return; }
-  wrap.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">' +
-    active.map(([id, t]) => {
-      const isOverdue = daysRemaining(t.dueDate) < 0 && t.status !== CONSTANTS.STATUS.DONE;
-      return `<div style="background:var(--surface-1);border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;" data-task-id="${id}">
-        <div style="font-size:14px;font-weight:800;margin-bottom:10px;">${esc(t.title)}</div>
-        <div style="font-size:12px;color:var(--text-2);display:flex;justify-content:space-between;">
-          <span>👤 ${esc(t.assignee || "—")}</span>
-          ${t.dueDate ? `<span style="${isOverdue ? 'color:#f04b5c;font-weight:800;' : ''}">${esc(dueLabel(t.dueDate))}</span>` : ""}
-        </div>
-      </div>`;
-    }).join("") + '</div>';
+  wrap.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">' + active.map(([id, t]) => {
+    const isOverdue = daysRemaining(t.dueDate) < 0 && t.status !== CONSTANTS.STATUS.DONE;
+    return `<div style="background:var(--surface-1);border:1.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;" data-task-id="${id}"><div style="font-size:14px;font-weight:800;margin-bottom:10px;">${esc(t.title)}</div><div style="font-size:12px;color:var(--text-2);display:flex;justify-content:space-between;"><span>👤 ${esc(t.assignee || "—")}</span>${t.dueDate ? `<span style="${isOverdue ? 'color:#f04b5c;font-weight:800;' : ''}">${esc(dueLabel(t.dueDate))}</span>` : ""}</div></div>`;
+  }).join("") + '</div>';
 }
 
-/* ============================================================
-   REPORT
-   ============================================================ */
 function openReport() {
   const entries = Object.entries(state.tasks);
   const done = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE);
@@ -2533,19 +2028,12 @@ function openReport() {
         <div style="background:rgba(220,38,38,.08);padding:18px;border-radius:14px;text-align:center;border-inline-end:4px solid #dc2626;"><div style="font-size:28px;font-weight:900;color:#dc2626;">${overdue.length}</div><div>متأخرة</div></div>
       </div>
       <h2 style="color:#1e3a8a;font-size:19px;">جميع المهام</h2>
-      ${entries.map(([id, t]) => `
-        <div style="background:#f8fafc;padding:16px;border-radius:12px;margin-bottom:12px;border-inline-end:4px solid ${t.priority==="عاجل"?"#dc2626":t.priority==="مهم"?"#d97706":"#059669"};">
-          <div style="font-size:15px;font-weight:800;">${esc(t.title)}</div>
-          <div style="font-size:12px;color:#64748b;">👤 ${esc(t.assignee || "—")} • ${esc(t.status)}</div>
-        </div>`).join("")}
+      ${entries.map(([id, t]) => `<div style="background:#f8fafc;padding:16px;border-radius:12px;margin-bottom:12px;border-inline-end:4px solid ${t.priority==="عاجل"?"#dc2626":t.priority==="مهم"?"#d97706":"#059669"};"><div style="font-size:15px;font-weight:800;">${esc(t.title)}</div><div style="font-size:12px;color:#64748b;">👤 ${esc(t.assignee || "—")} • ${esc(t.status)}</div></div>`).join("")}
     </div>`;
   $("#reportOverlay").classList.add("active");
   document.body.style.overflow = "hidden";
 }
-function closeReport() {
-  $("#reportOverlay").classList.remove("active");
-  document.body.style.overflow = "";
-}
+function closeReport() { $("#reportOverlay").classList.remove("active"); document.body.style.overflow = ""; }
 async function downloadPDF() {
   const btn = $("#downloadPdfBtn");
   btn.disabled = true; btn.textContent = "⏳ جارٍ التوليد...";
@@ -2630,12 +2118,8 @@ async function downloadPDF() {
     }
     pdf.save(`EMAK-Report-${new Date().toISOString().slice(0,10)}.pdf`);
     showToast("📄 تم تحميل التقرير", 'success');
-  } catch (e) {
-    swalError("خطأ في التحميل", e.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "📄 تحميل PDF";
-  }
+  } catch (e) { swalError("خطأ في التحميل", e.message); }
+  finally { btn.disabled = false; btn.textContent = "📄 تحميل PDF"; }
 }
 function exportCSV() {
   const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم"]];
@@ -2649,25 +2133,15 @@ function exportCSV() {
   showToast("📊 تم", 'success');
 }
 
-/* ============================================================
-   USERS MANAGEMENT
-   ============================================================ */
 async function openAddUserModal() {
   if (!state.isAdmin) return;
   const { value: formValues } = await Swal.fire({
     title: "➕ إضافة مستخدم",
     html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">اسم المستخدم</label>
-      <input id="nu-username" class="swal2-input" placeholder="bahaa" style="margin:0;width:100%;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">الاسم الكامل</label>
-      <input id="nu-name" class="swal2-input" placeholder="بهاء محمد" style="margin:0;width:100%;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">كلمة المرور (6+)</label>
-      <input id="nu-pass" type="text" class="swal2-input" placeholder="مؤقتة" style="margin:0;width:100%;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">الدور</label>
-      <select id="nu-role" class="swal2-select" style="margin:0;width:100%;">
-        <option value="employee">👤 موظف</option>
-        <option value="admin">👑 مدير</option>
-      </select>
+      <label style="font-size:12px;font-weight:800;color:#94a3b8;">اسم المستخدم</label><input id="nu-username" class="swal2-input" placeholder="bahaa" style="margin:0;width:100%;">
+      <label style="font-size:12px;font-weight:800;color:#94a3b8;">الاسم الكامل</label><input id="nu-name" class="swal2-input" placeholder="بهاء محمد" style="margin:0;width:100%;">
+      <label style="font-size:12px;font-weight:800;color:#94a3b8;">كلمة المرور (6+)</label><input id="nu-pass" type="text" class="swal2-input" placeholder="مؤقتة" style="margin:0;width:100%;">
+      <label style="font-size:12px;font-weight:800;color:#94a3b8;">الدور</label><select id="nu-role" class="swal2-select" style="margin:0;width:100%;"><option value="employee">👤 موظف</option><option value="admin">👑 مدير</option></select>
     </div>`,
     showCancelButton:true, confirmButtonText:"إنشاء", cancelButtonText:"إلغاء",
     confirmButtonColor:"#5b8def", focusConfirm:false, background: themeBg(), color: themeFg(),
@@ -2697,20 +2171,9 @@ async function openAddUserModal() {
     await set(ref(db, "usernames/" + username), { uid: newUid, createdAt: Date.now() });
     await push(ref(db, "team"), { uid: newUid, username, name: displayName, createdAt: Date.now() });
     await logActivity("user_created", `أنشأ مستخدم: ${displayName}`);
-    await Swal.fire({
-      icon:"success", title:"✅ تم",
-      html: `<div style="text-align:right;direction:rtl;font-size:14px;line-height:2;">
-        <p><b>المستخدم:</b> <code>${esc(username)}</code></p>
-        <p><b>كلمة المرور:</b> <code>${esc(password)}</code></p>
-      </div>`,
-      confirmButtonText:"حسناً", confirmButtonColor:"#5b8def", background: themeBg(), color: themeFg()
-    });
-  } catch (err) {
-    const msgs = { "auth/email-already-in-use": "محجوز", "auth/weak-password": "ضعيفة" };
-    swalError("فشل", msgs[err.code] || err.message);
-  } finally {
-    if (secondaryApp) { try { await deleteApp(secondaryApp); } catch {} }
-  }
+    await Swal.fire({ icon:"success", title:"✅ تم", html: `<div style="text-align:right;direction:rtl;font-size:14px;line-height:2;"><p><b>المستخدم:</b> <code>${esc(username)}</code></p><p><b>كلمة المرور:</b> <code>${esc(password)}</code></p></div>`, confirmButtonText:"حسناً", confirmButtonColor:"#5b8def", background: themeBg(), color: themeFg() });
+  } catch (err) { swalError("فشل", err.message); }
+  finally { if (secondaryApp) { try { await deleteApp(secondaryApp); } catch {} } }
 }
 async function openTeamModal() {
   if (!state.isAdmin) return;
@@ -2718,28 +2181,11 @@ async function openTeamModal() {
   const team = teamSnap.val() || {};
   const seen = new Set();
   const unique = Object.entries(team).filter(([id, m]) => { if (!m || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; });
-  const html = unique.map(([id, m]) => `
-    <div style="display:flex;align-items:center;gap:12px;padding:12px;background:${state.theme === 'light' ? '#f1f5f9' : '#181d2e'};border-radius:12px;margin-bottom:8px;">
-      <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;">${esc((m.name || "?").charAt(0))}</div>
-      <div style="flex:1;"><div style="font-weight:800;">${esc(m.name || "—")}</div><div style="font-size:11.5px;color:var(--text-2);">@${esc(m.username || "—")}</div></div>
-      <button class="btn-sm danger" data-team-remove="${id}">حذف</button>
-    </div>`).join("") || '<p class="empty">لا يوجد أعضاء</p>';
+  const html = unique.map(([id, m]) => `<div style="display:flex;align-items:center;gap:12px;padding:12px;background:${state.theme === 'light' ? '#f1f5f9' : '#181d2e'};border-radius:12px;margin-bottom:8px;"><div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;">${esc((m.name || "?").charAt(0))}</div><div style="flex:1;"><div style="font-weight:800;">${esc(m.name || "—")}</div><div style="font-size:11.5px;color:var(--text-2);">@${esc(m.username || "—")}</div></div><button class="btn-sm danger" data-team-remove="${id}">حذف</button></div>`).join("") || '<p class="empty">لا يوجد أعضاء</p>';
   await Swal.fire({
-    title: "👥 إدارة الفريق",
-    html: `<div style="max-height:400px;overflow-y:auto;">${html}</div>`,
-    showCancelButton:true, showConfirmButton:false, cancelButtonText:"إغلاق",
-    background: themeBg(), color: themeFg(),
-    didOpen: () => {
-      $$('[data-team-remove]').forEach(btn => {
-        btn.onclick = async () => {
-          const id = btn.dataset.teamRemove;
-          await safeWrite(() => remove(ref(db, "team/" + id)));
-          showToast("🗑️ تم", 'success');
-          Swal.close();
-          setTimeout(openTeamModal, 300);
-        };
-      });
-    }
+    title: "👥 إدارة الفريق", html: `<div style="max-height:400px;overflow-y:auto;">${html}</div>`,
+    showCancelButton:true, showConfirmButton:false, cancelButtonText:"إغلاق", background: themeBg(), color: themeFg(),
+    didOpen: () => { $$('[data-team-remove]').forEach(btn => { btn.onclick = async () => { await safeWrite(() => remove(ref(db, "team/" + btn.dataset.teamRemove))); showToast("🗑️ تم", 'success'); Swal.close(); setTimeout(openTeamModal, 300); }; }); }
   });
 }
 async function openChangePasswordModal() {
@@ -2748,14 +2194,7 @@ async function openChangePasswordModal() {
   if (isGoogleUser) return Swal.fire({ icon:"info", title:"حساب جوجل", text:"كلمة المرور من جوجل.", confirmButtonText:"حسناً", background: themeBg(), color: themeFg() });
   const { value: formValues } = await Swal.fire({
     title: "🔑 كلمة المرور",
-    html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">الحالية</label>
-      <input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">الجديدة (6+)</label>
-      <input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">تأكيد</label>
-      <input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;">
-    </div>`,
+    html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">الحالية</label><input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">الجديدة (6+)</label><input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">تأكيد</label><input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;"></div>`,
     showCancelButton:true, confirmButtonText:"تغيير", cancelButtonText:"إلغاء",
     confirmButtonColor:"#5b8def", focusConfirm:false, background: themeBg(), color: themeFg(),
     preConfirm: () => {
@@ -2778,7 +2217,7 @@ async function openChangePasswordModal() {
 }
 async function clearDeletedHistory() {
   if (!state.isAdmin) return swalError("غير مصرح");
-  const r = await swalConfirm("مسح سجل الحذف من النشاطات؟", "سيتم مسح أحداث الحذف فقط.");
+  const r = await swalConfirm("مسح سجل الحذف؟", "سيتم مسح أحداث الحذف فقط.");
   if (!r.isConfirmed) return;
   try {
     const snap = await get(ref(db, "activity"));
@@ -2807,18 +2246,10 @@ async function purgeDeletedTasks() {
   } catch (err) { swalError("فشل", err.message); }
 }
 
-/* ============================================================
-   BACKUP + PRESENCE
-   ============================================================ */
 async function createBackup() {
   if (!state.user || !state.profile) return;
   try {
-    await set(push(ref(db, "backups")), {
-      createdAt: Date.now(), createdBy: state.user.uid,
-      byName: state.profile.displayName || "—",
-      tasksCount: Object.keys(state.tasks).length,
-      data: { tasks: state.tasks, team: state.team }
-    });
+    await set(push(ref(db, "backups")), { createdAt: Date.now(), createdBy: state.user.uid, byName: state.profile.displayName || "—", tasksCount: Object.keys(state.tasks).length, data: { tasks: state.tasks, team: state.team } });
     await cleanupOldBackups();
   } catch {}
 }
@@ -2827,11 +2258,7 @@ async function cleanupOldBackups() {
     const snap = await get(ref(db, "backups"));
     if (!snap.exists()) return;
     const list = Object.entries(snap.val()).map(([id, b]) => ({ id, at: b.createdAt || 0 })).sort((a, b) => b.at - a.at);
-    if (list.length > CONSTANTS.MAX_BACKUPS) {
-      for (const old of list.slice(CONSTANTS.MAX_BACKUPS)) {
-        try { await remove(ref(db, "backups/" + old.id)); } catch {}
-      }
-    }
+    if (list.length > CONSTANTS.MAX_BACKUPS) for (const old of list.slice(CONSTANTS.MAX_BACKUPS)) { try { await remove(ref(db, "backups/" + old.id)); } catch {} }
   } catch {}
 }
 function startBackupTimer() {
@@ -2867,9 +2294,6 @@ async function cleanupTeamDuplicates() {
   } catch {}
 }
 
-/* ============================================================
-   ADD TASK FORM
-   ============================================================ */
 function setupAddTaskForm() {
   const form = $("#addTaskForm");
   if (!form) return;
@@ -2887,12 +2311,7 @@ function setupAddTaskForm() {
     if (!member) return swalError("عضو الفريق غير موجود");
     try {
       const newRef = push(ref(db, "tasks"));
-      await safeWrite(() => set(newRef, {
-        title, priority, dueDate, notes, tags, assigneeId,
-        assignee: member.name, status: CONSTANTS.STATUS.NEW,
-        createdBy: state.user.uid, createdByName: state.profile.displayName,
-        createdAt: Date.now(), updatedAt: Date.now()
-      }));
+      await safeWrite(() => set(newRef, { title, priority, dueDate, notes, tags, assigneeId, assignee: member.name, status: CONSTANTS.STATUS.NEW, createdBy: state.user.uid, createdByName: state.profile.displayName, createdAt: Date.now(), updatedAt: Date.now() }));
       await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key, title);
       form.reset();
       populateAssigneeSelect();
@@ -2907,17 +2326,11 @@ function populateAssigneeSelect() {
   const current = sel.value;
   const options = ['<option value="">-- المسؤول --</option>'];
   const seen = new Set();
-  Object.entries(state.team)
-    .filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; })
-    .sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar"))
-    .forEach(([id, m]) => options.push(`<option value="${esc(id)}">${esc(m.name)}</option>`));
+  Object.entries(state.team).filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; }).sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar")).forEach(([id, m]) => options.push(`<option value="${esc(id)}">${esc(m.name)}</option>`));
   sel.innerHTML = options.join("");
   if (current && sel.querySelector(`option[value="${current}"]`)) sel.value = current;
 }
 
-/* ============================================================
-   DELEGATION
-   ============================================================ */
 document.addEventListener('click', async (e) => {
   const btn = e.target.closest('[data-user-action]');
   if (!btn) return;
@@ -3007,15 +2420,14 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('[data-team-remove]')) return;
   const card = e.target.closest('.task-card[data-task-id]');
   if (card) { openModal(card.dataset.taskId); return; }
-  const wRow = e.target.closest('.w-task-row[data-task-id]');
-  if (wRow) { openModal(wRow.dataset.taskId); return; }
-  const wRecent = e.target.closest('.w-recent-item[data-task-id]');
-  if (wRecent) { openModal(wRecent.dataset.taskId); return; }
+  const wCard = e.target.closest('.w-task-card[data-task-id]');
+  if (wCard) { openModal(wCard.dataset.taskId); return; }
+  const wItem = e.target.closest('.w-ticker-item[data-task-id]');
+  if (wItem) { openModal(wItem.dataset.taskId); return; }
+  const aCard = e.target.closest('[data-task-id]');
+  if (aCard && aCard.tagName === 'DIV') { openModal(aCard.dataset.taskId); return; }
 });
 
-/* ============================================================
-   NAV / FILTERS / SEARCH
-   ============================================================ */
 function setupNav() {
   $$('.nav-btn[data-view]').forEach(btn => {
     btn.onclick = () => {
@@ -3074,9 +2486,6 @@ function setupNav() {
   $("#reportOverlay").addEventListener('click', (e) => { if (e.target.id === 'reportOverlay') closeReport(); });
 }
 
-/* ============================================================
-   LOGIN
-   ============================================================ */
 function setupLoginHandlers() {
   const form = $("#loginForm");
   if (form) {
@@ -3094,12 +2503,7 @@ function setupLoginHandlers() {
         if ($("#rememberMe").checked) Storage.set('emak_last_username', username);
         else Storage.remove('emak_last_username');
       } catch (err) {
-        const msgs = {
-          "auth/user-not-found": "اسم المستخدم غير موجود",
-          "auth/wrong-password": "كلمة المرور غير صحيحة",
-          "auth/invalid-credential": "بيانات غير صحيحة",
-          "auth/too-many-requests": "محاولات كثيرة. حاول لاحقاً"
-        };
+        const msgs = { "auth/user-not-found": "اسم المستخدم غير موجود", "auth/wrong-password": "كلمة المرور غير صحيحة", "auth/invalid-credential": "بيانات غير صحيحة", "auth/too-many-requests": "محاولات كثيرة" };
         errBox.textContent = msgs[err.code] || "فشل تسجيل الدخول";
       } finally { btn.disabled = false; btn.textContent = "تسجيل الدخول"; }
     };
@@ -3127,21 +2531,11 @@ function setupLoginHandlers() {
     watchLoginBtn.onclick = async () => {
       const { value: password } = await Swal.fire({
         title: "🖥️ شاشة العرض",
-        html: `<div style="text-align:center;direction:rtl;">
-          <p style="color:#94a3b8;font-size:13px;margin-bottom:16px;">أدخل كلمة السر</p>
-          <input id="login-watch-pass" type="password" class="swal2-input" placeholder="••••••••"
-                 style="margin:0;width:100%;text-align:center;font-size:18px;letter-spacing:4px;font-family:monospace;">
-        </div>`,
+        html: `<div style="text-align:center;direction:rtl;"><p style="color:#94a3b8;font-size:13px;margin-bottom:16px;">أدخل كلمة السر</p><input id="login-watch-pass" type="password" class="swal2-input" placeholder="••••••••" style="margin:0;width:100%;text-align:center;font-size:18px;letter-spacing:4px;font-family:monospace;"></div>`,
         showCancelButton: true, confirmButtonText: "🔓", cancelButtonText: "إلغاء",
         confirmButtonColor: "#a855f7", cancelButtonColor: "#5b6580",
         background: themeBg(), color: themeFg(), focusConfirm: false,
-        didOpen: () => {
-          const inp = document.getElementById("login-watch-pass");
-          if (inp) {
-            inp.focus();
-            inp.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); } });
-          }
-        },
+        didOpen: () => { const inp = document.getElementById("login-watch-pass"); if (inp) { inp.focus(); inp.addEventListener("keypress", (e) => { if (e.key === "Enter") { e.preventDefault(); Swal.clickConfirm(); } }); } },
         preConfirm: () => {
           const entered = document.getElementById("login-watch-pass").value;
           if (!entered) { Swal.showValidationMessage("أدخل"); return false; }
@@ -3149,11 +2543,7 @@ function setupLoginHandlers() {
           return entered;
         }
       });
-      if (password) {
-        Storage.set('emak_watch_session', { at: Date.now() });
-        showToast("🔓 تم", 'success');
-        await openWatchScreen();
-      }
+      if (password) { Storage.set('emak_watch_session', { at: Date.now() }); showToast("🔓 تم", 'success'); await openWatchScreen(); }
     };
   }
   const watchPinForm = $("#watchPinForm");
@@ -3165,15 +2555,13 @@ function setupLoginHandlers() {
       const entered = input.value;
       if (entered === CONSTANTS.WATCH_PASSWORD) {
         Storage.set('emak_watch_session', { at: Date.now() });
-        err.textContent = "";
-        input.value = "";
+        err.textContent = ""; input.value = "";
         $("#watchPinScreen").style.display = 'none';
         $("#watchMainContent").classList.add('active');
         startWatchData();
       } else {
         err.textContent = "❌ خطأ";
-        input.value = "";
-        input.focus();
+        input.value = ""; input.focus();
         setTimeout(() => { err.textContent = ""; }, 3000);
       }
     });
@@ -3187,9 +2575,6 @@ function setupLoginHandlers() {
   }
 }
 
-/* ============================================================
-   GLOBAL EVENTS
-   ============================================================ */
 function setupGlobalEvents() {
   document.addEventListener('keydown', (e) => {
     if (state.watchMode) {
@@ -3202,7 +2587,7 @@ function setupGlobalEvents() {
   });
   window.addEventListener('online', () => {
     const s = $("#watchConnStatus");
-    if (s) { s.classList.remove('offline'); s.querySelector("i") && (s.querySelector("i").nextSibling); s.innerHTML = '<i></i> متصل'; }
+    if (s) { s.classList.remove('offline'); s.innerHTML = '<i></i> متصل'; }
     showToast("🌐 متصل", 'success');
   });
   window.addEventListener('offline', () => {
@@ -3212,9 +2597,6 @@ function setupGlobalEvents() {
   });
 }
 
-/* ============================================================
-   INIT
-   ============================================================ */
 function init() {
   initTheme();
   setupLoginHandlers();
@@ -3240,11 +2622,8 @@ function init() {
     }, 800);
   }
 }
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
 </script>
 </body>
 </html>
