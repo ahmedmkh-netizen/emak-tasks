@@ -241,7 +241,7 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .task-card.urgent-active{border:3px solid #f04b5c;animation:urgentPulseSoft 2.2s ease-in-out infinite;}
 .task-card.urgent-active .card-title{color:#fff;text-shadow:0 0 12px rgba(240,75,92,.5);}
 
-/* ============ KANBAN ============ */
+/* ============ KANBAN (Main App) ============ */
 .kanban-col{background:var(--panel-bg);border:1.5px solid var(--border);border-radius:20px;padding:18px;min-height:500px;display:flex;flex-direction:column;gap:14px;}
 .kanban-col-header{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
 .kanban-count{background:var(--bg-3);padding:4px 14px;border-radius:12px;font-size:13px;color:var(--text-2);font-weight:900;}
@@ -389,19 +389,18 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .empty{text-align:center;padding:60px 20px;color:var(--text-2);font-weight:700;font-size:14px;}
 
 /* ============================================================
-   🖥️ WATCH SCREEN v4 — Compact Grid Cards
+   🖥️ WATCH SCREEN v5 — Kanban Columns with Auto-scroll
    ============================================================ */
 #watchScreen{position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;display:none;}
 #watchScreen.active{display:block;}
 .watch-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
 .watch-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(91,141,239,.10),transparent 45%),radial-gradient(circle at 85% 80%,rgba(45,212,163,.08),transparent 45%);}
-.watch-orb{display:none;}
 .watch-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(91,141,239,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(91,141,239,.02) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(circle at center,black 30%,transparent 80%);-webkit-mask-image:radial-gradient(circle at center,black 30%,transparent 80%);}
 
-#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:56px auto minmax(0,1fr) 60px;gap:12px;padding:12px 16px;font-size:clamp(13px,.4vw + 11px,16px);}
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:56px auto minmax(0,1fr) 60px;gap:12px;padding:12px 16px;}
 #watchMainContent.active{display:grid;}
 
-.w-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 16px;background:rgba(15,20,35,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:14px;}
+.w-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 16px;background:rgba(15,20,35,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:14px;}
 .w-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .w-brand img{width:38px;height:38px;object-fit:contain;border-radius:10px;background:rgba(5,8,16,.6);padding:5px;border:1.5px solid rgba(91,141,239,.4);}
 .w-brand h1{font-size:15px;font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
@@ -420,100 +419,219 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-btn:hover{background:rgba(91,141,239,.15);color:#5b8def;border-color:rgba(91,141,239,.4);}
 .w-btn.danger:hover{background:rgba(240,75,92,.2);color:#ff6b7d;border-color:rgba(240,75,92,.4);}
 
-/* KPI - 6 cards in row */
 .w-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
-.w-kpi{position:relative;padding:10px 14px;border-radius:14px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;min-height:58px;overflow:hidden;transition:transform .3s var(--ease-out);border:1px solid transparent;}
+.w-kpi{position:relative;padding:10px 14px;border-radius:14px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;min-height:58px;overflow:hidden;transition:transform .3s cubic-bezier(.16,1,.3,1);border:1px solid transparent;}
 .w-kpi::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:rgba(255,255,255,.35);}
 .w-kpi:hover{transform:translateY(-3px);}
 .w-kpi-num{font-family:'JetBrains Mono',monospace;font-size:clamp(22px,2vw,32px);font-weight:900;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;text-shadow:0 2px 12px rgba(0,0,0,.3);}
 .w-kpi-label{font-size:clamp(11px,.9vw,13px);font-weight:800;opacity:.95;white-space:nowrap;}
 .kpi-total{background:linear-gradient(135deg,#3b6fd4,#4f7ee0);color:#fff;}
-.kpi-wait{background:linear-gradient(135deg,#d97706,#f5a524);color:#fff;}
-.kpi-work{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;}
-.kpi-done{background:linear-gradient(135deg,#059669,#2dd4a3);color:#fff;}
 .kpi-urgent{background:linear-gradient(135deg,#dc2626,#f04b5c);color:#fff;}
 .kpi-important{background:linear-gradient(135deg,#ca8a04,#facc15);color:#fff;}
+.kpi-normal{background:linear-gradient(135deg,#059669,#2dd4a3);color:#fff;}
+.kpi-work{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;}
+.kpi-done{background:linear-gradient(135deg,#0d9488,#14b8a6);color:#fff;}
 
-/* Tasks area */
-.w-tasks-zone{display:flex;flex-direction:column;background:rgba(15,20,35,.4);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;min-height:0;}
-.w-zone-head{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0;gap:14px;flex-wrap:wrap;}
-.w-zone-head h2{font-size:14px;font-weight:900;color:#f8fafc;}
-.w-tabs{display:flex;gap:5px;flex-wrap:wrap;}
-.w-tab{padding:6px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#94a3b8;font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:all .2s;font-family:inherit;}
-.w-tab:hover{background:rgba(255,255,255,.08);color:#f8fafc;}
-.w-tab.active{background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;border-color:transparent;}
-.w-tab[data-tab="urgent"].active{background:linear-gradient(135deg,#f04b5c,#c81e3c);}
-.w-tab[data-tab="important"].active{background:linear-gradient(135deg,#f5a524,#d97706);}
-.w-tab span{background:rgba(255,255,255,.2);padding:1px 7px;border-radius:5px;font-size:10px;font-weight:900;min-width:18px;text-align:center;}
+/* Kanban */
+.w-kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;min-height:0;}
 
-.w-tasks-body{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;min-height:0;padding:14px;scrollbar-width:thin;scrollbar-color:rgba(91,141,239,.3) transparent;}
-.w-tasks-body::-webkit-scrollbar{width:6px;}
-.w-tasks-body::-webkit-scrollbar-track{background:transparent;}
-.w-tasks-body::-webkit-scrollbar-thumb{background:rgba(91,141,239,.3);border-radius:3px;}
+.w-col{
+  display:flex;flex-direction:column;
+  background:rgba(15,20,35,.55);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  overflow:hidden;
+  min-height:0;
+  position:relative;
+}
+.w-col::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:var(--col-bar,#5b8def);z-index:2;}
 
-.w-tasks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.col-urgent{--col-bar:linear-gradient(90deg,#f04b5c,#ff6b7d);}
+.col-important{--col-bar:linear-gradient(90deg,#f5a524,#ffc043);}
+.col-normal{--col-bar:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
+.col-done{--col-bar:linear-gradient(90deg,#14b8a6,#22d3ee);}
+
+.w-col-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0;}
+.w-col-title{display:flex;align-items:center;gap:10px;}
+.w-col-dot{width:10px;height:10px;border-radius:50%;}
+.w-col-dot.urgent{background:#f04b5c;box-shadow:0 0 12px #f04b5c;animation:blink 1.6s ease-in-out infinite;}
+.w-col-dot.important{background:#f5a524;box-shadow:0 0 10px #f5a524;}
+.w-col-dot.normal{background:#2dd4a3;box-shadow:0 0 10px #2dd4a3;}
+.w-col-dot.done{background:#14b8a6;box-shadow:0 0 10px #14b8a6;}
+.w-col-title h3{font-size:clamp(13px,1.1vw,15px);font-weight:900;color:#f8fafc;letter-spacing:.3px;}
+.w-col-count{
+  background:rgba(255,255,255,.1);
+  color:#cbd5e1;
+  padding:3px 12px;border-radius:10px;
+  font-size:12px;font-weight:900;
+  font-family:'JetBrains Mono',monospace;
+  min-width:34px;text-align:center;
+}
+.col-urgent .w-col-count{background:rgba(240,75,92,.2);color:#ff6b7d;}
+.col-important .w-col-count{background:rgba(245,165,36,.2);color:#ffc043;}
+.col-normal .w-col-count{background:rgba(45,212,163,.2);color:#3ee8b5;}
+.col-done .w-col-count{background:rgba(20,184,166,.2);color:#22d3ee;}
+
+.w-col-body{
+  flex:1;
+  position:relative;
+  overflow:hidden;
+  min-height:0;
+  mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);
+  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);
+}
+.w-col-track{
+  display:flex;flex-direction:column;gap:10px;
+  padding:12px;
+  will-change:transform;
+}
+.w-col-track.scrolling{
+  animation:colScroll var(--scroll-duration,35s) linear infinite;
+}
+.w-col-track.scrolling:hover{animation-play-state:paused;}
+@keyframes colScroll{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-50%);}
+}
 
 /* Task Card */
-.w-task-card{
+.w-task{
   position:relative;
-  background:linear-gradient(135deg,rgba(23,29,46,.85),rgba(15,20,32,.75));
+  background:linear-gradient(135deg,rgba(23,29,46,.9),rgba(15,20,32,.8));
   border:1px solid rgba(255,255,255,.08);
-  border-radius:14px;
-  padding:14px 16px 12px;
+  border-radius:12px;
+  padding:12px 14px;
   cursor:pointer;
-  transition:all .25s var(--ease-out);
+  transition:all .25s cubic-bezier(.16,1,.3,1);
   overflow:hidden;
-  min-height:128px;
   display:flex;flex-direction:column;
   gap:8px;
-  isolation:isolate;
+  min-height:86px;
 }
-.w-task-card::before{
-  content:'';position:absolute;
-  top:0;inset-inline-end:0;bottom:0;width:5px;
-  background:var(--accent-bar,#5b8def);
-  z-index:1;
-}
-.w-task-card:hover{
-  background:linear-gradient(135deg,rgba(35,43,66,.9),rgba(23,29,46,.85));
+.w-task:hover{
+  background:linear-gradient(135deg,rgba(35,43,66,.95),rgba(23,29,46,.9));
+  transform:translateX(-4px);
   border-color:rgba(91,141,239,.4);
-  transform:translateY(-3px);
-  box-shadow:0 12px 32px rgba(0,0,0,.5);
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
 }
-.w-task-card.p-urgent{--accent-bar:linear-gradient(180deg,#f04b5c,#ff6b7d);background:linear-gradient(135deg,rgba(240,75,92,.12),rgba(15,20,32,.75));border-color:rgba(240,75,92,.25);}
-.w-task-card.p-important{--accent-bar:linear-gradient(180deg,#f5a524,#ffc043);background:linear-gradient(135deg,rgba(245,165,36,.10),rgba(15,20,32,.75));border-color:rgba(245,165,36,.22);}
-.w-task-card.p-normal{--accent-bar:linear-gradient(180deg,#2dd4a3,#3ee8b5);}
-.w-task-card.urgent-active{box-shadow:0 0 24px rgba(240,75,92,.25);animation:urgentPulseCard 2.4s ease-in-out infinite;}
-@keyframes urgentPulseCard{
-  0%,100%{box-shadow:0 0 24px rgba(240,75,92,.25),inset 0 0 0 1px rgba(240,75,92,.3);}
-  50%{box-shadow:0 0 40px rgba(240,75,92,.5),inset 0 0 0 1px rgba(240,75,92,.6);}
+.w-task-title{
+  font-size:clamp(13px,1.05vw,15px);
+  font-weight:900;
+  color:#f8fafc;
+  line-height:1.35;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  min-height:40px;
 }
-.w-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
-.w-card-tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-.w-card-priority{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:900;white-space:nowrap;}
-.w-card-priority.urgent{background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);}
-.w-card-priority.important{background:rgba(245,165,36,.22);color:#ffc043;border:1px solid rgba(245,165,36,.4);}
-.w-card-priority.normal{background:rgba(45,212,163,.18);color:#3ee8b5;border:1px solid rgba(45,212,163,.35);}
-.w-card-overdue{padding:4px 10px;border-radius:8px;font-size:11px;font-weight:900;background:rgba(240,75,92,.25);color:#ff6b7d;border:1px solid rgba(240,75,92,.4);animation:blink 1.6s ease-in-out infinite;}
-.w-card-title{font-size:clamp(15px,1.2vw,18px);font-weight:900;color:#f8fafc;line-height:1.35;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:48px;}
-.w-task-card.p-urgent .w-card-title{color:#fff;text-shadow:0 0 12px rgba(240,75,92,.4);}
-.w-card-info{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);}
-.w-card-assignee{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
-.w-card-assignee .avatar{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:12px;flex-shrink:0;}
-.w-card-due{font-size:11.5px;font-weight:800;color:#94a3b8;white-space:nowrap;}
-.w-card-due.overdue{color:#ff6b7d;font-weight:900;}
-.w-card-status{padding:5px 12px;border-radius:8px;font-size:11.5px;font-weight:900;white-space:nowrap;flex-shrink:0;}
-.w-card-status.new{background:rgba(91,141,239,.2);color:#7ca5f5;border:1px solid rgba(91,141,239,.3);}
-.w-card-status.progress{background:rgba(245,165,36,.2);color:#f5b84a;border:1px solid rgba(245,165,36,.3);}
-.w-card-status.done{background:rgba(45,212,163,.2);color:#3ee8b5;border:1px solid rgba(45,212,163,.3);}
+.w-task-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:8px;
+  font-size:11.5px;font-weight:800;
+  color:#94a3b8;
+}
+.w-task-assignee{
+  display:flex;align-items:center;gap:6px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  min-width:0;
+}
+.w-task-avatar{
+  width:22px;height:22px;border-radius:7px;
+  background:linear-gradient(135deg,#5b8def,#2dd4a3);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:900;font-size:11px;flex-shrink:0;
+}
+.w-task-due{
+  white-space:nowrap;flex-shrink:0;
+  padding:3px 8px;border-radius:6px;
+  background:rgba(255,255,255,.05);
+}
+.w-task-due.overdue{color:#ff6b7d;background:rgba(240,75,92,.15);}
+.w-task-status-badge{
+  display:inline-block;
+  padding:3px 10px;border-radius:6px;
+  font-size:10.5px;font-weight:900;
+  white-space:nowrap;
+  align-self:flex-start;
+}
+.w-task-status-badge.new{background:rgba(91,141,239,.2);color:#7ca5f5;}
+.w-task-status-badge.progress{background:rgba(245,165,36,.2);color:#f5b84a;}
+.w-task-status-badge.done{background:rgba(45,212,163,.2);color:#3ee8b5;}
 
-/* Footer tickers */
+/* URGENT Flash */
+.col-urgent .w-task{
+  background:linear-gradient(135deg,rgba(240,75,92,.14),rgba(15,20,32,.85));
+  border-color:rgba(240,75,92,.35);
+  animation:urgentFlash 2.2s ease-in-out infinite;
+}
+@keyframes urgentFlash{
+  0%,100%{
+    box-shadow:0 0 0 0 rgba(240,75,92,.4),
+               0 0 16px rgba(240,75,92,.3),
+               inset 0 0 0 1px rgba(240,75,92,.35);
+    border-color:rgba(240,75,92,.4);
+  }
+  50%{
+    box-shadow:0 0 0 6px rgba(240,75,92,0),
+               0 0 28px rgba(240,75,92,.65),
+               inset 0 0 0 1px rgba(240,75,92,.7);
+    border-color:#f04b5c;
+  }
+}
+.col-urgent .w-task-title{color:#fff;text-shadow:0 0 10px rgba(240,75,92,.5);}
+.col-urgent .w-task::before{
+  content:'';position:absolute;
+  top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#f04b5c,#ff6b7d,#f04b5c);
+  background-size:100% 200%;
+  animation:urgentBarFlow 1.6s linear infinite;
+}
+@keyframes urgentBarFlow{0%{background-position:0 0;}100%{background-position:0 200%;}}
+
+.col-important .w-task{
+  background:linear-gradient(135deg,rgba(245,165,36,.10),rgba(15,20,32,.85));
+  border-color:rgba(245,165,36,.25);
+}
+.col-important .w-task::before{
+  content:'';position:absolute;
+  top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#f5a524,#ffc043);
+}
+
+.col-normal .w-task::before{
+  content:'';position:absolute;
+  top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#2dd4a3,#3ee8b5);
+}
+
+.col-done .w-task{opacity:.85;}
+.col-done .w-task::before{
+  content:'';position:absolute;
+  top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#14b8a6,#22d3ee);
+}
+.col-done .w-task-title{color:#94a3b8;}
+
+.w-col-empty{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:30px 16px;gap:8px;
+  color:#64748b;text-align:center;
+  height:100%;min-height:180px;
+}
+.w-col-empty div:first-child{font-size:36px;opacity:.35;}
+.w-col-empty div:last-child{font-size:12px;font-weight:800;color:#94a3b8;}
+
+/* Footer */
 .w-footer{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex-shrink:0;}
-.w-ticker{display:flex;align-items:center;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;height:60px;}
-.w-ticker-done{border-color:rgba(45,212,163,.25);}
+.w-ticker{display:flex;align-items:center;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;height:60px;}
+.w-ticker-done{border-color:rgba(20,184,166,.25);}
 .w-ticker-news{border-color:rgba(91,141,239,.25);}
 .w-ticker-label{display:flex;align-items:center;gap:6px;padding:0 14px;height:100%;font-size:11.5px;font-weight:900;flex-shrink:0;white-space:nowrap;}
-.w-ticker-done .w-ticker-label{background:rgba(45,212,163,.18);color:#3ee8b5;border-inline-end:1px solid rgba(45,212,163,.2);}
+.w-ticker-done .w-ticker-label{background:rgba(20,184,166,.18);color:#22d3ee;border-inline-end:1px solid rgba(20,184,166,.2);}
 .w-ticker-news .w-ticker-label{background:rgba(91,141,239,.18);color:#7ca5f5;border-inline-end:1px solid rgba(91,141,239,.2);}
 .w-ticker-wrap{flex:1;overflow:hidden;position:relative;height:100%;}
 .w-ticker-track{display:inline-flex;align-items:center;height:100%;white-space:nowrap;padding-inline-end:100%;animation:tickerScroll 45s linear infinite;font-size:12.5px;font-weight:800;color:#cbd5e1;}
@@ -521,19 +639,14 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-ticker-track:hover{animation-play-state:paused;}
 @keyframes tickerScroll{0%{transform:translateX(0);}100%{transform:translateX(100%);}}
 .w-ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 20px;height:100%;}
-.w-ticker-item::after{content:'◆';color:rgba(91,141,239,.4);margin-inline-start:20px;font-size:8px;vertical-align:middle;}
-.w-ticker-done .w-ticker-item::before{content:'✓';color:#2dd4a3;font-weight:900;font-size:13px;}
+.w-ticker-item::after{content:'◆';color:rgba(91,141,239,.4);margin-inline-start:20px;font-size:8px;}
+.w-ticker-done .w-ticker-item::before{content:'✓';color:#22d3ee;font-weight:900;font-size:13px;}
 .w-ticker-item em{font-style:normal;font-size:11px;color:#64748b;font-weight:700;margin-inline-start:4px;}
 .w-ticker-item.is-urgent{color:#ff6b7d;}
-.w-ticker-item.is-urgent::after{color:rgba(240,75,92,.5);}
 .w-ticker-item.is-warning{color:#ffc043;}
 .w-ticker-empty{padding:0 20px;color:#64748b;font-size:12px;font-weight:700;}
 
-.w-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:10px;height:100%;text-align:center;color:#64748b;grid-column:1/-1;}
-.w-empty-state div:first-child{font-size:44px;opacity:.4;}
-.w-empty-state div:last-child{font-size:13px;font-weight:800;color:#94a3b8;}
-
-/* PIN Screen */
+/* PIN */
 #watchPinScreen{position:fixed;inset:0;z-index:2100;display:flex;align-items:center;justify-content:center;background:#050810;padding:20px;}
 .watch-pin-card{background:rgba(15,20,35,.95);backdrop-filter:blur(40px);border:1.5px solid rgba(91,141,239,.3);padding:52px 44px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 40px 120px rgba(0,0,0,.8);}
 .watch-pin-logo{width:120px;height:120px;margin:0 auto 24px;border-radius:50%;padding:8px;background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));box-shadow:0 0 0 4px rgba(91,141,239,.3),0 0 60px rgba(91,141,239,.6);}
@@ -551,20 +664,9 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 body.watch-kiosk .w-footer{display:none !important;}
 body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
-@media (max-width:1400px){
-  .w-kpis{grid-template-columns:repeat(3,1fr);}
-  .w-tasks-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
-}
-@media (max-width:1200px){
-  .w-tasks-grid{grid-template-columns:repeat(2,1fr);}
-  .charts-grid{grid-template-columns:1fr;}
-}
-@media (max-width:900px){
-  .w-tasks-grid{grid-template-columns:1fr;}
-  .w-footer{grid-template-columns:1fr;}
-  .w-kpis{grid-template-columns:repeat(2,1fr);}
-  .w-clock{display:none;}
-}
+@media (max-width:1400px){.w-kpis{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:1100px){.w-kanban{grid-template-columns:repeat(2,1fr);}.w-clock{display:none;}}
+@media (max-width:700px){.w-kanban{grid-template-columns:1fr;}.w-footer{grid-template-columns:1fr;}.w-kpis{grid-template-columns:repeat(2,1fr);}}
 </style>
 </head>
 <body>
@@ -776,12 +878,9 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 <div id="watchSubNotifications" class="notif-host"></div>
 <div id="toastHost"></div>
 
-<!-- WATCH SCREEN -->
+<!-- WATCH SCREEN v5 — Kanban -->
 <div id="watchScreen">
-  <div class="watch-bg" aria-hidden="true">
-    <div class="watch-orb o1"></div><div class="watch-orb o2"></div><div class="watch-orb o3"></div>
-    <div class="watch-grid-bg"></div>
-  </div>
+  <div class="watch-bg" aria-hidden="true"><div class="watch-grid-bg"></div></div>
 
   <div id="watchPinScreen">
     <div class="watch-pin-card">
@@ -817,25 +916,44 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
     <section class="w-kpis">
       <div class="w-kpi kpi-total"><span class="w-kpi-num" id="wTotal">0</span><span class="w-kpi-label">إجمالي</span></div>
-      <div class="w-kpi kpi-wait"><span class="w-kpi-num" id="wActive">0</span><span class="w-kpi-label">انتظار</span></div>
-      <div class="w-kpi kpi-work"><span class="w-kpi-num" id="wWorking">0</span><span class="w-kpi-label">تنفيذ</span></div>
-      <div class="w-kpi kpi-done"><span class="w-kpi-num" id="wDone">0</span><span class="w-kpi-label">مكتملة</span></div>
       <div class="w-kpi kpi-urgent"><span class="w-kpi-num" id="wUrgent">0</span><span class="w-kpi-label">🔴 عاجل</span></div>
       <div class="w-kpi kpi-important"><span class="w-kpi-num" id="wImportant">0</span><span class="w-kpi-label">🟡 مهم</span></div>
+      <div class="w-kpi kpi-normal"><span class="w-kpi-num" id="wNormal">0</span><span class="w-kpi-label">🟢 عادي</span></div>
+      <div class="w-kpi kpi-work"><span class="w-kpi-num" id="wWorking">0</span><span class="w-kpi-label">⏳ جاري</span></div>
+      <div class="w-kpi kpi-done"><span class="w-kpi-num" id="wDone">0</span><span class="w-kpi-label">✅ مكتمل</span></div>
     </section>
 
-    <section class="w-tasks-zone">
-      <header class="w-zone-head">
-        <h2>📋 المهام النشطة</h2>
-        <div class="w-tabs">
-          <button class="w-tab active" data-tab="all">الكل <span id="wTabAllCount">0</span></button>
-          <button class="w-tab" data-tab="urgent">🔴 عاجل <span id="wTabUrgentCount">0</span></button>
-          <button class="w-tab" data-tab="important">🟡 مهم <span id="wTabImportantCount">0</span></button>
-          <button class="w-tab" data-tab="working">⏳ جاري <span id="wTabWorkingCount">0</span></button>
-        </div>
-      </header>
-      <div class="w-tasks-body" id="wMainBody">
-        <div class="w-tasks-grid" id="wTasksList"></div>
+    <section class="w-kanban">
+      <div class="w-col col-urgent">
+        <header class="w-col-head">
+          <div class="w-col-title"><span class="w-col-dot urgent"></span><h3>🔴 عاجل</h3></div>
+          <span class="w-col-count" id="wColUrgentCount">0</span>
+        </header>
+        <div class="w-col-body"><div class="w-col-track" id="wColUrgent"></div></div>
+      </div>
+
+      <div class="w-col col-important">
+        <header class="w-col-head">
+          <div class="w-col-title"><span class="w-col-dot important"></span><h3>🟡 مهم</h3></div>
+          <span class="w-col-count" id="wColImportantCount">0</span>
+        </header>
+        <div class="w-col-body"><div class="w-col-track" id="wColImportant"></div></div>
+      </div>
+
+      <div class="w-col col-normal">
+        <header class="w-col-head">
+          <div class="w-col-title"><span class="w-col-dot normal"></span><h3>🟢 عادي</h3></div>
+          <span class="w-col-count" id="wColNormalCount">0</span>
+        </header>
+        <div class="w-col-body"><div class="w-col-track" id="wColNormal"></div></div>
+      </div>
+
+      <div class="w-col col-done">
+        <header class="w-col-head">
+          <div class="w-col-title"><span class="w-col-dot done"></span><h3>✅ مكتمل</h3></div>
+          <span class="w-col-count" id="wColDoneCount">0</span>
+        </header>
+        <div class="w-col-body"><div class="w-col-track" id="wColDone"></div></div>
       </div>
     </section>
 
@@ -854,7 +972,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v19.0
+   EMAK IT Dep. v20.0 — Final
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1101,10 +1219,7 @@ function showSubNotification(task) {
     <div class="sub-notif-body">
       <div class="sub-notif-title"><span>📌 مهمة جديدة</span><span class="sub-notif-badge ${priority}">${badgeMap[priority]}</span></div>
       <div class="sub-notif-message">${esc(task.title)}</div>
-      <div class="sub-notif-meta">
-        <span>👤 ${esc(task.assignee || "—")}</span>
-        ${task.dueDate ? `<span>📅 ${esc(dueLabel(task.dueDate))}</span>` : ""}
-      </div>
+      <div class="sub-notif-meta"><span>👤 ${esc(task.assignee || "—")}</span>${task.dueDate ? `<span>📅 ${esc(dueLabel(task.dueDate))}</span>` : ""}</div>
     </div>
     <button class="sub-notif-close" aria-label="إغلاق">✕</button>
     <div class="sub-notif-progress-text">20s</div>`;
@@ -1116,8 +1231,7 @@ function showSubNotification(task) {
   const progressEl = notif.querySelector(".sub-notif-progress-text");
   const countdown = setInterval(() => { remaining--; if (progressEl) progressEl.textContent = remaining + "s"; if (remaining <= 0) clearInterval(countdown); }, 1000);
   const timeoutId = setTimeout(() => { clearInterval(countdown); closeSubNotification(notifId); }, CONSTANTS.NOTIFICATION_DURATION);
-  notif._timeoutId = timeoutId;
-  notif._countdown = countdown;
+  notif._timeoutId = timeoutId; notif._countdown = countdown;
   const notifs = container.querySelectorAll(".sub-notification");
   if (notifs.length > CONSTANTS.MAX_NOTIFICATIONS) {
     const old = notifs[0];
@@ -1149,10 +1263,7 @@ function showWatchSubNotification(task) {
     <div class="watch-sub-body">
       <div class="watch-sub-title"><span>📌 مهمة جديدة</span><span class="watch-sub-badge ${priority}">${badgeMap[priority]}</span></div>
       <div class="watch-sub-message">${esc(task.title)}</div>
-      <div class="watch-sub-meta">
-        <span>👤 ${esc(task.assignee || "—")}</span>
-        ${task.dueDate ? `<span>📅 ${esc(dueLabel(task.dueDate))}</span>` : ""}
-      </div>
+      <div class="watch-sub-meta"><span>👤 ${esc(task.assignee || "—")}</span>${task.dueDate ? `<span>📅 ${esc(dueLabel(task.dueDate))}</span>` : ""}</div>
     </div>
     <button class="watch-sub-close" aria-label="إغلاق">✕</button>
     <div class="watch-sub-progress-text">20s</div>`;
@@ -1163,8 +1274,7 @@ function showWatchSubNotification(task) {
   const progressEl = notif.querySelector(".watch-sub-progress-text");
   const countdown = setInterval(() => { remaining--; if (progressEl) progressEl.textContent = remaining + "s"; if (remaining <= 0) clearInterval(countdown); }, 1000);
   const timeoutId = setTimeout(() => { clearInterval(countdown); closeWatchSubNotification(notifId); }, 20000);
-  notif._timeoutId = timeoutId;
-  notif._countdown = countdown;
+  notif._timeoutId = timeoutId; notif._countdown = countdown;
   const notifs = container.querySelectorAll(".watch-sub-notification");
   if (notifs.length > CONSTANTS.MAX_NOTIFICATIONS) {
     const old = notifs[0];
@@ -1659,7 +1769,7 @@ async function logActivity(type, text, taskId = null, taskTitle = "") {
 }
 
 /* ============================================================
-   WATCH v4 — Compact Grid
+   WATCH v5 — Kanban Columns with Auto-scroll
    ============================================================ */
 function wRenderStats() {
   const tasks = Object.values(state.watchData.tasks || {});
@@ -1667,80 +1777,98 @@ function wRenderStats() {
   const active = tasks.filter(t => t.status === CONSTANTS.STATUS.NEW).length;
   const working = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
   const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
-  const urgent = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)).length;
-  const important = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم").length;
+
+  const urgentTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
+  const urgentIds = new Set(urgentTasks.map(t => t.createdAt || Math.random()));
+  const importantTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم" && !(t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
+  const normalTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عادي" && !(t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
+
   set("wTotal", tasks.length);
-  set("wActive", active);
+  set("wUrgent", urgentTasks.length);
+  set("wImportant", importantTasks.length);
+  set("wNormal", normalTasks.length);
   set("wWorking", working);
   set("wDone", done);
-  set("wUrgent", urgent);
-  set("wImportant", important);
-  set("wTabAllCount", tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE).length);
-  set("wTabUrgentCount", urgent);
-  set("wTabImportantCount", important);
-  set("wTabWorkingCount", working);
+
+  set("wColUrgentCount", urgentTasks.length);
+  set("wColImportantCount", importantTasks.length);
+  set("wColNormalCount", normalTasks.length);
+  set("wColDoneCount", done);
 }
 
-function wTaskCardHtml(id, t) {
+function wTaskHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-  const pc = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
-  const isDone = t.status === CONSTANTS.STATUS.DONE;
-  const isUrgentActive = t.priority === "عاجل" && !isDone;
-  const statusClass = t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : isDone ? "done" : "new";
+  const statusClass = t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : t.status === CONSTANTS.STATUS.DONE ? "done" : "new";
   const statusLabel = t.status === CONSTANTS.STATUS.NEW ? "جديدة" : t.status === CONSTANTS.STATUS.PROGRESS ? "جارية" : "مكتملة";
-  const priorityLabel = t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي";
-  const assigneeInitial = (t.assignee || "?").charAt(0).toUpperCase();
-  return `<article class="w-task-card p-${pc} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${esc(id)}" tabindex="0" role="button">
-    <div class="w-card-head">
-      <div class="w-card-tags">
-        <span class="w-card-priority ${pc}">${priorityLabel}</span>
-        ${isOverdue ? '<span class="w-card-overdue">⚠️ متأخر</span>' : ''}
-      </div>
-      <span class="w-card-status ${statusClass}">${statusLabel}</span>
-    </div>
-    <h3 class="w-card-title">${esc(t.title)}</h3>
-    <div class="w-card-info">
-      <div class="w-card-assignee">
-        <span class="avatar">${esc(assigneeInitial)}</span>
+  const initial = (t.assignee || "?").charAt(0).toUpperCase();
+  return `<article class="w-task" data-task-id="${esc(id)}" tabindex="0" role="button">
+    <h4 class="w-task-title">${esc(t.title)}</h4>
+    <span class="w-task-status-badge ${statusClass}">${statusLabel}</span>
+    <div class="w-task-meta">
+      <div class="w-task-assignee">
+        <span class="w-task-avatar">${esc(initial)}</span>
         <span>${esc(t.assignee || "—")}</span>
       </div>
-      ${t.dueDate ? `<span class="w-card-due ${isOverdue ? 'overdue' : ''}">📅 ${esc(dueLabel(t.dueDate))}</span>` : ''}
+      ${t.dueDate ? `<span class="w-task-due ${isOverdue ? 'overdue' : ''}">📅 ${esc(dueLabel(t.dueDate))}</span>` : ''}
     </div>
   </article>`;
 }
 
-function wRenderTasks() {
-  const body = document.getElementById("wMainBody");
-  if (!body) return;
+function wRenderColumns() {
   const allTasks = Object.entries(state.watchData.tasks || {});
-  let filtered = [];
-  const tab = state.watchTab;
-  if (tab === "all") {
-    filtered = allTasks.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE).sort((a, b) => {
-      const aUrgent = a[1].priority === "عاجل";
-      const bUrgent = b[1].priority === "عاجل";
-      if (aUrgent && !bUrgent) return -1;
-      if (bUrgent && !aUrgent) return 1;
-      const aImp = a[1].priority === "مهم";
-      const bImp = b[1].priority === "مهم";
-      if (aImp && !bImp) return -1;
-      if (bImp && !aImp) return 1;
-      return (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999);
-    });
-  } else if (tab === "urgent") {
-    filtered = allTasks.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
-  } else if (tab === "important") {
-    filtered = allTasks.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم");
-  } else if (tab === "working") {
-    filtered = allTasks.filter(([_, t]) => t.status === CONSTANTS.STATUS.PROGRESS);
-  }
-  const grid = document.getElementById("wTasksList");
-  if (filtered.length === 0) {
-    grid.innerHTML = '<div class="w-empty-state"><div>📭</div><div>لا توجد مهام</div></div>';
+
+  // عمود عاجل - يشمل العاجل + المتأخر
+  const urgent = allTasks
+    .filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0))
+    .sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
+
+  const urgentIds = new Set(urgent.map(([id]) => id));
+
+  // عمود مهم - يستبعد ما في العاجل
+  const important = allTasks
+    .filter(([id, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم" && !urgentIds.has(id))
+    .sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
+
+  const importantIds = new Set(important.map(([id]) => id));
+
+  // عمود عادي
+  const normal = allTasks
+    .filter(([id, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عادي" && !urgentIds.has(id) && !importantIds.has(id))
+    .sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
+
+  // عمود مكتمل - الأحدث أولاً
+  const doneSorted = allTasks
+    .filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE)
+    .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0))
+    .slice(0, 30);
+
+  _renderCol("wColUrgent", urgent, "لا توجد مهام عاجلة");
+  _renderCol("wColImportant", important, "لا توجد مهام مهمة");
+  _renderCol("wColNormal", normal, "لا توجد مهام عادية");
+  _renderCol("wColDone", doneSorted, "لا توجد مهام مكتملة");
+}
+
+function _renderCol(elementId, items, emptyMsg) {
+  const track = document.getElementById(elementId);
+  if (!track) return;
+  if (items.length === 0) {
+    track.classList.remove("scrolling");
+    track.style.removeProperty("--scroll-duration");
+    track.innerHTML = `<div class="w-col-empty"><div>📭</div><div>${emptyMsg}</div></div>`;
     return;
   }
-  grid.innerHTML = filtered.map(([id, t]) => wTaskCardHtml(id, t)).join("");
+  const html = items.map(([id, t]) => wTaskHtml(id, t)).join("");
+  if (items.length > 3) {
+    track.innerHTML = html + html;
+    track.classList.add("scrolling");
+    const duration = Math.min(60, Math.max(20, items.length * 4));
+    track.style.setProperty("--scroll-duration", duration + "s");
+  } else {
+    track.classList.remove("scrolling");
+    track.style.removeProperty("--scroll-duration");
+    track.innerHTML = html;
+  }
 }
 
 function wRenderCompleted() {
@@ -1754,7 +1882,6 @@ function wRenderCompleted() {
     track.innerHTML = '<span class="w-ticker-empty">لا توجد مهام مكتملة بعد</span>';
     return;
   }
-  // Duplicate for smooth loop
   const items = completed.map(([id, t]) => `
     <span class="w-ticker-item" data-task-id="${id}" style="cursor:pointer;">
       ${esc(t.title)}
@@ -1798,8 +1925,8 @@ function wRenderNewsTicker() {
 
 function wRenderAll() {
   wRenderStats();
+  wRenderColumns();
   wRenderCompleted();
-  wRenderTasks();
   wRenderNewsTicker();
 }
 
@@ -1877,14 +2004,6 @@ function toggleKioskMode() {
 async function startWatchData() {
   if (!auth.currentUser) { try { await signInAnonymously(auth); } catch {} }
   startWatchClock();
-  $$('.w-tab').forEach(tab => {
-    tab.onclick = () => {
-      $$('.w-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      state.watchTab = tab.dataset.tab;
-      wRenderTasks();
-    };
-  });
   Object.keys(state.watchUnsubs).forEach(k => {
     if (state.watchUnsubs[k]) { try { state.watchUnsubs[k](); } catch {} state.watchUnsubs[k] = null; }
   });
@@ -2420,8 +2539,8 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('[data-team-remove]')) return;
   const card = e.target.closest('.task-card[data-task-id]');
   if (card) { openModal(card.dataset.taskId); return; }
-  const wCard = e.target.closest('.w-task-card[data-task-id]');
-  if (wCard) { openModal(wCard.dataset.taskId); return; }
+  const wTask = e.target.closest('.w-task[data-task-id]');
+  if (wTask) { openModal(wTask.dataset.taskId); return; }
   const wItem = e.target.closest('.w-ticker-item[data-task-id]');
   if (wItem) { openModal(wItem.dataset.taskId); return; }
   const aCard = e.target.closest('[data-task-id]');
