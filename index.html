@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#050810">
-<title>EMAK IT Dep. — لوحة التحكم</title>
+<title>EMAK IT Dep. — لوحة التحكم v21</title>
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,10 +14,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
 
 <style>
 /* ============================================================
-   THEME TOKENS
+   THEME TOKENS v21
    ============================================================ */
 :root{
   --bg-0:#050810;--bg-1:#0a0e1a;--bg-2:#10141f;--bg-3:#181d2e;--bg-4:#232a42;
@@ -39,6 +41,8 @@
   --shadow-md:0 12px 40px rgba(0,0,0,.5);
   --shadow-lg:0 40px 120px rgba(0,0,0,.8);
   --ease-out:cubic-bezier(.16,1,.3,1);
+  --sidebar-width:260px;
+  --sidebar-width-collapsed:76px;
 }
 html[data-theme="light"]{
   --bg-0:#f1f5f9;--bg-1:#ffffff;--bg-2:#f8fafc;--bg-3:#e2e8f0;--bg-4:#cbd5e1;
@@ -55,27 +59,25 @@ html[data-theme="light"]{
   --input-bg:rgba(241,245,249,.9);--input-bg-focus:#ffffff;
   --body-bg:radial-gradient(ellipse at top,#dbeafe 0%,#f1f5f9 50%,#e2e8f0 100%);
   --login-bg:radial-gradient(ellipse at top,#93c5fd 0%,#e0e7ff 55%,#f1f5f9 100%);
-  --watch-bg:#f1f5f9;
   --shadow-sm:0 4px 16px rgba(15,23,42,.08);
   --shadow-md:0 12px 40px rgba(15,23,42,.12);
   --shadow-lg:0 40px 120px rgba(15,23,42,.18);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
-body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;font-size:clamp(13px,.45vw + 10.5px,17px);background:var(--body-bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;font-size:clamp(13px,.45vw + 10.5px,17px);background:var(--body-bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;}
 img{max-width:100%;display:block;}
 button{font-family:inherit;cursor:pointer;}
 button,input,select,textarea{font-size:inherit;}
 [hidden]{display:none !important;}
 mark.hl{background:rgba(245,165,36,.35);color:inherit;padding:0 2px;border-radius:3px;}
 :focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:4px;}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}}
-.screen{display:none;}
-.screen.active{display:flex;}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}}
+.screen{display:none;}.screen.active{display:flex;}
 
 /* ============ LOGIN ============ */
 #loginScreen{align-items:center;justify-content:center;min-height:100vh;padding:20px;background:var(--login-bg);position:relative;overflow:hidden;}
-#loginScreen::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 25%,rgba(91,141,239,.25),transparent 45%),radial-gradient(circle at 85% 75%,rgba(45,212,163,.18),transparent 45%),radial-gradient(circle at 50% 50%,rgba(168,85,247,.1),transparent 60%);}
+#loginScreen::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 15% 25%,rgba(91,141,239,.25),transparent 45%),radial-gradient(circle at 85% 75%,rgba(45,212,163,.18),transparent 45%);}
 .login-card{background:var(--modal-bg);backdrop-filter:blur(40px);border:1px solid rgba(91,141,239,.25);padding:52px 44px 44px;border-radius:32px;text-align:center;max-width:460px;width:100%;box-shadow:var(--shadow-lg),0 0 60px rgba(91,141,239,.3);position:relative;z-index:1;animation:cardIn .8s var(--ease-out);}
 @keyframes cardIn{from{opacity:0;transform:translateY(40px) scale(.9);}to{opacity:1;transform:translateY(0) scale(1);}}
 .login-logo-wrap{width:130px;height:130px;margin:0 auto 26px;border-radius:50%;background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));padding:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(91,141,239,.3),0 0 60px rgba(91,141,239,.7);animation:logoFloat 4s ease-in-out infinite;}
@@ -87,9 +89,8 @@ mark.hl{background:rgba(245,165,36,.35);color:inherit;padding:0 2px;border-radiu
 .input-group{position:relative;display:flex;align-items:center;}
 .input-icon{position:absolute;inset-inline-end:18px;font-size:16px;pointer-events:none;opacity:.7;z-index:2;}
 #loginForm input{width:100%;padding:16px 52px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border-2);border-radius:16px;font-size:14px;font-family:inherit;font-weight:500;outline:none;transition:all .3s;}
-#loginForm input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.25);background:var(--input-bg-focus);}
+#loginForm input:focus{border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.25);}
 .toggle-pass{position:absolute;inset-inline-start:14px;background:transparent;border:none;color:var(--text-2);font-size:16px;padding:8px;border-radius:10px;}
-.toggle-pass:hover{background:var(--border-2);color:var(--text);}
 .remember-me{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);cursor:pointer;user-select:none;font-weight:600;}
 .remember-me input{accent-color:var(--primary);width:16px;height:16px;cursor:pointer;}
 #loginSubmitBtn{background:linear-gradient(135deg,#5b8def 0%,#3b6fd4 100%);color:#fff;border:none;padding:16px;border-radius:16px;font-size:15px;font-weight:800;transition:all .3s;box-shadow:0 12px 32px rgba(91,141,239,.45);}
@@ -100,7 +101,7 @@ mark.hl{background:rgba(245,165,36,.35);color:inherit;padding:0 2px;border-radiu
 .divider{display:flex;align-items:center;gap:12px;margin:12px 0;color:var(--text-3);font-size:12px;font-weight:600;}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border-2);}
 #loginBtn{background:var(--bg-1);color:var(--text);border:1.5px solid var(--border-2);padding:15px 20px;border-radius:16px;font-size:14px;font-weight:800;display:flex;align-items:center;gap:10px;justify-content:center;width:100%;transition:all .3s;}
-#loginBtn:hover{transform:translateY(-2px);box-shadow:0 16px 40px var(--shadow-sm);border-color:var(--primary);}
+#loginBtn:hover{transform:translateY(-2px);border-color:var(--primary);}
 #loginBtn img{width:20px;}
 .help-text{color:var(--text-3);font-size:11px;margin-top:18px;font-weight:600;}
 .login-watch-section{margin-top:26px;padding-top:22px;border-top:1px dashed var(--border-2);}
@@ -113,11 +114,11 @@ mark.hl{background:rgba(245,165,36,.35);color:inherit;padding:0 2px;border-radiu
 .watch-btn-icon{font-size:20px;display:inline-block;animation:watchIconFloat 2.5s ease-in-out infinite;}
 @keyframes watchIconFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
 .watch-btn-pin{background:rgba(255,255,255,.25);font-size:10px;font-weight:900;padding:3px 8px;border-radius:8px;}
-.login-watch-hint{color:var(--text-3);font-size:11px;margin-top:14px;text-align:center;font-weight:600;line-height:1.6;}
+.login-watch-hint{color:var(--text-3);font-size:11px;margin-top:14px;text-align:center;font-weight:600;}
 .theme-toggle{position:absolute;top:22px;inset-inline-start:22px;width:48px;height:48px;border-radius:50%;background:var(--bg-1);border:1.5px solid var(--border-2);color:var(--text);font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .3s;z-index:10;box-shadow:var(--shadow-sm);}
 .theme-toggle:hover{transform:rotate(180deg) scale(1.1);border-color:var(--primary);}
 
-/* ============ LOADING ============ */
+/* ============ LOADING SKELETON ============ */
 #loadingScreen{position:fixed;inset:0;background:var(--login-bg);align-items:center;justify-content:center;z-index:5000;flex-direction:column;gap:26px;}
 #loadingScreen.active{display:flex;}
 .loading-logo-wrap{width:150px;height:150px;border-radius:50%;background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));padding:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 100px rgba(91,141,239,.8);animation:loadingPulse 1.6s ease-in-out infinite;}
@@ -128,44 +129,70 @@ mark.hl{background:rgba(245,165,36,.35);color:inherit;padding:0 2px;border-radiu
 .loading-bar-fill{height:100%;width:30%;background:linear-gradient(90deg,#5b8def,#2dd4a3,#a855f7);border-radius:5px;animation:loadingBar 1.4s ease-in-out infinite;}
 @keyframes loadingBar{0%{width:10%;}50%{width:60%;}100%{width:10%;}}
 
-/* ============ HEADER + NAV ============ */
+/* ============ SIDEBAR LAYOUT ============ */
 #mainScreen{display:none;}
 #mainScreen.active{display:block;}
-header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px solid var(--border-2);padding:14px 30px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;gap:16px;flex-wrap:wrap;box-shadow:0 4px 30px var(--shadow-sm);}
-.header-brand{display:flex;align-items:center;gap:16px;}
-.header-logo-wrap{width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));padding:4px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px rgba(91,141,239,.35),0 0 25px rgba(91,141,239,.5);}
-.header-logo{width:100%;height:100%;object-fit:contain;border-radius:14px;background:var(--bg-0);padding:5px;}
-.header-brand h1{font-size:22px;font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-.header-brand .subtitle{font-size:11px;color:var(--text-2);margin-top:5px;font-weight:600;}
-.user-info{display:flex;align-items:center;gap:10px;font-size:13px;flex-wrap:wrap;}
-#userName{font-weight:700;}
-.role{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:800;}
-.role.admin{background:linear-gradient(135deg,rgba(245,165,36,.25),rgba(217,119,6,.15));color:var(--warning);border:1px solid rgba(245,165,36,.4);}
-.role.user{background:linear-gradient(135deg,rgba(91,141,239,.25),rgba(59,111,212,.15));color:var(--primary);border:1px solid rgba(91,141,239,.4);}
-.icon-btn,.user-menu-btn{background:var(--surface-1);color:var(--text);border:1.5px solid var(--border-2);padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;transition:all .25s;}
-.icon-btn:hover,.user-menu-btn:hover{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);transform:translateY(-2px);}
-.btn-report{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;box-shadow:0 6px 16px rgba(45,212,163,.4);}
-.btn-report:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(45,212,163,.6);}
-#logoutBtn{background:rgba(240,75,92,.15);color:var(--urgent);border:1.5px solid rgba(240,75,92,.35);padding:10px 18px;border-radius:12px;font-size:12px;font-weight:700;transition:all .25s;}
-#logoutBtn:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;border-color:var(--urgent);transform:translateY(-2px);}
-.btn-watch-screen{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;box-shadow:0 6px 16px rgba(168,85,247,.4);}
-.btn-watch-screen:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(168,85,247,.6);}
-.main-nav{display:flex;gap:8px;padding:14px 30px;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);overflow-x:auto;}
-.nav-btn{background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);padding:11px 20px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap;transition:all .3s;display:inline-flex;align-items:center;gap:6px;}
-.nav-btn:hover{background:rgba(91,141,239,.15);color:var(--text);border-color:rgba(91,141,239,.4);}
-.nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);box-shadow:0 8px 24px rgba(91,141,239,.5);}
-.nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff !important;border-color:rgba(168,85,247,.6);margin-inline-start:auto;animation:watchPulse 2.5s ease-in-out infinite;}
-@keyframes watchPulse{0%,100%{box-shadow:0 8px 24px rgba(168,85,247,.5);}50%{box-shadow:0 8px 32px rgba(168,85,247,.9),0 0 0 8px rgba(168,85,247,0);}}
-.watch-badge{background:rgba(255,255,255,.3);color:#fff;font-size:9px;font-weight:900;padding:3px 7px;border-radius:8px;}
+.app-layout{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-width);background:var(--header-bg);backdrop-filter:blur(30px);border-inline-end:1px solid var(--border-2);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;inset-inline-start:0;z-index:100;transition:width .3s var(--ease-out);overflow:hidden;}
+.sidebar.collapsed{width:var(--sidebar-width-collapsed);}
+.sidebar-brand{padding:20px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.sidebar-logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,rgba(91,141,239,.3),rgba(45,212,163,.2));padding:3px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px rgba(91,141,239,.35);flex-shrink:0;}
+.sidebar-logo img{width:100%;height:100%;object-fit:contain;border-radius:11px;background:var(--bg-0);padding:4px;}
+.sidebar-brand-text{display:flex;flex-direction:column;overflow:hidden;white-space:nowrap;}
+.sidebar-brand-text h1{font-size:16px;font-weight:900;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.sidebar-brand-text span{font-size:10px;color:var(--text-2);font-weight:600;}
+.sidebar.collapsed .sidebar-brand-text{display:none;}
+.sidebar-user{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.sidebar-avatar{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#5b8def,#2dd4a3);color:#fff;font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sidebar-user-info{overflow:hidden;white-space:nowrap;}
+.sidebar-user-info .name{font-size:13.5px;font-weight:800;}
+.sidebar-user-info .role{font-size:10.5px;color:var(--text-2);font-weight:700;}
+.sidebar.collapsed .sidebar-user-info{display:none;}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:4px;}
+.sidebar-nav::-webkit-scrollbar{width:4px;}
+.sidebar-nav::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px;}
+.sidebar-btn{background:transparent;color:var(--text-2);border:none;padding:12px 14px;border-radius:12px;font-size:13.5px;font-weight:700;text-align:start;display:flex;align-items:center;gap:12px;transition:all .25s;white-space:nowrap;position:relative;}
+.sidebar-btn:hover{background:rgba(91,141,239,.12);color:var(--text);}
+.sidebar-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;box-shadow:0 6px 18px rgba(91,141,239,.4);}
+.sidebar-btn .ico{font-size:17px;width:22px;text-align:center;flex-shrink:0;}
+.sidebar-btn .lbl{overflow:hidden;text-overflow:ellipsis;}
+.sidebar.collapsed .sidebar-btn .lbl{display:none;}
+.sidebar.collapsed .sidebar-btn{justify-content:center;padding:12px 0;}
+.sidebar-btn.watch-highlight{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;margin-top:8px;}
+.sidebar-btn.watch-highlight:hover{box-shadow:0 8px 24px rgba(168,85,247,.5);}
+.sidebar-footer{padding:12px 10px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.sidebar-footer button{flex:1;background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);padding:10px;border-radius:11px;font-size:14px;font-weight:800;transition:all .25s;}
+.sidebar-footer button:hover{background:rgba(91,141,239,.15);color:var(--text);border-color:var(--primary);}
+.sidebar-toggle{position:absolute;top:50%;inset-inline-end:-14px;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg-1);border:1.5px solid var(--border-2);color:var(--text);font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:101;transition:all .25s;cursor:pointer;}
+.sidebar-toggle:hover{background:var(--primary);color:#fff;border-color:var(--primary);}
 
-/* ============ SECTIONS ============ */
+.app-content{flex:1;margin-inline-start:var(--sidebar-width);transition:margin .3s var(--ease-out);min-height:100vh;}
+.sidebar.collapsed ~ .app-content{margin-inline-start:var(--sidebar-width-collapsed);}
+
+.topbar{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px solid var(--border-2);padding:12px 26px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50;gap:14px;flex-wrap:wrap;}
+.topbar-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+.page-title{font-size:20px;font-weight:900;}
+.page-title small{font-size:12px;color:var(--text-2);font-weight:600;margin-inline-start:10px;}
+.topbar-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.notif-bell{position:relative;background:var(--surface-1);color:var(--text);border:1.5px solid var(--border-2);width:44px;height:44px;border-radius:12px;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .25s;}
+.notif-bell:hover{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
+.notif-bell .badge{position:absolute;top:-4px;inset-inline-end:-4px;background:var(--urgent);color:#fff;font-size:10px;font-weight:900;padding:2px 7px;border-radius:10px;min-width:18px;text-align:center;box-shadow:0 0 8px rgba(240,75,92,.6);}
+.btn-report{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;box-shadow:0 6px 16px rgba(45,212,163,.4);}
+.btn-report:hover{transform:translateY(-2px);}
+.btn-watch-screen{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;box-shadow:0 6px 16px rgba(168,85,247,.4);}
+.btn-watch-screen:hover{transform:translateY(-2px);}
+
+/* View sections */
 .view-section{display:none;animation:fadeIn .4s ease-out;}
 .view-section.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-.container{max-width:1600px;margin:26px auto;padding:0 26px;}
-.card-panel{background:var(--panel-bg);border:1px solid var(--border-2);border-radius:24px;padding:26px;margin-bottom:22px;box-shadow:var(--shadow-md);}
+.container{max-width:1600px;margin:24px auto;padding:0 26px;}
+.card-panel{background:var(--panel-bg);border:1px solid var(--border-2);border-radius:24px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow-md);animation:cardFadeIn .5s var(--ease-out) both;}
+@keyframes cardFadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 .panel-title{font-size:17px;font-weight:900;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;}
+
+/* Smart KPI cards */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;}
 .stat{background:var(--surface-1);border-radius:18px;padding:22px 20px;text-align:center;border:1px solid var(--border);position:relative;overflow:hidden;transition:all .35s;}
 .stat::before{content:'';position:absolute;top:0;inset-inline:0;height:4px;}
 .stat:hover{transform:translateY(-5px);box-shadow:var(--shadow-md);}
@@ -175,24 +202,34 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .stat.overdue::before{background:linear-gradient(90deg,var(--urgent),#c81e3c);}
 .stat-num{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:900;margin-bottom:8px;letter-spacing:-2px;}
 .stat-label{font-size:12.5px;color:var(--text-2);font-weight:700;}
+.stat-delta{font-size:11px;margin-top:6px;font-weight:800;}
+.stat-delta.up{color:var(--success);}
+.stat-delta.down{color:var(--urgent);}
 .stat.total .stat-num{color:var(--primary);}
 .stat.done .stat-num{color:var(--success);}
 .stat.progress .stat-num{color:var(--warning);}
 .stat.overdue .stat-num{color:var(--urgent);}
+
+/* Team performance */
 .team-row{display:grid;grid-template-columns:160px 1fr 150px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);}
 .team-row:last-child{border-bottom:none;}
 .team-name{font-weight:800;font-size:14px;}
 .team-bar{height:12px;background:var(--bg-3);border-radius:6px;overflow:hidden;}
 .team-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--primary),var(--success));transition:width .6s ease;}
 .team-pct{font-size:13px;color:var(--text-2);text-align:end;font-weight:800;font-family:'JetBrains Mono',monospace;}
+
 .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
 .chart-box{height:320px;position:relative;}
+
+/* Add task form */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
 .form-grid input,.form-grid select{padding:14px 18px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:14px;font-family:inherit;transition:all .25s;}
-.form-grid input:focus,.form-grid select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.2);background:var(--input-bg-focus);}
+.form-grid input:focus,.form-grid select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.2);}
 .form-grid button{grid-column:1/-1;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:16px;border-radius:14px;font-size:15px;font-weight:800;transition:all .3s;box-shadow:0 8px 24px rgba(91,141,239,.4);}
-.form-grid button:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(91,141,239,.6);}
-.controls-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
+.form-grid button:hover{transform:translateY(-3px);}
+
+/* Controls */
+.controls-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
 .search-wrap{flex:1;min-width:240px;position:relative;}
 .search-wrap input{width:100%;padding:14px 18px 14px 50px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:14px;font-family:inherit;}
 .search-wrap input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.2);}
@@ -206,122 +243,120 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .filter-btn:hover{border-color:var(--primary);color:var(--primary);}
 .filter-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
 
-/* ============ TASK CARDS (Main App) ============ */
+/* TASK CARDS v21 */
 #tasksList{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;}
 #tasksList.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.task-card{background:var(--card-bg);border:2px solid var(--border);border-radius:22px;padding:24px 22px;cursor:pointer;transition:all .4s var(--ease-out);position:relative;display:flex;flex-direction:column;min-height:240px;overflow:hidden;box-shadow:var(--shadow-sm);}
+.task-card{background:var(--card-bg);border:2px solid var(--border);border-radius:22px;padding:22px 20px 18px;cursor:pointer;transition:all .4s var(--ease-out);position:relative;display:flex;flex-direction:column;min-height:250px;overflow:hidden;box-shadow:var(--shadow-sm);animation:cardFadeIn .4s var(--ease-out) both;}
 .task-card::before{content:'';position:absolute;top:0;inset-inline:0;height:6px;}
 .task-card.normal::before{background:linear-gradient(90deg,var(--success),#22b388);}
 .task-card.important::before{background:linear-gradient(90deg,var(--warning),#d97706);}
 .task-card.urgent::before{background:linear-gradient(90deg,#f04b5c,#c81e3c);}
 .task-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:var(--shadow-lg);border-color:rgba(91,141,239,.5);}
 .task-card.done{opacity:.65;}
-.task-card .card-title{font-size:19px;font-weight:900;margin-bottom:14px;min-height:54px;line-height:1.4;}
-.task-card .card-notes{font-size:14px;line-height:1.7;}
+.task-card .card-title{font-size:18px;font-weight:900;margin-bottom:12px;min-height:50px;line-height:1.4;}
+.task-card .card-notes{font-size:13.5px;line-height:1.7;color:var(--text-2);margin-bottom:12px;}
 .card-quick-actions{position:absolute;top:12px;inset-inline-start:12px;display:flex;gap:6px;opacity:0;transition:all .3s;z-index:5;}
 .task-card:hover .card-quick-actions{opacity:1;}
-.quick-action-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border-2);background:var(--bg-1);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.quick-action-btn{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--border-2);background:var(--bg-1);font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .quick-action-btn:hover{transform:scale(1.15);}
-.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-.priority-dot{width:14px;height:14px;border-radius:50%;}
-.priority-dot.urgent{background:var(--urgent);box-shadow:0 0 14px var(--urgent);}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;}
+.priority-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.priority-dot.urgent{background:var(--urgent);box-shadow:0 0 14px var(--urgent);animation:blink 1.6s ease-in-out infinite;}
 .priority-dot.important{background:var(--warning);box-shadow:0 0 12px var(--warning);}
 .priority-dot.normal{background:var(--success);box-shadow:0 0 12px var(--success);}
-.assignee-chip{font-size:13px;padding:7px 16px;background:var(--bg-3);border-radius:16px;color:var(--text-2);font-weight:800;}
-.card-tags{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.card-tag{font-size:11px;padding:5px 14px;background:rgba(91,141,239,.2);color:var(--primary);border-radius:14px;font-weight:800;border:1px solid rgba(91,141,239,.3);}
-.card-bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-.card-due{font-size:13px;color:var(--text-2);padding:7px 14px;background:var(--surface-1);border-radius:10px;font-weight:800;}
+@keyframes blink{50%{opacity:.35;}}
+.assignee-chip{font-size:12.5px;padding:6px 14px;background:var(--bg-3);border-radius:14px;color:var(--text-2);font-weight:800;display:flex;align-items:center;gap:6px;}
+.assignee-avatar-mini{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b8def,#2dd4a3);color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.card-tags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.card-tag{font-size:10.5px;padding:4px 12px;background:rgba(91,141,239,.2);color:var(--primary);border-radius:12px;font-weight:800;border:1px solid rgba(91,141,239,.3);}
+.card-progress{margin:10px 0;display:flex;align-items:center;gap:10px;}
+.card-progress-bar{flex:1;height:6px;background:var(--bg-3);border-radius:6px;overflow:hidden;}
+.card-progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--success));transition:width .6s;}
+.card-progress-text{font-size:11px;color:var(--text-2);font-weight:900;font-family:'JetBrains Mono',monospace;min-width:36px;text-align:end;}
+.card-bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--border);}
+.card-due{font-size:12px;color:var(--text-2);padding:6px 12px;background:var(--surface-1);border-radius:10px;font-weight:800;display:flex;align-items:center;gap:5px;}
 .card-due.overdue{background:rgba(240,75,92,.2);color:var(--urgent);border:1px solid rgba(240,75,92,.3);}
-.status-pill{font-size:12px;font-weight:800;padding:7px 16px;border-radius:14px;}
+.card-due.soon{background:rgba(245,165,36,.2);color:var(--warning);border:1px solid rgba(245,165,36,.3);}
+.card-stats{display:flex;gap:10px;align-items:center;font-size:12px;color:var(--text-2);font-weight:800;}
+.card-stats span{display:flex;align-items:center;gap:4px;}
+.status-pill{font-size:11.5px;font-weight:800;padding:6px 14px;border-radius:14px;}
 .status-pill.new{background:rgba(91,141,239,.2);color:var(--primary);border:1px solid rgba(91,141,239,.3);}
 .status-pill.progress{background:rgba(245,165,36,.2);color:var(--warning);border:1px solid rgba(245,165,36,.3);}
 .status-pill.done{background:rgba(45,212,163,.2);color:var(--success);border:1px solid rgba(45,212,163,.3);}
 @keyframes urgentPulseSoft{0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,.5),0 0 24px rgba(240,75,92,.35);border-color:rgba(240,75,92,.65);}50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 48px rgba(240,75,92,.7);border-color:#f04b5c;}}
 .task-card.urgent-active{border:3px solid #f04b5c;animation:urgentPulseSoft 2.2s ease-in-out infinite;}
-.task-card.urgent-active .card-title{color:#fff;text-shadow:0 0 12px rgba(240,75,92,.5);}
+.task-card.urgent-active .card-title{text-shadow:0 0 12px rgba(240,75,92,.5);}
 
-/* ============ KANBAN (Main App) ============ */
+/* KANBAN */
 .kanban-col{background:var(--panel-bg);border:1.5px solid var(--border);border-radius:20px;padding:18px;min-height:500px;display:flex;flex-direction:column;gap:14px;}
 .kanban-col-header{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
 .kanban-count{background:var(--bg-3);padding:4px 14px;border-radius:12px;font-size:13px;color:var(--text-2);font-weight:900;}
 .kanban-col-body{display:flex;flex-direction:column;gap:12px;flex:1;}
-.kanban-card{background:var(--card-bg);border:2px solid var(--border);border-radius:16px;padding:22px 20px;cursor:grab;border-inline-end:6px solid var(--primary);transition:all .3s;min-height:110px;}
-.kanban-card:hover{transform:translateX(-5px);box-shadow:var(--shadow-md);border-color:rgba(91,141,239,.5);}
+.kanban-card{background:var(--card-bg);border:2px solid var(--border);border-radius:16px;padding:20px 18px;cursor:grab;border-inline-end:6px solid var(--primary);transition:all .3s;min-height:110px;}
+.kanban-card:hover{transform:translateX(-5px);box-shadow:var(--shadow-md);}
 .kanban-card.dragging{opacity:.5;cursor:grabbing;}
-.kanban-card-title{font-size:18px;font-weight:900;margin-bottom:14px;line-height:1.35;}
+.kanban-card-title{font-size:17px;font-weight:900;margin-bottom:14px;line-height:1.35;}
 .kanban-col-body.drag-over{background:rgba(91,141,239,.1);border-radius:14px;}
-.kanban-card.urgent{border:3px solid #f04b5c;border-inline-end:6px solid #f04b5c;background:linear-gradient(135deg,rgba(240,75,92,.15),var(--card-bg));animation:urgentPulseSoft 2.2s ease-in-out infinite;position:relative;overflow:hidden;}
+.kanban-card.urgent{border:3px solid #f04b5c;animation:urgentPulseSoft 2.2s ease-in-out infinite;position:relative;}
 .kanban-card.urgent::after{content:'⚠️';position:absolute;top:12px;inset-inline-start:12px;font-size:22px;}
 
-/* ============ ACTIVITY ============ */
-.activity-header-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:14px;flex-wrap:wrap;}
-.activity-actions{display:flex;gap:10px;flex-wrap:wrap;}
-.btn-clear-deleted{background:linear-gradient(135deg,rgba(240,75,92,.2),rgba(200,30,60,.1));color:var(--urgent);border:1.5px solid rgba(240,75,92,.5);padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;display:inline-flex;align-items:center;gap:8px;}
-.btn-clear-deleted:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;transform:translateY(-2px);}
-.btn-purge-deleted{background:linear-gradient(135deg,rgba(100,116,139,.2),rgba(71,85,105,.1));color:var(--text-2);border:1.5px solid var(--border-2);padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;display:inline-flex;align-items:center;gap:8px;}
-.btn-purge-deleted:hover{background:linear-gradient(135deg,#475569,#334155);color:#fff;transform:translateY(-2px);}
-
-/* ============ MODAL ============ */
+/* MODAL */
 #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(15px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
-html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 #modalOverlay.active{display:flex;}
 .modal-box{background:var(--modal-bg);border:1.5px solid rgba(91,141,239,.3);border-radius:28px;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:modalIn .4s var(--ease-out);}
 @keyframes modalIn{from{transform:translateY(40px) scale(.95);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
-.modal-header{padding:24px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:relative;}
-.modal-header::before{content:'';position:absolute;top:0;inset-inline:0;height:5px;border-radius:28px 28px 0 0;}
-.modal-header.normal::before{background:linear-gradient(90deg,var(--success),#22b388);}
-.modal-header.important::before{background:linear-gradient(90deg,var(--warning),#d97706);}
-.modal-header.urgent::before{background:linear-gradient(90deg,var(--urgent),#c81e3c);}
-.modal-badges{display:flex;gap:10px;}
-.priority-badge,.status-badge{padding:7px 16px;border-radius:24px;font-size:12px;font-weight:800;}
+.modal-header{padding:22px 26px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);position:relative;gap:10px;flex-wrap:wrap;}
+.modal-badges{display:flex;gap:10px;flex-wrap:wrap;}
+.priority-badge,.status-badge{padding:6px 14px;border-radius:22px;font-size:12px;font-weight:800;}
 .priority-badge.urgent{background:rgba(240,75,92,.2);color:var(--urgent);border:1.5px solid rgba(240,75,92,.4);}
 .priority-badge.important{background:rgba(245,165,36,.2);color:var(--warning);border:1.5px solid rgba(245,165,36,.4);}
 .priority-badge.normal{background:rgba(45,212,163,.2);color:var(--success);border:1.5px solid rgba(45,212,163,.4);}
 .status-badge.new{background:rgba(91,141,239,.2);color:var(--primary);border:1.5px solid rgba(91,141,239,.4);}
 .status-badge.progress{background:rgba(245,165,36,.2);color:var(--warning);border:1.5px solid rgba(245,165,36,.4);}
 .status-badge.done{background:rgba(45,212,163,.2);color:var(--success);border:1.5px solid rgba(45,212,163,.4);}
-.modal-close{background:var(--surface-1);color:var(--text);border:none;width:40px;height:40px;border-radius:50%;font-size:16px;transition:all .3s;}
+.modal-close{background:var(--surface-1);color:var(--text);border:none;width:38px;height:38px;border-radius:50%;font-size:16px;transition:all .3s;}
 .modal-close:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;transform:rotate(90deg);}
-.modal-title{padding:24px 28px 16px;font-size:25px;font-weight:900;line-height:1.4;}
-.modal-tags{padding:0 28px 16px;display:flex;gap:8px;flex-wrap:wrap;}
+.modal-title{padding:22px 26px 14px;font-size:24px;font-weight:900;line-height:1.4;}
+.modal-tags{padding:0 26px 14px;display:flex;gap:8px;flex-wrap:wrap;}
 .tag{font-size:11.5px;padding:6px 14px;background:rgba(91,141,239,.2);color:var(--primary);border-radius:14px;font-weight:800;border:1px solid rgba(91,141,239,.3);}
-.modal-meta{padding:0 28px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.meta-item{background:var(--surface-1);padding:16px 18px;border-radius:14px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border);}
+.modal-meta{padding:0 26px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.meta-item{background:var(--surface-1);padding:14px 16px;border-radius:14px;display:flex;flex-direction:column;gap:5px;border:1px solid var(--border);}
 .meta-label{font-size:11px;color:var(--text-3);font-weight:700;}
-.meta-value{font-size:13.5px;font-weight:800;}
-.modal-section{padding:20px 28px;border-top:1px solid var(--border);}
-.modal-section-title{font-size:14px;font-weight:800;margin-bottom:16px;color:var(--primary);}
-.modal-notes{background:var(--surface-1);padding:16px 18px;border-radius:14px;font-size:13.5px;line-height:1.8;color:var(--text-2);}
-.modal-comments-list{max-height:240px;overflow-y:auto;margin-bottom:16px;}
-.modal-comment{background:var(--surface-1);padding:14px 18px;border-radius:14px;margin-bottom:10px;}
-.modal-comment-head{display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px;}
+.meta-value{font-size:13px;font-weight:800;}
+.modal-section{padding:18px 26px;border-top:1px solid var(--border);}
+.modal-section-title{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--primary);display:flex;justify-content:space-between;align-items:center;}
+.modal-notes{background:var(--surface-1);padding:14px 16px;border-radius:14px;font-size:13.5px;line-height:1.8;color:var(--text-2);}
+.modal-comments-list{max-height:240px;overflow-y:auto;margin-bottom:14px;}
+.modal-comment{background:var(--surface-1);padding:12px 16px;border-radius:14px;margin-bottom:10px;}
+.modal-comment-head{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;}
 .modal-comment-author{color:var(--primary);font-weight:800;}
 .modal-comment-date{color:var(--text-3);font-size:11px;}
 .modal-comment-text{font-size:13.5px;line-height:1.7;}
 .modal-comment-form{display:flex;gap:12px;}
 .modal-comment-form input{flex:1;padding:14px 18px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:13.5px;font-family:inherit;}
 .modal-comment-form button{padding:14px 26px;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;border-radius:14px;font-size:13.5px;font-weight:800;}
-.modal-actions{padding:20px 28px;border-top:1px solid var(--border);display:flex;gap:12px;align-items:center;background:var(--surface-1);flex-wrap:wrap;border-radius:0 0 28px 28px;}
-.modal-status-select{padding:13px 18px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;margin-inline-start:auto;font-weight:700;}
-.btn-edit,.btn-del,.btn-pin{padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:800;border:1.5px solid var(--border-2);background:var(--surface-1);color:var(--text);transition:all .25s;}
-.btn-edit:hover{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
-.btn-del:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;border-color:var(--urgent);}
-.btn-pin:hover,.btn-pin.active{background:linear-gradient(135deg,var(--warning),#d97706);color:#fff;border-color:var(--warning);}
+.modal-actions{padding:18px 26px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:center;background:var(--surface-1);flex-wrap:wrap;}
+.modal-status-select{padding:12px 16px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:13px;font-family:inherit;margin-inline-start:auto;font-weight:700;}
+.btn-edit,.btn-del,.btn-pin{padding:12px 20px;border-radius:12px;font-size:13.5px;font-weight:800;border:1.5px solid var(--border-2);background:var(--surface-1);color:var(--text);transition:all .25s;}
+.btn-edit:hover{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;}
+.btn-del:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;}
+.btn-pin:hover,.btn-pin.active{background:linear-gradient(135deg,var(--warning),#d97706);color:#fff;}
 
-/* ============ REPORT ============ */
+.qr-section{padding:16px 26px;border-top:1px solid var(--border);text-align:center;}
+.qr-canvas{background:#fff;padding:12px;border-radius:14px;display:inline-block;}
+
+/* REPORT */
 #reportOverlay{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;}
 #reportOverlay.active{display:flex;}
-.report-wrapper{background:var(--modal-bg);border-radius:28px;max-width:960px;width:100%;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);}
-.report-toolbar{padding:20px 28px;background:var(--surface-1);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
-.btn-download{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;padding:13px 24px;border-radius:12px;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(45,212,163,.4);transition:all .3s;}
+.report-wrapper{background:var(--modal-bg);border-radius:28px;max-width:960px;width:100%;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;}
+.report-toolbar{padding:18px 26px;background:var(--surface-1);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.btn-download{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;padding:13px 24px;border-radius:12px;font-size:14px;font-weight:800;transition:all .3s;}
 .btn-download:hover{transform:translateY(-2px);}
 .btn-close-report{background:var(--surface-1);color:var(--text);border:1.5px solid var(--border-2);padding:13px 24px;border-radius:12px;font-size:14px;font-weight:700;}
-.btn-close-report:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;}
-.report-scroll{overflow-y:auto;flex:1;padding:28px;}
-.report-content{background:#fff;color:#1a1a1a;padding:48px;border-radius:20px;}
+.report-scroll{overflow-y:auto;flex:1;padding:26px;}
+.report-content{background:#fff;color:#1a1a1a;padding:44px;border-radius:20px;}
 
-/* ============ TOAST ============ */
+/* TOAST */
 #toastHost{position:fixed;bottom:24px;inset-inline-start:24px;z-index:9000;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
 .toast{display:flex;align-items:center;gap:10px;padding:14px 20px;border-radius:14px;font-weight:800;font-size:14px;background:var(--modal-bg);backdrop-filter:blur(20px);border:1.5px solid var(--border-2);box-shadow:var(--shadow-lg);transform:translateY(20px);opacity:0;transition:all .35s var(--ease-out);pointer-events:auto;max-width:380px;}
 .toast.show{transform:translateY(0);opacity:1;}
@@ -333,7 +368,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .toast-warning .toast-icon{color:var(--warning);}
 .toast-icon{font-size:18px;font-weight:900;flex-shrink:0;}
 
-/* ============ NOTIFICATIONS ============ */
+/* NOTIFICATIONS */
 .notif-host{position:fixed;top:22px;inset-inline-start:22px;z-index:8000;display:flex;flex-direction:column;gap:12px;max-width:420px;pointer-events:none;}
 .sub-notification,.watch-sub-notification{background:var(--modal-bg);backdrop-filter:blur(40px);border:1.5px solid rgba(91,141,239,.5);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow-lg);pointer-events:auto;animation:notifIn .5s var(--ease-out);position:relative;overflow:hidden;display:flex;gap:14px;align-items:flex-start;}
 .sub-notification::before,.watch-sub-notification::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:linear-gradient(90deg,#5b8def,#2dd4a3);animation:notifProgress 20s linear forwards;transform-origin:right;}
@@ -355,52 +390,51 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .sub-notif-message,.watch-sub-message{font-size:12px;color:var(--text-2);line-height:1.5;font-weight:600;margin-bottom:6px;}
 .sub-notif-meta,.watch-sub-meta{display:flex;gap:12px;font-size:10px;color:var(--text-3);font-weight:700;flex-wrap:wrap;}
 .sub-notif-close,.watch-sub-close{background:transparent;border:none;color:var(--text-3);font-size:14px;padding:2px;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.sub-notif-close:hover,.watch-sub-close:hover{background:rgba(240,75,92,.15);color:#f04b5c;}
 .sub-notif-progress-text,.watch-sub-progress-text{position:absolute;bottom:6px;inset-inline-end:14px;font-size:9.5px;color:var(--text-3);font-weight:800;font-family:'JetBrains Mono',monospace;}
 
-/* ============ USERS ============ */
-.users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:14px;flex-wrap:wrap;}
-.users-toolbar-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
-.btn-add-user{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:13px 24px;border-radius:14px;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(91,141,239,.4);transition:all .3s;}
-.btn-add-user:hover{transform:translateY(-2px);}
-.user-row{display:flex;align-items:center;gap:18px;padding:18px;background:var(--surface-1);border:1.5px solid var(--border);border-radius:18px;margin-bottom:14px;transition:all .3s;}
-.user-row:hover{border-color:rgba(91,141,239,.4);transform:translateX(-4px);}
-.user-row.is-me{border-color:rgba(245,165,36,.5);background:linear-gradient(135deg,rgba(245,165,36,.08),var(--surface-1));}
-.user-avatar{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--primary),var(--success));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:24px;flex-shrink:0;}
-.user-info-cell{flex:1;min-width:0;}
-.user-name{font-weight:900;font-size:15.5px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
-.user-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);align-items:center;margin-bottom:10px;font-weight:700;}
-.role-badge{padding:4px 12px;border-radius:12px;font-weight:800;}
-.role-badge.admin{background:rgba(245,165,36,.2);color:var(--warning);border:1px solid rgba(245,165,36,.3);}
-.role-badge.user{background:rgba(91,141,239,.2);color:var(--primary);border:1px solid rgba(91,141,239,.3);}
-.status-badge.active{background:rgba(45,212,163,.2);color:var(--success);border:1px solid rgba(45,212,163,.3);}
-.status-badge.inactive{background:rgba(100,116,139,.2);color:var(--text-3);border:1px solid rgba(100,116,139,.3);}
-.user-stats-row{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);font-weight:700;}
-.user-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.btn-sm{padding:10px 14px;border-radius:11px;border:1.5px solid var(--border-2);background:var(--surface-1);color:var(--text);font-size:14px;font-weight:700;transition:all .2s;}
-.btn-sm:hover{transform:translateY(-2px);}
-.btn-sm.primary{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
-.btn-sm.danger{color:var(--urgent);border-color:rgba(240,75,92,.4);}
-.btn-sm.danger:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;}
-.btn-sm.warn{color:var(--warning);border-color:rgba(245,165,36,.4);}
-.btn-sm.warn:hover{background:linear-gradient(135deg,var(--warning),#d97706);color:#fff;}
-.btn-sm.success{color:var(--success);border-color:rgba(45,212,163,.4);}
-.btn-sm.success:hover{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;}
+/* NOTIFICATION CENTER */
+.notif-center{position:fixed;top:70px;inset-inline-end:20px;width:400px;max-width:calc(100vw - 40px);max-height:calc(100vh - 100px);background:var(--modal-bg);backdrop-filter:blur(30px);border:1.5px solid var(--border-2);border-radius:20px;box-shadow:var(--shadow-lg);z-index:900;display:none;flex-direction:column;overflow:hidden;animation:notifCenterIn .3s var(--ease-out);}
+.notif-center.active{display:flex;}
+@keyframes notifCenterIn{from{opacity:0;transform:translateY(-10px) scale(.96);}to{opacity:1;transform:translateY(0) scale(1);}}
+.notif-center-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.notif-center-header h3{font-size:15px;font-weight:900;}
+.notif-center-header button{background:transparent;border:none;color:var(--text-2);font-size:12px;font-weight:800;padding:6px 10px;border-radius:8px;}
+.notif-center-header button:hover{background:var(--surface-1);color:var(--primary);}
+.notif-center-body{overflow-y:auto;max-height:500px;}
+.notif-item{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;gap:12px;cursor:pointer;transition:background .2s;}
+.notif-item:hover{background:var(--surface-1);}
+.notif-item.unread{background:rgba(91,141,239,.05);}
+.notif-item-icon{width:36px;height:36px;border-radius:10px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.notif-item-body{flex:1;min-width:0;}
+.notif-item-title{font-size:12.5px;font-weight:800;margin-bottom:4px;}
+.notif-item-text{font-size:11.5px;color:var(--text-2);font-weight:600;margin-bottom:4px;line-height:1.5;}
+.notif-item-time{font-size:10.5px;color:var(--text-3);font-weight:700;}
+.notif-item.unread::before{content:'';position:absolute;width:8px;height:8px;background:var(--primary);border-radius:50%;inset-inline-start:6px;top:50%;transform:translateY(-50%);}
+.notif-empty{padding:40px 20px;text-align:center;color:var(--text-2);font-weight:700;font-size:13px;}
+
+/* EMPTY */
 .empty{text-align:center;padding:60px 20px;color:var(--text-2);font-weight:700;font-size:14px;}
 
 /* ============================================================
-   🖥️ WATCH SCREEN v5 — Kanban Columns with Auto-scroll
+   🖥️ WATCH SCREEN v6 — Ultra
    ============================================================ */
 #watchScreen{position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;display:none;}
 #watchScreen.active{display:block;}
-.watch-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.watch-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(91,141,239,.10),transparent 45%),radial-gradient(circle at 85% 80%,rgba(45,212,163,.08),transparent 45%);}
+#watchScreen.bg-calm .watch-bg::before{background:radial-gradient(circle at 15% 20%,rgba(91,141,239,.15),transparent 45%),radial-gradient(circle at 85% 80%,rgba(45,212,163,.10),transparent 45%);}
+#watchScreen.bg-alert .watch-bg::before{background:radial-gradient(circle at 15% 20%,rgba(240,75,92,.18),transparent 45%),radial-gradient(circle at 85% 80%,rgba(240,75,92,.12),transparent 45%);animation:bgAlertPulse 3s ease-in-out infinite;}
+@keyframes bgAlertPulse{0%,100%{opacity:1;}50%{opacity:.7;}}
+#watchScreen.bg-celebrate .watch-bg::before{background:radial-gradient(circle at 15% 20%,rgba(45,212,163,.18),transparent 45%),radial-gradient(circle at 85% 80%,rgba(168,85,247,.12),transparent 45%);}
+#watchScreen.bg-evening .watch-bg::before{background:radial-gradient(circle at 15% 20%,rgba(245,165,36,.15),transparent 45%),radial-gradient(circle at 85% 80%,rgba(240,75,92,.10),transparent 45%);}
+.watch-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;transition:background 1s ease;}
+.watch-bg::before{content:'';position:absolute;inset:0;transition:background 1s ease;}
 .watch-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(91,141,239,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(91,141,239,.02) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(circle at center,black 30%,transparent 80%);-webkit-mask-image:radial-gradient(circle at center,black 30%,transparent 80%);}
 
-#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:56px auto minmax(0,1fr) 60px;gap:12px;padding:12px 16px;}
+#watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:56px auto 60px minmax(0,1fr) 60px;gap:10px;padding:10px 14px;}
 #watchMainContent.active{display:grid;}
+body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
+body.watch-kiosk .w-ribbon,body.watch-kiosk .w-footer{display:none;}
 
-.w-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 16px;background:rgba(15,20,35,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:14px;}
+.w-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 16px;background:rgba(15,20,35,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:14px;}
 .w-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .w-brand img{width:38px;height:38px;object-fit:contain;border-radius:10px;background:rgba(5,8,16,.6);padding:5px;border:1.5px solid rgba(91,141,239,.4);}
 .w-brand h1{font-size:15px;font-weight:900;line-height:1;background:linear-gradient(135deg,#5b8def,#2dd4a3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
@@ -409,21 +443,34 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-clock span{font-family:'JetBrains Mono',monospace;font-size:clamp(20px,1.8vw,26px);font-weight:800;color:#5b8def;letter-spacing:2px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(91,141,239,.5);}
 .w-clock em{font-style:normal;font-size:11px;color:#94a3b8;font-weight:700;padding-inline-start:12px;border-inline-start:1px solid rgba(255,255,255,.1);}
 .w-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.w-live,.w-conn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:18px;font-size:11px;font-weight:800;}
+.w-live,.w-conn,.w-users{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:18px;font-size:11px;font-weight:800;}
 .w-live{background:rgba(240,75,92,.15);color:#ff6b7d;border:1px solid rgba(240,75,92,.3);}
 .w-conn{background:rgba(45,212,163,.15);color:#3ee8b5;border:1px solid rgba(45,212,163,.3);}
 .w-conn.offline{background:rgba(240,75,92,.15);color:#ff6b7d;border-color:rgba(240,75,92,.3);}
-.w-live i,.w-conn i{width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor;animation:blink 1.6s ease-in-out infinite;}
-@keyframes blink{50%{opacity:.3;}}
+.w-users{background:rgba(91,141,239,.15);color:#7ca5f5;border:1px solid rgba(91,141,239,.3);}
+.w-live i,.w-conn i,.w-users i{width:5px;height:5px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor;animation:blink 1.6s ease-in-out infinite;}
 .w-btn{width:32px;height:32px;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#94a3b8;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer;}
 .w-btn:hover{background:rgba(91,141,239,.15);color:#5b8def;border-color:rgba(91,141,239,.4);}
 .w-btn.danger:hover{background:rgba(240,75,92,.2);color:#ff6b7d;border-color:rgba(240,75,92,.4);}
+.w-btn.muted{opacity:.4;}
 
+/* Ribbon (Advanced KPIs) */
+.w-ribbon{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.w-ribbon-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:12px;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);}
+.w-ribbon-icon{font-size:20px;flex-shrink:0;}
+.w-ribbon-content{flex:1;min-width:0;}
+.w-ribbon-label{font-size:10.5px;color:#94a3b8;font-weight:700;margin-bottom:2px;}
+.w-ribbon-value{font-size:14px;font-weight:900;color:#f8fafc;font-family:'JetBrains Mono',monospace;}
+.w-ribbon-delta{font-size:10px;font-weight:800;margin-inline-start:6px;}
+.w-ribbon-delta.up{color:#3ee8b5;}
+.w-ribbon-delta.down{color:#ff6b7d;}
+
+/* KPI cards */
 .w-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
-.w-kpi{position:relative;padding:10px 14px;border-radius:14px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;min-height:58px;overflow:hidden;transition:transform .3s cubic-bezier(.16,1,.3,1);border:1px solid transparent;}
+.w-kpi{position:relative;padding:10px 14px;border-radius:14px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;min-height:58px;overflow:hidden;transition:transform .3s var(--ease-out);border:1px solid transparent;}
 .w-kpi::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:rgba(255,255,255,.35);}
 .w-kpi:hover{transform:translateY(-3px);}
-.w-kpi-num{font-family:'JetBrains Mono',monospace;font-size:clamp(22px,2vw,32px);font-weight:900;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;text-shadow:0 2px 12px rgba(0,0,0,.3);}
+.w-kpi-num{font-family:'JetBrains Mono',monospace;font-size:clamp(22px,2vw,32px);font-weight:900;line-height:1;letter-spacing:-1px;text-shadow:0 2px 12px rgba(0,0,0,.3);}
 .w-kpi-label{font-size:clamp(11px,.9vw,13px);font-weight:800;opacity:.95;white-space:nowrap;}
 .kpi-total{background:linear-gradient(135deg,#3b6fd4,#4f7ee0);color:#fff;}
 .kpi-urgent{background:linear-gradient(135deg,#dc2626,#f04b5c);color:#fff;}
@@ -432,27 +479,46 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .kpi-work{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;}
 .kpi-done{background:linear-gradient(135deg,#0d9488,#14b8a6);color:#fff;}
 
+/* Team Carousel */
+.w-team-carousel{display:none;background:rgba(15,20,35,.85);backdrop-filter:blur(24px);border:1px solid rgba(91,141,239,.35);border-radius:18px;padding:20px 26px;position:absolute;top:50%;inset-inline-start:50%;transform:translate(50%,-50%);width:min(520px,80vw);z-index:50;box-shadow:0 30px 80px rgba(0,0,0,.7);animation:teamCarouselIn .5s var(--ease-out);}
+.w-team-carousel.active{display:block;}
+@keyframes teamCarouselIn{from{opacity:0;transform:translate(50%,-50%) scale(.9);}to{opacity:1;transform:translate(50%,-50%) scale(1);}}
+.w-tc-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.w-tc-avatar{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:28px;flex-shrink:0;box-shadow:0 0 30px rgba(91,141,239,.5);}
+.w-tc-name{font-size:22px;font-weight:900;color:#f8fafc;}
+.w-tc-role{font-size:12px;color:#94a3b8;font-weight:700;}
+.w-tc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.w-tc-stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;text-align:center;}
+.w-tc-stat-num{font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;margin-bottom:2px;}
+.w-tc-stat-label{font-size:10.5px;color:#94a3b8;font-weight:700;}
+.w-tc-progress{background:rgba(255,255,255,.04);border-radius:12px;padding:12px 16px;}
+.w-tc-progress-label{display:flex;justify-content:space-between;font-size:11.5px;font-weight:800;color:#94a3b8;margin-bottom:8px;}
+.w-tc-progress-bar{height:10px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden;}
+.w-tc-progress-fill{height:100%;background:linear-gradient(90deg,#5b8def,#2dd4a3);transition:width 1s ease;}
+
+/* Focus Mode */
+.w-focus-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);z-index:100;display:none;align-items:center;justify-content:center;padding:40px;}
+.w-focus-overlay.active{display:flex;}
+.w-focus-card{background:linear-gradient(135deg,rgba(240,75,92,.15),rgba(15,20,32,.95));border:2px solid rgba(240,75,92,.6);border-radius:28px;padding:44px 50px;max-width:820px;width:100%;box-shadow:0 40px 120px rgba(240,75,92,.4);animation:focusIn .5s var(--ease-out);position:relative;overflow:hidden;}
+@keyframes focusIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.w-focus-card::before{content:'';position:absolute;top:0;inset-inline:0;height:6px;background:linear-gradient(90deg,#f04b5c,#ff6b7d,#f04b5c);background-size:200% 100%;animation:urgentBarFlow 2s linear infinite;}
+@keyframes urgentBarFlow{0%{background-position:0 0;}100%{background-position:200% 0;}}
+.w-focus-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(240,75,92,.25);color:#ff6b7d;padding:8px 18px;border-radius:22px;font-size:14px;font-weight:900;margin-bottom:20px;border:1px solid rgba(240,75,92,.5);animation:blink 1.6s ease-in-out infinite;}
+.w-focus-title{font-size:clamp(26px,3vw,40px);font-weight:900;color:#fff;line-height:1.3;margin-bottom:22px;text-shadow:0 0 30px rgba(240,75,92,.5);}
+.w-focus-meta{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:26px;}
+.w-focus-meta-item{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;color:#94a3b8;}
+.w-focus-meta-item strong{color:#f8fafc;}
+.w-focus-notes{background:rgba(0,0,0,.35);padding:18px 22px;border-radius:16px;font-size:15px;color:#cbd5e1;line-height:1.7;font-weight:600;border:1px solid rgba(255,255,255,.06);}
+
 /* Kanban */
 .w-kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;min-height:0;}
-
-.w-col{
-  display:flex;flex-direction:column;
-  background:rgba(15,20,35,.55);
-  backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.06);
-  border-radius:16px;
-  overflow:hidden;
-  min-height:0;
-  position:relative;
-}
+.w-col{display:flex;flex-direction:column;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;min-height:0;position:relative;}
 .w-col::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:var(--col-bar,#5b8def);z-index:2;}
-
 .col-urgent{--col-bar:linear-gradient(90deg,#f04b5c,#ff6b7d);}
 .col-important{--col-bar:linear-gradient(90deg,#f5a524,#ffc043);}
 .col-normal{--col-bar:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
 .col-done{--col-bar:linear-gradient(90deg,#14b8a6,#22d3ee);}
-
-.w-col-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0;}
+.w-col-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 10px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0;}
 .w-col-title{display:flex;align-items:center;gap:10px;}
 .w-col-dot{width:10px;height:10px;border-radius:50%;}
 .w-col-dot.urgent{background:#f04b5c;box-shadow:0 0 12px #f04b5c;animation:blink 1.6s ease-in-out infinite;}
@@ -460,172 +526,51 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-col-dot.normal{background:#2dd4a3;box-shadow:0 0 10px #2dd4a3;}
 .w-col-dot.done{background:#14b8a6;box-shadow:0 0 10px #14b8a6;}
 .w-col-title h3{font-size:clamp(13px,1.1vw,15px);font-weight:900;color:#f8fafc;letter-spacing:.3px;}
-.w-col-count{
-  background:rgba(255,255,255,.1);
-  color:#cbd5e1;
-  padding:3px 12px;border-radius:10px;
-  font-size:12px;font-weight:900;
-  font-family:'JetBrains Mono',monospace;
-  min-width:34px;text-align:center;
-}
+.w-col-count{background:rgba(255,255,255,.1);color:#cbd5e1;padding:3px 12px;border-radius:10px;font-size:12px;font-weight:900;font-family:'JetBrains Mono',monospace;min-width:34px;text-align:center;}
 .col-urgent .w-col-count{background:rgba(240,75,92,.2);color:#ff6b7d;}
 .col-important .w-col-count{background:rgba(245,165,36,.2);color:#ffc043;}
 .col-normal .w-col-count{background:rgba(45,212,163,.2);color:#3ee8b5;}
 .col-done .w-col-count{background:rgba(20,184,166,.2);color:#22d3ee;}
-
-.w-col-body{
-  flex:1;
-  position:relative;
-  overflow:hidden;
-  min-height:0;
-  mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);
-}
-.w-col-track{
-  display:flex;flex-direction:column;gap:10px;
-  padding:12px;
-  will-change:transform;
-}
-.w-col-track.scrolling{
-  animation:colScroll var(--scroll-duration,35s) linear infinite;
-}
+.w-col-progress{margin:0 16px 8px;height:3px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.w-col-progress-fill{height:100%;background:linear-gradient(90deg,var(--col-bar,#5b8def));transition:width 1s ease;}
+.w-col-body{flex:1;position:relative;overflow:hidden;min-height:0;mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);}
+.w-col-track{display:flex;flex-direction:column;gap:10px;padding:12px;will-change:transform;}
+.w-col-track.scrolling{animation:colScroll var(--scroll-duration,35s) linear infinite;}
 .w-col-track.scrolling:hover{animation-play-state:paused;}
-@keyframes colScroll{
-  0%{transform:translateY(0);}
-  100%{transform:translateY(-50%);}
-}
+@keyframes colScroll{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
 
-/* Task Card */
-.w-task{
-  position:relative;
-  background:linear-gradient(135deg,rgba(23,29,46,.9),rgba(15,20,32,.8));
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:12px;
-  padding:12px 14px;
-  cursor:pointer;
-  transition:all .25s cubic-bezier(.16,1,.3,1);
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  gap:8px;
-  min-height:86px;
-}
-.w-task:hover{
-  background:linear-gradient(135deg,rgba(35,43,66,.95),rgba(23,29,46,.9));
-  transform:translateX(-4px);
-  border-color:rgba(91,141,239,.4);
-  box-shadow:0 8px 24px rgba(0,0,0,.5);
-}
-.w-task-title{
-  font-size:clamp(13px,1.05vw,15px);
-  font-weight:900;
-  color:#f8fafc;
-  line-height:1.35;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  min-height:40px;
-}
-.w-task-meta{
-  display:flex;justify-content:space-between;align-items:center;
-  gap:8px;
-  font-size:11.5px;font-weight:800;
-  color:#94a3b8;
-}
-.w-task-assignee{
-  display:flex;align-items:center;gap:6px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  min-width:0;
-}
-.w-task-avatar{
-  width:22px;height:22px;border-radius:7px;
-  background:linear-gradient(135deg,#5b8def,#2dd4a3);
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:900;font-size:11px;flex-shrink:0;
-}
-.w-task-due{
-  white-space:nowrap;flex-shrink:0;
-  padding:3px 8px;border-radius:6px;
-  background:rgba(255,255,255,.05);
-}
+.w-task{position:relative;background:linear-gradient(135deg,rgba(23,29,46,.9),rgba(15,20,32,.8));border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .25s var(--ease-out);overflow:hidden;display:flex;flex-direction:column;gap:8px;min-height:86px;}
+.w-task:hover{background:linear-gradient(135deg,rgba(35,43,66,.95),rgba(23,29,46,.9));transform:translateX(-4px);border-color:rgba(91,141,239,.4);box-shadow:0 8px 24px rgba(0,0,0,.5);}
+.w-task-title{font-size:clamp(13px,1.05vw,15px);font-weight:900;color:#f8fafc;line-height:1.35;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:40px;}
+.w-task-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px;font-weight:800;color:#94a3b8;}
+.w-task-assignee{display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+.w-task-avatar{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,#5b8def,#2dd4a3);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11px;flex-shrink:0;}
+.w-task-due{white-space:nowrap;flex-shrink:0;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.05);}
 .w-task-due.overdue{color:#ff6b7d;background:rgba(240,75,92,.15);}
-.w-task-status-badge{
-  display:inline-block;
-  padding:3px 10px;border-radius:6px;
-  font-size:10.5px;font-weight:900;
-  white-space:nowrap;
-  align-self:flex-start;
-}
+.w-task-due.soon{color:#ffc043;background:rgba(245,165,36,.15);}
+.w-task-status-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10.5px;font-weight:900;white-space:nowrap;align-self:flex-start;}
 .w-task-status-badge.new{background:rgba(91,141,239,.2);color:#7ca5f5;}
 .w-task-status-badge.progress{background:rgba(245,165,36,.2);color:#f5b84a;}
 .w-task-status-badge.done{background:rgba(45,212,163,.2);color:#3ee8b5;}
+.w-task-icons{position:absolute;top:8px;inset-inline-start:8px;display:flex;gap:4px;}
+.w-task-icons span{font-size:12px;opacity:.8;}
 
-/* URGENT Flash */
-.col-urgent .w-task{
-  background:linear-gradient(135deg,rgba(240,75,92,.14),rgba(15,20,32,.85));
-  border-color:rgba(240,75,92,.35);
-  animation:urgentFlash 2.2s ease-in-out infinite;
-}
-@keyframes urgentFlash{
-  0%,100%{
-    box-shadow:0 0 0 0 rgba(240,75,92,.4),
-               0 0 16px rgba(240,75,92,.3),
-               inset 0 0 0 1px rgba(240,75,92,.35);
-    border-color:rgba(240,75,92,.4);
-  }
-  50%{
-    box-shadow:0 0 0 6px rgba(240,75,92,0),
-               0 0 28px rgba(240,75,92,.65),
-               inset 0 0 0 1px rgba(240,75,92,.7);
-    border-color:#f04b5c;
-  }
-}
+.col-urgent .w-task{background:linear-gradient(135deg,rgba(240,75,92,.14),rgba(15,20,32,.85));border-color:rgba(240,75,92,.35);animation:urgentFlash 2.2s ease-in-out infinite;}
+@keyframes urgentFlash{0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,.4),0 0 16px rgba(240,75,92,.3),inset 0 0 0 1px rgba(240,75,92,.35);border-color:rgba(240,75,92,.4);}50%{box-shadow:0 0 0 6px rgba(240,75,92,0),0 0 28px rgba(240,75,92,.65),inset 0 0 0 1px rgba(240,75,92,.7);border-color:#f04b5c;}}
 .col-urgent .w-task-title{color:#fff;text-shadow:0 0 10px rgba(240,75,92,.5);}
-.col-urgent .w-task::before{
-  content:'';position:absolute;
-  top:0;inset-inline-end:0;bottom:0;width:4px;
-  background:linear-gradient(180deg,#f04b5c,#ff6b7d,#f04b5c);
-  background-size:100% 200%;
-  animation:urgentBarFlow 1.6s linear infinite;
-}
-@keyframes urgentBarFlow{0%{background-position:0 0;}100%{background-position:0 200%;}}
-
-.col-important .w-task{
-  background:linear-gradient(135deg,rgba(245,165,36,.10),rgba(15,20,32,.85));
-  border-color:rgba(245,165,36,.25);
-}
-.col-important .w-task::before{
-  content:'';position:absolute;
-  top:0;inset-inline-end:0;bottom:0;width:4px;
-  background:linear-gradient(180deg,#f5a524,#ffc043);
-}
-
-.col-normal .w-task::before{
-  content:'';position:absolute;
-  top:0;inset-inline-end:0;bottom:0;width:4px;
-  background:linear-gradient(180deg,#2dd4a3,#3ee8b5);
-}
-
+.col-urgent .w-task::before{content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;background:linear-gradient(180deg,#f04b5c,#ff6b7d,#f04b5c);background-size:100% 200%;animation:urgentBarFlow2 1.6s linear infinite;}
+@keyframes urgentBarFlow2{0%{background-position:0 0;}100%{background-position:0 200%;}}
+.col-important .w-task{background:linear-gradient(135deg,rgba(245,165,36,.10),rgba(15,20,32,.85));border-color:rgba(245,165,36,.25);}
+.col-important .w-task::before{content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;background:linear-gradient(180deg,#f5a524,#ffc043);}
+.col-normal .w-task::before{content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;background:linear-gradient(180deg,#2dd4a3,#3ee8b5);}
 .col-done .w-task{opacity:.85;}
-.col-done .w-task::before{
-  content:'';position:absolute;
-  top:0;inset-inline-end:0;bottom:0;width:4px;
-  background:linear-gradient(180deg,#14b8a6,#22d3ee);
-}
+.col-done .w-task::before{content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;background:linear-gradient(180deg,#14b8a6,#22d3ee);}
 .col-done .w-task-title{color:#94a3b8;}
-
-.w-col-empty{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:30px 16px;gap:8px;
-  color:#64748b;text-align:center;
-  height:100%;min-height:180px;
-}
+.w-col-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 16px;gap:8px;color:#64748b;text-align:center;height:100%;min-height:180px;}
 .w-col-empty div:first-child{font-size:36px;opacity:.35;}
 .w-col-empty div:last-child{font-size:12px;font-weight:800;color:#94a3b8;}
 
-/* Footer */
+/* Footer Tickers */
 .w-footer{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex-shrink:0;}
 .w-ticker{display:flex;align-items:center;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;height:60px;}
 .w-ticker-done{border-color:rgba(20,184,166,.25);}
@@ -656,17 +601,86 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 #watchPinForm{display:flex;flex-direction:column;gap:14px;}
 #watchPinInput{width:100%;padding:18px;background:rgba(35,43,66,.7);color:#f8fafc;border:1.5px solid rgba(255,255,255,.12);border-radius:14px;font-size:22px;text-align:center;letter-spacing:10px;font-family:monospace;font-weight:800;outline:none;transition:all .25s;}
 #watchPinInput:focus{border-color:#5b8def;box-shadow:0 0 0 4px rgba(91,141,239,.25);}
-#watchPinForm button{padding:16px;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;transition:all .2s;box-shadow:0 12px 32px rgba(91,141,239,.45);}
+#watchPinForm button{padding:16px;background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;transition:all .2s;}
 #watchPinForm button:hover{transform:translateY(-2px);}
 #watchPinError{color:#f04b5c;font-size:12.5px;min-height:20px;font-weight:800;}
 .watch-pin-hint{color:#64748b;font-size:12px;margin-top:20px;font-weight:700;}
 
-body.watch-kiosk .w-footer{display:none !important;}
-body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
+/* Users */
+.users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:14px;flex-wrap:wrap;}
+.users-toolbar-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+.btn-add-user{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:13px 24px;border-radius:14px;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(91,141,239,.4);transition:all .3s;}
+.btn-add-user:hover{transform:translateY(-2px);}
+.user-row{display:flex;align-items:center;gap:18px;padding:18px;background:var(--surface-1);border:1.5px solid var(--border);border-radius:18px;margin-bottom:14px;transition:all .3s;}
+.user-row:hover{border-color:rgba(91,141,239,.4);transform:translateX(-4px);}
+.user-row.is-me{border-color:rgba(245,165,36,.5);background:linear-gradient(135deg,rgba(245,165,36,.08),var(--surface-1));}
+.user-avatar{width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--primary),var(--success));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:24px;flex-shrink:0;}
+.user-info-cell{flex:1;min-width:0;}
+.user-name{font-weight:900;font-size:15.5px;margin-bottom:8px;display:flex;align-items:center;gap:10px;}
+.user-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);align-items:center;margin-bottom:10px;font-weight:700;}
+.role-badge{padding:4px 12px;border-radius:12px;font-weight:800;}
+.role-badge.admin{background:rgba(245,165,36,.2);color:var(--warning);border:1px solid rgba(245,165,36,.3);}
+.role-badge.user{background:rgba(91,141,239,.2);color:var(--primary);border:1px solid rgba(91,141,239,.3);}
+.status-badge.active{background:rgba(45,212,163,.2);color:var(--success);border:1px solid rgba(45,212,163,.3);}
+.status-badge.inactive{background:rgba(100,116,139,.2);color:var(--text-3);border:1px solid rgba(100,116,139,.3);}
+.user-stats-row{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--text-2);font-weight:700;}
+.user-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-sm{padding:10px 14px;border-radius:11px;border:1.5px solid var(--border-2);background:var(--surface-1);color:var(--text);font-size:14px;font-weight:700;transition:all .2s;}
+.btn-sm:hover{transform:translateY(-2px);}
+.btn-sm.primary{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
+.btn-sm.danger{color:var(--urgent);border-color:rgba(240,75,92,.4);}
+.btn-sm.danger:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;}
+.btn-sm.warn{color:var(--warning);border-color:rgba(245,165,36,.4);}
+.btn-sm.warn:hover{background:linear-gradient(135deg,var(--warning),#d97706);color:#fff;}
+.btn-sm.success{color:var(--success);border-color:rgba(45,212,163,.4);}
+.btn-sm.success:hover{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;}
 
-@media (max-width:1400px){.w-kpis{grid-template-columns:repeat(3,1fr);}}
-@media (max-width:1100px){.w-kanban{grid-template-columns:repeat(2,1fr);}.w-clock{display:none;}}
-@media (max-width:700px){.w-kanban{grid-template-columns:1fr;}.w-footer{grid-template-columns:1fr;}.w-kpis{grid-template-columns:repeat(2,1fr);}}
+/* Activity */
+.activity-header-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:14px;flex-wrap:wrap;}
+.activity-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-clear-deleted{background:linear-gradient(135deg,rgba(240,75,92,.2),rgba(200,30,60,.1));color:var(--urgent);border:1.5px solid rgba(240,75,92,.5);padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;}
+.btn-clear-deleted:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;}
+.btn-purge-deleted{background:linear-gradient(135deg,rgba(100,116,139,.2),rgba(71,85,105,.1));color:var(--text-2);border:1.5px solid var(--border-2);padding:10px 18px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;}
+.btn-purge-deleted:hover{background:linear-gradient(135deg,#475569,#334155);color:#fff;}
+
+/* Bottom mobile nav */
+.mobile-nav{display:none;position:fixed;bottom:0;inset-inline:0;background:var(--header-bg);backdrop-filter:blur(30px);border-top:1px solid var(--border-2);padding:8px 4px;z-index:90;justify-content:space-around;box-shadow:0 -4px 20px rgba(0,0,0,.3);}
+.mobile-nav button{background:transparent;border:none;color:var(--text-2);font-size:10px;font-weight:800;padding:8px 6px;border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .2s;min-width:60px;}
+.mobile-nav button.active{color:var(--primary);background:rgba(91,141,239,.12);}
+.mobile-nav button .ico{font-size:20px;}
+.mobile-nav button.watch-mobile{color:#a855f7;}
+
+@media (max-width:1024px){
+  .sidebar{width:var(--sidebar-width-collapsed);}
+  .sidebar .sidebar-brand-text,.sidebar .sidebar-user-info,.sidebar .sidebar-btn .lbl{display:none;}
+  .sidebar .sidebar-btn{justify-content:center;padding:12px 0;}
+  .sidebar.expanded{width:var(--sidebar-width);}
+  .sidebar.expanded .sidebar-brand-text,.sidebar.expanded .sidebar-user-info,.sidebar.expanded .sidebar-btn .lbl{display:block;}
+  .sidebar.expanded .sidebar-btn{justify-content:flex-start;padding:12px 14px;}
+  .app-content{margin-inline-start:var(--sidebar-width-collapsed);}
+  .w-ribbon{grid-template-columns:repeat(2,1fr);}
+  .w-kpis{grid-template-columns:repeat(3,1fr);}
+  .w-kanban{grid-template-columns:repeat(2,1fr);}
+  .w-clock{display:none;}
+}
+@media (max-width:768px){
+  .sidebar{display:none;}
+  .app-content{margin-inline-start:0;padding-bottom:80px;}
+  .mobile-nav{display:flex;}
+  .container{padding:0 14px;}
+  .charts-grid{grid-template-columns:1fr;}
+  #tasksList,#tasksList.kanban-board{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .topbar{padding:10px 14px;}
+  .btn-report,.btn-watch-screen{display:none;}
+  .notif-center{inset-inline:10px;width:auto;}
+}
+@media (max-width:700px){
+  .w-kanban{grid-template-columns:1fr;}
+  .w-footer{grid-template-columns:1fr;}
+  .w-kpis{grid-template-columns:repeat(2,1fr);}
+  .w-ribbon{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
@@ -675,7 +689,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 <div id="loginScreen" class="screen active">
   <button class="theme-toggle" data-theme-toggle aria-label="تبديل الثيم">🌙</button>
   <div class="login-card">
-    <div class="login-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK" loading="eager"></div>
+    <div class="login-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="login-logo" alt="EMAK"></div>
     <h1>EMAK IT Dep.</h1>
     <p>نظام إدارة المهام — قسم نظم المعلومات</p>
     <form id="loginForm" novalidate>
@@ -707,157 +721,210 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
 <!-- MAIN -->
 <div id="mainScreen">
-  <header>
-    <div class="header-brand">
-      <div class="header-logo-wrap"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" class="header-logo" alt="EMAK"></div>
-      <div><h1>EMAK IT Dep.</h1><div class="subtitle">نظم معلومات إيماك</div></div>
-    </div>
-    <div class="user-info">
-      <span id="userName"></span>
-      <span id="userRole" class="role"></span>
-      <button class="user-menu-btn" data-action="change-password">🔑 كلمة المرور</button>
-      <button class="btn-watch-screen" data-action="open-watch">🖥️ شاشة العرض</button>
-      <button class="btn-report" data-action="open-report">📄 تقرير PDF</button>
-      <button class="icon-btn" data-theme-toggle title="تبديل الثيم">🌙</button>
-      <button id="logoutBtn">خروج</button>
-    </div>
-  </header>
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="طي القائمة">‹</button>
+      <div class="sidebar-brand">
+        <div class="sidebar-logo"><img src="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png" alt="EMAK"></div>
+        <div class="sidebar-brand-text"><h1>EMAK IT</h1><span>نظم المعلومات</span></div>
+      </div>
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar">؟</div>
+        <div class="sidebar-user-info">
+          <div class="name" id="sidebarName">—</div>
+          <div class="role" id="sidebarRole">—</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-btn active" data-view="dashboard"><span class="ico">🏠</span><span class="lbl">الرئيسية</span></button>
+        <button class="sidebar-btn" data-view="tasks"><span class="ico">📋</span><span class="lbl">المهام</span></button>
+        <button class="sidebar-btn" data-view="watch"><span class="ico">👁️</span><span class="lbl">متابعة</span></button>
+        <button class="sidebar-btn" id="usersNavBtn" data-view="users" hidden><span class="ico">👥</span><span class="lbl">المستخدمون</span></button>
+        <button class="sidebar-btn" id="teamNavBtn" data-action="open-team" hidden><span class="ico">🔧</span><span class="lbl">الفريق</span></button>
+        <button class="sidebar-btn" data-view="activity"><span class="ico">📜</span><span class="lbl">السجل</span></button>
+        <button class="sidebar-btn" data-action="export-csv"><span class="ico">📊</span><span class="lbl">Excel</span></button>
+        <button class="sidebar-btn watch-highlight" data-action="open-watch"><span class="ico">🖥️</span><span class="lbl">شاشة العرض</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <button data-theme-toggle title="الثيم">🌙</button>
+        <button id="logoutBtn" title="خروج">🚪</button>
+      </div>
+    </aside>
 
-  <nav class="main-nav">
-    <button class="nav-btn active" data-view="dashboard">🏠 الرئيسية</button>
-    <button class="nav-btn" data-view="tasks">📋 المهام</button>
-    <button class="nav-btn" data-view="watch">👁️ متابعة</button>
-    <button class="nav-btn" id="usersNavBtn" data-view="users" hidden>👥 المستخدمون</button>
-    <button class="nav-btn" id="teamNavBtn" data-action="open-team" hidden>🔧 الفريق</button>
-    <button class="nav-btn" data-view="activity">📜 السجل</button>
-    <button class="nav-btn" data-action="export-csv">📊 Excel</button>
-    <button class="nav-btn watch-highlight" data-action="open-watch"><span>🖥️</span> شاشة العرض <span class="watch-badge">PIN</span></button>
+    <main class="app-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="page-title" id="pageTitle">🏠 الرئيسية<small id="pageSubtitle"></small></div>
+        </div>
+        <div class="topbar-actions">
+          <button class="notif-bell" id="notifBell" title="الإشعارات">🔔<span class="badge" id="notifBadge" hidden>0</span></button>
+          <button class="btn-report" data-action="open-report">📄 تقرير PDF</button>
+          <button class="btn-watch-screen" data-action="open-watch">🖥️ شاشة العرض</button>
+        </div>
+      </header>
+
+      <section class="view-section active" id="dashboardView">
+        <div class="container">
+          <div class="card-panel">
+            <div class="panel-title">📊 نظرة عامة</div>
+            <div class="stats-grid">
+              <div class="stat total"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي المهام</div><div class="stat-delta" id="statTotalDelta"></div></div>
+              <div class="stat done"><div class="stat-num" id="statDone">0</div><div class="stat-label">مكتملة</div><div class="stat-delta" id="statDoneDelta"></div></div>
+              <div class="stat progress"><div class="stat-num" id="statProgress">0</div><div class="stat-label">جارية</div><div class="stat-delta" id="statProgressDelta"></div></div>
+              <div class="stat overdue"><div class="stat-num" id="statOverdue">0</div><div class="stat-label">متأخرة</div><div class="stat-delta" id="statOverdueDelta"></div></div>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="panel-title">🎯 توقعات ومؤشرات</div>
+            <div class="stats-grid">
+              <div class="stat total"><div class="stat-num" id="statSpeed">0</div><div class="stat-label">معدل الإنجاز (مهمة/يوم)</div></div>
+              <div class="stat done"><div class="stat-num" id="statCommitRate">0%</div><div class="stat-label">نسبة الالتزام بالمواعيد</div></div>
+              <div class="stat progress"><div class="stat-num" id="statForecast">0</div><div class="stat-label">متوقع إنجازه هذا الأسبوع</div></div>
+              <div class="stat overdue"><div class="stat-num" id="statAvgTime">0</div><div class="stat-label">متوسط زمن الإنجاز (يوم)</div></div>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="panel-title">📈 تحليل الإنتاجية</div>
+            <div class="charts-grid">
+              <div class="chart-box"><canvas id="chartStatus"></canvas></div>
+              <div class="chart-box"><canvas id="chartProductivity"></canvas></div>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="panel-title">👥 أداء الفريق</div>
+            <div id="teamList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view-section" id="tasksView">
+        <div class="container">
+          <div class="card-panel" id="addTaskCard" hidden>
+            <div class="panel-title">➕ إضافة مهمة جديدة</div>
+            <form id="addTaskForm" class="form-grid">
+              <input id="taskTitle" type="text" placeholder="عنوان المهمة *" required>
+              <select id="taskAssignee" required><option value="">-- المسؤول --</option></select>
+              <select id="taskPriority" required><option value="عادي">🟢 عادي</option><option value="مهم">🟡 مهم</option><option value="عاجل">🔴 عاجل</option></select>
+              <input id="taskDue" type="date">
+              <input id="taskNotes" type="text" placeholder="ملاحظات">
+              <input id="taskTags" type="text" placeholder="وسوم (فاصلة)">
+              <button type="submit">إضافة المهمة</button>
+            </form>
+          </div>
+          <div class="controls-bar">
+            <div class="search-wrap"><input id="searchBox" type="search" placeholder="ابحث في المهام..."></div>
+            <select id="sortSelect">
+              <option value="priority">ترتيب: الأولوية</option>
+              <option value="date">ترتيب: الأحدث</option>
+              <option value="due">ترتيب: تاريخ التسليم</option>
+              <option value="title">ترتيب: أبجدي</option>
+            </select>
+            <div class="view-toggle">
+              <button class="active" data-view="grid">▦ شبكة</button>
+              <button data-view="kanban">▤ كانبان</button>
+            </div>
+          </div>
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all">الكل</button>
+            <button class="filter-btn" data-filter="mine">مهامي</button>
+            <button class="filter-btn" data-filter="pending">معلقة</button>
+            <button class="filter-btn" data-filter="overdue">متأخرة</button>
+            <button class="filter-btn" data-filter="done">مكتملة</button>
+            <button class="filter-btn" data-filter="week">هذا الأسبوع</button>
+            <button class="filter-btn" data-filter="month">هذا الشهر</button>
+          </div>
+          <div id="tasksList"></div>
+        </div>
+      </section>
+
+      <section class="view-section" id="watchView">
+        <div class="container">
+          <div class="card-panel">
+            <div class="panel-title">👁️ متابعة المهام</div>
+            <div class="filters">
+              <button class="filter-btn active" data-watch="all">الكل</button>
+              <button class="filter-btn" data-watch="mine">مهامي</button>
+              <button class="filter-btn" data-watch="comments">💬 التعليقات</button>
+              <button class="filter-btn" data-watch="status">🔄 تغييرات الحالة</button>
+            </div>
+            <div id="watchTimeline"></div>
+          </div>
+          <div class="card-panel">
+            <div class="panel-title">🔥 المهام النشطة</div>
+            <div id="activeTasksList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view-section" id="usersView">
+        <div class="container">
+          <div class="card-panel">
+            <div class="panel-title">📊 إحصائيات المستخدمين</div>
+            <div class="stats-grid">
+              <div class="stat total"><div class="stat-num" id="usersStatTotal">0</div><div class="stat-label">إجمالي</div></div>
+              <div class="stat done"><div class="stat-num" id="usersStatActive">0</div><div class="stat-label">نشط</div></div>
+              <div class="stat progress"><div class="stat-num" id="usersStatAdmin">0</div><div class="stat-label">مدير</div></div>
+              <div class="stat overdue"><div class="stat-num" id="usersStatInactive">0</div><div class="stat-label">معطّل</div></div>
+            </div>
+          </div>
+          <div class="card-panel">
+            <div class="users-toolbar">
+              <div class="panel-title" style="margin:0;">👥 إدارة المستخدمين</div>
+              <div class="users-toolbar-actions">
+                <div class="search-wrap" style="max-width:240px;"><input id="usersSearchBox" type="search" placeholder="ابحث..."></div>
+                <select id="usersRoleFilter" class="filter-select"><option value="all">كل الأدوار</option><option value="admin">👑 مدير</option><option value="employee">👤 موظف</option></select>
+                <select id="usersStatusFilter" class="filter-select"><option value="all">كل الحالات</option><option value="active">نشط</option><option value="inactive">معطّل</option></select>
+                <button class="btn-add-user" data-action="add-user">➕ إضافة مستخدم</button>
+              </div>
+            </div>
+            <div id="usersList"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view-section" id="activityView">
+        <div class="container">
+          <div class="card-panel">
+            <div class="activity-header-bar">
+              <div class="panel-title" style="margin:0;">📜 سجل النشاطات</div>
+              <div class="activity-actions">
+                <button id="clearDeletedBtn" class="btn-clear-deleted" data-action="clear-deleted" hidden>🗑️ مسح سجل الحذف فقط</button>
+                <button id="purgeDeletedBtn" class="btn-purge-deleted" data-action="purge-deleted" hidden>⚡ حذف المهام المحذوفة نهائياً</button>
+              </div>
+            </div>
+            <div id="activityList"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-nav">
+    <button class="active" data-view="dashboard"><span class="ico">🏠</span>الرئيسية</button>
+    <button data-view="tasks"><span class="ico">📋</span>المهام</button>
+    <button data-view="watch"><span class="ico">👁️</span>متابعة</button>
+    <button data-view="activity"><span class="ico">📜</span>السجل</button>
+    <button class="watch-mobile" data-action="open-watch"><span class="ico">🖥️</span>العرض</button>
   </nav>
+</div>
 
-  <section class="view-section active" id="dashboardView">
-    <div class="container">
-      <div class="card-panel">
-        <div class="panel-title">📊 نظرة عامة</div>
-        <div class="stats-grid">
-          <div class="stat total"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي المهام</div></div>
-          <div class="stat done"><div class="stat-num" id="statDone">0</div><div class="stat-label">مكتملة</div></div>
-          <div class="stat progress"><div class="stat-num" id="statProgress">0</div><div class="stat-label">جارية</div></div>
-          <div class="stat overdue"><div class="stat-num" id="statOverdue">0</div><div class="stat-label">متأخرة</div></div>
-        </div>
-      </div>
-      <div class="card-panel">
-        <div class="panel-title">📈 تحليل الإنتاجية</div>
-        <div class="charts-grid">
-          <div class="chart-box"><canvas id="chartStatus"></canvas></div>
-          <div class="chart-box"><canvas id="chartProductivity"></canvas></div>
-        </div>
-      </div>
-      <div class="card-panel">
-        <div class="panel-title">👥 أداء الفريق</div>
-        <div id="teamList"></div>
-      </div>
+<!-- NOTIFICATION CENTER -->
+<div class="notif-center" id="notifCenter">
+  <div class="notif-center-header">
+    <h3>🔔 الإشعارات</h3>
+    <div style="display:flex;gap:6px;">
+      <button id="notifMarkRead">تعليم الكل كمقروء</button>
+      <button id="notifClose">✕</button>
     </div>
-  </section>
-
-  <section class="view-section" id="tasksView">
-    <div class="container">
-      <div class="card-panel" id="addTaskCard" hidden>
-        <div class="panel-title">➕ إضافة مهمة جديدة</div>
-        <form id="addTaskForm" class="form-grid">
-          <input id="taskTitle" type="text" placeholder="عنوان المهمة *" required>
-          <select id="taskAssignee" required><option value="">-- المسؤول --</option></select>
-          <select id="taskPriority" required><option value="عادي">🟢 عادي</option><option value="مهم">🟡 مهم</option><option value="عاجل">🔴 عاجل</option></select>
-          <input id="taskDue" type="date">
-          <input id="taskNotes" type="text" placeholder="ملاحظات">
-          <input id="taskTags" type="text" placeholder="وسوم (فاصلة)">
-          <button type="submit">إضافة المهمة</button>
-        </form>
-      </div>
-      <div class="controls-bar">
-        <div class="search-wrap"><input id="searchBox" type="search" placeholder="ابحث في المهام..."></div>
-        <select id="sortSelect">
-          <option value="priority">ترتيب: الأولوية</option>
-          <option value="date">ترتيب: الأحدث</option>
-          <option value="due">ترتيب: تاريخ التسليم</option>
-          <option value="title">ترتيب: أبجدي</option>
-        </select>
-        <div class="view-toggle">
-          <button class="active" data-view="grid">▦ شبكة</button>
-          <button data-view="kanban">▤ كانبان</button>
-        </div>
-      </div>
-      <div class="filters">
-        <button class="filter-btn active" data-filter="all">الكل</button>
-        <button class="filter-btn" data-filter="mine">مهامي</button>
-        <button class="filter-btn" data-filter="pending">معلقة</button>
-        <button class="filter-btn" data-filter="overdue">متأخرة</button>
-        <button class="filter-btn" data-filter="done">مكتملة</button>
-        <button class="filter-btn" data-filter="week">هذا الأسبوع</button>
-        <button class="filter-btn" data-filter="month">هذا الشهر</button>
-      </div>
-      <div id="tasksList"></div>
-    </div>
-  </section>
-
-  <section class="view-section" id="watchView">
-    <div class="container">
-      <div class="card-panel">
-        <div class="panel-title">👁️ متابعة المهام</div>
-        <div class="filters">
-          <button class="filter-btn active" data-watch="all">الكل</button>
-          <button class="filter-btn" data-watch="mine">مهامي</button>
-          <button class="filter-btn" data-watch="comments">💬 التعليقات</button>
-          <button class="filter-btn" data-watch="status">🔄 تغييرات الحالة</button>
-        </div>
-        <div id="watchTimeline"></div>
-      </div>
-      <div class="card-panel">
-        <div class="panel-title">🔥 المهام النشطة</div>
-        <div id="activeTasksList"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="view-section" id="usersView">
-    <div class="container">
-      <div class="card-panel">
-        <div class="panel-title">📊 إحصائيات المستخدمين</div>
-        <div class="stats-grid">
-          <div class="stat total"><div class="stat-num" id="usersStatTotal">0</div><div class="stat-label">إجمالي</div></div>
-          <div class="stat done"><div class="stat-num" id="usersStatActive">0</div><div class="stat-label">نشط</div></div>
-          <div class="stat progress"><div class="stat-num" id="usersStatAdmin">0</div><div class="stat-label">مدير</div></div>
-          <div class="stat overdue"><div class="stat-num" id="usersStatInactive">0</div><div class="stat-label">معطّل</div></div>
-        </div>
-      </div>
-      <div class="card-panel">
-        <div class="users-toolbar">
-          <div class="panel-title" style="margin:0;">👥 إدارة المستخدمين</div>
-          <div class="users-toolbar-actions">
-            <div class="search-wrap" style="max-width:240px;"><input id="usersSearchBox" type="search" placeholder="ابحث..."></div>
-            <select id="usersRoleFilter" class="filter-select"><option value="all">كل الأدوار</option><option value="admin">👑 مدير</option><option value="employee">👤 موظف</option></select>
-            <select id="usersStatusFilter" class="filter-select"><option value="all">كل الحالات</option><option value="active">نشط</option><option value="inactive">معطّل</option></select>
-            <button class="btn-add-user" data-action="add-user">➕ إضافة مستخدم</button>
-          </div>
-        </div>
-        <div id="usersList"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="view-section" id="activityView">
-    <div class="container">
-      <div class="card-panel">
-        <div class="activity-header-bar">
-          <div class="panel-title" style="margin:0;">📜 سجل النشاطات</div>
-          <div class="activity-actions">
-            <button id="clearDeletedBtn" class="btn-clear-deleted" data-action="clear-deleted" hidden>🗑️ مسح سجل الحذف فقط</button>
-            <button id="purgeDeletedBtn" class="btn-purge-deleted" data-action="purge-deleted" hidden>⚡ حذف المهام المحذوفة نهائياً</button>
-          </div>
-        </div>
-        <div id="activityList"></div>
-      </div>
-    </div>
-  </section>
+  </div>
+  <div class="notif-center-body" id="notifCenterBody">
+    <div class="notif-empty">لا توجد إشعارات</div>
+  </div>
 </div>
 
 <div id="modalOverlay"><div class="modal-box" id="modalBox"><div id="modalBody"></div></div></div>
@@ -878,7 +945,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 <div id="watchSubNotifications" class="notif-host"></div>
 <div id="toastHost"></div>
 
-<!-- WATCH SCREEN v5 — Kanban -->
+<!-- WATCH SCREEN v6 -->
 <div id="watchScreen">
   <div class="watch-bg" aria-hidden="true"><div class="watch-grid-bg"></div></div>
 
@@ -909,10 +976,44 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
       <div class="w-actions">
         <span class="w-live"><i></i> مباشر</span>
         <span class="w-conn" id="watchConnStatus"><i></i> متصل</span>
+        <span class="w-users"><i></i> <span id="watchOnlineCount">0</span> متصل</span>
+        <button class="w-btn" id="watchSoundToggle" title="كتم/تشغيل الصوت">🔊</button>
         <button class="w-btn" data-action="toggle-kiosk" title="وضع كامل">⛶</button>
         <button class="w-btn danger" data-action="close-watch" title="إغلاق">✕</button>
       </div>
     </header>
+
+    <!-- RIBBON (Advanced stats) -->
+    <section class="w-ribbon">
+      <div class="w-ribbon-item">
+        <div class="w-ribbon-icon">⚡</div>
+        <div class="w-ribbon-content">
+          <div class="w-ribbon-label">سرعة الإنجاز</div>
+          <div class="w-ribbon-value"><span id="wSpeed">0</span> مهمة/يوم<span class="w-ribbon-delta up" id="wSpeedDelta"></span></div>
+        </div>
+      </div>
+      <div class="w-ribbon-item">
+        <div class="w-ribbon-icon">🎯</div>
+        <div class="w-ribbon-content">
+          <div class="w-ribbon-label">نسبة الالتزام بالمواعيد</div>
+          <div class="w-ribbon-value" id="wCommitRate">0%</div>
+        </div>
+      </div>
+      <div class="w-ribbon-item">
+        <div class="w-ribbon-icon">🔥</div>
+        <div class="w-ribbon-content">
+          <div class="w-ribbon-label">أعلى منجز</div>
+          <div class="w-ribbon-value" id="wTopPerformer">—</div>
+        </div>
+      </div>
+      <div class="w-ribbon-item">
+        <div class="w-ribbon-icon">⏱️</div>
+        <div class="w-ribbon-content">
+          <div class="w-ribbon-label">متوسط زمن الإنجاز</div>
+          <div class="w-ribbon-value"><span id="wAvgTime">0</span> يوم</div>
+        </div>
+      </div>
+    </section>
 
     <section class="w-kpis">
       <div class="w-kpi kpi-total"><span class="w-kpi-num" id="wTotal">0</span><span class="w-kpi-label">إجمالي</span></div>
@@ -929,6 +1030,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
           <div class="w-col-title"><span class="w-col-dot urgent"></span><h3>🔴 عاجل</h3></div>
           <span class="w-col-count" id="wColUrgentCount">0</span>
         </header>
+        <div class="w-col-progress"><div class="w-col-progress-fill" id="wColUrgentProg" style="width:0%"></div></div>
         <div class="w-col-body"><div class="w-col-track" id="wColUrgent"></div></div>
       </div>
 
@@ -937,6 +1039,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
           <div class="w-col-title"><span class="w-col-dot important"></span><h3>🟡 مهم</h3></div>
           <span class="w-col-count" id="wColImportantCount">0</span>
         </header>
+        <div class="w-col-progress"><div class="w-col-progress-fill" id="wColImportantProg" style="width:0%"></div></div>
         <div class="w-col-body"><div class="w-col-track" id="wColImportant"></div></div>
       </div>
 
@@ -945,6 +1048,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
           <div class="w-col-title"><span class="w-col-dot normal"></span><h3>🟢 عادي</h3></div>
           <span class="w-col-count" id="wColNormalCount">0</span>
         </header>
+        <div class="w-col-progress"><div class="w-col-progress-fill" id="wColNormalProg" style="width:0%"></div></div>
         <div class="w-col-body"><div class="w-col-track" id="wColNormal"></div></div>
       </div>
 
@@ -953,6 +1057,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
           <div class="w-col-title"><span class="w-col-dot done"></span><h3>✅ مكتمل</h3></div>
           <span class="w-col-count" id="wColDoneCount">0</span>
         </header>
+        <div class="w-col-progress"><div class="w-col-progress-fill" id="wColDoneProg" style="width:100%"></div></div>
         <div class="w-col-body"><div class="w-col-track" id="wColDone"></div></div>
       </div>
     </section>
@@ -968,11 +1073,46 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
       </div>
     </footer>
   </div>
+
+  <!-- Focus Mode Overlay -->
+  <div class="w-focus-overlay" id="wFocusOverlay">
+    <div class="w-focus-card">
+      <div class="w-focus-badge">⚠️ مهمة عاجلة حرجة</div>
+      <div class="w-focus-title" id="wFocusTitle">—</div>
+      <div class="w-focus-meta">
+        <div class="w-focus-meta-item">👤 <strong id="wFocusAssignee">—</strong></div>
+        <div class="w-focus-meta-item">📅 <strong id="wFocusDue">—</strong></div>
+        <div class="w-focus-meta-item">📊 <strong id="wFocusStatus">—</strong></div>
+      </div>
+      <div class="w-focus-notes" id="wFocusNotes" hidden></div>
+    </div>
+  </div>
+
+  <!-- Team Carousel -->
+  <div class="w-team-carousel" id="wTeamCarousel">
+    <div class="w-tc-header">
+      <div class="w-tc-avatar" id="wTcAvatar">؟</div>
+      <div>
+        <div class="w-tc-name" id="wTcName">—</div>
+        <div class="w-tc-role" id="wTcRole">—</div>
+      </div>
+    </div>
+    <div class="w-tc-stats">
+      <div class="w-tc-stat"><div class="w-tc-stat-num" id="wTcTotal" style="color:#5b8def;">0</div><div class="w-tc-stat-label">إجمالي</div></div>
+      <div class="w-tc-stat"><div class="w-tc-stat-num" id="wTcDone" style="color:#2dd4a3;">0</div><div class="w-tc-stat-label">مكتملة</div></div>
+      <div class="w-tc-stat"><div class="w-tc-stat-num" id="wTcWorking" style="color:#f5a524;">0</div><div class="w-tc-stat-label">جارية</div></div>
+      <div class="w-tc-stat"><div class="w-tc-stat-num" id="wTcUrgent" style="color:#f04b5c;">0</div><div class="w-tc-stat-label">عاجلة</div></div>
+    </div>
+    <div class="w-tc-progress">
+      <div class="w-tc-progress-label"><span>نسبة الإنجاز</span><span id="wTcPct">0%</span></div>
+      <div class="w-tc-progress-bar"><div class="w-tc-progress-fill" id="wTcFill" style="width:0%"></div></div>
+    </div>
+  </div>
 </div>
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v20.0 — Final
+   EMAK IT Dep. v21 — Full Feature Set
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1005,7 +1145,9 @@ const CONSTANTS = Object.freeze({
   NOTIFICATION_DURATION: 20000,
   MAX_NOTIFICATIONS: 5,
   PRIORITY_MAP: { "عاجل": 0, "مهم": 1, "عادي": 2 },
-  STATUS: Object.freeze({ NEW: "جديدة", PROGRESS: "جاري التنفيذ", DONE: "مكتملة" })
+  STATUS: Object.freeze({ NEW: "جديدة", PROGRESS: "جاري التنفيذ", DONE: "مكتملة" }),
+  TEAM_CAROUSEL_INTERVAL: 45000,
+  FOCUS_MODE_TRIGGER_MINUTES: 60
 });
 
 const app = initializeApp(FIREBASE_CONFIG);
@@ -1075,11 +1217,17 @@ const state = {
   watchTab: 'all', watchFilter: 'all',
   usersSearch: '', usersRoleFilter: 'all', usersStatusFilter: 'all',
   openTaskId: null, pinnedTaskId: null, logoDataUrl: null,
-  unsubs: { tasks:null, team:null, users:null, activity:null, deletedTasks:null },
-  watchUnsubs: { tasks:null, team:null, activity:null },
-  watchMode: false, watchData: { tasks:{}, team:{}, activity:[] },
+  unsubs: { tasks:null, team:null, users:null, activity:null, deletedTasks:null, presence:null },
+  watchUnsubs: { tasks:null, team:null, activity:null, presence:null },
+  watchMode: false, watchData: { tasks:{}, team:{}, activity:[], presence:{} },
   watchKnownTaskIds: new Set(), watchFirstLoad: false,
-  backupTimer: null, charts: new Map()
+  backupTimer: null, charts: new Map(),
+  notifications: [], notificationsRead: false,
+  watchSoundEnabled: true,
+  focusModeShownFor: new Set(),
+  teamCarouselIndex: 0, teamCarouselTimer: null,
+  lastCompletedCount: 0, lastHourChime: -1,
+  hoveredTaskId: null
 };
 
 function initTheme() { const saved = Storage.get('emak_theme', 'dark'); applyTheme(saved); }
@@ -1116,30 +1264,36 @@ const swalSuccess = (title, text="") => Swal.fire({ icon:"success", title, text,
 const swalError = (title, text="") => Swal.fire({ icon:"error", title, text, confirmButtonColor:"#f04b5c", background: themeBg(), color: themeFg() });
 const swalConfirm = (title, text="لا يمكن التراجع!") => Swal.fire({ icon:"warning", title, text, showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580", background: themeBg(), color: themeFg() });
 
+// ============ AUDIO ENGINE ============
 let _audioCtx = null;
-function playNotificationSound(priority = 'normal') {
+function playSound(type = 'new-normal') {
+  if (!state.watchSoundEnabled && state.watchMode) return;
   try {
     if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const ctx = _audioCtx;
     if (ctx.state === 'suspended') ctx.resume();
     const now = ctx.currentTime;
-    const notes = priority === 'urgent'
-      ? [{ f:880, t:0 }, { f:660, t:0.15 }, { f:880, t:0.3 }]
-      : priority === 'important'
-        ? [{ f:660, t:0 }, { f:880, t:0.15 }]
-        : [{ f:523, t:0 }, { f:659, t:0.1 }];
+    const patterns = {
+      'new-normal': [{ f:523, t:0 }, { f:659, t:0.1 }],
+      'new-important': [{ f:660, t:0 }, { f:880, t:0.15 }],
+      'new-urgent': [{ f:880, t:0 }, { f:660, t:0.15 }, { f:880, t:0.3 }, { f:660, t:0.45 }],
+      'complete': [{ f:523, t:0 }, { f:659, t:0.1 }, { f:784, t:0.2 }],
+      'chime': [{ f:440, t:0 }, { f:440, t:0.5 }]
+    };
+    const notes = patterns[type] || patterns['new-normal'];
     notes.forEach(({ f, t }) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
       osc.frequency.value = f;
       gain.gain.setValueAtTime(0.12, now + t);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + t + 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + t + 0.35);
       osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(now + t); osc.stop(now + t + 0.3);
+      osc.start(now + t); osc.stop(now + t + 0.4);
     });
   } catch {}
 }
+
 const DesktopNotif = {
   enabled: false,
   async request() {
@@ -1153,6 +1307,18 @@ const DesktopNotif = {
   }
 };
 
+// ============ CONFETTI ============
+function fireConfetti() {
+  if (typeof confetti !== 'function') return;
+  confetti({
+    particleCount: 80,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#5b8def', '#2dd4a3', '#f5a524', '#a855f7']
+  });
+}
+
+// ============ CHARTS ============
 const Charts = {
   upsert(id, config) {
     const el = document.getElementById(id);
@@ -1204,6 +1370,39 @@ async function loadLogoAsBase64() {
   } catch { return null; }
 }
 
+// ============ NOTIFICATIONS CENTER ============
+function addNotification(notif) {
+  state.notifications.unshift({ ...notif, at: Date.now(), read: false });
+  if (state.notifications.length > 50) state.notifications = state.notifications.slice(0, 50);
+  updateNotifBadge();
+  if ($('#notifCenter').classList.contains('active')) renderNotifCenter();
+}
+function updateNotifBadge() {
+  const unread = state.notifications.filter(n => !n.read).length;
+  const badge = $('#notifBadge');
+  if (!badge) return;
+  if (unread > 0) { badge.textContent = unread > 99 ? '99+' : unread; badge.hidden = false; }
+  else badge.hidden = true;
+}
+function renderNotifCenter() {
+  const body = $('#notifCenterBody');
+  if (!body) return;
+  if (state.notifications.length === 0) {
+    body.innerHTML = '<div class="notif-empty">لا توجد إشعارات</div>';
+    return;
+  }
+  const icons = { task:'📌', comment:'💬', status:'🔄', complete:'✅', user:'👤' };
+  body.innerHTML = state.notifications.map(n => `
+    <div class="notif-item ${n.read ? '' : 'unread'}" style="position:relative;">
+      <div class="notif-item-icon">${icons[n.type] || '•'}</div>
+      <div class="notif-item-body">
+        <div class="notif-item-title">${esc(n.title)}</div>
+        <div class="notif-item-text">${esc(n.text || '')}</div>
+        <div class="notif-item-time">${timeAgo(n.at)}</div>
+      </div>
+    </div>`).join('');
+}
+
 function showSubNotification(task) {
   const container = $('#subNotifications');
   if (!container) return;
@@ -1225,8 +1424,9 @@ function showSubNotification(task) {
     <div class="sub-notif-progress-text">20s</div>`;
   container.appendChild(notif);
   notif.querySelector('.sub-notif-close').onclick = () => closeSubNotification(notifId);
-  playNotificationSound(priority);
+  playSound(priority === 'urgent' ? 'new-urgent' : priority === 'important' ? 'new-important' : 'new-normal');
   if (priority === "urgent") DesktopNotif.show("🔴 مهمة عاجلة", task.title);
+  addNotification({ type:'task', title:'📌 مهمة جديدة', text: task.title });
   let remaining = 20;
   const progressEl = notif.querySelector(".sub-notif-progress-text");
   const countdown = setInterval(() => { remaining--; if (progressEl) progressEl.textContent = remaining + "s"; if (remaining <= 0) clearInterval(countdown); }, 1000);
@@ -1269,7 +1469,7 @@ function showWatchSubNotification(task) {
     <div class="watch-sub-progress-text">20s</div>`;
   container.appendChild(notif);
   notif.querySelector('.watch-sub-close').onclick = () => closeWatchSubNotification(notifId);
-  playNotificationSound(priority);
+  playSound(priority === 'urgent' ? 'new-urgent' : priority === 'important' ? 'new-important' : 'new-normal');
   let remaining = 20;
   const progressEl = notif.querySelector(".watch-sub-progress-text");
   const countdown = setInterval(() => { remaining--; if (progressEl) progressEl.textContent = remaining + "s"; if (remaining <= 0) clearInterval(countdown); }, 1000);
@@ -1298,6 +1498,7 @@ function clearAllListeners() {
   });
   if (state.backupTimer) { clearInterval(state.backupTimer); state.backupTimer = null; }
 }
+
 async function ensureUserProfile(user) {
   const uref = ref(db, "users/" + user.uid);
   let snap;
@@ -1316,10 +1517,6 @@ async function ensureUserProfile(user) {
         await push(ref(db, "team"), { uid: user.uid, username: data.username || (user.email || "").split("@")[0], name: officialName, createdAt: Date.now() });
       } else {
         for (const [id, m] of myEntries) if (m.name !== officialName) { try { await update(ref(db, "team/" + id), { name: officialName }); } catch {} }
-        if (myEntries.length > 1) {
-          myEntries.sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
-          for (let i = 1; i < myEntries.length; i++) try { await remove(ref(db, "team/" + myEntries[i][0])); } catch {}
-        }
       }
     } catch {}
     return data;
@@ -1375,9 +1572,7 @@ function setupAuthListener() {
     setTimeout(() => {
       loadingScreen.classList.remove('active');
       mainScreen.classList.add('active');
-      $('#userName').textContent = state.profile.displayName || state.profile.username;
-      $('#userRole').textContent = state.isAdmin ? "👑 مدير" : "👤 موظف";
-      $('#userRole').className = "role " + (state.isAdmin ? "admin" : "user");
+      updateSidebarUser();
       $('#addTaskCard').hidden = !state.isAdmin;
       $('#usersNavBtn').hidden = !state.isAdmin;
       $('#teamNavBtn').hidden = !state.isAdmin;
@@ -1391,6 +1586,13 @@ function setupAuthListener() {
   });
 }
 
+function updateSidebarUser() {
+  const name = state.profile.displayName || state.profile.username;
+  $('#sidebarAvatar').textContent = name.charAt(0).toUpperCase();
+  $('#sidebarName').textContent = name;
+  $('#sidebarRole').textContent = state.isAdmin ? "👑 مدير" : "👤 موظف";
+}
+
 function startRealtimeListeners() {
   clearAllListeners();
   state.unsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
@@ -1401,6 +1603,10 @@ function startRealtimeListeners() {
       Object.entries(state.tasks).forEach(([id, task]) => {
         if (!prev[id] && task.createdBy !== state.user?.uid) showSubNotification(task);
       });
+      // Detect completed urgent → confetti
+      const prevUrgent = Object.values(prev).filter(t => t.priority === 'عاجل' && t.status !== CONSTANTS.STATUS.DONE).length;
+      const newUrgent = Object.values(state.tasks).filter(t => t.priority === 'عاجل' && t.status !== CONSTANTS.STATUS.DONE).length;
+      if (newUrgent < prevUrgent) { fireConfetti(); playSound('complete'); }
     }
     scheduleRender();
     if (state.openTaskId && state.tasks[state.openTaskId]) renderModal(state.openTaskId);
@@ -1431,6 +1637,7 @@ function scheduleRender() {
 }
 function renderAll() {
   try { renderStats(); } catch {}
+  try { renderSmartKPIs(); } catch {}
   try { renderTeamProgress(); } catch {}
   try { renderTasks(); } catch {}
   try { renderCharts(); } catch {}
@@ -1444,6 +1651,70 @@ function renderStats() {
   $('#statProgress').textContent = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
   $('#statOverdue').textContent = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
 }
+
+// SMART KPIs (Ribbon data)
+function computeMetrics() {
+  const tasks = Object.values(state.tasks);
+  const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE);
+  const doneThisWeek = done.filter(t => isThisWeek(t.updatedAt));
+  const doneLastWeek = done.filter(t => t.updatedAt && (Date.now() - t.updatedAt) > 7*86400000 && (Date.now() - t.updatedAt) <= 14*86400000);
+  const speed = doneThisWeek.length / 7;
+  const speedLastWeek = doneLastWeek.length / 7;
+  const speedDelta = speedLastWeek > 0 ? Math.round(((speed - speedLastWeek) / speedLastWeek) * 100) : 0;
+
+  const doneWithDue = done.filter(t => t.dueDate && t.updatedAt);
+  const onTime = doneWithDue.filter(t => {
+    const dueUTC = new Date(t.dueDate).getTime();
+    return t.updatedAt <= dueUTC + 86400000;
+  }).length;
+  const commitRate = doneWithDue.length > 0 ? Math.round((onTime / doneWithDue.length) * 100) : 100;
+
+  const avgTime = doneWithDue.length > 0
+    ? Math.round(doneWithDue.reduce((sum, t) => sum + ((t.updatedAt - t.createdAt) / 86400000), 0) / doneWithDue.length * 10) / 10
+    : 0;
+
+  const forecast = Math.round(speed * 7);
+
+  // Top performer
+  const perUser = {};
+  done.forEach(t => {
+    const key = t.assignee || '—';
+    perUser[key] = (perUser[key] || 0) + 1;
+  });
+  const top = Object.entries(perUser).sort((a, b) => b[1] - a[1])[0];
+
+  return { speed: Math.round(speed*10)/10, speedDelta, commitRate, avgTime, forecast, topPerformer: top ? `${top[0]} (${top[1]})` : '—' };
+}
+function renderSmartKPIs() {
+  const m = computeMetrics();
+  $('#statSpeed').textContent = m.speed;
+  $('#statCommitRate').textContent = m.commitRate + '%';
+  $('#statForecast').textContent = m.forecast;
+  $('#statAvgTime').textContent = m.avgTime;
+
+  const deltaEl = $('#statTotalDelta');
+  const doneDeltaEl = $('#statDoneDelta');
+  const doneThisWeek = Object.values(state.tasks).filter(t => t.status === CONSTANTS.STATUS.DONE && isThisWeek(t.updatedAt)).length;
+  if (doneDeltaEl) { doneDeltaEl.textContent = `+${doneThisWeek} هذا الأسبوع`; doneDeltaEl.className = 'stat-delta up'; }
+
+  // Update ribbon if watch mode
+  if (state.watchMode) updateWatchRibbon();
+}
+function updateWatchRibbon() {
+  const m = computeMetrics();
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('wSpeed', m.speed);
+  set('wCommitRate', m.commitRate + '%');
+  set('wTopPerformer', m.topPerformer);
+  set('wAvgTime', m.avgTime);
+  const deltaEl = document.getElementById('wSpeedDelta');
+  if (deltaEl) {
+    if (m.speedDelta > 0) { deltaEl.textContent = ` +${m.speedDelta}%`; deltaEl.className = 'w-ribbon-delta up'; }
+    else if (m.speedDelta < 0) { deltaEl.textContent = ` ${m.speedDelta}%`; deltaEl.className = 'w-ribbon-delta down'; }
+    else deltaEl.textContent = '';
+  }
+}
+
 function renderTeamProgress() {
   const teamMap = {};
   Object.values(state.tasks).forEach(t => {
@@ -1481,6 +1752,45 @@ function renderCharts() {
     data: { labels: days, datasets: [{ label: "مهام مكتملة", data: counts, borderColor: "#5b8def", backgroundColor: "rgba(91,141,239,.15)", borderWidth: 3, tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: "#5b8def", pointBorderColor: "#fff", pointBorderWidth: 2 }] },
     options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: "#64748b" } }, x: { ticks: { color: "#64748b" }, grid: { display: false } } } }
   });
+}
+
+function taskCardHtml(id, t) {
+  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done" : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
+  const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
+  const isUrgentActive = t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE;
+  const d = daysRemaining(t.dueDate);
+  const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
+  const isSoon = d !== null && d >= 0 && d <= 1 && t.status !== CONSTANTS.STATUS.DONE;
+  const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
+  const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).slice(0,3).map(x => `<span class="card-tag">${esc(x)}</span>`).join("") : "";
+  const quickActions = state.isAdmin ? `<div class="card-quick-actions"><button class="quick-action-btn" data-quick="edit" data-id="${id}" title="تعديل">✏️</button><button class="quick-action-btn" data-quick="reassign" data-id="${id}" title="تغيير المسؤول">👤</button><button class="quick-action-btn" data-quick="delete" data-id="${id}" title="حذف">🗑️</button></div>` : "";
+  const assigneeInitial = (t.assignee || "?").charAt(0).toUpperCase();
+  // Progress: comments count as simple proxy (small % contribution)
+  const progressPct = t.status === CONSTANTS.STATUS.DONE ? 100 : t.status === CONSTANTS.STATUS.PROGRESS ? 60 : 10;
+  const icons = [];
+  if (t.pinned) icons.push('⭐');
+  if (isOverdue) icons.push('⏰');
+  return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${id}" tabindex="0" role="button">
+    ${quickActions}
+    <div class="card-top">
+      <span class="priority-dot ${priorityClass}"></span>
+      <span class="assignee-chip"><span class="assignee-avatar-mini">${esc(assigneeInitial)}</span> ${esc(t.assignee || "—")}</span>
+    </div>
+    <h3 class="card-title">${icons.length ? icons.join(' ')+' ' : ''}${highlight(t.title, state.search)}</h3>
+    ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
+    ${t.notes ? `<p class="card-notes">${esc(t.notes.substring(0, 120))}${t.notes.length > 120 ? '...' : ''}</p>` : ""}
+    <div class="card-progress">
+      <div class="card-progress-bar"><div class="card-progress-fill" style="width:${progressPct}%"></div></div>
+      <span class="card-progress-text">${progressPct}%</span>
+    </div>
+    <div class="card-bottom">
+      ${t.dueDate ? `<span class="card-due ${isOverdue ? 'overdue' : isSoon ? 'soon' : ''}">📅 ${esc(dueLabel(t.dueDate))}</span>` : "<span></span>"}
+      <div class="card-stats">
+        ${commentsCount > 0 ? `<span>💬 ${commentsCount}</span>` : ""}
+        <span class="status-pill ${statusClass}">${esc(t.status)}</span>
+      </div>
+    </div>
+  </div>`;
 }
 
 function renderTasks() {
@@ -1523,30 +1833,6 @@ function renderTasks() {
     if (filtered.length === 0) { list.innerHTML = '<p class="empty" style="grid-column:1/-1;">لا توجد مهام</p>'; return; }
     list.innerHTML = filtered.map(([id, t]) => taskCardHtml(id, t)).join("");
   }
-}
-function taskCardHtml(id, t) {
-  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done" : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
-  const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
-  const isUrgentActive = t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE;
-  const d = daysRemaining(t.dueDate);
-  const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-  const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
-  const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).slice(0,2).map(x => `<span class="card-tag">${esc(x)}</span>`).join("") : "";
-  const quickActions = state.isAdmin ? `<div class="card-quick-actions"><button class="quick-action-btn" data-quick="edit" data-id="${id}" title="تعديل">✏️</button><button class="quick-action-btn" data-quick="reassign" data-id="${id}" title="تغيير المسؤول">👤</button><button class="quick-action-btn" data-quick="delete" data-id="${id}" title="حذف">🗑️</button></div>` : "";
-  return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${id}" tabindex="0" role="button">
-    ${quickActions}
-    <div class="card-top"><span class="priority-dot ${priorityClass}"></span><span class="assignee-chip">👤 ${esc(t.assignee || "—")}</span></div>
-    <h3 class="card-title">${highlight(t.title, state.search)}</h3>
-    ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
-    ${t.notes ? `<p class="card-notes">${esc(t.notes)}</p>` : ""}
-    <div class="card-bottom">
-      ${t.dueDate ? `<span class="card-due ${isOverdue ? 'overdue' : ''}">${esc(dueLabel(t.dueDate))}</span>` : "<span></span>"}
-      <div style="display:flex;gap:8px;align-items:center;">
-        ${commentsCount > 0 ? `<span style="font-size:13px;color:var(--text-2);font-weight:800;">💬 ${commentsCount}</span>` : ""}
-        <span class="status-pill ${statusClass}">${esc(t.status)}</span>
-      </div>
-    </div>
-  </div>`;
 }
 function renderKanban(list, filtered) {
   list.className = "kanban-board";
@@ -1627,6 +1913,10 @@ function renderModal(taskId) {
         <button data-action="add-comment" data-id="${taskId}">إرسال</button>
       </div>
     </div>
+    <div class="qr-section">
+      <div style="font-size:12px;color:var(--text-2);font-weight:700;margin-bottom:10px;">📱 مسح سريع (QR)</div>
+      <canvas class="qr-canvas" id="qrCanvas-${taskId}" width="140" height="140"></canvas>
+    </div>
     <div class="modal-actions">
       <button class="btn-pin ${state.pinnedTaskId === taskId ? 'active' : ''}" data-action="toggle-pin" data-id="${taskId}">${state.pinnedTaskId === taskId ? '⭐ مثبتة' : '☆ تثبيت'}</button>
       <select class="modal-status-select" data-action="change-status" data-id="${taskId}">
@@ -1640,14 +1930,23 @@ function renderModal(taskId) {
         <button class="btn-del" data-action="delete-task" data-id="${taskId}">🗑️ حذف</button>
       ` : ""}
     </div>`;
+  // Render QR
+  try {
+    if (window.QRCode && document.getElementById('qrCanvas-'+taskId)) {
+      window.QRCode.toCanvas(document.getElementById('qrCanvas-'+taskId), JSON.stringify({ id: taskId, title: t.title, assignee: t.assignee, status: t.status }), { width: 140, margin: 1, color: { dark: '#0f172a', light: '#ffffff' } });
+    }
+  } catch {}
 }
 
 async function changeStatus(taskId, newStatus) {
   const t = state.tasks[taskId];
   if (!t) return;
+  const wasDone = t.status === CONSTANTS.STATUS.DONE;
+  const willBeDone = newStatus === CONSTANTS.STATUS.DONE;
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), { status: newStatus, updatedAt: Date.now(), updatedBy: state.user.uid, updatedByName: state.profile.displayName }));
     await logActivity("status_changed", `غيّر حالة "${t.title}" إلى ${newStatus}`, taskId, t.title);
+    if (!wasDone && willBeDone) { fireConfetti(); playSound('complete'); addNotification({ type:'complete', title:'✅ مهمة مكتملة', text: t.title }); }
     showToast(`🔄 الحالة: ${newStatus}`, 'info');
   } catch { showToast('⚠️ سيُعاد الحفظ', 'warning'); }
 }
@@ -1769,17 +2068,29 @@ async function logActivity(type, text, taskId = null, taskTitle = "") {
 }
 
 /* ============================================================
-   WATCH v5 — Kanban Columns with Auto-scroll
+   WATCH v6 — Ultra with Focus Mode, Team Carousel, Dynamic BG
    ============================================================ */
+function updateWatchBg() {
+  const screen = document.getElementById('watchScreen');
+  if (!screen) return;
+  screen.classList.remove('bg-calm','bg-alert','bg-celebrate','bg-evening');
+  const tasks = Object.values(state.watchData.tasks || {});
+  const urgentActive = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && (t.priority === 'عاجل' || (daysRemaining(t.dueDate) ?? 999) < 0)).length;
+  const allDone = tasks.length > 0 && tasks.every(t => t.status === CONSTANTS.STATUS.DONE);
+  const hour = new Date().getHours();
+  if (allDone) screen.classList.add('bg-celebrate');
+  else if (urgentActive > 0) screen.classList.add('bg-alert');
+  else if (hour >= 16 && hour < 22) screen.classList.add('bg-evening');
+  else screen.classList.add('bg-calm');
+}
+
 function wRenderStats() {
   const tasks = Object.values(state.watchData.tasks || {});
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  const active = tasks.filter(t => t.status === CONSTANTS.STATUS.NEW).length;
   const working = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
   const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
 
   const urgentTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
-  const urgentIds = new Set(urgentTasks.map(t => t.createdAt || Math.random()));
   const importantTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم" && !(t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
   const normalTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عادي" && !(t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
 
@@ -1794,15 +2105,32 @@ function wRenderStats() {
   set("wColImportantCount", importantTasks.length);
   set("wColNormalCount", normalTasks.length);
   set("wColDoneCount", done);
+
+  // Column progress: done / total per column (urgent + important + normal + done)
+  const totalActive = urgentTasks.length + importantTasks.length + normalTasks.length;
+  const totalAll = totalActive + done;
+  const donePct = totalAll > 0 ? Math.round((done / totalAll) * 100) : 0;
+  const setW = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = pct + '%'; };
+  setW('wColUrgentProg', urgentTasks.length > 0 ? 25 : 0);
+  setW('wColImportantProg', importantTasks.length > 0 ? 25 : 0);
+  setW('wColNormalProg', normalTasks.length > 0 ? 25 : 0);
+  setW('wColDoneProg', donePct);
 }
 
 function wTaskHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
+  const isSoon = d !== null && d >= 0 && d <= 1 && t.status !== CONSTANTS.STATUS.DONE;
   const statusClass = t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : t.status === CONSTANTS.STATUS.DONE ? "done" : "new";
   const statusLabel = t.status === CONSTANTS.STATUS.NEW ? "جديدة" : t.status === CONSTANTS.STATUS.PROGRESS ? "جارية" : "مكتملة";
   const initial = (t.assignee || "?").charAt(0).toUpperCase();
+  const icons = [];
+  if (t.priority === 'عاجل' && t.status !== CONSTANTS.STATUS.DONE) icons.push('🔥');
+  if (isOverdue) icons.push('⏰');
+  if (isSoon) icons.push('⚡');
+  const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
   return `<article class="w-task" data-task-id="${esc(id)}" tabindex="0" role="button">
+    ${icons.length ? `<div class="w-task-icons">${icons.map(i => `<span>${i}</span>`).join('')}</div>` : ''}
     <h4 class="w-task-title">${esc(t.title)}</h4>
     <span class="w-task-status-badge ${statusClass}">${statusLabel}</span>
     <div class="w-task-meta">
@@ -1810,7 +2138,7 @@ function wTaskHtml(id, t) {
         <span class="w-task-avatar">${esc(initial)}</span>
         <span>${esc(t.assignee || "—")}</span>
       </div>
-      ${t.dueDate ? `<span class="w-task-due ${isOverdue ? 'overdue' : ''}">📅 ${esc(dueLabel(t.dueDate))}</span>` : ''}
+      ${t.dueDate ? `<span class="w-task-due ${isOverdue ? 'overdue' : isSoon ? 'soon' : ''}">📅 ${esc(dueLabel(t.dueDate))}</span>` : ''}
     </div>
   </article>`;
 }
@@ -1818,26 +2146,22 @@ function wTaskHtml(id, t) {
 function wRenderColumns() {
   const allTasks = Object.entries(state.watchData.tasks || {});
 
-  // عمود عاجل - يشمل العاجل + المتأخر
   const urgent = allTasks
     .filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0))
     .sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
 
   const urgentIds = new Set(urgent.map(([id]) => id));
 
-  // عمود مهم - يستبعد ما في العاجل
   const important = allTasks
     .filter(([id, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم" && !urgentIds.has(id))
     .sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
 
   const importantIds = new Set(important.map(([id]) => id));
 
-  // عمود عادي
   const normal = allTasks
     .filter(([id, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عادي" && !urgentIds.has(id) && !importantIds.has(id))
     .sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
 
-  // عمود مكتمل - الأحدث أولاً
   const doneSorted = allTasks
     .filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE)
     .sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0))
@@ -1928,6 +2252,84 @@ function wRenderAll() {
   wRenderColumns();
   wRenderCompleted();
   wRenderNewsTicker();
+  updateWatchRibbon();
+  updateWatchBg();
+  checkFocusMode();
+}
+
+// FOCUS MODE: if any urgent task overdue by >1hr (or due today and overdue by hours), show overlay
+function checkFocusMode() {
+  const overlay = document.getElementById('wFocusOverlay');
+  if (!overlay) return;
+  const tasks = Object.entries(state.watchData.tasks || {});
+  const critical = tasks.find(([id, t]) => {
+    if (t.status === CONSTANTS.STATUS.DONE) return false;
+    if (state.focusModeShownFor.has(id)) return false;
+    const d = daysRemaining(t.dueDate);
+    if (d === null) return false;
+    if (d < 0 && t.priority === 'عاجل') return true; // overdue urgent
+    if (d === 0 && t.priority === 'عاجل' && new Date().getHours() >= 14) return true; // due today, urgent, after 2pm
+    return false;
+  });
+  if (!critical) { overlay.classList.remove('active'); return; }
+  const [id, t] = critical;
+  state.focusModeShownFor.add(id);
+  document.getElementById('wFocusTitle').textContent = t.title;
+  document.getElementById('wFocusAssignee').textContent = t.assignee || '—';
+  document.getElementById('wFocusDue').textContent = dueLabel(t.dueDate);
+  document.getElementById('wFocusStatus').textContent = t.status;
+  const notes = document.getElementById('wFocusNotes');
+  if (t.notes) { notes.textContent = t.notes; notes.hidden = false; } else notes.hidden = true;
+  overlay.classList.add('active');
+  playSound('new-urgent');
+  // Auto-hide after 25 seconds
+  if (window._focusTimeout) clearTimeout(window._focusTimeout);
+  window._focusTimeout = setTimeout(() => { overlay.classList.remove('active'); }, 25000);
+}
+
+// TEAM CAROUSEL
+function startTeamCarousel() {
+  const carousel = document.getElementById('wTeamCarousel');
+  if (!carousel) return;
+  const buildMembers = () => {
+    const teamMap = {};
+    Object.values(state.watchData.tasks || {}).forEach(t => {
+      const key = t.assigneeId || t.assignee;
+      if (!key) return;
+      if (!teamMap[key]) teamMap[key] = { name: t.assignee || '—', id: t.assigneeId, total: 0, done: 0, working: 0, urgent: 0 };
+      teamMap[key].total++;
+      if (t.status === CONSTANTS.STATUS.DONE) teamMap[key].done++;
+      else if (t.status === CONSTANTS.STATUS.PROGRESS) teamMap[key].working++;
+      if (t.priority === 'عاجل' && t.status !== CONSTANTS.STATUS.DONE) teamMap[key].urgent++;
+    });
+    return Object.values(teamMap).sort((a, b) => b.done - a.done);
+  };
+  const showNext = () => {
+    const members = buildMembers();
+    if (members.length === 0) return;
+    const m = members[state.teamCarouselIndex % members.length];
+    state.teamCarouselIndex++;
+    document.getElementById('wTcAvatar').textContent = m.name.charAt(0).toUpperCase();
+    document.getElementById('wTcName').textContent = m.name;
+    document.getElementById('wTcRole').textContent = 'عضو الفريق';
+    document.getElementById('wTcTotal').textContent = m.total;
+    document.getElementById('wTcDone').textContent = m.done;
+    document.getElementById('wTcWorking').textContent = m.working;
+    document.getElementById('wTcUrgent').textContent = m.urgent;
+    const pct = m.total > 0 ? Math.round((m.done / m.total) * 100) : 0;
+    document.getElementById('wTcPct').textContent = pct + '%';
+    document.getElementById('wTcFill').style.width = pct + '%';
+    carousel.classList.add('active');
+    setTimeout(() => carousel.classList.remove('active'), 12000);
+  };
+  if (state.teamCarouselTimer) clearInterval(state.teamCarouselTimer);
+  state.teamCarouselTimer = setInterval(showNext, CONSTANTS.TEAM_CAROUSEL_INTERVAL);
+  setTimeout(showNext, 8000);
+}
+function stopTeamCarousel() {
+  if (state.teamCarouselTimer) { clearInterval(state.teamCarouselTimer); state.teamCarouselTimer = null; }
+  const carousel = document.getElementById('wTeamCarousel');
+  if (carousel) carousel.classList.remove('active');
 }
 
 let _clockTimer = null;
@@ -1945,6 +2347,11 @@ function startWatchClock() {
     if (d && !d._set) {
       d.textContent = now.toLocaleDateString("ar-EG", { weekday:"long", day:"numeric", month:"short" });
       d._set = true;
+    }
+    // Hourly chime
+    if (now.getMinutes() === 0 && now.getSeconds() < 5) {
+      const hourKey = now.getHours();
+      if (state.lastHourChime !== hourKey) { state.lastHourChime = hourKey; playSound('chime'); }
     }
   };
   update();
@@ -1993,23 +2400,28 @@ function closeWatchScreen() {
   document.body.style.overflow = '';
   document.body.classList.remove('watch-kiosk');
   stopWatchClock();
+  stopTeamCarousel();
   stopWatchData();
   if (document.fullscreenElement) document.exitFullscreen?.();
 }
 function toggleKioskMode() {
   document.body.classList.toggle('watch-kiosk');
   const isKiosk = document.body.classList.contains('watch-kiosk');
+  if (isKiosk && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+  else if (!isKiosk && document.fullscreenElement) document.exitFullscreen?.();
   showToast(isKiosk ? "🖥️ وضع كامل" : "↩️ الوضع العادي", 'info');
 }
 async function startWatchData() {
   if (!auth.currentUser) { try { await signInAnonymously(auth); } catch {} }
   startWatchClock();
+  startTeamCarousel();
   Object.keys(state.watchUnsubs).forEach(k => {
     if (state.watchUnsubs[k]) { try { state.watchUnsubs[k](); } catch {} state.watchUnsubs[k] = null; }
   });
   state.watchFirstLoad = false;
   state.watchKnownTaskIds = new Set();
   state.watchUnsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
+    const prev = state.watchData.tasks || {};
     state.watchData.tasks = snap.val() || {};
     if (state.watchFirstLoad) {
       Object.entries(state.watchData.tasks).forEach(([id, task]) => {
@@ -2018,6 +2430,10 @@ async function startWatchData() {
           if (task.priority === "عاجل" || task.priority === "مهم") showWatchSubNotification(task);
         }
       });
+      // Confetti on urgent completion
+      const prevUrgent = Object.values(prev).filter(t => t.priority === 'عاجل' && t.status !== CONSTANTS.STATUS.DONE).length;
+      const newUrgent = Object.values(state.watchData.tasks).filter(t => t.priority === 'عاجل' && t.status !== CONSTANTS.STATUS.DONE).length;
+      if (newUrgent < prevUrgent) { fireConfetti(); playSound('complete'); }
     } else {
       Object.keys(state.watchData.tasks).forEach(id => state.watchKnownTaskIds.add(id));
       state.watchFirstLoad = true;
@@ -2030,6 +2446,12 @@ async function startWatchData() {
     const raw = snap.val() || {};
     state.watchData.activity = Object.entries(raw).map(([id, a]) => ({ id, ...a })).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 30);
     if (state.watchMode) wRenderNewsTicker();
+  });
+  state.watchUnsubs.presence = onValue(ref(db, "presence"), (snap) => {
+    const raw = snap.val() || {};
+    const online = Object.values(raw).filter(p => p && p.online).length;
+    const el = document.getElementById('watchOnlineCount');
+    if (el) el.textContent = online;
   });
   wRenderAll();
 }
@@ -2168,9 +2590,6 @@ async function downloadPDF() {
     const overdue = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; });
     const urgent = entries.filter(([_, t]) => t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE);
     pdf.setFillColor(30, 58, 138); pdf.rect(0, 0, pageW, 30, "F");
-    pdf.setFillColor(45, 212, 163); pdf.rect(0, 30, pageW / 3, 2, "F");
-    pdf.setFillColor(91, 141, 239); pdf.rect(pageW / 3, 30, pageW / 3, 2, "F");
-    pdf.setFillColor(168, 85, 247); pdf.rect(2 * pageW / 3, 30, pageW / 3, 2, "F");
     if (state.logoDataUrl) { try { pdf.addImage(state.logoDataUrl, "PNG", pageW - margin - 22, 4, 22, 22); } catch {} }
     pdf.setTextColor(255, 255, 255); pdf.setFontSize(22);
     pdf.text("EMAK IT Dep.", pageW - 45, 13, { align: "right" });
@@ -2206,8 +2625,7 @@ async function downloadPDF() {
       tasks.forEach(([id, t]) => {
         const d = daysRemaining(t.dueDate);
         const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-        const lines = t.notes ? pdf.splitTextToSize(t.notes, pageW - 2 * margin - 20) : [];
-        const taskH = 20 + (lines.length * 4);
+        const taskH = 20;
         if (y + taskH > pageH - 20) { pdf.addPage(); y = margin; }
         pdf.setFillColor(248, 250, 252);
         pdf.roundedRect(margin, y, pageW - 2 * margin, taskH, 2, 2, "F");
@@ -2356,11 +2774,6 @@ async function purgeDeletedTasks() {
   if (!r.isConfirmed) return;
   try {
     await safeWrite(() => remove(ref(db, "deleted_tasks")));
-    const snap = await get(ref(db, "activity"));
-    const activities = snap.val() || {};
-    const deleteIds = Object.entries(activities).filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared").map(([id]) => id);
-    for (const id of deleteIds) await remove(ref(db, "activity/" + id));
-    await logActivity("history_cleared", `حذف نهائي لـ ${count} مهمة`);
     showToast(`⚡ تم حذف ${count} مهمة`, 'success');
   } catch (err) { swalError("فشل", err.message); }
 }
@@ -2548,18 +2961,25 @@ document.addEventListener('click', (e) => {
 });
 
 function setupNav() {
-  $$('.nav-btn[data-view]').forEach(btn => {
+  const navBtns = $$('.sidebar-btn[data-view], .mobile-nav button[data-view]');
+  navBtns.forEach(btn => {
     btn.onclick = () => {
-      $$('.nav-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      $$('.view-section').forEach(s => s.classList.remove('active'));
       const view = btn.dataset.view;
+      if (!view) return;
+      navBtns.forEach(b => { if (b.dataset.view === view) b.classList.add('active'); else b.classList.remove('active'); });
+      $$('.view-section').forEach(s => s.classList.remove('active'));
       $(`#${view}View`)?.classList.add('active');
+      // Update page title
+      const titles = { dashboard: ['🏠 الرئيسية', ''], tasks: ['📋 المهام', ''], watch: ['👁️ متابعة المهام', ''], users: ['👥 المستخدمون', ''], activity: ['📜 سجل النشاطات', ''] };
+      const [main, sub] = titles[view] || ['', ''];
+      const titleEl = $('#pageTitle');
+      if (titleEl) titleEl.innerHTML = `${main}<small>${sub}</small>`;
       if (view === 'users') renderUsersList();
       if (view === 'activity') renderActivity();
       if (view === 'watch') renderWatch();
       if (view === 'tasks') renderTasks();
       updateActivityButtons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
   });
   $$('.filter-btn[data-filter]').forEach(btn => {
@@ -2603,6 +3023,41 @@ function setupNav() {
   };
   $("#modalOverlay").addEventListener('click', (e) => { if (e.target.id === 'modalOverlay') closeModal(); });
   $("#reportOverlay").addEventListener('click', (e) => { if (e.target.id === 'reportOverlay') closeReport(); });
+  // Sidebar toggle
+  const sidebarToggle = $('#sidebarToggle');
+  const sidebar = $('#sidebar');
+  if (sidebarToggle && sidebar) {
+    sidebarToggle.onclick = () => {
+      sidebar.classList.toggle('collapsed');
+      sidebar.classList.toggle('expanded');
+      sidebarToggle.textContent = sidebar.classList.contains('collapsed') ? '‹' : '›';
+    };
+  }
+  // Notification center
+  const bell = $('#notifBell');
+  const center = $('#notifCenter');
+  if (bell && center) {
+    bell.onclick = (e) => { e.stopPropagation(); center.classList.toggle('active'); renderNotifCenter(); };
+  }
+  const notifClose = $('#notifClose');
+  if (notifClose) notifClose.onclick = () => center.classList.remove('active');
+  const notifMarkRead = $('#notifMarkRead');
+  if (notifMarkRead) notifMarkRead.onclick = () => {
+    state.notifications.forEach(n => n.read = true);
+    updateNotifBadge();
+    renderNotifCenter();
+  };
+  document.addEventListener('click', (e) => {
+    if (center && center.classList.contains('active') && !e.target.closest('#notifCenter') && !e.target.closest('#notifBell')) center.classList.remove('active');
+  });
+  // Watch sound toggle
+  const soundBtn = $('#watchSoundToggle');
+  if (soundBtn) soundBtn.onclick = () => {
+    state.watchSoundEnabled = !state.watchSoundEnabled;
+    soundBtn.textContent = state.watchSoundEnabled ? '🔊' : '🔇';
+    soundBtn.classList.toggle('muted', !state.watchSoundEnabled);
+    showToast(state.watchSoundEnabled ? '🔊 صوت مفعّل' : '🔇 صوت مكتوم', 'info');
+  };
 }
 
 function setupLoginHandlers() {
@@ -2699,6 +3154,7 @@ function setupGlobalEvents() {
     if (state.watchMode) {
       if (e.key === 'Escape') { closeWatchScreen(); return; }
       if (e.key === 'k' || e.key === 'K') { toggleKioskMode(); return; }
+      if (e.key === 'm' || e.key === 'M') { const b = $('#watchSoundToggle'); if (b) b.click(); return; }
       return;
     }
     if (e.target.matches("input, textarea, select")) return;
