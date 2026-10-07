@@ -157,6 +157,10 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff !important;border-color:rgba(168,85,247,.6);margin-inline-start:auto;animation:watchPulse 2.5s ease-in-out infinite;}
 @keyframes watchPulse{0%,100%{box-shadow:0 8px 24px rgba(168,85,247,.5);}50%{box-shadow:0 8px 32px rgba(168,85,247,.9),0 0 0 8px rgba(168,85,247,0);}}
 .watch-badge{background:rgba(255,255,255,.3);color:#fff;font-size:9px;font-weight:900;padding:3px 7px;border-radius:8px;}
+.nav-btn.approval-nav{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(217,119,6,.1));color:#fbbf24;border-color:rgba(245,158,11,.4);position:relative;}
+.nav-btn.approval-nav:hover{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:#f59e0b;}
+.nav-btn.approval-nav .nav-badge{background:#f04b5c;color:#fff;font-size:10px;font-weight:900;padding:3px 8px;border-radius:10px;margin-inline-start:6px;animation:blink 1.6s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.5;}}
 
 /* ============ SECTIONS ============ */
 .view-section{display:none;animation:fadeIn .4s ease-out;}
@@ -173,12 +177,14 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .stat.done::before{background:linear-gradient(90deg,var(--success),#22b388);}
 .stat.progress::before{background:linear-gradient(90deg,var(--warning),#d97706);}
 .stat.overdue::before{background:linear-gradient(90deg,var(--urgent),#c81e3c);}
+.stat.pending::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
 .stat-num{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:900;margin-bottom:8px;letter-spacing:-2px;}
 .stat-label{font-size:12.5px;color:var(--text-2);font-weight:700;}
 .stat.total .stat-num{color:var(--primary);}
 .stat.done .stat-num{color:var(--success);}
 .stat.progress .stat-num{color:var(--warning);}
 .stat.overdue .stat-num{color:var(--urgent);}
+.stat.pending .stat-num{color:#f59e0b;}
 .team-row{display:grid;grid-template-columns:160px 1fr 150px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);}
 .team-row:last-child{border-bottom:none;}
 .team-name{font-weight:800;font-size:14px;}
@@ -192,6 +198,8 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .form-grid input:focus,.form-grid select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,141,239,.2);background:var(--input-bg-focus);}
 .form-grid button{grid-column:1/-1;background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border:none;padding:16px;border-radius:14px;font-size:15px;font-weight:800;transition:all .3s;box-shadow:0 8px 24px rgba(91,141,239,.4);}
 .form-grid button:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(91,141,239,.6);}
+.form-grid button.submit-employee{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 8px 24px rgba(245,158,11,.4);}
+.form-grid button.submit-employee:hover{box-shadow:0 12px 32px rgba(245,158,11,.6);}
 .controls-bar{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center;}
 .search-wrap{flex:1;min-width:240px;position:relative;}
 .search-wrap input{width:100%;padding:14px 18px 14px 50px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:14px;font-size:14px;font-family:inherit;}
@@ -205,6 +213,34 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .filter-btn{background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;transition:all .25s;}
 .filter-btn:hover{border-color:var(--primary);color:var(--primary);}
 .filter-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
+.filter-btn.approval-filter{background:rgba(245,158,11,.15);color:#fbbf24;border-color:rgba(245,158,11,.4);}
+.filter-btn.approval-filter.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:#f59e0b;}
+.filter-btn.approval-filter.pulse{animation:urgentPulseSoft 2.2s ease-in-out infinite;}
+
+/* ============ APPROVAL BANNER ============ */
+.approval-banner{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:18px 22px;
+  margin-bottom:8px;
+  border-radius:18px;
+  background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.08));
+  border:1.5px solid rgba(245,158,11,.4);
+  box-shadow:0 8px 32px rgba(245,158,11,.15);
+  animation:approvalBannerPulse 2.5s ease-in-out infinite;
+}
+@keyframes approvalBannerPulse{
+  0%,100%{box-shadow:0 8px 32px rgba(245,158,11,.15);}
+  50%{box-shadow:0 8px 48px rgba(245,158,11,.35);}
+}
+.approval-banner-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 6px 20px rgba(245,158,11,.5);}
+.approval-banner-body{flex:1;min-width:0;}
+.approval-banner-title{font-size:16px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.approval-banner-sub{font-size:12.5px;color:var(--text-2);font-weight:700;}
+.approval-banner-btn{padding:12px 24px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .25s;box-shadow:0 6px 20px rgba(245,158,11,.4);flex-shrink:0;}
+.approval-banner-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(245,158,11,.6);}
 
 /* ============ TASK CARDS ============ */
 #tasksList{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;}
@@ -237,9 +273,43 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .status-pill.new{background:rgba(91,141,239,.2);color:var(--primary);border:1px solid rgba(91,141,239,.3);}
 .status-pill.progress{background:rgba(245,165,36,.2);color:var(--warning);border:1px solid rgba(245,165,36,.3);}
 .status-pill.done{background:rgba(45,212,163,.2);color:var(--success);border:1px solid rgba(45,212,163,.3);}
+.status-pill.pending{background:rgba(245,158,11,.2);color:#fbbf24;border:1px solid rgba(245,158,11,.3);}
 @keyframes urgentPulseSoft{0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,.5),0 0 24px rgba(240,75,92,.35);border-color:rgba(240,75,92,.65);}50%{box-shadow:0 0 0 8px rgba(240,75,92,0),0 0 48px rgba(240,75,92,.7);border-color:#f04b5c;}}
 .task-card.urgent-active{border:3px solid #f04b5c;animation:urgentPulseSoft 2.2s ease-in-out infinite;}
 .task-card.urgent-active .card-title{color:#fff;text-shadow:0 0 12px rgba(240,75,92,.5);}
+
+/* ============ APPROVAL CARDS ============ */
+.task-card.approval-card{
+  background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(15,20,32,.8));
+  border:2px dashed rgba(245,158,11,.5);
+  min-height:260px;
+}
+.task-card.approval-card.pending-user{
+  background:linear-gradient(135deg,rgba(91,141,239,.08),rgba(15,20,32,.8));
+  border-color:rgba(91,141,239,.4);
+}
+.task-card.approval-card:hover{
+  border-color:rgba(245,158,11,.8);
+  transform:translateY(-8px) scale(1.01);
+}
+.approval-stripe{
+  position:absolute;
+  top:0;inset-inline:0;
+  height:6px;
+  background:repeating-linear-gradient(45deg,#f59e0b 0,#f59e0b 12px,#fbbf24 12px,#fbbf24 24px);
+  animation:stripeFlow 20s linear infinite;
+}
+@keyframes stripeFlow{0%{background-position:0 0;}100%{background-position:200px 0;}}
+.approval-badge{padding:7px 14px;border-radius:12px;background:rgba(245,158,11,.2);color:#fbbf24;border:1px solid rgba(245,158,11,.4);font-size:11.5px;font-weight:900;letter-spacing:.3px;}
+.approval-badge.user{background:rgba(91,141,239,.2);color:#7ca5f5;border-color:rgba(91,141,239,.4);}
+.approval-submitted{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:12px;font-size:12px;font-weight:700;color:var(--text-2);margin-top:12px;}
+.approval-submitted strong{color:var(--text);font-weight:900;}
+.approval-actions{display:flex;gap:10px;margin-top:auto;padding-top:14px;}
+.approval-btn{flex:1;padding:13px 18px;border-radius:12px;border:none;font-size:13.5px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+.approval-btn.approve{background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;box-shadow:0 6px 18px rgba(45,212,163,.4);}
+.approval-btn.approve:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,212,163,.6);}
+.approval-btn.reject{background:rgba(240,75,92,.15);color:#ff6b7d;border:1.5px solid rgba(240,75,92,.4);}
+.approval-btn.reject:hover{background:linear-gradient(135deg,#f04b5c,#c81e3c);color:#fff;border-color:transparent;transform:translateY(-2px);}
 
 /* ============ KANBAN ============ */
 .kanban-col{background:var(--panel-bg);border:1.5px solid var(--border);border-radius:20px;padding:18px;min-height:500px;display:flex;flex-direction:column;gap:14px;}
@@ -281,6 +351,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .status-badge.new{background:rgba(91,141,239,.2);color:var(--primary);border:1.5px solid rgba(91,141,239,.4);}
 .status-badge.progress{background:rgba(245,165,36,.2);color:var(--warning);border:1.5px solid rgba(245,165,36,.4);}
 .status-badge.done{background:rgba(45,212,163,.2);color:var(--success);border:1.5px solid rgba(45,212,163,.4);}
+.status-badge.pending{background:rgba(245,158,11,.2);color:#fbbf24;border:1.5px solid rgba(245,158,11,.4);}
 .modal-close{background:var(--surface-1);color:var(--text);border:none;width:40px;height:40px;border-radius:50%;font-size:16px;transition:all .3s;}
 .modal-close:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;transform:rotate(90deg);}
 .modal-title{padding:24px 28px 16px;font-size:25px;font-weight:900;line-height:1.4;}
@@ -308,6 +379,10 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .btn-edit:hover{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
 .btn-del:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;border-color:var(--urgent);}
 .btn-pin:hover,.btn-pin.active{background:linear-gradient(135deg,var(--warning),#d97706);color:#fff;border-color:var(--warning);}
+.btn-approve-modal{background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;border:none;padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:800;transition:all .25s;box-shadow:0 6px 18px rgba(45,212,163,.4);}
+.btn-approve-modal:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,212,163,.6);}
+.btn-reject-modal{background:rgba(240,75,92,.15);color:#ff6b7d;border:1.5px solid rgba(240,75,92,.4);padding:13px 22px;border-radius:12px;font-size:13.5px;font-weight:800;transition:all .25s;}
+.btn-reject-modal:hover{background:linear-gradient(135deg,#f04b5c,#c81e3c);color:#fff;border-color:transparent;}
 
 /* ============ REPORT ============ */
 #reportOverlay{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;}
@@ -359,7 +434,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .sub-notif-progress-text,.watch-sub-progress-text{position:absolute;bottom:6px;inset-inline-end:14px;font-size:9.5px;color:var(--text-3);font-weight:800;font-family:'JetBrains Mono',monospace;}
 
 /* ============================================================
-   🎯 CENTRAL REMINDER MODAL SYSTEM (NEW)
+   🎯 CENTRAL REMINDER MODAL SYSTEM
    ============================================================ */
 #reminderHost {
   position: fixed;
@@ -386,7 +461,6 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
   to { background: rgba(0, 0, 0, .75); backdrop-filter: blur(12px); }
 }
 
-/* Reminder Card */
 .reminder-card {
   position: relative;
   background: var(--modal-bg);
@@ -396,10 +470,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
   width: 100%;
   max-height: 90vh;
   overflow: hidden;
-  box-shadow: 
-    0 40px 120px rgba(0, 0, 0, .9),
-    0 0 0 1px rgba(255, 255, 255, .05),
-    0 0 80px rgba(91, 141, 239, .25);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .05), 0 0 80px rgba(91, 141, 239, .25);
   animation: reminderCardIn .5s cubic-bezier(.16, 1, .3, 1);
   display: flex;
   flex-direction: column;
@@ -415,12 +486,11 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
   to { opacity: 0; transform: translateY(30px) scale(.92); }
 }
 
-/* Priority variants */
 .reminder-card.p-urgent { border-color: rgba(240, 75, 92, .6); box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 100px rgba(240, 75, 92, .35); }
 .reminder-card.p-important { border-color: rgba(245, 165, 36, .6); box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 100px rgba(245, 165, 36, .3); }
 .reminder-card.p-normal { border-color: rgba(45, 212, 163, .6); box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 100px rgba(45, 212, 163, .3); }
+.reminder-card.p-approval { border-color: rgba(245, 158, 11, .6); box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 100px rgba(245, 158, 11, .35); }
 
-/* Progress bar top */
 .reminder-progress {
   position: absolute;
   top: 0; inset-inline: 0;
@@ -438,12 +508,12 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 }
 .reminder-card.p-urgent .reminder-progress-fill { background: linear-gradient(90deg, #f04b5c, #ff6b7d); }
 .reminder-card.p-important .reminder-progress-fill { background: linear-gradient(90deg, #f5a524, #ffc043); }
+.reminder-card.p-approval .reminder-progress-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
 @keyframes reminderProgress {
   from { transform: scaleX(1); }
   to { transform: scaleX(0); }
 }
 
-/* Icon Header */
 .reminder-icon-wrap {
   padding: 32px 32px 20px;
   display: flex;
@@ -477,6 +547,11 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
   background: linear-gradient(135deg, rgba(45, 212, 163, .25), rgba(45, 212, 163, .1));
   border-color: rgba(45, 212, 163, .5);
 }
+.reminder-card.p-approval .reminder-icon {
+  background: linear-gradient(135deg, rgba(245, 158, 11, .25), rgba(245, 158, 11, .1));
+  border-color: rgba(245, 158, 11, .5);
+  animation: reminderIconPulse 2s ease-in-out infinite;
+}
 @keyframes reminderIconPulse {
   0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(91, 141, 239, .4); }
   50% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(91, 141, 239, 0); }
@@ -498,6 +573,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .reminder-card.p-urgent .reminder-kicker { color: #ff6b7d; }
 .reminder-card.p-important .reminder-kicker { color: #ffc043; }
 .reminder-card.p-normal .reminder-kicker { color: #3ee8b5; }
+.reminder-card.p-approval .reminder-kicker { color: #fbbf24; }
 .reminder-title {
   font-size: clamp(20px, 2.2vw, 26px);
   font-weight: 900;
@@ -529,7 +605,6 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
   transform: rotate(90deg) scale(1.1);
 }
 
-/* Task body */
 .reminder-body {
   padding: 0 32px 24px;
   display: flex;
@@ -560,12 +635,13 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
   background-size: 100% 200%;
   animation: reminderBarFlow 1.5s linear infinite;
 }
+.reminder-card.p-important .reminder-task-box::before { background: linear-gradient(180deg, #f5a524, #ffc043); }
+.reminder-card.p-normal .reminder-task-box::before { background: linear-gradient(180deg, #2dd4a3, #3ee8b5); }
+.reminder-card.p-approval .reminder-task-box::before { background: linear-gradient(180deg, #f59e0b, #fbbf24); }
 @keyframes reminderBarFlow {
   0% { background-position: 0 0; }
   100% { background-position: 0 200%; }
 }
-.reminder-card.p-important .reminder-task-box::before { background: linear-gradient(180deg, #f5a524, #ffc043); }
-.reminder-card.p-normal .reminder-task-box::before { background: linear-gradient(180deg, #2dd4a3, #3ee8b5); }
 
 .reminder-task-name {
   font-size: clamp(16px, 1.5vw, 20px);
@@ -594,6 +670,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .reminder-chip.urgent { background: rgba(240, 75, 92, .15); color: #ff6b7d; border-color: rgba(240, 75, 92, .3); }
 .reminder-chip.important { background: rgba(245, 165, 36, .15); color: #ffc043; border-color: rgba(245, 165, 36, .3); }
 .reminder-chip.normal { background: rgba(45, 212, 163, .15); color: #3ee8b5; border-color: rgba(45, 212, 163, .3); }
+.reminder-chip.approval { background: rgba(245, 158, 11, .15); color: #fbbf24; border-color: rgba(245, 158, 11, .3); }
 .reminder-chip.overdue { background: rgba(240, 75, 92, .2); color: #ff6b7d; border-color: rgba(240, 75, 92, .4); animation: blink 1.6s ease-in-out infinite; }
 .reminder-chip.due-soon { background: rgba(245, 165, 36, .2); color: #ffc043; border-color: rgba(245, 165, 36, .4); }
 
@@ -607,7 +684,6 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
   border-inline-start: 3px solid rgba(91, 141, 239, .4);
 }
 
-/* Actions */
 .reminder-actions {
   padding: 20px 32px 28px;
   display: flex;
@@ -652,10 +728,24 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
   box-shadow: 0 8px 24px rgba(240, 75, 92, .4);
 }
 .reminder-btn.danger:hover { box-shadow: 0 12px 32px rgba(240, 75, 92, .6); }
+.reminder-btn.success {
+  background: linear-gradient(135deg, #2dd4a3, #22b388);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 24px rgba(45, 212, 163, .4);
+}
+.reminder-btn.success:hover { box-shadow: 0 12px 32px rgba(45, 212, 163, .6); }
+.reminder-btn.warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, .4);
+}
+.reminder-btn.warning:hover { box-shadow: 0 12px 32px rgba(245, 158, 11, .6); }
 .reminder-btn.ghost { background: transparent; }
 
 /* ============================================================
-   🚨 FULLSCREEN REMINDER (Model D)
+   🚨 FULLSCREEN REMINDER
    ============================================================ */
 #fullscreenReminder {
   position: fixed;
@@ -844,7 +934,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .empty{text-align:center;padding:60px 20px;color:var(--text-2);font-weight:700;font-size:14px;}
 
 /* ============================================================
-   🖥️ WATCH SCREEN v5 — Kanban
+   🖥️ WATCH SCREEN
    ============================================================ */
 #watchScreen{position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;display:none;}
 #watchScreen.active{display:block;}
@@ -873,7 +963,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-btn:hover{background:rgba(91,141,239,.15);color:#5b8def;border-color:rgba(91,141,239,.4);}
 .w-btn.danger:hover{background:rgba(240,75,92,.2);color:#ff6b7d;border-color:rgba(240,75,92,.4);}
 
-.w-kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;}
+.w-kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;}
 .w-kpi{position:relative;padding:10px 14px;border-radius:14px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;min-height:58px;overflow:hidden;transition:transform .3s cubic-bezier(.16,1,.3,1);border:1px solid transparent;}
 .w-kpi::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:rgba(255,255,255,.35);}
 .w-kpi:hover{transform:translateY(-3px);}
@@ -885,14 +975,16 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .kpi-normal{background:linear-gradient(135deg,#059669,#2dd4a3);color:#fff;}
 .kpi-work{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;}
 .kpi-done{background:linear-gradient(135deg,#0d9488,#14b8a6);color:#fff;}
+.kpi-pending{background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;}
 
-.w-kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;min-height:0;}
+.w-kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;min-height:0;}
 .w-col{display:flex;flex-direction:column;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;min-height:0;position:relative;}
 .w-col::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:var(--col-bar,#5b8def);z-index:2;}
 .col-urgent{--col-bar:linear-gradient(90deg,#f04b5c,#ff6b7d);}
 .col-important{--col-bar:linear-gradient(90deg,#f5a524,#ffc043);}
 .col-normal{--col-bar:linear-gradient(90deg,#2dd4a3,#3ee8b5);}
 .col-done{--col-bar:linear-gradient(90deg,#14b8a6,#22d3ee);}
+.col-pending{--col-bar:linear-gradient(90deg,#f59e0b,#fbbf24);}
 .w-col-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);flex-shrink:0;}
 .w-col-title{display:flex;align-items:center;gap:10px;}
 .w-col-dot{width:10px;height:10px;border-radius:50%;}
@@ -900,12 +992,14 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-col-dot.important{background:#f5a524;box-shadow:0 0 10px #f5a524;}
 .w-col-dot.normal{background:#2dd4a3;box-shadow:0 0 10px #2dd4a3;}
 .w-col-dot.done{background:#14b8a6;box-shadow:0 0 10px #14b8a6;}
+.w-col-dot.pending{background:#f59e0b;box-shadow:0 0 10px #f59e0b;}
 .w-col-title h3{font-size:clamp(13px,1.1vw,15px);font-weight:900;color:#f8fafc;letter-spacing:.3px;}
 .w-col-count{background:rgba(255,255,255,.1);color:#cbd5e1;padding:3px 12px;border-radius:10px;font-size:12px;font-weight:900;font-family:'JetBrains Mono',monospace;min-width:34px;text-align:center;}
 .col-urgent .w-col-count{background:rgba(240,75,92,.2);color:#ff6b7d;}
 .col-important .w-col-count{background:rgba(245,165,36,.2);color:#ffc043;}
 .col-normal .w-col-count{background:rgba(45,212,163,.2);color:#3ee8b5;}
 .col-done .w-col-count{background:rgba(20,184,166,.2);color:#22d3ee;}
+.col-pending .w-col-count{background:rgba(245,158,11,.2);color:#fbbf24;}
 
 .w-col-body{flex:1;position:relative;overflow:hidden;min-height:0;mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);}
 .w-col-track{display:flex;flex-direction:column;gap:10px;padding:12px;will-change:transform;}
@@ -925,6 +1019,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-task-status-badge.new{background:rgba(91,141,239,.2);color:#7ca5f5;}
 .w-task-status-badge.progress{background:rgba(245,165,36,.2);color:#f5b84a;}
 .w-task-status-badge.done{background:rgba(45,212,163,.2);color:#3ee8b5;}
+.w-task-status-badge.pending{background:rgba(245,158,11,.2);color:#fbbf24;}
 
 .col-urgent .w-task{background:linear-gradient(135deg,rgba(240,75,92,.14),rgba(15,20,32,.85));border-color:rgba(240,75,92,.35);animation:urgentFlash 2.2s ease-in-out infinite;}
 @keyframes urgentFlash{0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,.4),0 0 16px rgba(240,75,92,.3),inset 0 0 0 1px rgba(240,75,92,.35);border-color:rgba(240,75,92,.4);}50%{box-shadow:0 0 0 6px rgba(240,75,92,0),0 0 28px rgba(240,75,92,.65),inset 0 0 0 1px rgba(240,75,92,.7);border-color:#f04b5c;}}
@@ -937,6 +1032,8 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .col-done .w-task{opacity:.85;}
 .col-done .w-task::before{content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;background:linear-gradient(180deg,#14b8a6,#22d3ee);}
 .col-done .w-task-title{color:#94a3b8;}
+.col-pending .w-task{background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(15,20,32,.85));border-color:rgba(245,158,11,.25);}
+.col-pending .w-task::before{content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;background:linear-gradient(180deg,#f59e0b,#fbbf24);}
 
 .w-col-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 16px;gap:8px;color:#64748b;text-align:center;height:100%;min-height:180px;}
 .w-col-empty div:first-child{font-size:36px;opacity:.35;}
@@ -960,6 +1057,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-ticker-item em{font-style:normal;font-size:11px;color:#64748b;font-weight:700;margin-inline-start:4px;}
 .w-ticker-item.is-urgent{color:#ff6b7d;}
 .w-ticker-item.is-warning{color:#ffc043;}
+.w-ticker-item.is-pending{color:#fbbf24;}
 .w-ticker-empty{padding:0 20px;color:#64748b;font-size:12px;font-weight:700;}
 
 /* PIN */
@@ -980,8 +1078,8 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 body.watch-kiosk .w-footer{display:none !important;}
 body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
-@media (max-width:1400px){.w-kpis{grid-template-columns:repeat(3,1fr);}}
-@media (max-width:1100px){.w-kanban{grid-template-columns:repeat(2,1fr);}.w-clock{display:none;}}
+@media (max-width:1400px){.w-kpis{grid-template-columns:repeat(4,1fr);}}
+@media (max-width:1100px){.w-kanban{grid-template-columns:repeat(3,1fr);}.w-clock{display:none;}}
 @media (max-width:700px){.w-kanban{grid-template-columns:1fr;}.w-footer{grid-template-columns:1fr;}.w-kpis{grid-template-columns:repeat(2,1fr);}}
 @media (max-width:640px){
   .reminder-card{margin:0;}
@@ -1050,6 +1148,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
   <nav class="main-nav">
     <button class="nav-btn active" data-view="dashboard">🏠 الرئيسية</button>
     <button class="nav-btn" data-view="tasks">📋 المهام</button>
+    <button class="nav-btn approval-nav" id="approvalNavBtn" data-view="approvals" hidden>📥 الموافقات <span class="nav-badge" id="approvalNavBadge">0</span></button>
     <button class="nav-btn" data-view="watch">👁️ متابعة</button>
     <button class="nav-btn" id="usersNavBtn" data-view="users" hidden>👥 المستخدمون</button>
     <button class="nav-btn" id="teamNavBtn" data-action="open-team" hidden>🔧 الفريق</button>
@@ -1067,6 +1166,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
           <div class="stat done"><div class="stat-num" id="statDone">0</div><div class="stat-label">مكتملة</div></div>
           <div class="stat progress"><div class="stat-num" id="statProgress">0</div><div class="stat-label">جارية</div></div>
           <div class="stat overdue"><div class="stat-num" id="statOverdue">0</div><div class="stat-label">متأخرة</div></div>
+          <div class="stat pending" id="statPendingCard" hidden><div class="stat-num" id="statPending">0</div><div class="stat-label">بانتظار الموافقة</div></div>
         </div>
       </div>
       <div class="card-panel">
@@ -1086,7 +1186,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
   <section class="view-section" id="tasksView">
     <div class="container">
       <div class="card-panel" id="addTaskCard" hidden>
-        <div class="panel-title">➕ إضافة مهمة جديدة</div>
+        <div class="panel-title" id="addTaskTitle">➕ إضافة مهمة جديدة</div>
         <form id="addTaskForm" class="form-grid">
           <input id="taskTitle" type="text" placeholder="عنوان المهمة *" required>
           <select id="taskAssignee" required><option value="">-- المسؤول --</option></select>
@@ -1094,7 +1194,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
           <input id="taskDue" type="date">
           <input id="taskNotes" type="text" placeholder="ملاحظات">
           <input id="taskTags" type="text" placeholder="وسوم (فاصلة)">
-          <button type="submit">إضافة المهمة</button>
+          <button type="submit" id="addTaskSubmitBtn">إضافة المهمة</button>
         </form>
       </div>
       <div class="controls-bar">
@@ -1114,12 +1214,26 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
         <button class="filter-btn active" data-filter="all">الكل</button>
         <button class="filter-btn" data-filter="mine">مهامي</button>
         <button class="filter-btn" data-filter="pending">معلقة</button>
+        <button class="filter-btn approval-filter" data-filter="approval" id="approvalFilterBtn" hidden>📥 بانتظار الموافقة (<span id="approvalCount">0</span>)</button>
         <button class="filter-btn" data-filter="overdue">متأخرة</button>
         <button class="filter-btn" data-filter="done">مكتملة</button>
         <button class="filter-btn" data-filter="week">هذا الأسبوع</button>
         <button class="filter-btn" data-filter="month">هذا الشهر</button>
       </div>
       <div id="tasksList"></div>
+    </div>
+  </section>
+
+  <!-- ✅ APPROVALS VIEW -->
+  <section class="view-section" id="approvalsView">
+    <div class="container">
+      <div class="card-panel">
+        <div class="approval-header-bar">
+          <div class="panel-title" style="margin:0;">📥 طلبات الموافقة</div>
+          <span class="approval-header-count" id="approvalsCountBadge">0 مهمة</span>
+        </div>
+        <div id="approvalsList"></div>
+      </div>
     </div>
   </section>
 
@@ -1283,9 +1397,18 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
       <div class="w-kpi kpi-normal"><span class="w-kpi-num" id="wNormal">0</span><span class="w-kpi-label">🟢 عادي</span></div>
       <div class="w-kpi kpi-work"><span class="w-kpi-num" id="wWorking">0</span><span class="w-kpi-label">⏳ جاري</span></div>
       <div class="w-kpi kpi-done"><span class="w-kpi-num" id="wDone">0</span><span class="w-kpi-label">✅ مكتمل</span></div>
+      <div class="w-kpi kpi-pending"><span class="w-kpi-num" id="wPending">0</span><span class="w-kpi-label">📥 موافقة</span></div>
     </section>
 
     <section class="w-kanban">
+      <div class="w-col col-pending" id="wColPendingWrap">
+        <header class="w-col-head">
+          <div class="w-col-title"><span class="w-col-dot pending"></span><h3>📥 بانتظار الموافقة</h3></div>
+          <span class="w-col-count" id="wColPendingCount">0</span>
+        </header>
+        <div class="w-col-body"><div class="w-col-track" id="wColPending"></div></div>
+      </div>
+
       <div class="w-col col-urgent">
         <header class="w-col-head">
           <div class="w-col-title"><span class="w-col-dot urgent"></span><h3>🔴 عاجل</h3></div>
@@ -1334,7 +1457,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v21.0 — With Central Reminder System
+   EMAK IT Dep. v22.0 — With Approval Workflow
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1367,13 +1490,22 @@ const CONSTANTS = Object.freeze({
   NOTIFICATION_DURATION: 20000,
   MAX_NOTIFICATIONS: 5,
   PRIORITY_MAP: { "عاجل": 0, "مهم": 1, "عادي": 2 },
-  STATUS: Object.freeze({ NEW: "جديدة", PROGRESS: "جاري التنفيذ", DONE: "مكتملة" }),
-  // ⚙️ إعدادات التذكيرات
-  REMINDER_DURATION: 12000,           // مدة ظهور التذكير (12 ثانية)
-  REMINDER_DUE_SOON_MINUTES: 60,      // تذكير قبل الموعد بـ 60 دقيقة
-  REMINDER_CHECK_INTERVAL: 60000,     // فحص دوري كل 60 ثانية
-  REMINDER_DAILY_KEY: 'emak_daily_reminder', // منع تكرار ملخص المتأخرات
-  REMINDER_FS_THRESHOLD: 3            // عتبة التذكير بملء الشاشة (متأخر بـ 3 أيام+)
+  STATUS: Object.freeze({
+    PENDING: "بانتظار الموافقة",
+    NEW: "جديدة",
+    PROGRESS: "جاري التنفيذ",
+    DONE: "مكتملة"
+  }),
+  APPROVAL_STATUS: Object.freeze({
+    PENDING: "pending",
+    APPROVED: "approved",
+    REJECTED: "rejected"
+  }),
+  REMINDER_DURATION: 12000,
+  REMINDER_DUE_SOON_MINUTES: 60,
+  REMINDER_CHECK_INTERVAL: 60000,
+  REMINDER_DAILY_KEY: 'emak_daily_reminder',
+  REMINDER_FS_THRESHOLD: 3
 });
 
 const app = initializeApp(FIREBASE_CONFIG);
@@ -1443,17 +1575,17 @@ const state = {
   watchTab: 'all', watchFilter: 'all',
   usersSearch: '', usersRoleFilter: 'all', usersStatusFilter: 'all',
   openTaskId: null, pinnedTaskId: null, logoDataUrl: null,
-  unsubs: { tasks:null, team:null, users:null, activity:null, deletedTasks:null },
+  unsubs: { tasks:null, team:null, users:null, activity:null, deletedTasks:null, notifications:null },
   watchUnsubs: { tasks:null, team:null, activity:null },
   watchMode: false, watchData: { tasks:{}, team:{}, activity:[] },
   watchKnownTaskIds: new Set(), watchFirstLoad: false,
   backupTimer: null, charts: new Map(),
-  // Reminder state
   reminderTimer: null, reminderTimeoutId: null,
   reminderShowing: false, reminderCurrentTask: null,
   seenUrgentTasks: new Set(),
   fullscreenReminderActive: false,
-  reminderInterval: null
+  reminderInterval: null,
+  seenNotifications: new Set()
 };
 
 /* ============================================================
@@ -1612,27 +1744,137 @@ async function loadLogoAsBase64() {
 }
 
 /* ============================================================
-   🎯 REMINDER SYSTEM (NEW)
+   ✅ APPROVAL SYSTEM — CORE
    ============================================================ */
+async function approveTask(taskId) {
+  if (!state.isAdmin) return swalError("غير مصرح");
+  const t = state.tasks[taskId];
+  if (!t) return;
+  const r = await Swal.fire({
+    icon: 'question',
+    title: 'الموافقة على المهمة؟',
+    html: `<div style="text-align:right;direction:rtl;padding:8px 0;">
+      <p style="font-size:15px;font-weight:800;color:${themeFg()};margin-bottom:12px;">${esc(t.title)}</p>
+      <p style="font-size:13px;color:#94a3b8;font-weight:700;">👤 المسؤول: ${esc(t.assignee || "—")}</p>
+      <p style="font-size:13px;color:#94a3b8;font-weight:700;">📤 مقدّم الطلب: ${esc(t.submittedByName || "—")}</p>
+    </div>`,
+    showCancelButton: true,
+    confirmButtonText: '✅ موافقة ونشر',
+    cancelButtonText: 'إلغاء',
+    confirmButtonColor: '#2dd4a3',
+    background: themeBg(), color: themeFg()
+  });
+  if (!r.isConfirmed) return;
 
-/**
- * عرض تذكير مركزي
- * @param {Object} options
- *   - kicker: نص صغير أعلى العنوان
- *   - title: العنوان الرئيسي
- *   - icon: أيقونة (emoji)
- *   - priority: 'urgent' | 'important' | 'normal'
- *   - task: كائن المهمة (اختياري)
- *   - tasks: مصفوفة مهام (اختياري - لعرض عدة مهام)
- *   - notes: نص إضافي (اختياري)
- *   - actions: مصفوفة أزرار [{label, variant, action}]
- *   - duration: مدة العرض ms (افتراضي 12000)
- *   - autoOpenTask: فتح المهمة تلقائياً عند النقر
- */
+  try {
+    await safeWrite(() => update(ref(db, "tasks/" + taskId), {
+      approvalStatus: CONSTANTS.APPROVAL_STATUS.APPROVED,
+      status: CONSTANTS.STATUS.NEW,
+      approvedAt: Date.now(),
+      approvedBy: state.user.uid,
+      approvedByName: state.profile.displayName,
+      updatedAt: Date.now()
+    }));
+    await logActivity("task_approved", `وافق على "${t.title}"`, taskId, t.title);
+
+    // إشعار الموظف
+    if (t.submittedBy) {
+      await push(ref(db, "notifications/" + t.submittedBy), {
+        type: 'task_approved',
+        taskId,
+        taskTitle: t.title,
+        message: `✅ تمت الموافقة على مهمتك: ${t.title}`,
+        at: Date.now(),
+        read: false
+      });
+    }
+
+    showToast("✅ تمت الموافقة ونشر المهمة", 'success');
+    showSubNotification({ ...t, priority: t.priority, title: t.title, assignee: t.assignee, dueDate: t.dueDate });
+    if (t.priority === "عاجل") {
+      setTimeout(() => {
+        showReminder({
+          kicker: '🚨 مهمة عاجلة جديدة',
+          title: 'تنبيه فوري',
+          icon: '⚠️',
+          priority: 'urgent',
+          task: { ...t, id: taskId },
+          notes: t.notes || ''
+        });
+      }, 800);
+    }
+  } catch (err) {
+    swalError("فشل", err.message);
+  }
+}
+
+async function rejectTask(taskId) {
+  if (!state.isAdmin) return swalError("غير مصرح");
+  const t = state.tasks[taskId];
+  if (!t) return;
+
+  const { value: reason } = await Swal.fire({
+    icon: 'warning',
+    title: 'رفض المهمة؟',
+    html: `<div style="text-align:right;direction:rtl;padding:8px 0;">
+      <p style="font-size:15px;font-weight:800;color:${themeFg()};margin-bottom:16px;">${esc(t.title)}</p>
+      <label style="font-size:12px;font-weight:800;color:#94a3b8;display:block;margin-bottom:8px;">سبب الرفض (اختياري)</label>
+      <textarea id="reject-reason" class="swal2-textarea" placeholder="مثال: المهمة مكررة / غير ضرورية حالياً..." style="margin:0;width:100%;min-height:80px;font-family:inherit;"></textarea>
+    </div>`,
+    showCancelButton: true,
+    confirmButtonText: '❌ تأكيد الرفض',
+    cancelButtonText: 'إلغاء',
+    confirmButtonColor: '#f04b5c',
+    background: themeBg(), color: themeFg(),
+    preConfirm: () => document.getElementById('reject-reason').value.trim()
+  });
+  if (reason === undefined) return;
+
+  try {
+    await safeWrite(() => set(ref(db, "deleted_tasks/" + taskId), {
+      ...t,
+      rejectedAt: Date.now(),
+      rejectedBy: state.user.uid,
+      rejectedByName: state.profile.displayName,
+      rejectionReason: reason || 'بدون سبب محدد'
+    }));
+    await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
+    await logActivity("task_rejected", `رفض المهمة: ${t.title}`, taskId, t.title);
+
+    // إشعار الموظف
+    if (t.submittedBy) {
+      await push(ref(db, "notifications/" + t.submittedBy), {
+        type: 'task_rejected',
+        taskId,
+        taskTitle: t.title,
+        message: `❌ تم رفض مهمتك: ${t.title}`,
+        reason: reason || '',
+        at: Date.now(),
+        read: false
+      });
+    }
+
+    showToast("❌ تم رفض المهمة وإبلاغ الموظف", 'warning');
+  } catch (err) {
+    swalError("فشل", err.message);
+  }
+}
+
+// Event delegation for approval buttons
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-approval]');
+  if (!btn) return;
+  e.stopPropagation();
+  const { approval, id } = btn.dataset;
+  if (approval === 'approve') approveTask(id);
+  else if (approval === 'reject') rejectTask(id);
+});
+
+/* ============================================================
+   🎯 REMINDER SYSTEM
+   ============================================================ */
 function showReminder(options = {}) {
-  // لا تعرض اثنين معاً
   if (state.reminderShowing) {
-    // ضع في الطابور
     setTimeout(() => showReminder(options), 2000);
     return;
   }
@@ -1662,47 +1904,32 @@ function showReminder(options = {}) {
 
   if (!host || !card) return;
 
-  // Reset priority classes
-  card.classList.remove('p-urgent', 'p-important', 'p-normal');
+  card.classList.remove('p-urgent', 'p-important', 'p-normal', 'p-approval');
   card.classList.add(`p-${priority}`);
 
-  // Icon
   iconEl.textContent = icon;
   kickerEl.textContent = kicker;
   titleEl.textContent = title;
 
-  // Task Box
   if (task) {
     const d = daysRemaining(task.dueDate);
     const isOverdue = d !== null && d < 0 && task.status !== CONSTANTS.STATUS.DONE;
     const pc = task.priority === "عاجل" ? "urgent" : task.priority === "مهم" ? "important" : "normal";
     const dueSoon = d !== null && d >= 0 && d <= 1;
-    const initial = (task.assignee || "?").charAt(0).toUpperCase();
 
     taskBox.innerHTML = `
       <div class="reminder-task-name">${esc(task.title)}</div>
       <div class="reminder-task-meta">
-        <span class="reminder-chip ${pc}">
+        ${task.priority ? `<span class="reminder-chip ${pc}">
           ${task.priority === "عاجل" ? "🔴 عاجل" : task.priority === "مهم" ? "🟡 مهم" : "🟢 عادي"}
-        </span>
-        <span class="reminder-chip">
-          👤 ${esc(task.assignee || "—")}
-        </span>
-        ${task.dueDate ? `
-          <span class="reminder-chip ${isOverdue ? 'overdue' : dueSoon ? 'due-soon' : ''}">
-            📅 ${esc(dueLabel(task.dueDate))}
-          </span>
-        ` : ''}
-        <span class="reminder-chip">
-          ${task.status === CONSTANTS.STATUS.NEW ? "🆕 جديدة"
-            : task.status === CONSTANTS.STATUS.PROGRESS ? "⏳ جاري"
-            : "✅ مكتملة"}
-        </span>
+        </span>` : ''}
+        ${task.assignee ? `<span class="reminder-chip">👤 ${esc(task.assignee)}</span>` : ''}
+        ${task.dueDate ? `<span class="reminder-chip ${isOverdue ? 'overdue' : dueSoon ? 'due-soon' : ''}">📅 ${esc(dueLabel(task.dueDate))}</span>` : ''}
+        ${task.status ? `<span class="reminder-chip">${task.status === CONSTANTS.STATUS.NEW ? "🆕 جديدة" : task.status === CONSTANTS.STATUS.PROGRESS ? "⏳ جاري" : task.status === CONSTANTS.STATUS.DONE ? "✅ مكتملة" : task.status}</span>` : ''}
       </div>
     `;
     taskBox.hidden = false;
   } else if (tasks && tasks.length > 0) {
-    // عرض قائمة مهام
     taskBox.innerHTML = tasks.slice(0, 5).map(t => {
       const d = daysRemaining(t.dueDate);
       const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
@@ -1724,7 +1951,6 @@ function showReminder(options = {}) {
     taskBox.hidden = true;
   }
 
-  // Notes
   if (notes) {
     notesEl.textContent = notes;
     notesEl.hidden = false;
@@ -1732,7 +1958,6 @@ function showReminder(options = {}) {
     notesEl.hidden = true;
   }
 
-  // Actions
   const finalActions = actions.length > 0 ? actions : (
     task ? [
       { label: '👁️ عرض المهمة', variant: 'primary', action: () => { closeReminder(); setTimeout(() => openModal(task.id), 300); } },
@@ -1752,29 +1977,23 @@ function showReminder(options = {}) {
     actionsEl.appendChild(btn);
   });
 
-  // Progress bar
   progressBar.style.setProperty('--duration', (duration / 1000) + 's');
   progressBar.style.animation = 'none';
   void progressBar.offsetWidth;
   progressBar.style.animation = `reminderProgress ${duration/1000}s linear forwards`;
 
-  // Show
   host.classList.add('active');
 
-  // Sound
   if (priority === 'urgent') playReminderSound();
   else playNotificationSound(priority);
 
-  // Desktop notif
   if (priority === 'urgent') {
     DesktopNotif.show("🚨 تذكير عاجل", task ? task.title : title);
   }
 
-  // Auto close
   clearTimeout(state.reminderTimeoutId);
   state.reminderTimeoutId = setTimeout(() => closeReminder(), duration);
 
-  // Close on click outside
   setTimeout(() => {
     host.addEventListener('click', onReminderBackdropClick, { once: true });
   }, 100);
@@ -1784,7 +2003,6 @@ function onReminderBackdropClick(e) {
   if (e.target.id === 'reminderHost') {
     closeReminder();
   } else {
-    // re-attach if clicked inside
     setTimeout(() => {
       $('#reminderHost')?.addEventListener('click', onReminderBackdropClick, { once: true });
     }, 100);
@@ -1799,13 +2017,12 @@ function closeReminder() {
   card.classList.add('closing');
   setTimeout(() => {
     host.classList.remove('active');
-    card.classList.remove('closing', 'p-urgent', 'p-important', 'p-normal');
+    card.classList.remove('closing', 'p-urgent', 'p-important', 'p-normal', 'p-approval');
     state.reminderShowing = false;
     state.reminderCurrentTask = null;
   }, 380);
 }
 
-/* 🚨 Fullscreen Reminder (Model D) */
 function showFullscreenReminder(task) {
   if (state.fullscreenReminderActive) return;
   state.fullscreenReminderActive = true;
@@ -1839,7 +2056,6 @@ function showFullscreenReminder(task) {
   host.classList.add('active');
   playReminderSound();
 
-  // Auto close after 15s
   setTimeout(() => closeFullscreenReminder(), 15000);
 }
 
@@ -1850,34 +2066,33 @@ function closeFullscreenReminder() {
   state.fullscreenReminderActive = false;
 }
 
-/* 🔍 Reminder Checker — يفحص المهام ويلتقط المناسبات */
 function checkReminders() {
   if (!state.profile) return;
 
   const now = Date.now();
   const tasks = Object.values(state.tasks);
 
-  // 1) مهام عاجلة جديدة لم تُشاهد (Model A)
   const urgentNew = tasks.filter(t => {
     if (t.priority !== "عاجل") return false;
     if (t.status === CONSTANTS.STATUS.DONE) return false;
+    if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
     if (t.createdAt > now - 5 * 60 * 1000 && !state.seenUrgentTasks.has(t.id + '_shown')) {
       return true;
     }
     return false;
   });
 
-  // 2) مهام عاجلة جداً (متأخرة 3+ أيام) → fullscreen (Model D)
   const critical = tasks.filter(t => {
     if (t.status === CONSTANTS.STATUS.DONE) return false;
+    if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
     if (t.priority !== "عاجل") return false;
     const d = daysRemaining(t.dueDate);
     return d !== null && d <= -CONSTANTS.REMINDER_FS_THRESHOLD;
   });
 
-  // 3) مهام تقترب من الاستحقاق (Model B) — أقل من 60 دقيقة
   const dueSoon = tasks.filter(t => {
     if (t.status === CONSTANTS.STATUS.DONE) return false;
+    if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
     if (!t.dueDate) return false;
     const [y, m, d] = t.dueDate.split('-').map(Number);
     const due = new Date(y, m - 1, d, 23, 59, 59);
@@ -1885,7 +2100,6 @@ function checkReminders() {
     return diff > 0 && diff <= CONSTANTS.REMINDER_DUE_SOON_MINUTES * 60 * 1000;
   });
 
-  // أولوية: Fullscreen → Model A → Model B
   if (critical.length > 0 && !state.fullscreenReminderActive) {
     const task = critical[0];
     const key = task.id + '_fs_shown_' + new Date().toDateString();
@@ -1934,16 +2148,16 @@ function checkReminders() {
   }
 }
 
-/* 📊 Daily Overdue Summary (Model C) — مرة واحدة يومياً */
 function showDailySummaryIfNeeded() {
   const todayKey = new Date().toDateString();
   const lastShown = Storage.get(CONSTANTS.REMINDER_DAILY_KEY);
   if (lastShown === todayKey) return;
-  if (!state.isAdmin) return; // فقط للمدير
+  if (!state.isAdmin) return;
 
   const overdue = Object.entries(state.tasks)
     .filter(([_, t]) => {
       if (t.status === CONSTANTS.STATUS.DONE) return false;
+      if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
       const d = daysRemaining(t.dueDate);
       return d !== null && d < 0;
     });
@@ -1979,15 +2193,12 @@ function showDailySummaryIfNeeded() {
   }, 1500);
 }
 
-/* تشغيل الفحص الدوري */
 function startReminderEngine() {
   if (state.reminderInterval) clearInterval(state.reminderInterval);
-  // فحص أولي بعد 3 ثوانٍ من الدخول
   setTimeout(() => {
     checkReminders();
     showDailySummaryIfNeeded();
   }, 3000);
-  // فحص دوري
   state.reminderInterval = setInterval(() => {
     if (!state.reminderShowing && !state.fullscreenReminderActive) {
       checkReminders();
@@ -2184,19 +2395,36 @@ function setupAuthListener() {
       $('#userName').textContent = state.profile.displayName || state.profile.username;
       $('#userRole').textContent = state.isAdmin ? "👑 مدير" : "👤 موظف";
       $('#userRole').className = "role " + (state.isAdmin ? "admin" : "user");
-      $('#addTaskCard').hidden = !state.isAdmin;
+      $('#addTaskCard').hidden = false; // الآن الموظف يرى النموذج أيضاً
       $('#usersNavBtn').hidden = !state.isAdmin;
       $('#teamNavBtn').hidden = !state.isAdmin;
+      $('#approvalNavBtn').hidden = !state.isAdmin;
+      $('#approvalFilterBtn').hidden = !state.isAdmin;
+      $('#statPendingCard').hidden = !state.isAdmin;
+      updateAddTaskFormForRole();
       updateActivityButtons();
       startRealtimeListeners();
       startBackupTimer();
       setupOnlinePresence();
       setTimeout(createBackup, 3000);
       DesktopNotif.request();
-      // ✅ تشغيل محرك التذكيرات
       startReminderEngine();
     }, 500);
   });
+}
+
+function updateAddTaskFormForRole() {
+  const titleEl = $('#addTaskTitle');
+  const btn = $('#addTaskSubmitBtn');
+  if (state.isAdmin) {
+    titleEl.textContent = '➕ إضافة مهمة جديدة';
+    btn.textContent = 'إضافة المهمة';
+    btn.classList.remove('submit-employee');
+  } else {
+    titleEl.textContent = '📤 اقتراح مهمة جديدة';
+    btn.textContent = '📤 إرسال للموافقة';
+    btn.classList.add('submit-employee');
+  }
 }
 
 /* ============================================================
@@ -2210,7 +2438,9 @@ function startRealtimeListeners() {
     const isFirst = Object.keys(prev).length === 0;
     if (!isFirst) {
       Object.entries(state.tasks).forEach(([id, task]) => {
-        if (!prev[id] && task.createdBy !== state.user?.uid) showSubNotification(task);
+        if (!prev[id] && task.createdBy !== state.user?.uid && task.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING) {
+          showSubNotification(task);
+        }
       });
     }
     scheduleRender();
@@ -2228,6 +2458,39 @@ function startRealtimeListeners() {
     if ($('#activityView')?.classList.contains('active')) renderActivity();
     if ($('#watchView')?.classList.contains('active')) renderWatch();
   });
+
+  // ✅ استمع لإشعارات الموظف الشخصية
+  if (state.user) {
+    state.unsubs.notifications = onValue(ref(db, "notifications/" + state.user.uid), (snap) => {
+      const notifs = snap.val() || {};
+      const unread = Object.entries(notifs).filter(([_, n]) => !n.read);
+      unread.forEach(([id, n]) => {
+        if (state.seenNotifications.has(id)) return;
+        state.seenNotifications.add(id);
+
+        const isApproved = n.type === 'task_approved';
+        showReminder({
+          kicker: isApproved ? '✅ تمت الموافقة' : '❌ تم الرفض',
+          title: isApproved ? 'مهمتك معتمدة!' : 'تم رفض مهمتك',
+          icon: isApproved ? '✅' : '❌',
+          priority: isApproved ? 'normal' : 'important',
+          task: { title: n.taskTitle, id: n.taskId, assignee: '', status: '', priority: 'عادي' },
+          notes: n.reason ? `السبب: ${n.reason}` : n.message,
+          duration: 8000,
+          actions: [
+            { label: isApproved ? '👁️ عرض المهمة' : 'حسناً',
+              variant: 'primary',
+              action: () => { closeReminder(); if (isApproved) setTimeout(() => openModal(n.taskId), 300); } }
+          ]
+        });
+
+        setTimeout(() => {
+          update(ref(db, "notifications/" + state.user.uid + "/" + id), { read: true }).catch(() => {});
+        }, 3000);
+      });
+    });
+  }
+
   setTimeout(cleanupTeamDuplicates, 2000);
 }
 
@@ -2245,19 +2508,40 @@ function renderAll() {
   try { renderTeamProgress(); } catch {}
   try { renderTasks(); } catch {}
   try { renderCharts(); } catch {}
+  try { updateApprovalBadges(); } catch {}
   if ($('#watchView')?.classList.contains('active')) try { renderWatch(); } catch {}
   if ($('#activityView')?.classList.contains('active')) try { renderActivity(); } catch {}
+  if ($('#approvalsView')?.classList.contains('active')) try { renderApprovals(); } catch {}
 }
 function renderStats() {
   const tasks = Object.values(state.tasks);
   $('#statTotal').textContent = tasks.length;
   $('#statDone').textContent = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
   $('#statProgress').textContent = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
-  $('#statOverdue').textContent = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
+  $('#statOverdue').textContent = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING; }).length;
+  const pendingCount = tasks.filter(t => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING).length;
+  const statPending = $('#statPending');
+  if (statPending) statPending.textContent = pendingCount;
+  const approvalCount = $('#approvalCount');
+  if (approvalCount) approvalCount.textContent = pendingCount;
+  const approvalFilterBtn = $('#approvalFilterBtn');
+  if (approvalFilterBtn && pendingCount > 0) {
+    approvalFilterBtn.classList.add('pulse');
+  } else if (approvalFilterBtn) {
+    approvalFilterBtn.classList.remove('pulse');
+  }
+}
+function updateApprovalBadges() {
+  const pendingCount = Object.values(state.tasks).filter(t => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING).length;
+  const badge = $('#approvalNavBadge');
+  if (badge) badge.textContent = pendingCount;
+  const countBadge = $('#approvalsCountBadge');
+  if (countBadge) countBadge.textContent = `${pendingCount} مهمة`;
 }
 function renderTeamProgress() {
   const teamMap = {};
   Object.values(state.tasks).forEach(t => {
+    if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return;
     const key = t.assigneeId || t.assignee || "غير محدد";
     if (!teamMap[key]) teamMap[key] = { name: t.assignee || "غير محدد", total:0, done:0 };
     teamMap[key].total++;
@@ -2270,7 +2554,7 @@ function renderTeamProgress() {
   $('#teamList').innerHTML = html || '<p class="empty">لا توجد بيانات</p>';
 }
 function renderCharts() {
-  const tasks = Object.values(state.tasks);
+  const tasks = Object.values(state.tasks).filter(t => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
   const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
   const progress = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
   const newT = tasks.filter(t => t.status === CONSTANTS.STATUS.NEW).length;
@@ -2298,6 +2582,7 @@ function renderTasks() {
   if (!state.profile) return;
   const list = $('#tasksList');
   if (!list) return;
+
   let entries = Object.entries(state.tasks);
   entries.sort((a, b) => {
     if (a[0] === state.pinnedTaskId) return -1;
@@ -2317,33 +2602,124 @@ function renderTasks() {
     if (state.sort === 'title') return (a[1].title || "").localeCompare(b[1].title || "", "ar");
     return 0;
   });
+
   let filtered = entries.filter(([_, t]) => {
-    if (state.filter === 'all') return true;
+    if (state.filter === 'all') return t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING;
     if (state.filter === 'pending') return t.status !== CONSTANTS.STATUS.DONE;
     if (state.filter === 'done') return t.status === CONSTANTS.STATUS.DONE;
-    if (state.filter === 'overdue') { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }
+    if (state.filter === 'overdue') { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING; }
     if (state.filter === 'week') return isThisWeek(t.createdAt);
     if (state.filter === 'month') return isThisMonth(t.createdAt);
     if (state.filter === 'mine') return t.assigneeId && t.assigneeId === state.user?.uid;
+    if (state.filter === 'approval') return t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING;
     return true;
   });
+
+  // ✅ للموظف: يرى فقط المهام الموافق عليها + الخاصة به
+  if (!state.isAdmin) {
+    filtered = filtered.filter(([_, t]) =>
+      t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING ||
+      t.submittedBy === state.user?.uid
+    );
+  }
+
   if (state.search) filtered = filtered.filter(([_, t]) => `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""}`.toLowerCase().includes(state.search));
-  if (state.view === 'kanban') renderKanban(list, filtered);
-  else {
+
+  // ✅ عرض بانر "بانتظار الموافقة" للمدير
+  const pendingApproval = state.isAdmin
+    ? entries.filter(([_, t]) => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING)
+    : [];
+
+  let approvalBannerHtml = '';
+  if (state.isAdmin && pendingApproval.length > 0 && state.filter !== 'approval') {
+    approvalBannerHtml = `
+      <div class="approval-banner" id="approvalBanner">
+        <div class="approval-banner-icon">📥</div>
+        <div class="approval-banner-body">
+          <div class="approval-banner-title">لديك ${pendingApproval.length} مهمة بانتظار الموافقة</div>
+          <div class="approval-banner-sub">راجع الاقتراحات المقدمة من الفريق</div>
+        </div>
+        <button class="approval-banner-btn" onclick="filterApproval()">عرض المقترحات</button>
+      </div>
+    `;
+  }
+
+  if (state.view === 'kanban') {
+    list.className = "kanban-board";
+    renderKanban(list, filtered);
+  } else {
     list.className = "";
-    if (filtered.length === 0) { list.innerHTML = '<p class="empty" style="grid-column:1/-1;">لا توجد مهام</p>'; return; }
-    list.innerHTML = filtered.map(([id, t]) => taskCardHtml(id, t)).join("");
+    if (filtered.length === 0) {
+      list.innerHTML = approvalBannerHtml + '<p class="empty" style="grid-column:1/-1;">لا توجد مهام</p>';
+      return;
+    }
+    list.innerHTML = approvalBannerHtml + filtered.map(([id, t]) => taskCardHtml(id, t)).join("");
   }
 }
+
+window.filterApproval = function() {
+  state.filter = 'approval';
+  $$('.filter-btn[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === 'approval'));
+  renderAll();
+};
+
 function taskCardHtml(id, t) {
-  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done" : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
-  const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
-  const isUrgentActive = t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE;
+  const isPending = t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING;
+  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done"
+    : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
+  const priorityClass = t.priority === "عاجل" ? "urgent"
+    : t.priority === "مهم" ? "important" : "normal";
+  const isUrgentActive = t.priority === "عاجل" && t.status !== CONSTANTS.STATUS.DONE && !isPending;
   const d = daysRemaining(t.dueDate);
-  const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
+  const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE && !isPending;
   const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
   const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).slice(0,2).map(x => `<span class="card-tag">${esc(x)}</span>`).join("") : "";
+
   const quickActions = state.isAdmin ? `<div class="card-quick-actions"><button class="quick-action-btn" data-quick="edit" data-id="${id}" title="تعديل">✏️</button><button class="quick-action-btn" data-quick="reassign" data-id="${id}" title="تغيير المسؤول">👤</button><button class="quick-action-btn" data-quick="delete" data-id="${id}" title="حذف">🗑️</button></div>` : "";
+
+  // ✅ بطاقة الموافقة للمدير
+  if (isPending && state.isAdmin) {
+    return `<div class="task-card approval-card pending" data-task-id="${id}" tabindex="0" role="button">
+      <div class="approval-stripe"></div>
+      <div class="card-top">
+        <span class="approval-badge">📥 بانتظار الموافقة</span>
+        <span class="assignee-chip">👤 ${esc(t.assignee || "—")}</span>
+      </div>
+      <h3 class="card-title">${highlight(t.title, state.search)}</h3>
+      ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
+      ${t.notes ? `<p class="card-notes">${esc(t.notes)}</p>` : ""}
+      <div class="approval-submitted">
+        <span>📤 قدّمها:</span>
+        <strong>${esc(t.submittedByName || "—")}</strong>
+        <span>·</span>
+        <span>${timeAgo(t.createdAt)}</span>
+      </div>
+      <div class="approval-actions">
+        <button class="approval-btn approve" data-approval="approve" data-id="${id}">✅ موافقة</button>
+        <button class="approval-btn reject" data-approval="reject" data-id="${id}">❌ رفض</button>
+      </div>
+    </div>`;
+  }
+
+  // ✅ بطاقة الموظف — بانتظار موافقة
+  if (isPending && !state.isAdmin) {
+    return `<div class="task-card approval-card pending-user" data-task-id="${id}" tabindex="0" role="button">
+      <div class="approval-stripe"></div>
+      <div class="card-top">
+        <span class="approval-badge user">⏳ بانتظار المدير</span>
+        <span class="assignee-chip">👤 ${esc(t.assignee || "—")}</span>
+      </div>
+      <h3 class="card-title">${highlight(t.title, state.search)}</h3>
+      ${t.notes ? `<p class="card-notes">${esc(t.notes)}</p>` : ""}
+      <div class="approval-submitted">
+        <span>📤 تم الإرسال</span>
+        <span>·</span>
+        <span>${timeAgo(t.createdAt)}</span>
+      </div>
+    </div>`;
+  }
+
+  // ✅ بطاقة عادية
   return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${id}" tabindex="0" role="button">
     ${quickActions}
     <div class="card-top"><span class="priority-dot ${priorityClass}"></span><span class="assignee-chip">👤 ${esc(t.assignee || "—")}</span></div>
@@ -2359,6 +2735,19 @@ function taskCardHtml(id, t) {
     </div>
   </div>`;
 }
+
+function renderApprovals() {
+  const list = $('#approvalsList');
+  if (!list) return;
+  const pending = Object.entries(state.tasks).filter(([_, t]) => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING);
+  if (pending.length === 0) {
+    list.innerHTML = '<p class="empty">🎉 لا توجد طلبات معلقة</p>';
+    return;
+  }
+  list.className = "";
+  list.innerHTML = pending.map(([id, t]) => taskCardHtml(id, t)).join("");
+}
+
 function renderKanban(list, filtered) {
   list.className = "kanban-board";
   const cols = { [CONSTANTS.STATUS.NEW]: [], [CONSTANTS.STATUS.PROGRESS]: [], [CONSTANTS.STATUS.DONE]: [] };
@@ -2406,13 +2795,38 @@ function closeModal() { state.openTaskId = null; $('#modalOverlay').classList.re
 function renderModal(taskId) {
   const t = state.tasks[taskId];
   if (!t) return closeModal();
-  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done" : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : "new";
+  const isPending = t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING;
+  const statusClass = t.status === CONSTANTS.STATUS.DONE ? "done" : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : t.status === CONSTANTS.STATUS.PENDING ? "pending" : "new";
   const priorityClass = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
   const comments = t.comments ? Object.entries(t.comments).sort((a,b) => (a[1].createdAt||0)-(b[1].createdAt||0)) : [];
   const commentsHtml = comments.length > 0 ? comments.map(([cid, c]) => `<div class="modal-comment"><div class="modal-comment-head"><span class="modal-comment-author">${esc(c.author)}</span><span class="modal-comment-date">${formatDateTime(c.createdAt)}</span></div><div class="modal-comment-text">${esc(c.text)}</div></div>`).join("") : '<p style="text-align:center;color:#64748b;padding:24px;">لا توجد تعليقات</p>';
   const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).map(x => `<span class="tag">${esc(x)}</span>`).join("") : "";
+
+  let approvalSection = '';
+  if (isPending) {
+    approvalSection = `
+      <div class="modal-section" style="background:rgba(245,158,11,.08);border-top:1px solid rgba(245,158,11,.3);">
+        <div class="modal-section-title" style="color:#fbbf24;">📥 حالة الموافقة</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;font-weight:700;color:var(--text-2);">
+          <span>📤 مقدّم الطلب: <strong style="color:var(--text);">${esc(t.submittedByName || "—")}</strong></span>
+          <span>🕐 ${timeAgo(t.createdAt)}</span>
+        </div>
+        ${state.isAdmin ? `
+          <div style="display:flex;gap:12px;margin-top:16px;">
+            <button class="btn-approve-modal" data-approval="approve" data-id="${taskId}">✅ موافقة ونشر</button>
+            <button class="btn-reject-modal" data-approval="reject" data-id="${taskId}">❌ رفض</button>
+          </div>
+        ` : `
+          <div style="margin-top:12px;padding:12px 16px;background:rgba(91,141,239,.1);border-radius:12px;font-size:13px;font-weight:700;color:#7ca5f5;">
+            ⏳ في انتظار مراجعة المدير
+          </div>
+        `}
+      </div>
+    `;
+  }
+
   $('#modalBody').innerHTML = `
     <div class="modal-header ${priorityClass}">
       <div class="modal-badges">
@@ -2430,32 +2844,44 @@ function renderModal(taskId) {
       <div class="meta-item"><span class="meta-label">🆕 أُنشئت</span><span class="meta-value">${formatDate(t.createdAt)}</span></div>
     </div>
     ${t.notes ? `<div class="modal-section"><div class="modal-section-title">📝 ملاحظات</div><div class="modal-notes">${esc(t.notes)}</div></div>` : ""}
+    ${approvalSection}
     <div class="modal-section">
       <div class="modal-section-title">💬 التعليقات (${comments.length})</div>
       <div class="modal-comments-list">${commentsHtml}</div>
-      <div class="modal-comment-form">
-        <input id="modal-comment-input" type="text" placeholder="أضف تعليقاً...">
-        <button data-action="add-comment" data-id="${taskId}">إرسال</button>
-      </div>
+      ${!isPending || state.isAdmin ? `
+        <div class="modal-comment-form">
+          <input id="modal-comment-input" type="text" placeholder="أضف تعليقاً...">
+          <button data-action="add-comment" data-id="${taskId}">إرسال</button>
+        </div>
+      ` : ''}
     </div>
     <div class="modal-actions">
-      <button class="btn-pin ${state.pinnedTaskId === taskId ? 'active' : ''}" data-action="toggle-pin" data-id="${taskId}">${state.pinnedTaskId === taskId ? '⭐ مثبتة' : '☆ تثبيت'}</button>
-      <select class="modal-status-select" data-action="change-status" data-id="${taskId}">
-        <option ${t.status === "جديدة" ? "selected" : ""}>جديدة</option>
-        <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
-        <option ${t.status === "مكتملة" ? "selected" : ""}>مكتملة</option>
-      </select>
-      ${state.isAdmin ? `
-        <button class="btn-edit" data-action="edit-task" data-id="${taskId}">✏️ تعديل</button>
-        <button class="btn-edit" style="background:linear-gradient(135deg,#f5a524,#d97706);color:#fff;" data-action="reassign-task" data-id="${taskId}">👤 تغيير المسؤول</button>
-        <button class="btn-del" data-action="delete-task" data-id="${taskId}">🗑️ حذف</button>
-      ` : ""}
+      ${!isPending ? `
+        <button class="btn-pin ${state.pinnedTaskId === taskId ? 'active' : ''}" data-action="toggle-pin" data-id="${taskId}">${state.pinnedTaskId === taskId ? '⭐ مثبتة' : '☆ تثبيت'}</button>
+        <select class="modal-status-select" data-action="change-status" data-id="${taskId}">
+          <option ${t.status === "جديدة" ? "selected" : ""}>جديدة</option>
+          <option ${t.status === "جاري التنفيذ" ? "selected" : ""}>جاري التنفيذ</option>
+          <option ${t.status === "مكتملة" ? "selected" : ""}>مكتملة</option>
+        </select>
+        ${state.isAdmin ? `
+          <button class="btn-edit" data-action="edit-task" data-id="${taskId}">✏️ تعديل</button>
+          <button class="btn-edit" style="background:linear-gradient(135deg,#f5a524,#d97706);color:#fff;" data-action="reassign-task" data-id="${taskId}">👤 تغيير المسؤول</button>
+          <button class="btn-del" data-action="delete-task" data-id="${taskId}">🗑️ حذف</button>
+        ` : ""}
+      ` : state.isAdmin ? `
+        <span style="font-size:13px;color:var(--text-2);font-weight:700;">⏳ استخدم أزرار الموافقة أعلاه</span>
+      ` : `
+        <span style="font-size:13px;color:var(--text-2);font-weight:700;">⏳ بانتظار مراجعة المدير</span>
+      `}
     </div>`;
 }
 
 async function changeStatus(taskId, newStatus) {
   const t = state.tasks[taskId];
   if (!t) return;
+  if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) {
+    return showToast("⏳ لا يمكن تغيير حالة مهمة بانتظار الموافقة", 'warning');
+  }
   try {
     await safeWrite(() => update(ref(db, "tasks/" + taskId), { status: newStatus, updatedAt: Date.now(), updatedBy: state.user.uid, updatedByName: state.profile.displayName }));
     await logActivity("status_changed", `غيّر حالة "${t.title}" إلى ${newStatus}`, taskId, t.title);
@@ -2466,6 +2892,7 @@ async function quickReassign(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.tasks[taskId];
   if (!t) return;
+  if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return showToast("⏳ لا يمكن تعديل مهمة بانتظار الموافقة", 'warning');
   const seen = new Set();
   const teamOptions = Object.entries(state.team).filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; }).sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar")).map(([id, m]) => `<option value="${esc(id)}" ${t.assigneeId === id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
   const { value: newId } = await Swal.fire({
@@ -2507,6 +2934,7 @@ async function editTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.tasks[taskId];
   if (!t) return;
+  if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return showToast("⏳ لا يمكن تعديل مهمة بانتظار الموافقة", 'warning');
   const seen = new Set();
   const teamOptions = Object.entries(state.team).filter(([_, m]) => { if (!m || !m.name || !m.uid) return false; if (seen.has(m.uid)) return false; seen.add(m.uid); return true; }).sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "", "ar")).map(([id, m]) => `<option value="${esc(id)}" ${t.assigneeId === id ? "selected" : ""}>${esc(m.name)}</option>`).join("");
   const { value: formValues } = await Swal.fire({
@@ -2585,28 +3013,32 @@ async function logActivity(type, text, taskId = null, taskTitle = "") {
 function wRenderStats() {
   const tasks = Object.values(state.watchData.tasks || {});
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  const active = tasks.filter(t => t.status === CONSTANTS.STATUS.NEW).length;
-  const working = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
-  const done = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
-  const urgentTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
-  const importantTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم" && !(t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
-  const normalTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عادي" && !(t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
-  set("wTotal", tasks.length);
+  const pending = tasks.filter(t => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING);
+  const approved = tasks.filter(t => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
+  const working = approved.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
+  const done = approved.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
+  const urgentTasks = approved.filter(t => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
+  const importantTasks = approved.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم" && !(t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
+  const normalTasks = approved.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عادي" && !(t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0));
+  set("wTotal", approved.length);
   set("wUrgent", urgentTasks.length);
   set("wImportant", importantTasks.length);
   set("wNormal", normalTasks.length);
   set("wWorking", working);
   set("wDone", done);
+  set("wPending", pending.length);
   set("wColUrgentCount", urgentTasks.length);
   set("wColImportantCount", importantTasks.length);
   set("wColNormalCount", normalTasks.length);
   set("wColDoneCount", done);
+  set("wColPendingCount", pending.length);
 }
 function wTaskHtml(id, t) {
   const d = daysRemaining(t.dueDate);
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
-  const statusClass = t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : t.status === CONSTANTS.STATUS.DONE ? "done" : "new";
-  const statusLabel = t.status === CONSTANTS.STATUS.NEW ? "جديدة" : t.status === CONSTANTS.STATUS.PROGRESS ? "جارية" : "مكتملة";
+  const isPending = t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING;
+  const statusClass = isPending ? "pending" : t.status === CONSTANTS.STATUS.PROGRESS ? "progress" : t.status === CONSTANTS.STATUS.DONE ? "done" : "new";
+  const statusLabel = isPending ? "بانتظار الموافقة" : t.status === CONSTANTS.STATUS.NEW ? "جديدة" : t.status === CONSTANTS.STATUS.PROGRESS ? "جارية" : "مكتملة";
   const initial = (t.assignee || "?").charAt(0).toUpperCase();
   return `<article class="w-task" data-task-id="${esc(id)}" tabindex="0" role="button">
     <h4 class="w-task-title">${esc(t.title)}</h4>
@@ -2616,18 +3048,23 @@ function wTaskHtml(id, t) {
         <span class="w-task-avatar">${esc(initial)}</span>
         <span>${esc(t.assignee || "—")}</span>
       </div>
-      ${t.dueDate ? `<span class="w-task-due ${isOverdue ? 'overdue' : ''}">📅 ${esc(dueLabel(t.dueDate))}</span>` : ''}
+      ${t.dueDate ? `<span class="w-task-due ${isOverdue && !isPending ? 'overdue' : ''}">📅 ${esc(dueLabel(t.dueDate))}</span>` : ''}
     </div>
   </article>`;
 }
 function wRenderColumns() {
   const allTasks = Object.entries(state.watchData.tasks || {});
-  const urgent = allTasks.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)).sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
+  const pending = allTasks.filter(([_, t]) => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING);
+  const approved = allTasks.filter(([_, t]) => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
+
+  const urgent = approved.filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && (t.priority === "عاجل" || (daysRemaining(t.dueDate) ?? 999) < 0)).sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
   const urgentIds = new Set(urgent.map(([id]) => id));
-  const important = allTasks.filter(([id, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم" && !urgentIds.has(id)).sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
+  const important = approved.filter(([id, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "مهم" && !urgentIds.has(id)).sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
   const importantIds = new Set(important.map(([id]) => id));
-  const normal = allTasks.filter(([id, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عادي" && !urgentIds.has(id) && !importantIds.has(id)).sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
-  const doneSorted = allTasks.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE).sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)).slice(0, 30);
+  const normal = approved.filter(([id, t]) => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عادي" && !urgentIds.has(id) && !importantIds.has(id)).sort((a, b) => (daysRemaining(a[1].dueDate) ?? 999) - (daysRemaining(b[1].dueDate) ?? 999));
+  const doneSorted = approved.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE).sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)).slice(0, 30);
+
+  _renderCol("wColPending", pending, "لا توجد مهام معلقة");
   _renderCol("wColUrgent", urgent, "لا توجد مهام عاجلة");
   _renderCol("wColImportant", important, "لا توجد مهام مهمة");
   _renderCol("wColNormal", normal, "لا توجد مهام عادية");
@@ -2657,7 +3094,7 @@ function _renderCol(elementId, items, emptyMsg) {
 function wRenderCompleted() {
   const track = document.getElementById("wCompletedList");
   if (!track) return;
-  const completed = Object.entries(state.watchData.tasks || {}).filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE).sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)).slice(0, 15);
+  const completed = Object.entries(state.watchData.tasks || {}).filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING).sort((a, b) => (b[1].updatedAt || 0) - (a[1].updatedAt || 0)).slice(0, 15);
   if (completed.length === 0) { track.innerHTML = '<span class="w-ticker-empty">لا توجد مهام مكتملة بعد</span>'; return; }
   const items = completed.map(([id, t]) => `<span class="w-ticker-item" data-task-id="${id}" style="cursor:pointer;">${esc(t.title)}<em>${esc(t.assignee || "—")} · ${timeAgo(t.updatedAt)}</em></span>`).join("");
   const signature = completed.map(([id, t]) => id + t.updatedAt).join("|");
@@ -2670,11 +3107,14 @@ function wRenderNewsTicker() {
   if (!track) return;
   const items = [];
   const tasks = Object.values(state.watchData.tasks || {});
-  const urgentTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عاجل").sort((a, b) => (daysRemaining(a.dueDate) ?? 999) - (daysRemaining(b.dueDate) ?? 999)).slice(0, 4);
+  const approved = tasks.filter(t => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
+  const pendingCount = tasks.filter(t => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING).length;
+  if (pendingCount > 0) items.push({ text: `📥 ${pendingCount} مهمة بانتظار الموافقة`, cls: "is-pending" });
+  const urgentTasks = approved.filter(t => t.status !== CONSTANTS.STATUS.DONE && t.priority === "عاجل").sort((a, b) => (daysRemaining(a.dueDate) ?? 999) - (daysRemaining(b.dueDate) ?? 999)).slice(0, 4);
   urgentTasks.forEach(t => { items.push({ text: `🔴 عاجل: ${t.title}${t.dueDate ? ` — ${dueLabel(t.dueDate)}` : ""}`, cls: "is-urgent" }); });
-  const overdue = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
-  const today = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
-  const doneWeek = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE && isThisWeek(t.updatedAt)).length;
+  const overdue = approved.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
+  const today = approved.filter(t => { const d = daysRemaining(t.dueDate); return d === 0 && t.status !== CONSTANTS.STATUS.DONE; }).length;
+  const doneWeek = approved.filter(t => t.status === CONSTANTS.STATUS.DONE && isThisWeek(t.updatedAt)).length;
   if (overdue > 0) items.push({ text: `⚠️ ${overdue} مهمة متأخرة`, cls: "is-warning" });
   if (today > 0) items.push({ text: `🔥 ${today} مهمة تستحق اليوم`, cls: "is-warning" });
   if (doneWeek > 0) items.push({ text: `✅ ${doneWeek} مهمة أُنجزت هذا الأسبوع`, cls: "" });
@@ -2764,7 +3204,7 @@ async function startWatchData() {
       Object.entries(state.watchData.tasks).forEach(([id, task]) => {
         if (!state.watchKnownTaskIds.has(id)) {
           state.watchKnownTaskIds.add(id);
-          if (task.priority === "عاجل" || task.priority === "مهم") showWatchSubNotification(task);
+          if (task.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING && (task.priority === "عاجل" || task.priority === "مهم")) showWatchSubNotification(task);
         }
       });
     } else { Object.keys(state.watchData.tasks).forEach(id => state.watchKnownTaskIds.add(id)); state.watchFirstLoad = true; }
@@ -2812,7 +3252,7 @@ function renderUsersList() {
   if (users.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون</p>'; return; }
   wrap.innerHTML = users.map(([uid, u]) => {
     const isMe = uid === state.user.uid;
-    const tasks = Object.values(state.tasks).filter(t => t.assigneeId === uid);
+    const tasks = Object.values(state.tasks).filter(t => t.assigneeId === uid && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
     const doneTasks = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
     const activeTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE).length;
     const displayName = u.displayName || u.name || u.username || "—";
@@ -2845,7 +3285,7 @@ function renderActivity() {
   if (!wrap) return;
   const events = state.activity.filter(e => e.type !== "task_deleted" && e.type !== "task_cleared").slice(0, 100);
   if (events.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد نشاط</p>'; return; }
-  const icons = { task_created: "➕", task_edited: "✏️", status_changed: "🔄", comment_added: "💬", user_created: "👤", user_promoted: "👑", task_reassigned: "👤", password_changed: "🔑", history_cleared: "🗑️" };
+  const icons = { task_created: "➕", task_submitted: "📤", task_approved: "✅", task_rejected: "❌", task_edited: "✏️", status_changed: "🔄", comment_added: "💬", user_created: "👤", user_promoted: "👑", task_reassigned: "👤", password_changed: "🔑", history_cleared: "🗑️" };
   wrap.innerHTML = events.map(e => `<div style="display:flex;gap:14px;padding:14px;border-radius:12px;border-bottom:1px solid var(--border);"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[e.type] || "•"}</div><div style="flex:1;"><div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div><div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;"><span>${esc(e.byName || "—")}</span><span>•</span><span>${formatDateTime(e.at)}</span></div></div></div>`).join("");
 }
 function renderWatch() {
@@ -2857,14 +3297,14 @@ function renderWatch() {
   else if (state.watchFilter === "status") events = events.filter(e => e.type === "status_changed");
   events = events.slice(0, 50);
   if (events.length === 0) { timeline.innerHTML = '<p class="empty">لا توجد تحديثات</p>'; return; }
-  const icons = { task_created: "➕", task_edited: "✏️", task_deleted: "🗑️", status_changed: "🔄", comment_added: "💬" };
+  const icons = { task_created: "➕", task_submitted: "📤", task_approved: "✅", task_rejected: "❌", task_edited: "✏️", task_deleted: "🗑️", status_changed: "🔄", comment_added: "💬" };
   timeline.innerHTML = events.map(e => `<div style="display:flex;gap:14px;padding:14px;border-radius:12px;background:var(--surface-1);margin-bottom:10px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${icons[e.type] || "•"}</div><div style="flex:1;"><div style="font-size:13.5px;font-weight:700;margin-bottom:5px;">${esc(e.text)}</div><div style="display:flex;gap:8px;font-size:11.5px;color:var(--text-2);font-weight:600;"><span>${esc(e.byName || "—")}</span><span>•</span><span>${timeAgo(e.at)}</span></div></div></div>`).join("");
   renderActiveTasks();
 }
 function renderActiveTasks() {
   const wrap = $("#activeTasksList");
   if (!wrap) return;
-  const active = Object.entries(state.tasks).filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE).sort((a, b) => {
+  const active = Object.entries(state.tasks).filter(([_, t]) => t.status !== CONSTANTS.STATUS.DONE && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING).sort((a, b) => {
     const pa = CONSTANTS.PRIORITY_MAP[a[1].priority] ?? 2;
     const pb = CONSTANTS.PRIORITY_MAP[b[1].priority] ?? 2;
     if (pa !== pb) return pa - pb;
@@ -2878,7 +3318,7 @@ function renderActiveTasks() {
 }
 
 function openReport() {
-  const entries = Object.entries(state.tasks);
+  const entries = Object.entries(state.tasks).filter(([_, t]) => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
   const done = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE);
   const progress = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.PROGRESS);
   const overdue = entries.filter(([_, t]) => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; });
@@ -2908,7 +3348,7 @@ async function downloadPDF() {
     const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     const pageW = 210, pageH = 297, margin = 15;
     let y = margin;
-    const entries = Object.entries(state.tasks);
+    const entries = Object.entries(state.tasks).filter(([_, t]) => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
     const done = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.DONE);
     const progress = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.PROGRESS);
     const newT = entries.filter(([_, t]) => t.status === CONSTANTS.STATUS.NEW);
@@ -2988,8 +3428,8 @@ async function downloadPDF() {
   finally { btn.disabled = false; btn.textContent = "📄 تحميل PDF"; }
 }
 function exportCSV() {
-  const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم"]];
-  Object.values(state.tasks).forEach(t => rows.push([t.title || "", t.assignee || "", t.status || "", t.priority || "", t.dueDate || ""]));
+  const rows = [["العنوان","المسؤول","الحالة","الأولوية","تاريخ التسليم","حالة الموافقة"]];
+  Object.values(state.tasks).filter(t => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING).forEach(t => rows.push([t.title || "", t.assignee || "", t.status || "", t.priority || "", t.dueDate || "", t.approvalStatus || "approved"]));
   const csv = "\uFEFF" + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob = new Blob([csv], { type:"text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
@@ -3088,7 +3528,7 @@ async function clearDeletedHistory() {
   try {
     const snap = await get(ref(db, "activity"));
     const activities = snap.val() || {};
-    const deleteIds = Object.entries(activities).filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared").map(([id]) => id);
+    const deleteIds = Object.entries(activities).filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared" || a.type === "task_rejected").map(([id]) => id);
     if (deleteIds.length === 0) return showToast("لا يوجد سجل حذف", 'info');
     for (const id of deleteIds) await remove(ref(db, "activity/" + id));
     await logActivity("history_cleared", `مسح ${deleteIds.length} حدث حذف`);
@@ -3105,7 +3545,7 @@ async function purgeDeletedTasks() {
     await safeWrite(() => remove(ref(db, "deleted_tasks")));
     const snap = await get(ref(db, "activity"));
     const activities = snap.val() || {};
-    const deleteIds = Object.entries(activities).filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared").map(([id]) => id);
+    const deleteIds = Object.entries(activities).filter(([id, a]) => a.type === "task_deleted" || a.type === "task_cleared" || a.type === "task_rejected").map(([id]) => id);
     for (const id of deleteIds) await remove(ref(db, "activity/" + id));
     await logActivity("history_cleared", `حذف نهائي لـ ${count} مهمة`);
     showToast(`⚡ تم حذف ${count} مهمة`, 'success');
@@ -3163,40 +3603,84 @@ async function cleanupTeamDuplicates() {
 function setupAddTaskForm() {
   const form = $("#addTaskForm");
   if (!form) return;
+
   form.onsubmit = async (e) => {
     e.preventDefault();
-    if (!state.isAdmin) return swalError("غير مصرح");
+    if (!state.user) return swalError("غير مصرح");
+
     const title = $("#taskTitle").value.trim();
     const assigneeId = $("#taskAssignee").value;
     const priority = $("#taskPriority").value;
     const dueDate = $("#taskDue").value;
     const notes = $("#taskNotes").value.trim();
     const tags = $("#taskTags").value.trim();
+
     if (!title || !assigneeId) return swalError("أكمل البيانات");
+
     const member = state.team[assigneeId];
     if (!member) return swalError("عضو الفريق غير موجود");
+
+    const isAdmin = state.isAdmin;
+
     try {
       const newRef = push(ref(db, "tasks"));
-      await safeWrite(() => set(newRef, { title, priority, dueDate, notes, tags, assigneeId, assignee: member.name, status: CONSTANTS.STATUS.NEW, createdBy: state.user.uid, createdByName: state.profile.displayName, createdAt: Date.now(), updatedAt: Date.now() }));
-      await logActivity("task_created", `أضاف مهمة: ${title}`, newRef.key, title);
+      const taskData = {
+        title, priority, dueDate, notes, tags, assigneeId,
+        assignee: member.name,
+        status: isAdmin ? CONSTANTS.STATUS.NEW : CONSTANTS.STATUS.PENDING,
+        createdBy: state.user.uid,
+        createdByName: state.profile.displayName,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        approvalStatus: isAdmin ? CONSTANTS.APPROVAL_STATUS.APPROVED : CONSTANTS.APPROVAL_STATUS.PENDING,
+        submittedBy: state.user.uid,
+        submittedByName: state.profile.displayName,
+        ...(isAdmin ? { approvedAt: Date.now(), approvedBy: state.user.uid, approvedByName: state.profile.displayName } : {})
+      };
+
+      await safeWrite(() => set(newRef, taskData));
+      await logActivity(
+        isAdmin ? "task_created" : "task_submitted",
+        isAdmin ? `أضاف مهمة: ${title}` : `اقترح مهمة جديدة: ${title}`,
+        newRef.key, title
+      );
+
       form.reset();
       populateAssigneeSelect();
-      showToast("✅ تمت الإضافة", 'success');
-      showSubNotification({ title, assignee: member.name, priority, dueDate });
-      // ✨ تذكير فوري إذا كانت عاجلة
-      if (priority === "عاجل") {
-        setTimeout(() => {
-          showReminder({
-            kicker: '🚨 مهمة عاجلة جديدة',
-            title: 'تنبيه فوري',
-            icon: '⚠️',
-            priority: 'urgent',
-            task: { ...state.tasks[newRef.key], id: newRef.key, title, assignee: member.name, priority, dueDate, status: CONSTANTS.STATUS.NEW, notes },
-            notes: notes || ''
-          });
-        }, 800);
+
+      if (isAdmin) {
+        showToast("✅ تمت الإضافة", 'success');
+        showSubNotification({ title, assignee: member.name, priority, dueDate });
+        if (priority === "عاجل") {
+          setTimeout(() => {
+            showReminder({
+              kicker: '🚨 مهمة عاجلة جديدة',
+              title: 'تنبيه فوري',
+              icon: '⚠️',
+              priority: 'urgent',
+              task: { ...taskData, id: newRef.key },
+              notes: notes || ''
+            });
+          }, 800);
+        }
+      } else {
+        showToast("✅ تم إرسال المهمة للمراجعة — بانتظار موافقة المدير", 'info', 4000);
+        showReminder({
+          kicker: '📤 تم الإرسال',
+          title: 'بانتظار موافقة المدير',
+          icon: '⏳',
+          priority: 'normal',
+          task: { ...taskData, id: newRef.key },
+          notes: 'سيتم إشعارك عند الموافقة أو الرفض.',
+          duration: 6000,
+          actions: [
+            { label: 'حسناً', variant: 'primary', action: () => closeReminder() }
+          ]
+        });
       }
-    } catch { swalError("فشل الحفظ"); }
+    } catch (err) {
+      swalError("فشل الحفظ", err.message);
+    }
   };
 }
 function populateAssigneeSelect() {
@@ -3297,6 +3781,7 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('[data-action]')) return;
   if (e.target.closest('[data-user-action]')) return;
   if (e.target.closest('[data-team-remove]')) return;
+  if (e.target.closest('[data-approval]')) return;
   if (e.target.closest('.reminder-card')) return;
   if (e.target.closest('#fullscreenReminder')) return;
   const card = e.target.closest('.task-card[data-task-id]');
@@ -3324,7 +3809,9 @@ function setupNav() {
       if (view === 'activity') renderActivity();
       if (view === 'watch') renderWatch();
       if (view === 'tasks') renderTasks();
+      if (view === 'approvals') renderApprovals();
       updateActivityButtons();
+      updateApprovalBadges();
     };
   });
   $$('.filter-btn[data-filter]').forEach(btn => {
@@ -3461,7 +3948,6 @@ function setupLoginHandlers() {
 
 function setupGlobalEvents() {
   document.addEventListener('keydown', (e) => {
-    // ESC لإغلاق التذكيرات
     if (state.fullscreenReminderActive) { closeFullscreenReminder(); return; }
     if (state.reminderShowing) { closeReminder(); return; }
     if (state.watchMode) {
