@@ -178,6 +178,7 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .stat.progress::before{background:linear-gradient(90deg,var(--warning),#d97706);}
 .stat.overdue::before{background:linear-gradient(90deg,var(--urgent),#c81e3c);}
 .stat.pending::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.stat.mine::before{background:linear-gradient(90deg,#a855f7,#7c3aed);}
 .stat-num{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:900;margin-bottom:8px;letter-spacing:-2px;}
 .stat-label{font-size:12.5px;color:var(--text-2);font-weight:700;}
 .stat.total .stat-num{color:var(--primary);}
@@ -185,6 +186,7 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .stat.progress .stat-num{color:var(--warning);}
 .stat.overdue .stat-num{color:var(--urgent);}
 .stat.pending .stat-num{color:#f59e0b;}
+.stat.mine .stat-num{color:#a855f7;}
 .team-row{display:grid;grid-template-columns:160px 1fr 150px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);}
 .team-row:last-child{border-bottom:none;}
 .team-name{font-weight:800;font-size:14px;}
@@ -213,6 +215,8 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .filter-btn{background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);padding:10px 20px;border-radius:24px;font-size:13px;font-weight:700;transition:all .25s;}
 .filter-btn:hover{border-color:var(--primary);color:var(--primary);}
 .filter-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);}
+.filter-btn.mine-filter{background:rgba(168,85,247,.15);color:#a855f7;border-color:rgba(168,85,247,.4);}
+.filter-btn.mine-filter.active{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border-color:#a855f7;}
 .filter-btn.approval-filter{background:rgba(245,158,11,.15);color:#fbbf24;border-color:rgba(245,158,11,.4);}
 .filter-btn.approval-filter.active{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:#f59e0b;}
 .filter-btn.approval-filter.pulse{animation:urgentPulseSoft 2.2s ease-in-out infinite;}
@@ -239,6 +243,7 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .task-card.urgent::before{background:linear-gradient(90deg,#f04b5c,#c81e3c);}
 .task-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:var(--shadow-lg);border-color:rgba(91,141,239,.5);}
 .task-card.done{opacity:.65;}
+.task-card.mine-indicator{border-color:rgba(168,85,247,.5);}
 .task-card .card-title{font-size:19px;font-weight:900;margin-bottom:14px;min-height:54px;line-height:1.4;}
 .task-card .card-notes{font-size:14px;line-height:1.7;}
 .card-quick-actions{position:absolute;top:12px;inset-inline-start:12px;display:flex;gap:6px;opacity:0;transition:all .3s;z-index:5;}
@@ -251,6 +256,7 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .priority-dot.important{background:var(--warning);box-shadow:0 0 12px var(--warning);}
 .priority-dot.normal{background:var(--success);box-shadow:0 0 12px var(--success);}
 .assignee-chip{font-size:13px;padding:7px 16px;background:var(--bg-3);border-radius:16px;color:var(--text-2);font-weight:800;}
+.assignee-chip.mine{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(124,58,237,.1));color:#a855f7;border:1px solid rgba(168,85,247,.3);}
 .card-tags{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
 .card-tag{font-size:11px;padding:5px 14px;background:rgba(91,141,239,.2);color:var(--primary);border-radius:14px;font-weight:800;border:1px solid rgba(91,141,239,.3);}
 .card-bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
@@ -755,6 +761,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
         <div class="panel-title">📊 نظرة عامة</div>
         <div class="stats-grid">
           <div class="stat total"><div class="stat-num" id="statTotal">0</div><div class="stat-label">إجمالي المهام</div></div>
+          <div class="stat mine"><div class="stat-num" id="statMine">0</div><div class="stat-label">مهامي المُسندة</div></div>
           <div class="stat done"><div class="stat-num" id="statDone">0</div><div class="stat-label">مكتملة</div></div>
           <div class="stat progress"><div class="stat-num" id="statProgress">0</div><div class="stat-label">جارية</div></div>
           <div class="stat overdue"><div class="stat-num" id="statOverdue">0</div><div class="stat-label">متأخرة</div></div>
@@ -804,7 +811,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
       </div>
       <div class="filters">
         <button class="filter-btn active" data-filter="all">الكل</button>
-        <button class="filter-btn" data-filter="mine">مهامي</button>
+        <button class="filter-btn mine-filter" data-filter="mine">🎯 مهامي</button>
         <button class="filter-btn" data-filter="pending">معلقة</button>
         <button class="filter-btn approval-filter" data-filter="approval" id="approvalFilterBtn" hidden>📥 بانتظار الموافقة (<span id="approvalCount">0</span>)</button>
         <button class="filter-btn" data-filter="overdue">متأخرة</button>
@@ -1049,7 +1056,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v24.0 — Full Fixes + Aggregated Urgent Reminders
+   EMAK IT Dep. v24.1 — Fixed "My Tasks" filter
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1162,6 +1169,30 @@ const dueLabel = (dueDate) => {
 };
 const isThisWeek = (ts) => isValidTs(ts) && (Date.now() - ts) <= 7 * 86400000;
 const isThisMonth = (ts) => isValidTs(ts) && (Date.now() - ts) <= 30 * 86400000;
+
+/* ✅ دوال مساعدة جديدة */
+function getMyTeamKeys() {
+  const keys = new Set();
+  if (!state.user || !state.team) return keys;
+  Object.entries(state.team).forEach(([key, member]) => {
+    if (member && member.uid === state.user.uid) {
+      keys.add(key);
+    }
+  });
+  return keys;
+}
+
+function isMyTask(task) {
+  if (!task || !state.user) return false;
+  // 1. المسؤول هو المستخدم الحالي (matching by team key)
+  const myKeys = getMyTeamKeys();
+  if (task.assigneeId && myKeys.has(task.assigneeId)) return true;
+  // 2. المسؤول هو uid مباشر (fallback)
+  if (task.assigneeId === state.user.uid) return true;
+  // 3. المستخدم هو من أنشأ المهمة
+  if (task.createdBy === state.user.uid) return true;
+  return false;
+}
 
 const state = {
   user: null, profile: null, isAdmin: false,
@@ -1378,7 +1409,6 @@ async function approveTask(taskId) {
     showToast("✅ تمت الموافقة ونشر المهمة", 'success');
     showSubNotification({ ...t, priority: t.priority, title: t.title, assignee: t.assignee, dueDate: t.dueDate });
     if (t.priority === "عاجل") {
-      // ✅ علّمها كمعروضة لتجنب التكرار — سيُعرض التنبيه المجمّع عبر checkReminders
       state.seenUrgentTasks.add(taskId + '_shown');
       setTimeout(() => checkReminders(), 1500);
     }
@@ -1593,7 +1623,6 @@ function showReminder(options = {}) {
     DesktopNotif.show("🚨 تذكير عاجل", task ? task.title : title);
   }
 
-  // ✅ مدة أطول تلقائياً للقوائم الكبيرة
   const actualDuration = tasks && tasks.length > 3 
     ? Math.max(duration, Math.min(30000, tasks.length * 2000))
     : duration;
@@ -1680,7 +1709,6 @@ function checkReminders() {
   const now = Date.now();
   const tasks = Object.values(state.tasks);
 
-  // ✅ المهام العاجلة الجديدة (خلال 30 دقيقة) ولم تُعرض
   const urgentNew = tasks.filter(t => {
     if (t.priority !== "عاجل") return false;
     if (t.status === CONSTANTS.STATUS.DONE) return false;
@@ -1690,7 +1718,6 @@ function checkReminders() {
     return false;
   });
 
-  // ✅ عرض جميع المهام العاجلة الجديدة معاً
   if (urgentNew.length > 0) {
     urgentNew.forEach(t => state.seenUrgentTasks.add(t.id + '_shown'));
     
@@ -1717,7 +1744,6 @@ function checkReminders() {
     return;
   }
 
-  // ✅ المهام الحرجة (متأخرة أكثر من 3 أيام)
   const critical = tasks.filter(t => {
     if (t.status === CONSTANTS.STATUS.DONE) return false;
     if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
@@ -1736,7 +1762,6 @@ function checkReminders() {
     }
   }
 
-  // ✅ المهام المستحقة خلال ساعة
   const dueSoon = tasks.filter(t => {
     if (t.status === CONSTANTS.STATUS.DONE) return false;
     if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
@@ -1779,7 +1804,8 @@ function showDailySummaryIfNeeded() {
       if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
       const d = daysRemaining(t.dueDate);
       if (d === null || d >= 0) return false;
-      if (!state.isAdmin && t.assigneeId !== state.user?.uid) return false;
+      // ✅ استخدام isMyTask للموظف
+      if (!state.isAdmin && !isMyTask(t)) return false;
       return true;
     })
     .sort((a, b) => {
@@ -1837,7 +1863,6 @@ function startReminderEngine() {
     }
   }, CONSTANTS.REMINDER_CHECK_INTERVAL);
   
-  // ✅ تنظيف دوري كل 6 ساعات
   setInterval(() => {
     const existingTaskIds = new Set(Object.keys(state.tasks));
     state.seenUrgentTasks = new Set(
@@ -2104,7 +2129,6 @@ function startRealtimeListeners() {
     
     scheduleRender();
     
-    // ✅ فحص المهام العاجلة الجديدة فور وصولها
     if (!isFirst) {
       setTimeout(() => checkReminders(), 500);
     }
@@ -2113,7 +2137,12 @@ function startRealtimeListeners() {
     else if (state.openTaskId && !state.tasks[state.openTaskId]) closeModal();
   });
   
-  state.unsubs.team = onValue(ref(db, "team"), (snap) => { state.team = snap.val() || {}; populateAssigneeSelect(); });
+  state.unsubs.team = onValue(ref(db, "team"), (snap) => { 
+    state.team = snap.val() || {}; 
+    populateAssigneeSelect(); 
+    // ✅ أعد رسم المهام عند تحديث الفريق (لأن الفلتر "مهامي" يعتمد على team)
+    scheduleRender();
+  });
   
   if (state.isAdmin) {
     state.unsubs.users = onValue(ref(db, "users"), (snap) => { state.users = snap.val() || {}; if ($('#usersView')?.classList.contains('active')) renderUsersList(); });
@@ -2193,6 +2222,11 @@ function renderStats() {
   const approvedTasks = allTasks.filter(t => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
   
   $('#statTotal').textContent = approvedTasks.length;
+  // ✅ إحصائية مهامي
+  const mineCount = approvedTasks.filter(t => isMyTask(t)).length;
+  const statMine = $('#statMine');
+  if (statMine) statMine.textContent = mineCount;
+  
   $('#statDone').textContent = approvedTasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
   $('#statProgress').textContent = approvedTasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
   $('#statOverdue').textContent = approvedTasks.filter(t => { 
@@ -2302,7 +2336,8 @@ function renderTasks() {
     if (state.filter === 'overdue') { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING; }
     if (state.filter === 'week') return isThisWeek(t.createdAt);
     if (state.filter === 'month') return isThisMonth(t.createdAt);
-    if (state.filter === 'mine') return t.assigneeId && t.assigneeId === state.user?.uid;
+    // ✅ إصلاح فلتر "مهامي"
+    if (state.filter === 'mine') return isMyTask(t);
     if (state.filter === 'approval') return t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING;
     return true;
   });
@@ -2364,6 +2399,7 @@ function taskCardHtml(id, t) {
   const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE && !isPending;
   const commentsCount = t.comments ? Object.keys(t.comments).length : 0;
   const tagsHtml = t.tags ? t.tags.split(",").map(x => x.trim()).filter(Boolean).slice(0,2).map(x => `<span class="card-tag">${esc(x)}</span>`).join("") : "";
+  const mine = isMyTask(t);
 
   const quickActions = state.isAdmin ? `<div class="card-quick-actions"><button class="quick-action-btn" data-quick="edit" data-id="${id}" title="تعديل">✏️</button><button class="quick-action-btn" data-quick="reassign" data-id="${id}" title="تغيير المسؤول">👤</button><button class="quick-action-btn" data-quick="delete" data-id="${id}" title="حذف">🗑️</button></div>` : "";
 
@@ -2410,9 +2446,9 @@ function taskCardHtml(id, t) {
     </div>`;
   }
 
-  return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${id}" tabindex="0" role="button">
+  return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''} ${mine ? 'mine-indicator' : ''}" data-task-id="${id}" tabindex="0" role="button">
     ${quickActions}
-    <div class="card-top"><span class="priority-dot ${priorityClass}"></span><span class="assignee-chip">👤 ${esc(t.assignee || "—")}</span></div>
+    <div class="card-top"><span class="priority-dot ${priorityClass}"></span><span class="assignee-chip ${mine ? 'mine' : ''}">${mine ? '🎯' : '👤'} ${esc(t.assignee || "—")}</span></div>
     <h3 class="card-title">${highlight(t.title, state.search)}</h3>
     ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
     ${t.notes ? `<p class="card-notes">${esc(t.notes)}</p>` : ""}
@@ -2953,7 +2989,15 @@ function renderUsersList() {
   if (users.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون</p>'; return; }
   wrap.innerHTML = users.map(([uid, u]) => {
     const isMe = uid === state.user.uid;
-    const tasks = Object.values(state.tasks).filter(t => t.assigneeId === uid && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
+    // ✅ استخدام team keys بدل uid مباشر
+    const userTeamKeys = new Set();
+    Object.entries(state.team).forEach(([key, member]) => {
+      if (member && member.uid === uid) userTeamKeys.add(key);
+    });
+    const tasks = Object.values(state.tasks).filter(t => 
+      (userTeamKeys.has(t.assigneeId) || t.assigneeId === uid) 
+      && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING
+    );
     const doneTasks = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
     const activeTasks = tasks.filter(t => t.status !== CONSTANTS.STATUS.DONE).length;
     const displayName = u.displayName || u.name || u.username || "—";
@@ -3378,7 +3422,6 @@ function setupAddTaskForm() {
       if (isAdmin) {
         showToast("✅ تمت الإضافة", 'success');
         showSubNotification({ title, assignee: member.name, priority, dueDate });
-        // ✅ علّمها كمعروضة لتجنب التكرار — سيُعرض التنبيه المجمّع عبر checkReminders
         if (priority === "عاجل" && newRef.key) {
           state.seenUrgentTasks.add(newRef.key + '_shown');
           setTimeout(() => checkReminders(), 1500);
