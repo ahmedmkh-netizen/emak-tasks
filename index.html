@@ -218,29 +218,16 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .filter-btn.approval-filter.pulse{animation:urgentPulseSoft 2.2s ease-in-out infinite;}
 
 /* ============ APPROVAL BANNER ============ */
-.approval-banner{
-  grid-column:1/-1;
-  display:flex;
-  align-items:center;
-  gap:16px;
-  padding:18px 22px;
-  margin-bottom:8px;
-  border-radius:18px;
-  background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.08));
-  border:1.5px solid rgba(245,158,11,.4);
-  box-shadow:0 8px 32px rgba(245,158,11,.15);
-  animation:approvalBannerPulse 2.5s ease-in-out infinite;
-}
-@keyframes approvalBannerPulse{
-  0%,100%{box-shadow:0 8px 32px rgba(245,158,11,.15);}
-  50%{box-shadow:0 8px 48px rgba(245,158,11,.35);}
-}
+.approval-banner{grid-column:1/-1;display:flex;align-items:center;gap:16px;padding:18px 22px;margin-bottom:8px;border-radius:18px;background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.08));border:1.5px solid rgba(245,158,11,.4);box-shadow:0 8px 32px rgba(245,158,11,.15);animation:approvalBannerPulse 2.5s ease-in-out infinite;}
+@keyframes approvalBannerPulse{0%,100%{box-shadow:0 8px 32px rgba(245,158,11,.15);}50%{box-shadow:0 8px 48px rgba(245,158,11,.35);}}
 .approval-banner-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 6px 20px rgba(245,158,11,.5);}
 .approval-banner-body{flex:1;min-width:0;}
 .approval-banner-title{font-size:16px;font-weight:900;color:var(--text);margin-bottom:4px;}
 .approval-banner-sub{font-size:12.5px;color:var(--text-2);font-weight:700;}
 .approval-banner-btn{padding:12px 24px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .25s;box-shadow:0 6px 20px rgba(245,158,11,.4);flex-shrink:0;}
 .approval-banner-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(245,158,11,.6);}
+.approval-header-bar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;}
+.approval-header-count{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:8px 18px;border-radius:14px;font-size:13px;font-weight:900;}
 
 /* ============ TASK CARDS ============ */
 #tasksList{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px;}
@@ -279,26 +266,10 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .task-card.urgent-active .card-title{color:#fff;text-shadow:0 0 12px rgba(240,75,92,.5);}
 
 /* ============ APPROVAL CARDS ============ */
-.task-card.approval-card{
-  background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(15,20,32,.8));
-  border:2px dashed rgba(245,158,11,.5);
-  min-height:260px;
-}
-.task-card.approval-card.pending-user{
-  background:linear-gradient(135deg,rgba(91,141,239,.08),rgba(15,20,32,.8));
-  border-color:rgba(91,141,239,.4);
-}
-.task-card.approval-card:hover{
-  border-color:rgba(245,158,11,.8);
-  transform:translateY(-8px) scale(1.01);
-}
-.approval-stripe{
-  position:absolute;
-  top:0;inset-inline:0;
-  height:6px;
-  background:repeating-linear-gradient(45deg,#f59e0b 0,#f59e0b 12px,#fbbf24 12px,#fbbf24 24px);
-  animation:stripeFlow 20s linear infinite;
-}
+.task-card.approval-card{background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(15,20,32,.8));border:2px dashed rgba(245,158,11,.5);min-height:260px;}
+.task-card.approval-card.pending-user{background:linear-gradient(135deg,rgba(91,141,239,.08),rgba(15,20,32,.8));border-color:rgba(91,141,239,.4);}
+.task-card.approval-card:hover{border-color:rgba(245,158,11,.8);transform:translateY(-8px) scale(1.01);}
+.approval-stripe{position:absolute;top:0;inset-inline:0;height:6px;background:repeating-linear-gradient(45deg,#f59e0b 0,#f59e0b 12px,#fbbf24 12px,#fbbf24 24px);animation:stripeFlow 20s linear infinite;}
 @keyframes stripeFlow{0%{background-position:0 0;}100%{background-position:200px 0;}}
 .approval-badge{padding:7px 14px;border-radius:12px;background:rgba(245,158,11,.2);color:#fbbf24;border:1px solid rgba(245,158,11,.4);font-size:11.5px;font-weight:900;letter-spacing:.3px;}
 .approval-badge.user{background:rgba(91,141,239,.2);color:#7ca5f5;border-color:rgba(91,141,239,.4);}
@@ -434,474 +405,103 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .sub-notif-progress-text,.watch-sub-progress-text{position:absolute;bottom:6px;inset-inline-end:14px;font-size:9.5px;color:var(--text-3);font-weight:800;font-family:'JetBrains Mono',monospace;}
 
 /* ============================================================
-   🎯 CENTRAL REMINDER MODAL SYSTEM
+   CENTRAL REMINDER MODAL SYSTEM
    ============================================================ */
-#reminderHost {
-  position: fixed;
-  inset: 0;
-  z-index: 9500;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(0px);
-  transition: background .4s var(--ease-out), backdrop-filter .4s var(--ease-out);
-  pointer-events: none;
-}
-#reminderHost.active {
-  display: flex;
-  background: rgba(0, 0, 0, .75);
-  backdrop-filter: blur(12px);
-  pointer-events: auto;
-  animation: reminderBgIn .4s var(--ease-out);
-}
-@keyframes reminderBgIn {
-  from { background: rgba(0, 0, 0, 0); backdrop-filter: blur(0px); }
-  to { background: rgba(0, 0, 0, .75); backdrop-filter: blur(12px); }
-}
-
-.reminder-card {
-  position: relative;
-  background: var(--modal-bg);
-  border: 2px solid rgba(91, 141, 239, .35);
-  border-radius: 28px;
-  max-width: 640px;
-  width: 100%;
-  max-height: 90vh;
-  overflow: hidden;
-  box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 255, 255, .05), 0 0 80px rgba(91, 141, 239, .25);
-  animation: reminderCardIn .5s cubic-bezier(.16, 1, .3, 1);
-  display: flex;
-  flex-direction: column;
-}
-@keyframes reminderCardIn {
-  from { opacity: 0; transform: translateY(60px) scale(.85); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.reminder-card.closing {
-  animation: reminderCardOut .4s ease-in forwards;
-}
-@keyframes reminderCardOut {
-  to { opacity: 0; transform: translateY(30px) scale(.92); }
-}
-
-.reminder-card.p-urgent { border-color: rgba(240, 75, 92, .6); box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 100px rgba(240, 75, 92, .35); }
-.reminder-card.p-important { border-color: rgba(245, 165, 36, .6); box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 100px rgba(245, 165, 36, .3); }
-.reminder-card.p-normal { border-color: rgba(45, 212, 163, .6); box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 100px rgba(45, 212, 163, .3); }
-.reminder-card.p-approval { border-color: rgba(245, 158, 11, .6); box-shadow: 0 40px 120px rgba(0, 0, 0, .9), 0 0 100px rgba(245, 158, 11, .35); }
-
-.reminder-progress {
-  position: absolute;
-  top: 0; inset-inline: 0;
-  height: 5px;
-  background: rgba(255, 255, 255, .05);
-  z-index: 3;
-  overflow: hidden;
-}
-.reminder-progress-fill {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #5b8def, #2dd4a3);
-  transform-origin: right;
-  animation: reminderProgress var(--duration, 12s) linear forwards;
-}
-.reminder-card.p-urgent .reminder-progress-fill { background: linear-gradient(90deg, #f04b5c, #ff6b7d); }
-.reminder-card.p-important .reminder-progress-fill { background: linear-gradient(90deg, #f5a524, #ffc043); }
-.reminder-card.p-approval .reminder-progress-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-@keyframes reminderProgress {
-  from { transform: scaleX(1); }
-  to { transform: scaleX(0); }
-}
-
-.reminder-icon-wrap {
-  padding: 32px 32px 20px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  position: relative;
-}
-.reminder-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 38px;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, rgba(91, 141, 239, .2), rgba(91, 141, 239, .1));
-  border: 2px solid rgba(91, 141, 239, .35);
-  animation: reminderIconPulse 2s ease-in-out infinite;
-}
-.reminder-card.p-urgent .reminder-icon {
-  background: linear-gradient(135deg, rgba(240, 75, 92, .25), rgba(240, 75, 92, .1));
-  border-color: rgba(240, 75, 92, .5);
-  animation: reminderIconShake 1.2s ease-in-out infinite;
-}
-.reminder-card.p-important .reminder-icon {
-  background: linear-gradient(135deg, rgba(245, 165, 36, .25), rgba(245, 165, 36, .1));
-  border-color: rgba(245, 165, 36, .5);
-}
-.reminder-card.p-normal .reminder-icon {
-  background: linear-gradient(135deg, rgba(45, 212, 163, .25), rgba(45, 212, 163, .1));
-  border-color: rgba(45, 212, 163, .5);
-}
-.reminder-card.p-approval .reminder-icon {
-  background: linear-gradient(135deg, rgba(245, 158, 11, .25), rgba(245, 158, 11, .1));
-  border-color: rgba(245, 158, 11, .5);
-  animation: reminderIconPulse 2s ease-in-out infinite;
-}
-@keyframes reminderIconPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(91, 141, 239, .4); }
-  50% { transform: scale(1.05); box-shadow: 0 0 0 12px rgba(91, 141, 239, 0); }
-}
-@keyframes reminderIconShake {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(-6deg) scale(1.05); }
-  75% { transform: rotate(6deg) scale(1.05); }
-}
-.reminder-header-text { flex: 1; min-width: 0; }
-.reminder-kicker {
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text-3);
-  margin-bottom: 6px;
-}
-.reminder-card.p-urgent .reminder-kicker { color: #ff6b7d; }
-.reminder-card.p-important .reminder-kicker { color: #ffc043; }
-.reminder-card.p-normal .reminder-kicker { color: #3ee8b5; }
-.reminder-card.p-approval .reminder-kicker { color: #fbbf24; }
-.reminder-title {
-  font-size: clamp(20px, 2.2vw, 26px);
-  font-weight: 900;
-  line-height: 1.25;
-  color: #f8fafc;
-}
-.reminder-card.p-urgent .reminder-title { color: #fff; text-shadow: 0 0 20px rgba(240, 75, 92, .5); }
-
-.reminder-close {
-  position: absolute;
-  top: 24px;
-  inset-inline-start: 24px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .08);
-  border: 1px solid rgba(255, 255, 255, .12);
-  color: var(--text-2);
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .25s;
-  z-index: 4;
-}
-.reminder-close:hover {
-  background: linear-gradient(135deg, #f04b5c, #c81e3c);
-  color: #fff;
-  transform: rotate(90deg) scale(1.1);
-}
-
-.reminder-body {
-  padding: 0 32px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.reminder-task-box {
-  background: rgba(255, 255, 255, .03);
-  border: 1.5px solid rgba(255, 255, 255, .08);
-  border-radius: 18px;
-  padding: 20px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  position: relative;
-  overflow: hidden;
-}
-.reminder-task-box::before {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0;
-  inset-inline-end: 0;
-  width: 4px;
-  background: linear-gradient(180deg, #5b8def, #2dd4a3);
-}
-.reminder-card.p-urgent .reminder-task-box::before {
-  background: linear-gradient(180deg, #f04b5c, #ff6b7d, #f04b5c);
-  background-size: 100% 200%;
-  animation: reminderBarFlow 1.5s linear infinite;
-}
-.reminder-card.p-important .reminder-task-box::before { background: linear-gradient(180deg, #f5a524, #ffc043); }
-.reminder-card.p-normal .reminder-task-box::before { background: linear-gradient(180deg, #2dd4a3, #3ee8b5); }
-.reminder-card.p-approval .reminder-task-box::before { background: linear-gradient(180deg, #f59e0b, #fbbf24); }
-@keyframes reminderBarFlow {
-  0% { background-position: 0 0; }
-  100% { background-position: 0 200%; }
-}
-
-.reminder-task-name {
-  font-size: clamp(16px, 1.5vw, 20px);
-  font-weight: 900;
-  color: #f8fafc;
-  line-height: 1.4;
-}
-.reminder-task-meta {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.reminder-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, .05);
-  border: 1px solid rgba(255, 255, 255, .08);
-  font-size: 12.5px;
-  font-weight: 800;
-  color: var(--text-2);
-}
-.reminder-chip.urgent { background: rgba(240, 75, 92, .15); color: #ff6b7d; border-color: rgba(240, 75, 92, .3); }
-.reminder-chip.important { background: rgba(245, 165, 36, .15); color: #ffc043; border-color: rgba(245, 165, 36, .3); }
-.reminder-chip.normal { background: rgba(45, 212, 163, .15); color: #3ee8b5; border-color: rgba(45, 212, 163, .3); }
-.reminder-chip.approval { background: rgba(245, 158, 11, .15); color: #fbbf24; border-color: rgba(245, 158, 11, .3); }
-.reminder-chip.overdue { background: rgba(240, 75, 92, .2); color: #ff6b7d; border-color: rgba(240, 75, 92, .4); animation: blink 1.6s ease-in-out infinite; }
-.reminder-chip.due-soon { background: rgba(245, 165, 36, .2); color: #ffc043; border-color: rgba(245, 165, 36, .4); }
-
-.reminder-notes {
-  font-size: 13px;
-  line-height: 1.7;
-  color: var(--text-2);
-  padding: 12px 16px;
-  background: rgba(255, 255, 255, .03);
-  border-radius: 12px;
-  border-inline-start: 3px solid rgba(91, 141, 239, .4);
-}
-
-.reminder-actions {
-  padding: 20px 32px 28px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  border-top: 1px solid rgba(255, 255, 255, .06);
-  background: rgba(255, 255, 255, .015);
-}
-.reminder-btn {
-  flex: 1;
-  min-width: 140px;
-  padding: 14px 20px;
-  border-radius: 14px;
-  border: 1.5px solid var(--border-2);
-  background: var(--surface-1);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 800;
-  font-family: inherit;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all .25s var(--ease-out);
-}
-.reminder-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, .4);
-}
-.reminder-btn.primary {
-  background: linear-gradient(135deg, #5b8def, #3b6fd4);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 8px 24px rgba(91, 141, 239, .4);
-}
-.reminder-btn.primary:hover { box-shadow: 0 12px 32px rgba(91, 141, 239, .6); }
-.reminder-btn.danger {
-  background: linear-gradient(135deg, #f04b5c, #c81e3c);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 8px 24px rgba(240, 75, 92, .4);
-}
-.reminder-btn.danger:hover { box-shadow: 0 12px 32px rgba(240, 75, 92, .6); }
-.reminder-btn.success {
-  background: linear-gradient(135deg, #2dd4a3, #22b388);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 8px 24px rgba(45, 212, 163, .4);
-}
-.reminder-btn.success:hover { box-shadow: 0 12px 32px rgba(45, 212, 163, .6); }
-.reminder-btn.warning {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 8px 24px rgba(245, 158, 11, .4);
-}
-.reminder-btn.warning:hover { box-shadow: 0 12px 32px rgba(245, 158, 11, .6); }
-.reminder-btn.ghost { background: transparent; }
+#reminderHost{position:fixed;inset:0;z-index:9500;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,0);backdrop-filter:blur(0px);transition:background .4s var(--ease-out),backdrop-filter .4s var(--ease-out);pointer-events:none;}
+#reminderHost.active{display:flex;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);pointer-events:auto;animation:reminderBgIn .4s var(--ease-out);}
+@keyframes reminderBgIn{from{background:rgba(0,0,0,0);backdrop-filter:blur(0px);}to{background:rgba(0,0,0,.75);backdrop-filter:blur(12px);}}
+.reminder-card{position:relative;background:var(--modal-bg);border:2px solid rgba(91,141,239,.35);border-radius:28px;max-width:640px;width:100%;max-height:90vh;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05),0 0 80px rgba(91,141,239,.25);animation:reminderCardIn .5s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;}
+@keyframes reminderCardIn{from{opacity:0;transform:translateY(60px) scale(.85);}to{opacity:1;transform:translateY(0) scale(1);}}
+.reminder-card.closing{animation:reminderCardOut .4s ease-in forwards;}
+@keyframes reminderCardOut{to{opacity:0;transform:translateY(30px) scale(.92);}}
+.reminder-card.p-urgent{border-color:rgba(240,75,92,.6);box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 100px rgba(240,75,92,.35);}
+.reminder-card.p-important{border-color:rgba(245,165,36,.6);box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 100px rgba(245,165,36,.3);}
+.reminder-card.p-normal{border-color:rgba(45,212,163,.6);box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 100px rgba(45,212,163,.3);}
+.reminder-card.p-approval{border-color:rgba(245,158,11,.6);box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 100px rgba(245,158,11,.35);}
+.reminder-progress{position:absolute;top:0;inset-inline:0;height:5px;background:rgba(255,255,255,.05);z-index:3;overflow:hidden;}
+.reminder-progress-fill{height:100%;width:100%;background:linear-gradient(90deg,#5b8def,#2dd4a3);transform-origin:right;animation:reminderProgress var(--duration,12s) linear forwards;}
+.reminder-card.p-urgent .reminder-progress-fill{background:linear-gradient(90deg,#f04b5c,#ff6b7d);}
+.reminder-card.p-important .reminder-progress-fill{background:linear-gradient(90deg,#f5a524,#ffc043);}
+.reminder-card.p-approval .reminder-progress-fill{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+@keyframes reminderProgress{from{transform:scaleX(1);}to{transform:scaleX(0);}}
+.reminder-icon-wrap{padding:32px 32px 20px;display:flex;align-items:center;gap:20px;position:relative;}
+.reminder-icon{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0;background:linear-gradient(135deg,rgba(91,141,239,.2),rgba(91,141,239,.1));border:2px solid rgba(91,141,239,.35);animation:reminderIconPulse 2s ease-in-out infinite;}
+.reminder-card.p-urgent .reminder-icon{background:linear-gradient(135deg,rgba(240,75,92,.25),rgba(240,75,92,.1));border-color:rgba(240,75,92,.5);animation:reminderIconShake 1.2s ease-in-out infinite;}
+.reminder-card.p-important .reminder-icon{background:linear-gradient(135deg,rgba(245,165,36,.25),rgba(245,165,36,.1));border-color:rgba(245,165,36,.5);}
+.reminder-card.p-normal .reminder-icon{background:linear-gradient(135deg,rgba(45,212,163,.25),rgba(45,212,163,.1));border-color:rgba(45,212,163,.5);}
+.reminder-card.p-approval .reminder-icon{background:linear-gradient(135deg,rgba(245,158,11,.25),rgba(245,158,11,.1));border-color:rgba(245,158,11,.5);animation:reminderIconPulse 2s ease-in-out infinite;}
+@keyframes reminderIconPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(91,141,239,.4);}50%{transform:scale(1.05);box-shadow:0 0 0 12px rgba(91,141,239,0);}}
+@keyframes reminderIconShake{0%,100%{transform:rotate(0deg) scale(1);}25%{transform:rotate(-6deg) scale(1.05);}75%{transform:rotate(6deg) scale(1.05);}}
+.reminder-header-text{flex:1;min-width:0;}
+.reminder-kicker{font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;}
+.reminder-card.p-urgent .reminder-kicker{color:#ff6b7d;}
+.reminder-card.p-important .reminder-kicker{color:#ffc043;}
+.reminder-card.p-normal .reminder-kicker{color:#3ee8b5;}
+.reminder-card.p-approval .reminder-kicker{color:#fbbf24;}
+.reminder-title{font-size:clamp(20px,2.2vw,26px);font-weight:900;line-height:1.25;color:#f8fafc;}
+.reminder-card.p-urgent .reminder-title{color:#fff;text-shadow:0 0 20px rgba(240,75,92,.5);}
+.reminder-close{position:absolute;top:24px;inset-inline-start:24px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:var(--text-2);font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .25s;z-index:4;}
+.reminder-close:hover{background:linear-gradient(135deg,#f04b5c,#c81e3c);color:#fff;transform:rotate(90deg) scale(1.1);}
+.reminder-body{padding:0 32px 24px;display:flex;flex-direction:column;gap:14px;}
+.reminder-task-box{background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.08);border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden;max-height:400px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#f04b5c rgba(255,255,255,.05);}
+.reminder-task-box::-webkit-scrollbar{width:8px;}
+.reminder-task-box::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:4px;}
+.reminder-task-box::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#f04b5c,#c81e3c);border-radius:4px;}
+.reminder-task-box::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#ff6b7d,#f04b5c);}
+.reminder-task-box::before{content:'';position:absolute;top:0;bottom:0;inset-inline-end:0;width:4px;background:linear-gradient(180deg,#5b8def,#2dd4a3);}
+.reminder-card.p-urgent .reminder-task-box::before{background:linear-gradient(180deg,#f04b5c,#ff6b7d,#f04b5c);background-size:100% 200%;animation:reminderBarFlow 1.5s linear infinite;}
+.reminder-card.p-important .reminder-task-box::before{background:linear-gradient(180deg,#f5a524,#ffc043);}
+.reminder-card.p-normal .reminder-task-box::before{background:linear-gradient(180deg,#2dd4a3,#3ee8b5);}
+.reminder-card.p-approval .reminder-task-box::before{background:linear-gradient(180deg,#f59e0b,#fbbf24);}
+@keyframes reminderBarFlow{0%{background-position:0 0;}100%{background-position:0 200%;}}
+.reminder-task-name{font-size:clamp(16px,1.5vw,20px);font-weight:900;color:#f8fafc;line-height:1.4;}
+.reminder-task-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.reminder-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);font-size:12.5px;font-weight:800;color:var(--text-2);}
+.reminder-chip.urgent{background:rgba(240,75,92,.15);color:#ff6b7d;border-color:rgba(240,75,92,.3);}
+.reminder-chip.important{background:rgba(245,165,36,.15);color:#ffc043;border-color:rgba(245,165,36,.3);}
+.reminder-chip.normal{background:rgba(45,212,163,.15);color:#3ee8b5;border-color:rgba(45,212,163,.3);}
+.reminder-chip.approval{background:rgba(245,158,11,.15);color:#fbbf24;border-color:rgba(245,158,11,.3);}
+.reminder-chip.overdue{background:rgba(240,75,92,.2);color:#ff6b7d;border-color:rgba(240,75,92,.4);animation:blink 1.6s ease-in-out infinite;}
+.reminder-chip.due-soon{background:rgba(245,165,36,.2);color:#ffc043;border-color:rgba(245,165,36,.4);}
+.reminder-notes{font-size:13px;line-height:1.7;color:var(--text-2);padding:12px 16px;background:rgba(255,255,255,.03);border-radius:12px;border-inline-start:3px solid rgba(91,141,239,.4);}
+.reminder-actions{padding:20px 32px 28px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.015);}
+.reminder-btn{flex:1;min-width:140px;padding:14px 20px;border-radius:14px;border:1.5px solid var(--border-2);background:var(--surface-1);color:var(--text);font-size:14px;font-weight:800;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .25s var(--ease-out);}
+.reminder-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.4);}
+.reminder-btn.primary{background:linear-gradient(135deg,#5b8def,#3b6fd4);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(91,141,239,.4);}
+.reminder-btn.primary:hover{box-shadow:0 12px 32px rgba(91,141,239,.6);}
+.reminder-btn.danger{background:linear-gradient(135deg,#f04b5c,#c81e3c);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(240,75,92,.4);}
+.reminder-btn.danger:hover{box-shadow:0 12px 32px rgba(240,75,92,.6);}
+.reminder-btn.success{background:linear-gradient(135deg,#2dd4a3,#22b388);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(45,212,163,.4);}
+.reminder-btn.success:hover{box-shadow:0 12px 32px rgba(45,212,163,.6);}
+.reminder-btn.warning{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(245,158,11,.4);}
+.reminder-btn.warning:hover{box-shadow:0 12px 32px rgba(245,158,11,.6);}
+.reminder-btn.ghost{background:transparent;}
 
 /* ============================================================
-   🚨 FULLSCREEN REMINDER
+   FULLSCREEN REMINDER
    ============================================================ */
-#fullscreenReminder {
-  position: fixed;
-  inset: 0;
-  z-index: 9800;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at center, #1a0408 0%, #050810 70%);
-  padding: 40px;
-  overflow: hidden;
-}
-#fullscreenReminder.active { display: flex; animation: fsIn .5s var(--ease-out); }
-@keyframes fsIn { from { opacity: 0; } to { opacity: 1; } }
-
-.fs-bg-pulse {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(240, 75, 92, .4), transparent 60%);
-  animation: fsBgPulse 2s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes fsBgPulse {
-  0%, 100% { opacity: .3; transform: scale(1); }
-  50% { opacity: .7; transform: scale(1.15); }
-}
-.fs-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(240, 75, 92, .05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(240, 75, 92, .05) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(circle at center, black 20%, transparent 75%);
-  -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 75%);
-  pointer-events: none;
-}
-.fs-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  max-width: 900px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-}
-.fs-alert-icon {
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(240, 75, 92, .3), rgba(240, 75, 92, .1));
-  border: 3px solid rgba(240, 75, 92, .6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 72px;
-  animation: fsIconShake 1s ease-in-out infinite;
-  box-shadow: 0 0 60px rgba(240, 75, 92, .6), 0 0 120px rgba(240, 75, 92, .3);
-}
-@keyframes fsIconShake {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(-10deg) scale(1.08); }
-  75% { transform: rotate(10deg) scale(1.08); }
-}
-.fs-title {
-  font-size: clamp(32px, 5vw, 64px);
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 0 40px rgba(240, 75, 92, .8), 0 0 80px rgba(240, 75, 92, .5);
-  letter-spacing: -2px;
-  line-height: 1.1;
-  animation: fsTitleGlow 2s ease-in-out infinite;
-}
-@keyframes fsTitleGlow {
-  0%, 100% { text-shadow: 0 0 40px rgba(240, 75, 92, .8), 0 0 80px rgba(240, 75, 92, .5); }
-  50% { text-shadow: 0 0 60px rgba(240, 75, 92, 1), 0 0 120px rgba(240, 75, 92, .8); }
-}
-.fs-subtitle {
-  font-size: clamp(18px, 2vw, 26px);
-  font-weight: 800;
-  color: #ff6b7d;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-}
-.fs-task-name {
-  font-size: clamp(24px, 3vw, 42px);
-  font-weight: 900;
-  color: #fff;
-  padding: 24px 40px;
-  background: rgba(240, 75, 92, .12);
-  border: 2px solid rgba(240, 75, 92, .4);
-  border-radius: 24px;
-  backdrop-filter: blur(20px);
-  max-width: 100%;
-  word-break: break-word;
-  box-shadow: 0 0 60px rgba(240, 75, 92, .3), inset 0 0 40px rgba(240, 75, 92, .08);
-}
-.fs-meta {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.fs-meta-chip {
-  padding: 10px 20px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, .06);
-  border: 1.5px solid rgba(255, 255, 255, .12);
-  font-size: 16px;
-  font-weight: 800;
-  color: #fff;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.fs-actions {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 12px;
-}
-.fs-btn {
-  padding: 18px 42px;
-  border-radius: 18px;
-  border: none;
-  font-size: 18px;
-  font-weight: 900;
-  font-family: inherit;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  transition: all .3s cubic-bezier(.16, 1, .3, 1);
-  min-width: 200px;
-  justify-content: center;
-}
-.fs-btn.primary {
-  background: linear-gradient(135deg, #f04b5c, #c81e3c);
-  color: #fff;
-  box-shadow: 0 16px 48px rgba(240, 75, 92, .6);
-  animation: fsBtnPulse 2s ease-in-out infinite;
-}
-@keyframes fsBtnPulse {
-  0%, 100% { box-shadow: 0 16px 48px rgba(240, 75, 92, .6); }
-  50% { box-shadow: 0 16px 64px rgba(240, 75, 92, .9), 0 0 0 8px rgba(240, 75, 92, 0); }
-}
-.fs-btn.primary:hover { transform: translateY(-4px) scale(1.03); }
-.fs-btn.ghost {
-  background: rgba(255, 255, 255, .08);
-  color: #fff;
-  border: 2px solid rgba(255, 255, 255, .15);
-}
-.fs-btn.ghost:hover { background: rgba(255, 255, 255, .15); transform: translateY(-4px); }
+#fullscreenReminder{position:fixed;inset:0;z-index:9800;display:none;align-items:center;justify-content:center;background:radial-gradient(circle at center,#1a0408 0%,#050810 70%);padding:40px;overflow:hidden;}
+#fullscreenReminder.active{display:flex;animation:fsIn .5s var(--ease-out);}
+@keyframes fsIn{from{opacity:0;}to{opacity:1;}}
+.fs-bg-pulse{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(240,75,92,.4),transparent 60%);animation:fsBgPulse 2s ease-in-out infinite;pointer-events:none;}
+@keyframes fsBgPulse{0%,100%{opacity:.3;transform:scale(1);}50%{opacity:.7;transform:scale(1.15);}}
+.fs-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(240,75,92,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(240,75,92,.05) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(circle at center,black 20%,transparent 75%);-webkit-mask-image:radial-gradient(circle at center,black 20%,transparent 75%);pointer-events:none;}
+.fs-content{position:relative;z-index:2;text-align:center;max-width:900px;width:100%;display:flex;flex-direction:column;align-items:center;gap:24px;}
+.fs-alert-icon{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,rgba(240,75,92,.3),rgba(240,75,92,.1));border:3px solid rgba(240,75,92,.6);display:flex;align-items:center;justify-content:center;font-size:72px;animation:fsIconShake 1s ease-in-out infinite;box-shadow:0 0 60px rgba(240,75,92,.6),0 0 120px rgba(240,75,92,.3);}
+@keyframes fsIconShake{0%,100%{transform:rotate(0deg) scale(1);}25%{transform:rotate(-10deg) scale(1.08);}75%{transform:rotate(10deg) scale(1.08);}}
+.fs-title{font-size:clamp(32px,5vw,64px);font-weight:900;color:#fff;text-shadow:0 0 40px rgba(240,75,92,.8),0 0 80px rgba(240,75,92,.5);letter-spacing:-2px;line-height:1.1;animation:fsTitleGlow 2s ease-in-out infinite;}
+@keyframes fsTitleGlow{0%,100%{text-shadow:0 0 40px rgba(240,75,92,.8),0 0 80px rgba(240,75,92,.5);}50%{text-shadow:0 0 60px rgba(240,75,92,1),0 0 120px rgba(240,75,92,.8);}}
+.fs-subtitle{font-size:clamp(18px,2vw,26px);font-weight:800;color:#ff6b7d;letter-spacing:3px;text-transform:uppercase;}
+.fs-task-name{font-size:clamp(24px,3vw,42px);font-weight:900;color:#fff;padding:24px 40px;background:rgba(240,75,92,.12);border:2px solid rgba(240,75,92,.4);border-radius:24px;backdrop-filter:blur(20px);max-width:100%;word-break:break-word;box-shadow:0 0 60px rgba(240,75,92,.3),inset 0 0 40px rgba(240,75,92,.08);}
+.fs-meta{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+.fs-meta-chip{padding:10px 20px;border-radius:14px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);font-size:16px;font-weight:800;color:#fff;display:inline-flex;align-items:center;gap:8px;}
+.fs-actions{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:12px;}
+.fs-btn{padding:18px 42px;border-radius:18px;border:none;font-size:18px;font-weight:900;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:10px;transition:all .3s cubic-bezier(.16,1,.3,1);min-width:200px;justify-content:center;}
+.fs-btn.primary{background:linear-gradient(135deg,#f04b5c,#c81e3c);color:#fff;box-shadow:0 16px 48px rgba(240,75,92,.6);animation:fsBtnPulse 2s ease-in-out infinite;}
+@keyframes fsBtnPulse{0%,100%{box-shadow:0 16px 48px rgba(240,75,92,.6);}50%{box-shadow:0 16px 64px rgba(240,75,92,.9),0 0 0 8px rgba(240,75,92,0);}}
+.fs-btn.primary:hover{transform:translateY(-4px) scale(1.03);}
+.fs-btn.ghost{background:rgba(255,255,255,.08);color:#fff;border:2px solid rgba(255,255,255,.15);}
+.fs-btn.ghost:hover{background:rgba(255,255,255,.15);transform:translateY(-4px);}
 
 /* ============ USERS ============ */
 .users-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:14px;flex-wrap:wrap;}
@@ -934,17 +534,15 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .empty{text-align:center;padding:60px 20px;color:var(--text-2);font-weight:700;font-size:14px;}
 
 /* ============================================================
-   🖥️ WATCH SCREEN
+   WATCH SCREEN
    ============================================================ */
 #watchScreen{position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;display:none;}
 #watchScreen.active{display:block;}
 .watch-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
 .watch-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 15% 20%,rgba(91,141,239,.10),transparent 45%),radial-gradient(circle at 85% 80%,rgba(45,212,163,.08),transparent 45%);}
 .watch-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(91,141,239,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(91,141,239,.02) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(circle at center,black 30%,transparent 80%);-webkit-mask-image:radial-gradient(circle at center,black 30%,transparent 80%);}
-
 #watchMainContent{position:relative;z-index:1;height:100vh;display:none;grid-template-rows:56px auto minmax(0,1fr) 60px;gap:12px;padding:12px 16px;}
 #watchMainContent.active{display:grid;}
-
 .w-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 16px;background:rgba(15,20,35,.6);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);border-radius:14px;}
 .w-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .w-brand img{width:38px;height:38px;object-fit:contain;border-radius:10px;background:rgba(5,8,16,.6);padding:5px;border:1.5px solid rgba(91,141,239,.4);}
@@ -962,7 +560,6 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-btn{width:32px;height:32px;border-radius:9px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:#94a3b8;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;transition:all .2s;cursor:pointer;}
 .w-btn:hover{background:rgba(91,141,239,.15);color:#5b8def;border-color:rgba(91,141,239,.4);}
 .w-btn.danger:hover{background:rgba(240,75,92,.2);color:#ff6b7d;border-color:rgba(240,75,92,.4);}
-
 .w-kpis{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;}
 .w-kpi{position:relative;padding:10px 14px;border-radius:14px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:10px;min-height:58px;overflow:hidden;transition:transform .3s cubic-bezier(.16,1,.3,1);border:1px solid transparent;}
 .w-kpi::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:rgba(255,255,255,.35);}
@@ -976,7 +573,6 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .kpi-work{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;}
 .kpi-done{background:linear-gradient(135deg,#0d9488,#14b8a6);color:#fff;}
 .kpi-pending{background:linear-gradient(135deg,#d97706,#f59e0b);color:#fff;}
-
 .w-kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;min-height:0;}
 .w-col{display:flex;flex-direction:column;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;min-height:0;position:relative;}
 .w-col::before{content:'';position:absolute;top:0;inset-inline:0;height:3px;background:var(--col-bar,#5b8def);z-index:2;}
@@ -1000,13 +596,11 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .col-normal .w-col-count{background:rgba(45,212,163,.2);color:#3ee8b5;}
 .col-done .w-col-count{background:rgba(20,184,166,.2);color:#22d3ee;}
 .col-pending .w-col-count{background:rgba(245,158,11,.2);color:#fbbf24;}
-
 .w-col-body{flex:1;position:relative;overflow:hidden;min-height:0;mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,black 24px,black calc(100% - 24px),transparent 100%);}
 .w-col-track{display:flex;flex-direction:column;gap:10px;padding:12px;will-change:transform;}
 .w-col-track.scrolling{animation:colScroll var(--scroll-duration,35s) linear infinite;}
 .w-col-track.scrolling:hover{animation-play-state:paused;}
 @keyframes colScroll{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
-
 .w-task{position:relative;background:linear-gradient(135deg,rgba(23,29,46,.9),rgba(15,20,32,.8));border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .25s cubic-bezier(.16,1,.3,1);overflow:hidden;display:flex;flex-direction:column;gap:8px;min-height:86px;}
 .w-task:hover{background:linear-gradient(135deg,rgba(35,43,66,.95),rgba(23,29,46,.9));transform:translateX(-4px);border-color:rgba(91,141,239,.4);box-shadow:0 8px 24px rgba(0,0,0,.5);}
 .w-task-title{font-size:clamp(13px,1.05vw,15px);font-weight:900;color:#f8fafc;line-height:1.35;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:40px;}
@@ -1020,7 +614,6 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-task-status-badge.progress{background:rgba(245,165,36,.2);color:#f5b84a;}
 .w-task-status-badge.done{background:rgba(45,212,163,.2);color:#3ee8b5;}
 .w-task-status-badge.pending{background:rgba(245,158,11,.2);color:#fbbf24;}
-
 .col-urgent .w-task{background:linear-gradient(135deg,rgba(240,75,92,.14),rgba(15,20,32,.85));border-color:rgba(240,75,92,.35);animation:urgentFlash 2.2s ease-in-out infinite;}
 @keyframes urgentFlash{0%,100%{box-shadow:0 0 0 0 rgba(240,75,92,.4),0 0 16px rgba(240,75,92,.3),inset 0 0 0 1px rgba(240,75,92,.35);border-color:rgba(240,75,92,.4);}50%{box-shadow:0 0 0 6px rgba(240,75,92,0),0 0 28px rgba(240,75,92,.65),inset 0 0 0 1px rgba(240,75,92,.7);border-color:#f04b5c;}}
 .col-urgent .w-task-title{color:#fff;text-shadow:0 0 10px rgba(240,75,92,.5);}
@@ -1034,11 +627,9 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .col-done .w-task-title{color:#94a3b8;}
 .col-pending .w-task{background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(15,20,32,.85));border-color:rgba(245,158,11,.25);}
 .col-pending .w-task::before{content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;background:linear-gradient(180deg,#f59e0b,#fbbf24);}
-
 .w-col-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 16px;gap:8px;color:#64748b;text-align:center;height:100%;min-height:180px;}
 .w-col-empty div:first-child{font-size:36px;opacity:.35;}
 .w-col-empty div:last-child{font-size:12px;font-weight:800;color:#94a3b8;}
-
 .w-footer{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex-shrink:0;}
 .w-ticker{display:flex;align-items:center;background:rgba(15,20,35,.55);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden;height:60px;}
 .w-ticker-done{border-color:rgba(20,184,166,.25);}
@@ -1059,8 +650,6 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .w-ticker-item.is-warning{color:#ffc043;}
 .w-ticker-item.is-pending{color:#fbbf24;}
 .w-ticker-empty{padding:0 20px;color:#64748b;font-size:12px;font-weight:700;}
-
-/* PIN */
 #watchPinScreen{position:fixed;inset:0;z-index:2100;display:flex;align-items:center;justify-content:center;background:#050810;padding:20px;}
 .watch-pin-card{background:rgba(15,20,35,.95);backdrop-filter:blur(40px);border:1.5px solid rgba(91,141,239,.3);padding:52px 44px;border-radius:28px;text-align:center;max-width:440px;width:100%;box-shadow:0 40px 120px rgba(0,0,0,.8);}
 .watch-pin-logo{width:120px;height:120px;margin:0 auto 24px;border-radius:50%;padding:8px;background:linear-gradient(135deg,rgba(91,141,239,.35),rgba(45,212,163,.25));box-shadow:0 0 0 4px rgba(91,141,239,.3),0 0 60px rgba(91,141,239,.6);}
@@ -1074,10 +663,8 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 #watchPinForm button:hover{transform:translateY(-2px);}
 #watchPinError{color:#f04b5c;font-size:12.5px;min-height:20px;font-weight:800;}
 .watch-pin-hint{color:#64748b;font-size:12px;margin-top:20px;font-weight:700;}
-
 body.watch-kiosk .w-footer{display:none !important;}
 body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
-
 @media (max-width:1400px){.w-kpis{grid-template-columns:repeat(4,1fr);}}
 @media (max-width:1100px){.w-kanban{grid-template-columns:repeat(3,1fr);}.w-clock{display:none;}}
 @media (max-width:700px){.w-kanban{grid-template-columns:1fr;}.w-footer{grid-template-columns:1fr;}.w-kpis{grid-template-columns:repeat(2,1fr);}}
@@ -1135,9 +722,14 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
       <div><h1>EMAK IT Dep.</h1><div class="subtitle">نظم معلومات إيماك</div></div>
     </div>
     <div class="user-info">
+      <div style="font-size:11px;color:var(--text-3);font-weight:700;display:flex;align-items:center;gap:6px;">
+        <span id="lastUpdateDot" style="width:8px;height:8px;border-radius:50%;background:#2dd4a3;box-shadow:0 0 8px #2dd4a3;animation:blink 2s infinite;"></span>
+        <span id="lastUpdateTime">—</span>
+      </div>
       <span id="userName"></span>
       <span id="userRole" class="role"></span>
       <button class="user-menu-btn" data-action="change-password">🔑 كلمة المرور</button>
+      <button class="icon-btn" data-action="manual-remind" title="تذكير الفريق">🔔</button>
       <button class="btn-watch-screen" data-action="open-watch">🖥️ شاشة العرض</button>
       <button class="btn-report" data-action="open-report">📄 تقرير PDF</button>
       <button class="icon-btn" data-theme-toggle title="تبديل الثيم">🌙</button>
@@ -1224,7 +816,6 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
     </div>
   </section>
 
-  <!-- ✅ APPROVALS VIEW -->
   <section class="view-section" id="approvalsView">
     <div class="container">
       <div class="card-panel">
@@ -1303,7 +894,8 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
   <div class="report-wrapper">
     <div class="report-toolbar">
       <div class="panel-title" style="margin:0;">📄 معاينة التقرير</div>
-      <div style="display:flex;gap:12px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="btn-download" id="printReportBtn" style="background:linear-gradient(135deg,#5b8def,#3b6fd4);">🖨️ طباعة</button>
         <button class="btn-download" id="downloadPdfBtn" data-action="download-pdf">📄 تحميل PDF</button>
         <button class="btn-close-report" data-action="close-report">إغلاق</button>
       </div>
@@ -1312,7 +904,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
   </div>
 </div>
 
-<!-- ============ 🎯 CENTRAL REMINDER MODAL ============ -->
+<!-- ============ CENTRAL REMINDER MODAL ============ -->
 <div id="reminderHost">
   <div class="reminder-card" id="reminderCard" role="alertdialog" aria-modal="true" aria-labelledby="reminderTitle">
     <div class="reminder-progress"><div class="reminder-progress-fill" id="reminderProgressBar"></div></div>
@@ -1332,7 +924,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
   </div>
 </div>
 
-<!-- ============ 🚨 FULLSCREEN REMINDER ============ -->
+<!-- ============ FULLSCREEN REMINDER ============ -->
 <div id="fullscreenReminder">
   <div class="fs-bg-pulse"></div>
   <div class="fs-grid"></div>
@@ -1457,7 +1049,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v22.0 — With Approval Workflow
+   EMAK IT Dep. v23.0 — With Full Fixes
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1488,7 +1080,7 @@ const CONSTANTS = Object.freeze({
   WATCH_PASSWORD: "watch2024",
   WATCH_SESSION_DURATION: 12 * 60 * 60 * 1000,
   NOTIFICATION_DURATION: 20000,
-  MAX_NOTIFICATIONS: 5,
+  MAX_NOTIFICATIONS: 3,
   PRIORITY_MAP: { "عاجل": 0, "مهم": 1, "عادي": 2 },
   STATUS: Object.freeze({
     PENDING: "بانتظار الموافقة",
@@ -1505,7 +1097,9 @@ const CONSTANTS = Object.freeze({
   REMINDER_DUE_SOON_MINUTES: 60,
   REMINDER_CHECK_INTERVAL: 60000,
   REMINDER_DAILY_KEY: 'emak_daily_reminder',
-  REMINDER_FS_THRESHOLD: 3
+  REMINDER_HOURLY_KEY: 'emak_hourly_reminder',
+  REMINDER_FS_THRESHOLD: 3,
+  NOTIFICATION_MAX_AGE: 6 * 60 * 60 * 1000
 });
 
 const app = initializeApp(FIREBASE_CONFIG);
@@ -1588,9 +1182,7 @@ const state = {
   seenNotifications: new Set()
 };
 
-/* ============================================================
-   THEME
-   ============================================================ */
+/* THEME */
 function initTheme() { const saved = Storage.get('emak_theme', 'dark'); applyTheme(saved); }
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -1607,9 +1199,7 @@ function toggleTheme() {
 function themeBg() { return state.theme === 'light' ? '#ffffff' : '#10141f'; }
 function themeFg() { return state.theme === 'light' ? '#0f172a' : '#f8fafc'; }
 
-/* ============================================================
-   TOAST
-   ============================================================ */
+/* TOAST */
 function showToast(msg, type = 'success', ms = 3200) {
   const host = $('#toastHost');
   if (!host) return;
@@ -1628,9 +1218,7 @@ const swalSuccess = (title, text="") => Swal.fire({ icon:"success", title, text,
 const swalError = (title, text="") => Swal.fire({ icon:"error", title, text, confirmButtonColor:"#f04b5c", background: themeBg(), color: themeFg() });
 const swalConfirm = (title, text="لا يمكن التراجع!") => Swal.fire({ icon:"warning", title, text, showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580", background: themeBg(), color: themeFg() });
 
-/* ============================================================
-   AUDIO
-   ============================================================ */
+/* AUDIO */
 let _audioCtx = null;
 function playNotificationSound(priority = 'normal') {
   try {
@@ -1720,7 +1308,7 @@ const Charts = {
 };
 
 async function safeWrite(operation, maxRetries = 3) {
-  let lastError;
+  let lastError = new Error("فشل غير معروف");
   for (let i = 0; i < maxRetries; i++) {
     try { return await operation(); }
     catch (err) {
@@ -1743,9 +1331,7 @@ async function loadLogoAsBase64() {
   } catch { return null; }
 }
 
-/* ============================================================
-   ✅ APPROVAL SYSTEM — CORE
-   ============================================================ */
+/* APPROVAL SYSTEM */
 async function approveTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.tasks[taskId];
@@ -1777,7 +1363,6 @@ async function approveTask(taskId) {
     }));
     await logActivity("task_approved", `وافق على "${t.title}"`, taskId, t.title);
 
-    // إشعار الموظف
     if (t.submittedBy) {
       await push(ref(db, "notifications/" + t.submittedBy), {
         type: 'task_approved',
@@ -1818,7 +1403,7 @@ async function rejectTask(taskId) {
     title: 'رفض المهمة؟',
     html: `<div style="text-align:right;direction:rtl;padding:8px 0;">
       <p style="font-size:15px;font-weight:800;color:${themeFg()};margin-bottom:16px;">${esc(t.title)}</p>
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;display:block;margin-bottom:8px;">سبب الرفض (اختياري)</label>
+      <label style="font-size:12px;font-weight:800;color:#94a3b8;display:block;margin-bottom:8px;">سبب الرفض <span style="color:#f04b5c;">*</span></label>
       <textarea id="reject-reason" class="swal2-textarea" placeholder="مثال: المهمة مكررة / غير ضرورية حالياً..." style="margin:0;width:100%;min-height:80px;font-family:inherit;"></textarea>
     </div>`,
     showCancelButton: true,
@@ -1826,7 +1411,14 @@ async function rejectTask(taskId) {
     cancelButtonText: 'إلغاء',
     confirmButtonColor: '#f04b5c',
     background: themeBg(), color: themeFg(),
-    preConfirm: () => document.getElementById('reject-reason').value.trim()
+    preConfirm: () => {
+      const reason = document.getElementById('reject-reason').value.trim();
+      if (!reason) {
+        Swal.showValidationMessage('⚠️ اكتب سبب الرفض — سيُرسل للموظف');
+        return false;
+      }
+      return reason;
+    }
   });
   if (reason === undefined) return;
 
@@ -1836,19 +1428,18 @@ async function rejectTask(taskId) {
       rejectedAt: Date.now(),
       rejectedBy: state.user.uid,
       rejectedByName: state.profile.displayName,
-      rejectionReason: reason || 'بدون سبب محدد'
+      rejectionReason: reason
     }));
     await safeWrite(() => remove(ref(db, "tasks/" + taskId)));
     await logActivity("task_rejected", `رفض المهمة: ${t.title}`, taskId, t.title);
 
-    // إشعار الموظف
     if (t.submittedBy) {
       await push(ref(db, "notifications/" + t.submittedBy), {
         type: 'task_rejected',
         taskId,
         taskTitle: t.title,
         message: `❌ تم رفض مهمتك: ${t.title}`,
-        reason: reason || '',
+        reason: reason,
         at: Date.now(),
         read: false
       });
@@ -1860,7 +1451,6 @@ async function rejectTask(taskId) {
   }
 }
 
-// Event delegation for approval buttons
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('[data-approval]');
   if (!btn) return;
@@ -1870,9 +1460,7 @@ document.addEventListener('click', (e) => {
   else if (approval === 'reject') rejectTask(id);
 });
 
-/* ============================================================
-   🎯 REMINDER SYSTEM
-   ============================================================ */
+/* REMINDER SYSTEM */
 function showReminder(options = {}) {
   if (state.reminderShowing) {
     setTimeout(() => showReminder(options), 2000);
@@ -1930,7 +1518,7 @@ function showReminder(options = {}) {
     `;
     taskBox.hidden = false;
   } else if (tasks && tasks.length > 0) {
-    taskBox.innerHTML = tasks.slice(0, 5).map(t => {
+    taskBox.innerHTML = tasks.map(t => {
       const d = daysRemaining(t.dueDate);
       const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
       const pc = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
@@ -2068,6 +1656,7 @@ function closeFullscreenReminder() {
 
 function checkReminders() {
   if (!state.profile) return;
+  if (state.reminderShowing || state.fullscreenReminderActive) return;
 
   const now = Date.now();
   const tasks = Object.values(state.tasks);
@@ -2082,6 +1671,32 @@ function checkReminders() {
     return false;
   });
 
+  if (urgentNew.length > 1) {
+    urgentNew.forEach(t => state.seenUrgentTasks.add(t.id + '_shown'));
+    showReminder({
+      kicker: '🚨 مهام عاجلة جديدة',
+      title: `${urgentNew.length} مهام عاجلة تحتاج انتباهك`,
+      icon: '⚠️',
+      priority: 'urgent',
+      tasks: urgentNew
+    });
+    return;
+  }
+
+  if (urgentNew.length === 1) {
+    const task = urgentNew[0];
+    state.seenUrgentTasks.add(task.id + '_shown');
+    showReminder({
+      kicker: '🚨 مهمة عاجلة جديدة',
+      title: 'تنبيه فوري',
+      icon: '⚠️',
+      priority: 'urgent',
+      task: task,
+      notes: task.notes || ''
+    });
+    return;
+  }
+
   const critical = tasks.filter(t => {
     if (t.status === CONSTANTS.STATUS.DONE) return false;
     if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
@@ -2089,6 +1704,16 @@ function checkReminders() {
     const d = daysRemaining(t.dueDate);
     return d !== null && d <= -CONSTANTS.REMINDER_FS_THRESHOLD;
   });
+
+  if (critical.length > 0) {
+    const task = critical[0];
+    const key = task.id + '_fs_shown_' + new Date().toDateString();
+    if (!state.seenUrgentTasks.has(key)) {
+      state.seenUrgentTasks.add(key);
+      showFullscreenReminder(task);
+      return;
+    }
+  }
 
   const dueSoon = tasks.filter(t => {
     if (t.status === CONSTANTS.STATUS.DONE) return false;
@@ -2100,93 +1725,77 @@ function checkReminders() {
     return diff > 0 && diff <= CONSTANTS.REMINDER_DUE_SOON_MINUTES * 60 * 1000;
   });
 
-  if (critical.length > 0 && !state.fullscreenReminderActive) {
-    const task = critical[0];
-    const key = task.id + '_fs_shown_' + new Date().toDateString();
+  if (dueSoon.length > 0) {
+    const task = dueSoon[0];
+    const key = task.id + '_due_' + new Date().toDateString();
     if (!state.seenUrgentTasks.has(key)) {
       state.seenUrgentTasks.add(key);
-      showFullscreenReminder({ ...task, id: Object.keys(state.tasks).find(k => state.tasks[k] === task) || Object.keys(state.tasks).find(k => state.tasks[k].title === task.title) });
-      return;
-    }
-  }
-
-  if (urgentNew.length > 0 && !state.reminderShowing) {
-    const task = urgentNew[0];
-    const id = Object.keys(state.tasks).find(k => state.tasks[k] === task) || Object.keys(state.tasks).find(k => state.tasks[k].title === task.title);
-    if (id) {
-      state.seenUrgentTasks.add(task.id + '_shown');
-      state.seenUrgentTasks.add(id + '_shown');
       showReminder({
-        kicker: '🚨 مهمة عاجلة جديدة',
-        title: 'تنبيه فوري',
-        icon: '⚠️',
-        priority: 'urgent',
-        task: { ...task, id },
-        notes: task.notes || ''
+        kicker: '⏰ موعد استحقاق قريب',
+        title: 'اقترب موعد التسليم',
+        icon: '⏰',
+        priority: 'important',
+        task: task,
+        notes: 'المهمة تستحق اليوم — راجع حالتها الآن.'
       });
-      return;
-    }
-  }
-
-  if (dueSoon.length > 0 && !state.reminderShowing) {
-    const task = dueSoon[0];
-    const id = Object.keys(state.tasks).find(k => state.tasks[k] === task);
-    if (id) {
-      const key = id + '_due_' + new Date().toDateString();
-      if (!state.seenUrgentTasks.has(key)) {
-        state.seenUrgentTasks.add(key);
-        showReminder({
-          kicker: '⏰ موعد استحقاق قريب',
-          title: 'اقترب موعد التسليم',
-          icon: '⏰',
-          priority: 'important',
-          task: { ...task, id },
-          notes: 'المهمة تستحق اليوم — راجع حالتها الآن.'
-        });
-      }
     }
   }
 }
 
 function showDailySummaryIfNeeded() {
-  const todayKey = new Date().toDateString();
-  const lastShown = Storage.get(CONSTANTS.REMINDER_DAILY_KEY);
-  if (lastShown === todayKey) return;
-  if (!state.isAdmin) return;
+  if (state.reminderShowing || state.fullscreenReminderActive) return;
+  
+  const hourKey = new Date().toISOString().slice(0, 13);
+  const lastShown = Storage.get(CONSTANTS.REMINDER_HOURLY_KEY);
+  if (lastShown === hourKey) return;
+  
+  if (!state.profile) return;
 
   const overdue = Object.entries(state.tasks)
     .filter(([_, t]) => {
       if (t.status === CONSTANTS.STATUS.DONE) return false;
       if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
       const d = daysRemaining(t.dueDate);
-      return d !== null && d < 0;
+      if (d === null || d >= 0) return false;
+      if (!state.isAdmin && t.assigneeId !== state.user?.uid) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      return (daysRemaining(a[1].dueDate) ?? 0) - (daysRemaining(b[1].dueDate) ?? 0);
     });
 
   if (overdue.length === 0) return;
 
-  Storage.set(CONSTANTS.REMINDER_DAILY_KEY, todayKey);
+  Storage.set(CONSTANTS.REMINDER_HOURLY_KEY, hourKey);
 
   setTimeout(() => {
+    const maxOverdueDays = Math.max(...overdue.map(([_, t]) => Math.abs(daysRemaining(t.dueDate) ?? 0)));
+    
     showReminder({
-      kicker: '📊 ملخص يومي',
-      title: `لديك ${overdue.length} مهمة متأخرة`,
-      icon: '📊',
-      priority: overdue.length >= 5 ? 'urgent' : 'important',
+      kicker: '🚨 مهام متأخرة تحتاج انتباه',
+      title: `⚠️ ${overdue.length} مهمة متأخرة عن موعدها`,
+      icon: '⏰',
+      priority: overdue.length >= 5 || maxOverdueDays >= 5 ? 'urgent' : 'important',
       tasks: overdue.map(([id, t]) => ({ ...t, id })),
-      notes: 'راجع المهام المتأخرة وقم بتحديث حالتها.',
+      notes: `أقصى تأخير: ${maxOverdueDays} ${maxOverdueDays === 1 ? 'يوم' : 'أيام'} — يرجى مراجعة المهام فوراً`,
+      duration: 15000,
       actions: [
-        { label: '👁️ مراجعة المهام', variant: 'primary', action: () => {
-          closeReminder();
-          setTimeout(() => {
-            $$('.nav-btn').forEach(b => b.classList.remove('active'));
-            $('.nav-btn[data-view="tasks"]')?.classList.add('active');
-            $$('.view-section').forEach(s => s.classList.remove('active'));
-            $('#tasksView')?.classList.add('active');
-            state.filter = 'overdue';
-            $$('.filter-btn[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === 'overdue'));
-            renderAll();
-          }, 300);
-        }},
+        { 
+          label: '👁️ عرض كل المتأخرات', 
+          variant: 'primary', 
+          action: () => {
+            closeReminder();
+            setTimeout(() => {
+              $$('.nav-btn').forEach(b => b.classList.remove('active'));
+              $('.nav-btn[data-view="tasks"]')?.classList.add('active');
+              $$('.view-section').forEach(s => s.classList.remove('active'));
+              $('#tasksView')?.classList.add('active');
+              state.filter = 'overdue';
+              $$('.filter-btn[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === 'overdue'));
+              renderAll();
+            }, 300);
+          }
+        },
         { label: 'حسناً', variant: 'ghost', action: () => closeReminder() }
       ]
     });
@@ -2202,8 +1811,22 @@ function startReminderEngine() {
   state.reminderInterval = setInterval(() => {
     if (!state.reminderShowing && !state.fullscreenReminderActive) {
       checkReminders();
+      showDailySummaryIfNeeded();
     }
   }, CONSTANTS.REMINDER_CHECK_INTERVAL);
+  
+  setInterval(() => {
+    const today = new Date().toDateString();
+    state.seenUrgentTasks = new Set(
+      [...state.seenUrgentTasks].filter(k => 
+        k.includes('_shown') || k.includes(today)
+      )
+    );
+    if (state.seenNotifications.size > 200) {
+      const arr = [...state.seenNotifications];
+      state.seenNotifications = new Set(arr.slice(-200));
+    }
+  }, 60 * 60 * 1000);
 }
 function stopReminderEngine() {
   if (state.reminderInterval) { clearInterval(state.reminderInterval); state.reminderInterval = null; }
@@ -2214,9 +1837,7 @@ function stopReminderEngine() {
   $('#fullscreenReminder')?.classList.remove('active');
 }
 
-/* ============================================================
-   SUB NOTIFICATIONS (Side)
-   ============================================================ */
+/* SUB NOTIFICATIONS */
 function showSubNotification(task) {
   const container = $('#subNotifications');
   if (!container) return;
@@ -2305,9 +1926,7 @@ function closeWatchSubNotification(notifId) {
   setTimeout(() => notif.remove(), 400);
 }
 
-/* ============================================================
-   AUTH
-   ============================================================ */
+/* AUTH */
 function clearAllListeners() {
   Object.keys(state.unsubs).forEach(k => {
     if (state.unsubs[k]) { try { state.unsubs[k](); } catch {} state.unsubs[k] = null; }
@@ -2395,7 +2014,7 @@ function setupAuthListener() {
       $('#userName').textContent = state.profile.displayName || state.profile.username;
       $('#userRole').textContent = state.isAdmin ? "👑 مدير" : "👤 موظف";
       $('#userRole').className = "role " + (state.isAdmin ? "admin" : "user");
-      $('#addTaskCard').hidden = false; // الآن الموظف يرى النموذج أيضاً
+      $('#addTaskCard').hidden = false;
       $('#usersNavBtn').hidden = !state.isAdmin;
       $('#teamNavBtn').hidden = !state.isAdmin;
       $('#approvalNavBtn').hidden = !state.isAdmin;
@@ -2414,27 +2033,39 @@ function setupAuthListener() {
 }
 
 function updateAddTaskFormForRole() {
+  const card = $('#addTaskCard');
   const titleEl = $('#addTaskTitle');
   const btn = $('#addTaskSubmitBtn');
+  const titleInput = $('#taskTitle');
+  
   if (state.isAdmin) {
+    card.style.borderColor = 'rgba(91,141,239,.3)';
+    card.style.background = '';
     titleEl.textContent = '➕ إضافة مهمة جديدة';
-    btn.textContent = 'إضافة المهمة';
+    btn.textContent = '✅ نشر المهمة فوراً';
     btn.classList.remove('submit-employee');
+    if (titleInput) titleInput.placeholder = 'عنوان المهمة *';
   } else {
-    titleEl.textContent = '📤 اقتراح مهمة جديدة';
+    card.style.borderColor = 'rgba(245,158,11,.5)';
+    card.style.background = 'linear-gradient(135deg,rgba(245,158,11,.06),var(--panel-bg))';
+    titleEl.innerHTML = '📤 اقتراح مهمة جديدة <span style="font-size:12px;color:#fbbf24;font-weight:700;">(ستُرسل للمدير للمراجعة)</span>';
     btn.textContent = '📤 إرسال للموافقة';
     btn.classList.add('submit-employee');
+    if (titleInput) titleInput.placeholder = 'عنوان المهمة المقترحة *';
   }
 }
 
-/* ============================================================
-   REALTIME
-   ============================================================ */
+/* REALTIME */
 function startRealtimeListeners() {
   clearAllListeners();
+  
   state.unsubs.tasks = onValue(ref(db, "tasks"), (snap) => {
+    const raw = snap.val() || {};
     const prev = { ...state.tasks };
-    state.tasks = snap.val() || {};
+    
+    state.tasks = {};
+    Object.entries(raw).forEach(([id, t]) => { state.tasks[id] = { ...t, id }; });
+    
     const isFirst = Object.keys(prev).length === 0;
     if (!isFirst) {
       Object.entries(state.tasks).forEach(([id, task]) => {
@@ -2443,15 +2074,22 @@ function startRealtimeListeners() {
         }
       });
     }
+    
+    const el = document.getElementById('lastUpdateTime');
+    if (el) el.textContent = `آخر تحديث: ${new Date().toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'})}`;
+    
     scheduleRender();
     if (state.openTaskId && state.tasks[state.openTaskId]) renderModal(state.openTaskId);
     else if (state.openTaskId && !state.tasks[state.openTaskId]) closeModal();
   });
+  
   state.unsubs.team = onValue(ref(db, "team"), (snap) => { state.team = snap.val() || {}; populateAssigneeSelect(); });
+  
   if (state.isAdmin) {
     state.unsubs.users = onValue(ref(db, "users"), (snap) => { state.users = snap.val() || {}; if ($('#usersView')?.classList.contains('active')) renderUsersList(); });
     state.unsubs.deletedTasks = onValue(ref(db, "deleted_tasks"), (snap) => { state.deletedTasks = snap.val() || {}; });
   }
+  
   state.unsubs.activity = onValue(ref(db, "activity"), (snap) => {
     const raw = snap.val() || {};
     state.activity = Object.entries(raw).map(([id, a]) => ({ id, ...a })).sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 100);
@@ -2459,7 +2097,6 @@ function startRealtimeListeners() {
     if ($('#watchView')?.classList.contains('active')) renderWatch();
   });
 
-  // ✅ استمع لإشعارات الموظف الشخصية
   if (state.user) {
     state.unsubs.notifications = onValue(ref(db, "notifications/" + state.user.uid), (snap) => {
       const notifs = snap.val() || {};
@@ -2468,19 +2105,27 @@ function startRealtimeListeners() {
         if (state.seenNotifications.has(id)) return;
         state.seenNotifications.add(id);
 
+        const age = Date.now() - (n.at || 0);
+        if (age > CONSTANTS.NOTIFICATION_MAX_AGE) {
+          update(ref(db, "notifications/" + state.user.uid + "/" + id), { read: true }).catch(() => {});
+          return;
+        }
+
         const isApproved = n.type === 'task_approved';
+        const isManual = n.type === 'manual_reminder';
+
         showReminder({
-          kicker: isApproved ? '✅ تمت الموافقة' : '❌ تم الرفض',
-          title: isApproved ? 'مهمتك معتمدة!' : 'تم رفض مهمتك',
-          icon: isApproved ? '✅' : '❌',
-          priority: isApproved ? 'normal' : 'important',
-          task: { title: n.taskTitle, id: n.taskId, assignee: '', status: '', priority: 'عادي' },
+          kicker: isManual ? '🔔 تذكير يدوي' : isApproved ? '✅ تمت الموافقة' : '❌ تم الرفض',
+          title: isManual ? 'رسالة من المدير' : isApproved ? 'مهمتك معتمدة!' : 'تم رفض مهمتك',
+          icon: isManual ? '🔔' : isApproved ? '✅' : '❌',
+          priority: isManual ? 'important' : isApproved ? 'normal' : 'important',
+          task: isManual ? null : { title: n.taskTitle, id: n.taskId, assignee: '', status: '', priority: 'عادي' },
           notes: n.reason ? `السبب: ${n.reason}` : n.message,
           duration: 8000,
           actions: [
-            { label: isApproved ? '👁️ عرض المهمة' : 'حسناً',
+            { label: isApproved && !isManual ? '👁️ عرض المهمة' : 'حسناً',
               variant: 'primary',
-              action: () => { closeReminder(); if (isApproved) setTimeout(() => openModal(n.taskId), 300); } }
+              action: () => { closeReminder(); if (isApproved && !isManual) setTimeout(() => openModal(n.taskId), 300); } }
           ]
         });
 
@@ -2514,12 +2159,18 @@ function renderAll() {
   if ($('#approvalsView')?.classList.contains('active')) try { renderApprovals(); } catch {}
 }
 function renderStats() {
-  const tasks = Object.values(state.tasks);
-  $('#statTotal').textContent = tasks.length;
-  $('#statDone').textContent = tasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
-  $('#statProgress').textContent = tasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
-  $('#statOverdue').textContent = tasks.filter(t => { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING; }).length;
-  const pendingCount = tasks.filter(t => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING).length;
+  const allTasks = Object.values(state.tasks);
+  const approvedTasks = allTasks.filter(t => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
+  
+  $('#statTotal').textContent = approvedTasks.length;
+  $('#statDone').textContent = approvedTasks.filter(t => t.status === CONSTANTS.STATUS.DONE).length;
+  $('#statProgress').textContent = approvedTasks.filter(t => t.status === CONSTANTS.STATUS.PROGRESS).length;
+  $('#statOverdue').textContent = approvedTasks.filter(t => { 
+    const d = daysRemaining(t.dueDate); 
+    return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE; 
+  }).length;
+  
+  const pendingCount = allTasks.filter(t => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING).length;
   const statPending = $('#statPending');
   if (statPending) statPending.textContent = pendingCount;
   const approvalCount = $('#approvalCount');
@@ -2532,9 +2183,20 @@ function renderStats() {
   }
 }
 function updateApprovalBadges() {
-  const pendingCount = Object.values(state.tasks).filter(t => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING).length;
+  const pendingCount = Object.values(state.tasks).filter(t => 
+    t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING
+  ).length;
+  
   const badge = $('#approvalNavBadge');
-  if (badge) badge.textContent = pendingCount;
+  if (badge) {
+    badge.textContent = pendingCount;
+    badge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+  }
+  
+  document.title = pendingCount > 0 
+    ? `(${pendingCount}) EMAK IT Dep. — لوحة التحكم` 
+    : 'EMAK IT Dep. — لوحة التحكم';
+  
   const countBadge = $('#approvalsCountBadge');
   if (countBadge) countBadge.textContent = `${pendingCount} مهمة`;
 }
@@ -2615,7 +2277,6 @@ function renderTasks() {
     return true;
   });
 
-  // ✅ للموظف: يرى فقط المهام الموافق عليها + الخاصة به
   if (!state.isAdmin) {
     filtered = filtered.filter(([_, t]) =>
       t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING ||
@@ -2625,7 +2286,6 @@ function renderTasks() {
 
   if (state.search) filtered = filtered.filter(([_, t]) => `${t.title} ${t.notes || ""} ${t.assignee} ${t.status} ${t.priority || ""}`.toLowerCase().includes(state.search));
 
-  // ✅ عرض بانر "بانتظار الموافقة" للمدير
   const pendingApproval = state.isAdmin
     ? entries.filter(([_, t]) => t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING)
     : [];
@@ -2677,8 +2337,8 @@ function taskCardHtml(id, t) {
 
   const quickActions = state.isAdmin ? `<div class="card-quick-actions"><button class="quick-action-btn" data-quick="edit" data-id="${id}" title="تعديل">✏️</button><button class="quick-action-btn" data-quick="reassign" data-id="${id}" title="تغيير المسؤول">👤</button><button class="quick-action-btn" data-quick="delete" data-id="${id}" title="حذف">🗑️</button></div>` : "";
 
-  // ✅ بطاقة الموافقة للمدير
   if (isPending && state.isAdmin) {
+    const initial = (t.submittedByName || '?').charAt(0).toUpperCase();
     return `<div class="task-card approval-card pending" data-task-id="${id}" tabindex="0" role="button">
       <div class="approval-stripe"></div>
       <div class="card-top">
@@ -2688,11 +2348,13 @@ function taskCardHtml(id, t) {
       <h3 class="card-title">${highlight(t.title, state.search)}</h3>
       ${tagsHtml ? `<div class="card-tags">${tagsHtml}</div>` : ""}
       ${t.notes ? `<p class="card-notes">${esc(t.notes)}</p>` : ""}
-      <div class="approval-submitted">
-        <span>📤 قدّمها:</span>
-        <strong>${esc(t.submittedByName || "—")}</strong>
-        <span>·</span>
-        <span>${timeAgo(t.createdAt)}</span>
+      <div class="approval-submitted" style="display:flex;align-items:center;gap:12px;">
+        <div style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;flex-shrink:0;">${esc(initial)}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;color:var(--text-3);font-weight:700;margin-bottom:2px;">📤 قدّمها</div>
+          <div style="font-size:13.5px;color:var(--text);font-weight:900;">${esc(t.submittedByName || "—")}</div>
+        </div>
+        <span style="font-size:11px;color:var(--text-3);font-weight:700;">${timeAgo(t.createdAt)}</span>
       </div>
       <div class="approval-actions">
         <button class="approval-btn approve" data-approval="approve" data-id="${id}">✅ موافقة</button>
@@ -2701,7 +2363,6 @@ function taskCardHtml(id, t) {
     </div>`;
   }
 
-  // ✅ بطاقة الموظف — بانتظار موافقة
   if (isPending && !state.isAdmin) {
     return `<div class="task-card approval-card pending-user" data-task-id="${id}" tabindex="0" role="button">
       <div class="approval-stripe"></div>
@@ -2719,7 +2380,6 @@ function taskCardHtml(id, t) {
     </div>`;
   }
 
-  // ✅ بطاقة عادية
   return `<div class="task-card ${priorityClass} ${statusClass} ${isUrgentActive ? 'urgent-active' : ''}" data-task-id="${id}" tabindex="0" role="button">
     ${quickActions}
     <div class="card-top"><span class="priority-dot ${priorityClass}"></span><span class="assignee-chip">👤 ${esc(t.assignee || "—")}</span></div>
@@ -2847,13 +2507,18 @@ function renderModal(taskId) {
     ${approvalSection}
     <div class="modal-section">
       <div class="modal-section-title">💬 التعليقات (${comments.length})</div>
+      ${comments.length > 1 ? `
+        <div style="margin-bottom:12px;">
+          <input type="search" id="commentSearch" placeholder="🔍 ابحث في التعليقات..." style="width:100%;padding:10px 14px;background:var(--input-bg);color:var(--text);border:1.5px solid var(--border);border-radius:10px;font-size:13px;">
+        </div>
+      ` : ''}
       <div class="modal-comments-list">${commentsHtml}</div>
-      ${!isPending || state.isAdmin ? `
+      ${(!isPending || state.isAdmin || t.submittedBy === state.user?.uid) ? `
         <div class="modal-comment-form">
           <input id="modal-comment-input" type="text" placeholder="أضف تعليقاً...">
           <button data-action="add-comment" data-id="${taskId}">إرسال</button>
         </div>
-      ` : ''}
+      ` : '<p style="text-align:center;color:#64748b;padding:16px;font-size:12px;">لا يمكن التعليق قبل الموافقة</p>'}
     </div>
     <div class="modal-actions">
       ${!isPending ? `
@@ -2874,6 +2539,16 @@ function renderModal(taskId) {
         <span style="font-size:13px;color:var(--text-2);font-weight:700;">⏳ بانتظار مراجعة المدير</span>
       `}
     </div>`;
+
+  const cs = document.getElementById('commentSearch');
+  if (cs) {
+    cs.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('.modal-comment').forEach(el => {
+        el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  }
 }
 
 async function changeStatus(taskId, newStatus) {
@@ -3007,9 +2682,7 @@ async function logActivity(type, text, taskId = null, taskTitle = "") {
   try { await push(ref(db, "activity"), { type, text, taskId, taskTitle, uid: state.user.uid, byName: state.profile?.displayName || "—", at: Date.now() }); } catch {}
 }
 
-/* ============================================================
-   WATCH — RENDER
-   ============================================================ */
+/* WATCH */
 function wRenderStats() {
   const tasks = Object.values(state.watchData.tasks || {});
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -3223,9 +2896,7 @@ function stopWatchData() {
   Object.keys(state.watchUnsubs).forEach(k => { if (state.watchUnsubs[k]) { try { state.watchUnsubs[k](); } catch {} state.watchUnsubs[k] = null; } });
 }
 
-/* ============================================================
-   USERS
-   ============================================================ */
+/* USERS */
 function renderUsersStats() {
   const users = Object.values(state.users);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -3477,7 +3148,33 @@ async function openAddUserModal() {
     await set(ref(db, "usernames/" + username), { uid: newUid, createdAt: Date.now() });
     await push(ref(db, "team"), { uid: newUid, username, name: displayName, createdAt: Date.now() });
     await logActivity("user_created", `أنشأ مستخدم: ${displayName}`);
-    await Swal.fire({ icon:"success", title:"✅ تم", html: `<div style="text-align:right;direction:rtl;font-size:14px;line-height:2;"><p><b>المستخدم:</b> <code>${esc(username)}</code></p><p><b>كلمة المرور:</b> <code>${esc(password)}</code></p></div>`, confirmButtonText:"حسناً", confirmButtonColor:"#5b8def", background: themeBg(), color: themeFg() });
+    await Swal.fire({ 
+      icon:"success", 
+      title:"✅ تم إنشاء المستخدم", 
+      html: `
+        <div style="text-align:right;direction:rtl;font-size:14px;line-height:2;">
+          <p><b>المستخدم:</b> <code style="background:rgba(255,255,255,.08);padding:4px 8px;border-radius:6px;">${esc(username)}</code></p>
+          <p><b>كلمة المرور:</b> <code style="background:rgba(255,255,255,.08);padding:4px 8px;border-radius:6px;" id="copy-pass-display">${esc(password)}</code></p>
+          <button id="copy-creds" style="margin-top:12px;padding:10px 20px;background:#5b8def;color:#fff;border:none;border-radius:10px;font-weight:800;cursor:pointer;font-family:inherit;">📋 نسخ البيانات</button>
+        </div>
+      `,
+      confirmButtonText:"حسناً", 
+      confirmButtonColor:"#5b8def", 
+      background: themeBg(), 
+      color: themeFg(),
+      didOpen: () => {
+        const btn = document.getElementById('copy-creds');
+        if (btn) {
+          btn.onclick = () => {
+            const text = `المستخدم: ${username}\nكلمة المرور: ${password}\nالرابط: ${location.origin}`;
+            navigator.clipboard.writeText(text).then(() => {
+              btn.textContent = '✅ تم النسخ';
+              setTimeout(() => { btn.textContent = '📋 نسخ البيانات'; }, 2000);
+            });
+          };
+        }
+      }
+    });
   } catch (err) { swalError("فشل", err.message); }
   finally { if (secondaryApp) { try { await deleteApp(secondaryApp); } catch {} } }
 }
@@ -3761,6 +3458,28 @@ document.addEventListener('click', async (e) => {
     case 'reassign-task': e.preventDefault(); await quickReassign(actionEl.dataset.id); break;
     case 'delete-task': e.preventDefault(); await deleteTask(actionEl.dataset.id); break;
     case 'add-comment': e.preventDefault(); await addComment(actionEl.dataset.id); break;
+    case 'manual-remind':
+      e.preventDefault();
+      if (!state.isAdmin) return swalError("غير مصرح");
+      const overdue = Object.entries(state.tasks).filter(([_, t]) => {
+        const d = daysRemaining(t.dueDate);
+        return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING;
+      });
+      if (overdue.length === 0) return showToast("🎉 لا توجد مهام متأخرة", 'info');
+      try {
+        for (const [uid] of Object.entries(state.users)) {
+          if (uid === state.user.uid) continue;
+          if (state.users[uid]?.active === false) continue;
+          await push(ref(db, "notifications/" + uid), {
+            type: 'manual_reminder',
+            message: `🔔 ${state.profile.displayName} يذكّر بمراجعة ${overdue.length} مهمة متأخرة`,
+            at: Date.now(),
+            read: false
+          });
+        }
+        showToast(`🔔 تم إرسال التذكير لـ ${Object.keys(state.users).length - 1} عضو`, 'success');
+      } catch (err) { swalError("فشل", err.message); }
+      break;
   }
 });
 document.addEventListener('change', async (e) => {
@@ -3794,7 +3513,6 @@ document.addEventListener('click', (e) => {
   if (aCard && aCard.tagName === 'DIV') { openModal(aCard.dataset.taskId); return; }
 });
 
-/* Reminder close button */
 document.getElementById('reminderCloseBtn')?.addEventListener('click', closeReminder);
 
 function setupNav() {
@@ -3855,6 +3573,7 @@ function setupNav() {
   };
   $("#modalOverlay").addEventListener('click', (e) => { if (e.target.id === 'modalOverlay') closeModal(); });
   $("#reportOverlay").addEventListener('click', (e) => { if (e.target.id === 'reportOverlay') closeReport(); });
+  $("#printReportBtn")?.addEventListener('click', () => window.print());
 }
 
 function setupLoginHandlers() {
