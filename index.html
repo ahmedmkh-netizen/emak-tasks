@@ -1049,7 +1049,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v23.0 — With Full Fixes
+   EMAK IT Dep. v24.0 — Full Fixes + Aggregated Urgent Reminders
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1099,7 +1099,8 @@ const CONSTANTS = Object.freeze({
   REMINDER_DAILY_KEY: 'emak_daily_reminder',
   REMINDER_HOURLY_KEY: 'emak_hourly_reminder',
   REMINDER_FS_THRESHOLD: 3,
-  NOTIFICATION_MAX_AGE: 6 * 60 * 60 * 1000
+  NOTIFICATION_MAX_AGE: 6 * 60 * 60 * 1000,
+  URGENT_NEW_WINDOW: 30 * 60 * 1000
 });
 
 const app = initializeApp(FIREBASE_CONFIG);
@@ -1377,16 +1378,9 @@ async function approveTask(taskId) {
     showToast("✅ تمت الموافقة ونشر المهمة", 'success');
     showSubNotification({ ...t, priority: t.priority, title: t.title, assignee: t.assignee, dueDate: t.dueDate });
     if (t.priority === "عاجل") {
-      setTimeout(() => {
-        showReminder({
-          kicker: '🚨 مهمة عاجلة جديدة',
-          title: 'تنبيه فوري',
-          icon: '⚠️',
-          priority: 'urgent',
-          task: { ...t, id: taskId },
-          notes: t.notes || ''
-        });
-      }, 800);
+      // ✅ علّمها كمعروضة لتجنب التكرار — سيُعرض التنبيه المجمّع عبر checkReminders
+      state.seenUrgentTasks.add(taskId + '_shown');
+      setTimeout(() => checkReminders(), 1500);
     }
   } catch (err) {
     swalError("فشل", err.message);
@@ -1518,23 +1512,43 @@ function showReminder(options = {}) {
     `;
     taskBox.hidden = false;
   } else if (tasks && tasks.length > 0) {
-    taskBox.innerHTML = tasks.map(t => {
+    taskBox.innerHTML = tasks.map((t, index) => {
       const d = daysRemaining(t.dueDate);
       const isOverdue = d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE;
       const pc = t.priority === "عاجل" ? "urgent" : t.priority === "مهم" ? "important" : "normal";
+      const pcLabel = t.priority === "عاجل" ? "🔴 عاجل" : t.priority === "مهم" ? "🟡 مهم" : "🟢 عادي";
+      const isClickable = !!t.id;
       return `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.06);">
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:14px;font-weight:800;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(t.title)}</div>
-            <div style="font-size:11.5px;color:#94a3b8;font-weight:700;margin-top:3px;">👤 ${esc(t.assignee || "—")}</div>
+        <div ${isClickable ? `data-reminder-task-id="${t.id}"` : ''} style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.06);${isClickable ? 'cursor:pointer;transition:all .2s;' : ''}" onmouseover="if(this.dataset.reminderTaskId)this.style.background='rgba(91,141,239,.12)'" onmouseout="if(this.dataset.reminderTaskId)this.style.background='rgba(255,255,255,.03)'">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#94a3b8;flex-shrink:0;">${index + 1}</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:14px;font-weight:800;color:#f8fafc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(t.title)}</div>
+              <div style="font-size:11.5px;color:#94a3b8;font-weight:700;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                <span>👤 ${esc(t.assignee || "—")}</span>
+                ${t.priority ? `<span class="reminder-chip ${pc}" style="padding:2px 8px;font-size:10.5px;">${pcLabel}</span>` : ''}
+              </div>
+            </div>
           </div>
-          <span class="reminder-chip ${isOverdue ? 'overdue' : pc}" style="font-size:11px;padding:4px 10px;">
+          <span class="reminder-chip ${isOverdue ? 'overdue' : ''}" style="font-size:11px;padding:4px 10px;flex-shrink:0;">
             📅 ${esc(dueLabel(t.dueDate))}
           </span>
         </div>
       `;
     }).join('');
     taskBox.hidden = false;
+
+    setTimeout(() => {
+      taskBox.querySelectorAll('[data-reminder-task-id]').forEach(el => {
+        el.addEventListener('click', () => {
+          const taskId = el.dataset.reminderTaskId;
+          if (taskId) {
+            closeReminder();
+            setTimeout(() => openModal(taskId), 300);
+          }
+        });
+      });
+    }, 100);
   } else {
     taskBox.hidden = true;
   }
@@ -1579,8 +1593,13 @@ function showReminder(options = {}) {
     DesktopNotif.show("🚨 تذكير عاجل", task ? task.title : title);
   }
 
+  // ✅ مدة أطول تلقائياً للقوائم الكبيرة
+  const actualDuration = tasks && tasks.length > 3 
+    ? Math.max(duration, Math.min(30000, tasks.length * 2000))
+    : duration;
+
   clearTimeout(state.reminderTimeoutId);
-  state.reminderTimeoutId = setTimeout(() => closeReminder(), duration);
+  state.reminderTimeoutId = setTimeout(() => closeReminder(), actualDuration);
 
   setTimeout(() => {
     host.addEventListener('click', onReminderBackdropClick, { once: true });
@@ -1661,42 +1680,44 @@ function checkReminders() {
   const now = Date.now();
   const tasks = Object.values(state.tasks);
 
+  // ✅ المهام العاجلة الجديدة (خلال 30 دقيقة) ولم تُعرض
   const urgentNew = tasks.filter(t => {
     if (t.priority !== "عاجل") return false;
     if (t.status === CONSTANTS.STATUS.DONE) return false;
     if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
-    if (t.createdAt > now - 5 * 60 * 1000 && !state.seenUrgentTasks.has(t.id + '_shown')) {
-      return true;
-    }
+    if (state.seenUrgentTasks.has(t.id + '_shown')) return false;
+    if (t.createdAt > now - CONSTANTS.URGENT_NEW_WINDOW) return true;
     return false;
   });
 
-  if (urgentNew.length > 1) {
+  // ✅ عرض جميع المهام العاجلة الجديدة معاً
+  if (urgentNew.length > 0) {
     urgentNew.forEach(t => state.seenUrgentTasks.add(t.id + '_shown'));
-    showReminder({
-      kicker: '🚨 مهام عاجلة جديدة',
-      title: `${urgentNew.length} مهام عاجلة تحتاج انتباهك`,
-      icon: '⚠️',
-      priority: 'urgent',
-      tasks: urgentNew
-    });
+    
+    if (urgentNew.length === 1) {
+      const task = urgentNew[0];
+      showReminder({
+        kicker: '🚨 مهمة عاجلة جديدة',
+        title: 'تنبيه فوري',
+        icon: '⚠️',
+        priority: 'urgent',
+        task: task,
+        notes: task.notes || ''
+      });
+    } else {
+      showReminder({
+        kicker: '🚨 مهام عاجلة جديدة',
+        title: `${urgentNew.length} مهام عاجلة تحتاج انتباهك`,
+        icon: '⚠️',
+        priority: 'urgent',
+        tasks: urgentNew,
+        notes: `يوجد ${urgentNew.length} مهام عاجلة جديدة — اضغط على أي مهمة لعرضها`
+      });
+    }
     return;
   }
 
-  if (urgentNew.length === 1) {
-    const task = urgentNew[0];
-    state.seenUrgentTasks.add(task.id + '_shown');
-    showReminder({
-      kicker: '🚨 مهمة عاجلة جديدة',
-      title: 'تنبيه فوري',
-      icon: '⚠️',
-      priority: 'urgent',
-      task: task,
-      notes: task.notes || ''
-    });
-    return;
-  }
-
+  // ✅ المهام الحرجة (متأخرة أكثر من 3 أيام)
   const critical = tasks.filter(t => {
     if (t.status === CONSTANTS.STATUS.DONE) return false;
     if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
@@ -1715,6 +1736,7 @@ function checkReminders() {
     }
   }
 
+  // ✅ المهام المستحقة خلال ساعة
   const dueSoon = tasks.filter(t => {
     if (t.status === CONSTANTS.STATUS.DONE) return false;
     if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
@@ -1777,7 +1799,7 @@ function showDailySummaryIfNeeded() {
       icon: '⏰',
       priority: overdue.length >= 5 || maxOverdueDays >= 5 ? 'urgent' : 'important',
       tasks: overdue.map(([id, t]) => ({ ...t, id })),
-      notes: `أقصى تأخير: ${maxOverdueDays} ${maxOverdueDays === 1 ? 'يوم' : 'أيام'} — يرجى مراجعة المهام فوراً`,
+      notes: `أقصى تأخير: ${maxOverdueDays} ${maxOverdueDays === 1 ? 'يوم' : 'أيام'} — اضغط على أي مهمة لعرضها`,
       duration: 15000,
       actions: [
         { 
@@ -1815,18 +1837,20 @@ function startReminderEngine() {
     }
   }, CONSTANTS.REMINDER_CHECK_INTERVAL);
   
+  // ✅ تنظيف دوري كل 6 ساعات
   setInterval(() => {
-    const today = new Date().toDateString();
+    const existingTaskIds = new Set(Object.keys(state.tasks));
     state.seenUrgentTasks = new Set(
-      [...state.seenUrgentTasks].filter(k => 
-        k.includes('_shown') || k.includes(today)
-      )
+      [...state.seenUrgentTasks].filter(k => {
+        const taskId = k.split('_')[0];
+        return existingTaskIds.has(taskId) || k.includes('_shown');
+      })
     );
     if (state.seenNotifications.size > 200) {
       const arr = [...state.seenNotifications];
       state.seenNotifications = new Set(arr.slice(-200));
     }
-  }, 60 * 60 * 1000);
+  }, 6 * 60 * 60 * 1000);
 }
 function stopReminderEngine() {
   if (state.reminderInterval) { clearInterval(state.reminderInterval); state.reminderInterval = null; }
@@ -2079,6 +2103,12 @@ function startRealtimeListeners() {
     if (el) el.textContent = `آخر تحديث: ${new Date().toLocaleTimeString('ar-EG', {hour:'2-digit',minute:'2-digit'})}`;
     
     scheduleRender();
+    
+    // ✅ فحص المهام العاجلة الجديدة فور وصولها
+    if (!isFirst) {
+      setTimeout(() => checkReminders(), 500);
+    }
+    
     if (state.openTaskId && state.tasks[state.openTaskId]) renderModal(state.openTaskId);
     else if (state.openTaskId && !state.tasks[state.openTaskId]) closeModal();
   });
@@ -3348,17 +3378,10 @@ function setupAddTaskForm() {
       if (isAdmin) {
         showToast("✅ تمت الإضافة", 'success');
         showSubNotification({ title, assignee: member.name, priority, dueDate });
-        if (priority === "عاجل") {
-          setTimeout(() => {
-            showReminder({
-              kicker: '🚨 مهمة عاجلة جديدة',
-              title: 'تنبيه فوري',
-              icon: '⚠️',
-              priority: 'urgent',
-              task: { ...taskData, id: newRef.key },
-              notes: notes || ''
-            });
-          }, 800);
+        // ✅ علّمها كمعروضة لتجنب التكرار — سيُعرض التنبيه المجمّع عبر checkReminders
+        if (priority === "عاجل" && newRef.key) {
+          state.seenUrgentTasks.add(newRef.key + '_shown');
+          setTimeout(() => checkReminders(), 1500);
         }
       } else {
         showToast("✅ تم إرسال المهمة للمراجعة — بانتظار موافقة المدير", 'info', 4000);
