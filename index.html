@@ -1134,6 +1134,258 @@ html[data-theme="light"] ::-webkit-scrollbar-thumb{
   .stat-num{filter:drop-shadow(0 0 10px currentColor);}
 }
 </style>
+
+<!-- ═══════════════════════════════════════════════════════════
+     WATCH SCREEN v2.0 — Isolated + Refined + Escalated
+     ═══════════════════════════════════════════════════════════ -->
+<style>
+/* ─── 1) عزل شاشة العرض من التأثيرات العامة ──────────────────── */
+body:has(#watchScreen.active)::before,
+body:has(#watchScreen.active)::after { display:none !important; }
+
+#watchScreen{
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(91,141,239,.10), transparent 45%),
+    radial-gradient(ellipse at 85% 100%, rgba(45,212,163,.06), transparent 45%),
+    radial-gradient(ellipse at top,#0a1428 0%,#050810 55%,#020308 100%) !important;
+  isolation:isolate;
+}
+
+/* ─── 2) شريط المؤشرات (KPIs) — أنظف وأكثر توازناً ───────────── */
+#watchScreen .w-kpis{ gap:10px; }
+
+#watchScreen .w-kpi{
+  position:relative;
+  padding:14px 12px;
+  border-radius:16px;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:4px;
+  min-height:76px;
+  overflow:hidden;
+  border:none !important;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),
+             box-shadow .35s cubic-bezier(.16,1,.3,1);
+}
+#watchScreen .w-kpi::before{
+  content:'';position:absolute;bottom:0;inset-inline:22%;height:3px;border-radius:4px 4px 0 0;
+  background:rgba(255,255,255,.65);
+  box-shadow:0 0 12px rgba(255,255,255,.5);
+}
+#watchScreen .w-kpi::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,.18),transparent 55%);
+}
+#watchScreen .w-kpi:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 36px rgba(0,0,0,.45),
+             0 0 42px var(--kpi-glow,rgba(0,0,0,.3));
+}
+
+#watchScreen .w-kpi-num{
+  font-size:clamp(26px,2.3vw,36px);
+  line-height:1;
+  text-shadow:0 3px 14px rgba(0,0,0,.45);
+  font-weight:900;
+}
+#watchScreen .w-kpi-label{
+  font-size:clamp(10.5px,.85vw,12.5px);
+  font-weight:800;
+  letter-spacing:.3px;
+  opacity:.97;
+}
+
+#watchScreen .kpi-total     { --kpi-glow:rgba(91,141,239,.65); }
+#watchScreen .kpi-urgent    { --kpi-glow:rgba(240,75,92,.75); }
+#watchScreen .kpi-important { --kpi-glow:rgba(250,204,21,.65); }
+#watchScreen .kpi-normal    { --kpi-glow:rgba(45,212,163,.65); }
+#watchScreen .kpi-work      { --kpi-glow:rgba(168,85,247,.65); }
+#watchScreen .kpi-done      { --kpi-glow:rgba(20,184,166,.65); }
+#watchScreen .kpi-pending   { --kpi-glow:rgba(245,158,11,.65); }
+
+/* ─── 3) الأعمدة — خلفية موحّدة، رأس مميّز ──────────────────── */
+#watchScreen .w-col{
+  border-radius:18px;
+  background:rgba(12,17,30,.68);
+  border:1px solid rgba(255,255,255,.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 8px 28px rgba(0,0,0,.35);
+}
+
+#watchScreen .w-col-head{
+  padding:14px 16px;
+  background:rgba(255,255,255,.02);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+#watchScreen .w-col-title h3{
+  font-size:clamp(12px,1vw,14.5px);
+  letter-spacing:.2px;
+}
+#watchScreen .w-col-count{
+  font-size:12px;
+  padding:4px 12px;
+  border-radius:10px;
+  font-weight:900;
+}
+
+#watchScreen .col-pending .w-col-head   { background:linear-gradient(180deg,rgba(245,158,11,.14),rgba(245,158,11,.02)); }
+#watchScreen .col-urgent .w-col-head    { background:linear-gradient(180deg,rgba(240,75,92,.16),rgba(240,75,92,.02)); }
+#watchScreen .col-important .w-col-head { background:linear-gradient(180deg,rgba(245,165,36,.12),rgba(245,165,36,.02)); }
+#watchScreen .col-normal .w-col-head    { background:linear-gradient(180deg,rgba(45,212,163,.12),rgba(45,212,163,.02)); }
+#watchScreen .col-done .w-col-head      { background:linear-gradient(180deg,rgba(20,184,166,.10),rgba(20,184,166,.01)); }
+
+/* ─── 4) بطاقات المهام — أوضح، أنظف، تصاعد بصرّي ────────────── */
+#watchScreen .w-task{
+  padding:14px 16px;
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(23,29,46,.78),rgba(15,20,32,.68));
+  border:1px solid rgba(255,255,255,.06);
+  min-height:92px;
+  gap:10px;
+  transition:all .3s cubic-bezier(.16,1,.3,1);
+}
+#watchScreen .w-task:hover{
+  background:linear-gradient(135deg,rgba(35,43,66,.92),rgba(23,29,46,.82));
+  border-color:rgba(91,141,239,.35);
+  transform:translateX(-5px);
+  box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+
+#watchScreen .w-task-title{
+  font-size:clamp(13px,1.05vw,15px);
+  line-height:1.4;
+  min-height:auto;
+  -webkit-line-clamp:2;
+  font-weight:900;
+}
+#watchScreen .w-task-meta{
+  font-size:11px;
+  padding-top:6px;
+  border-top:1px solid rgba(255,255,255,.05);
+  margin-top:2px;
+}
+#watchScreen .w-task-avatar{
+  width:20px;height:20px;border-radius:6px;font-size:10px;
+}
+#watchScreen .w-task-status-badge{
+  font-size:10px;
+  padding:3px 9px;
+  border-radius:6px;
+  letter-spacing:.2px;
+}
+
+/* ─── 5) تصاعد: عمود "عاجل" — الأقوى بصرياً ──────────────────── */
+#watchScreen .col-urgent .w-task{
+  background:linear-gradient(135deg,rgba(240,75,92,.11),rgba(15,20,32,.78));
+  border-color:rgba(240,75,92,.30);
+  animation:watchUrgentPulse 3s ease-in-out infinite;
+}
+#watchScreen .col-urgent .w-task::before{
+  content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#f04b5c,#ff6b7d,#f04b5c);
+  background-size:100% 200%;
+  animation:watchUrgentBarFlow 1.8s linear infinite;
+}
+#watchScreen .col-urgent .w-task-title{
+  color:#fff;
+  text-shadow:0 0 10px rgba(240,75,92,.45);
+}
+@keyframes watchUrgentPulse{
+  0%,100%{
+    box-shadow:0 0 0 0 rgba(240,75,92,.25),
+               0 0 18px rgba(240,75,92,.12);
+  }
+  50%{
+    box-shadow:0 0 0 5px rgba(240,75,92,0),
+               0 0 30px rgba(240,75,92,.35);
+  }
+}
+@keyframes watchUrgentBarFlow{
+  0%  { background-position:0 0; }
+  100%{ background-position:0 200%; }
+}
+
+/* ─── 6) تصاعد: عمود "مهم" — متوسط القوة ────────────────────── */
+#watchScreen .col-important .w-task{
+  background:linear-gradient(135deg,rgba(245,165,36,.09),rgba(15,20,32,.78));
+  border-color:rgba(245,165,36,.22);
+}
+#watchScreen .col-important .w-task::before{
+  content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#f5a524,#ffc043);
+}
+
+/* ─── 7) تصاعد: عمود "عادي" — هادئ ──────────────────────────── */
+#watchScreen .col-normal .w-task::before{
+  content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#2dd4a3,#3ee8b5);
+}
+
+/* ─── 8) تصاعد: عمود "بانتظار الموافقة" — منقّط ─────────────── */
+#watchScreen .col-pending .w-task{
+  background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(15,20,32,.78));
+  border:1.5px dashed rgba(245,158,11,.30);
+}
+#watchScreen .col-pending .w-task::before{
+  content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#f59e0b,#fbbf24);
+}
+
+/* ─── 9) تصاعد: عمود "مكتمل" — خافت ومتراجع ────────────────── */
+#watchScreen .col-done .w-task{
+  opacity:.62;
+  background:linear-gradient(135deg,rgba(20,184,166,.05),rgba(15,20,32,.65));
+}
+#watchScreen .col-done .w-task:hover{ opacity:1; }
+#watchScreen .col-done .w-task-title{ color:#94a3b8; text-shadow:none; }
+#watchScreen .col-done .w-task::before{
+  content:'';position:absolute;top:0;inset-inline-end:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#14b8a6,#22d3ee);
+}
+
+/* ─── 10) الهيدر — زجاج أنظف ────────────────────────────────── */
+#watchScreen .w-header{
+  background:rgba(12,17,30,.72);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  backdrop-filter:blur(24px) saturate(160%);
+  -webkit-backdrop-filter:blur(24px) saturate(160%);
+}
+
+/* ─── 11) التذييل (Tickers) ─────────────────────────────────── */
+#watchScreen .w-ticker{
+  background:rgba(12,17,30,.68);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:14px;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+
+/* ─── 12) سكرول مخصص أنحف لشاشة العرض ───────────────────────── */
+#watchScreen ::-webkit-scrollbar{ width:6px; height:6px; }
+#watchScreen ::-webkit-scrollbar-track{ background:transparent; }
+#watchScreen ::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#5b8def,#a855f7);
+  border-radius:6px; border:none;
+}
+
+/* ─── 13) تقليل الحركة ─────────────────────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  #watchScreen .w-task,
+  #watchScreen .col-urgent .w-task,
+  #watchScreen .col-urgent .w-task::before{ animation:none !important; }
+}
+
+/* ─── 14) موبايل ──────────────────────────────────────────── */
+@media (max-width:768px){
+  #watchScreen .w-kpi{ min-height:66px; padding:10px 8px; }
+  #watchScreen .w-kpi-num{ font-size:22px; }
+  #watchScreen .w-kpi-label{ font-size:10px; }
+  #watchScreen .w-task{ padding:12px 14px; min-height:80px; }
+}
+</style>
 </head>
 <body>
 
