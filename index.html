@@ -905,6 +905,235 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
   .report-toolbar,.btn-close-report,.btn-download{display:none !important;}
 }
 </style>
+
+<!-- ═══════════════════════════════════════════════════════════
+     VISUAL ENHANCEMENTS v25.0 — Mesh / Glass / Glow / Motion
+     ═══════════════════════════════════════════════════════════ -->
+<style>
+/* ─── 1) Animated Mesh Gradient + Noise Overlay ─────────────── */
+body::before{
+  content:'';position:fixed;inset:-25%;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 28%, rgba(91,141,239,.22), transparent 45%),
+    radial-gradient(circle at 82% 18%, rgba(45,212,163,.16), transparent 45%),
+    radial-gradient(circle at 72% 82%, rgba(168,85,247,.18), transparent 50%),
+    radial-gradient(circle at 28% 88%, rgba(245,165,36,.10), transparent 45%);
+  filter:blur(40px);
+  animation:meshFlow 24s ease-in-out infinite;
+  will-change:transform;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  opacity:.04;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+@keyframes meshFlow{
+  0%,100%{transform:translate3d(0,0,0) scale(1) rotate(0deg);}
+  33%   {transform:translate3d(3%,-4%,0) scale(1.08) rotate(3deg);}
+  66%   {transform:translate3d(-3%,3%,0) scale(1.05) rotate(-3deg);}
+}
+html[data-theme="light"] body::before{opacity:.55;filter:blur(60px);}
+html[data-theme="light"] body::after{opacity:.025;}
+
+/* ─── 2) Header — Enhanced Glass + Colored Bottom Line ───────── */
+header{
+  position:sticky;top:0;
+  background:linear-gradient(135deg,rgba(10,14,26,.72),rgba(23,29,46,.58));
+  backdrop-filter:blur(28px) saturate(160%);
+  -webkit-backdrop-filter:blur(28px) saturate(160%);
+  border-bottom:1px solid transparent;
+  box-shadow:0 1px 0 rgba(255,255,255,.04),0 12px 40px rgba(0,0,0,.35);
+}
+header::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,transparent,#5b8def,#2dd4a3,#a855f7,transparent);
+  background-size:220% 100%;
+  animation:headerLine 5s linear infinite;
+  opacity:.85;
+}
+@keyframes headerLine{0%{background-position:220% 0;}100%{background-position:-220% 0;}}
+html[data-theme="light"] header{
+  background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(248,250,252,.78));
+  box-shadow:0 1px 0 rgba(15,23,42,.05),0 12px 40px rgba(15,23,42,.08);
+}
+
+/* ─── 3) Logo Pulsing Conic Ring ─────────────────────────────── */
+.login-logo-wrap,.header-logo-wrap,.loading-logo-wrap{position:relative;isolation:isolate;}
+.login-logo-wrap::before,.header-logo-wrap::before,.loading-logo-wrap::before{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:conic-gradient(from 0deg,#5b8def,#2dd4a3,#a855f7,#5b8def);
+  animation:ringSpin 7s linear infinite;
+  z-index:-1;opacity:.55;filter:blur(10px);
+}
+@keyframes ringSpin{to{transform:rotate(360deg);}}
+
+/* ─── 4) Panels — Gradient Border + Hover Glow ───────────────── */
+.card-panel{
+  position:relative;border-color:transparent;
+  transition:transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
+}
+.card-panel::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(135deg,rgba(91,141,239,.45),rgba(45,212,163,.22) 45%,rgba(168,85,247,.38));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.45;pointer-events:none;transition:opacity .35s;
+}
+.card-panel:hover::before{opacity:1;}
+.card-panel:hover{box-shadow:var(--shadow-md),0 0 48px rgba(91,141,239,.14);}
+
+/* ─── 5) Stat Cards — Inner Glow + Color Halo ────────────────── */
+.stat{isolation:isolate;}
+.stat::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(circle at 50% 0%, currentColor, transparent 65%);
+  opacity:0;transition:opacity .35s;
+}
+.stat:hover::after{opacity:.10;}
+.stat-num{filter:drop-shadow(0 0 14px currentColor);}
+.stat.total   .stat-num{color:var(--primary);text-shadow:0 0 26px rgba(91,141,239,.55);}
+.stat.done    .stat-num{color:var(--success);text-shadow:0 0 26px rgba(45,212,163,.55);}
+.stat.progress.stat-num, .stat.progress .stat-num{color:var(--warning);text-shadow:0 0 26px rgba(245,165,36,.55);}
+.stat.overdue .stat-num{color:var(--urgent);text-shadow:0 0 26px rgba(240,75,92,.55);}
+.stat.pending .stat-num{color:#f59e0b;text-shadow:0 0 26px rgba(245,158,11,.55);}
+.stat.mine    .stat-num{color:#a855f7;text-shadow:0 0 26px rgba(168,85,247,.55);}
+
+/* ─── 6) Buttons — Shine Sweep ───────────────────────────────── */
+#loginSubmitBtn,.form-grid button,.btn-add-user,.btn-download,
+.btn-report,.btn-watch-screen,.approval-btn.approve,.approval-btn.reject,
+.btn-approve-modal,.btn-reject-modal,.fs-btn{
+  position:relative;overflow:hidden;isolation:isolate;
+}
+#loginSubmitBtn::after,.form-grid button::after,.btn-add-user::after,
+.btn-download::after,.btn-report::after,.btn-watch-screen::after,
+.approval-btn.approve::after,.approval-btn.reject::after,
+.btn-approve-modal::after,.btn-reject-modal::after,.fs-btn::after{
+  content:'';position:absolute;top:0;inset-inline-start:-120%;width:110%;height:100%;
+  background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.42),transparent 80%);
+  transition:inset-inline-start .75s var(--ease-out);pointer-events:none;
+}
+#loginSubmitBtn:hover::after,.form-grid button:hover::after,
+.btn-add-user:hover::after,.btn-download:hover::after,
+.btn-report:hover::after,.btn-watch-screen:hover::after,
+.approval-btn.approve:hover::after,.approval-btn.reject:hover::after,
+.btn-approve-modal:hover::after,.btn-reject-modal:hover::after,
+.fs-btn:hover::after{inset-inline-start:120%;}
+
+/* ─── 7) Nav — Pill Glow + Active Inner Line ─────────────────── */
+.main-nav{
+  background:linear-gradient(135deg,rgba(10,14,26,.65),rgba(23,29,46,.5));
+  backdrop-filter:blur(22px);
+}
+.nav-btn{position:relative;}
+.nav-btn.active{
+  box-shadow:0 8px 24px rgba(91,141,239,.5),0 0 0 1px rgba(255,255,255,.08) inset;
+}
+.nav-btn.active::after{
+  content:'';position:absolute;inset-inline:22%;bottom:5px;height:2px;border-radius:2px;
+  background:rgba(255,255,255,.75);
+  box-shadow:0 0 10px rgba(255,255,255,.85);
+}
+
+/* ─── 8) Modal — Gradient Frame + Ambient Glow ───────────────── */
+.modal-box{position:relative;isolation:isolate;}
+.modal-box::before{
+  content:'';position:absolute;inset:-2px;border-radius:inherit;z-index:-1;
+  background:conic-gradient(from 0deg,rgba(91,141,239,.7),rgba(45,212,163,.5),rgba(168,85,247,.65),rgba(91,141,239,.7));
+  filter:blur(14px);opacity:.6;animation:ringSpin 10s linear infinite;
+}
+#reminderCard{position:relative;}
+#reminderCard::before{
+  content:'';position:absolute;inset:-2px;border-radius:inherit;z-index:-1;
+  background:conic-gradient(from 0deg,rgba(91,141,239,.6),rgba(168,85,247,.5),rgba(45,212,163,.6),rgba(91,141,239,.6));
+  filter:blur(16px);opacity:.45;animation:ringSpin 12s linear infinite;
+}
+
+/* ─── 9) Empty States — Floating Icon ────────────────────────── */
+.empty{position:relative;padding:90px 20px 70px;}
+.empty::before{
+  content:'📭';position:absolute;top:34%;left:50%;
+  transform:translate(-50%,-50%);
+  font-size:56px;opacity:.22;pointer-events:none;
+  animation:floatIcon 3.4s ease-in-out infinite;
+  filter:drop-shadow(0 8px 20px rgba(91,141,239,.25));
+}
+@keyframes floatIcon{
+  0%,100%{transform:translate(-50%,-50%) rotate(0deg);}
+  50%   {transform:translate(-50%,-62%) rotate(-4deg);}
+}
+
+/* ─── 10) Toast — Glass + Type-Based Glow ────────────────────── */
+.toast{
+  backdrop-filter:blur(26px) saturate(160%);
+  -webkit-backdrop-filter:blur(26px) saturate(160%);
+  background:linear-gradient(135deg,rgba(23,29,46,.94),rgba(15,20,32,.88));
+}
+html[data-theme="light"] .toast{
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(248,250,252,.9));
+}
+.toast-success{box-shadow:var(--shadow-lg),0 0 32px rgba(45,212,163,.28);}
+.toast-error  {box-shadow:var(--shadow-lg),0 0 32px rgba(240,75,92,.28);}
+.toast-warning{box-shadow:var(--shadow-lg),0 0 32px rgba(245,165,36,.28);}
+.toast-info   {box-shadow:var(--shadow-lg),0 0 32px rgba(91,141,239,.28);}
+
+/* ─── 11) Kanban — Side Slide + Inner Glow ───────────────────── */
+.kanban-card{position:relative;isolation:isolate;}
+.kanban-card::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 24px rgba(91,141,239,.14);
+  opacity:0;transition:opacity .3s;
+}
+.kanban-card:hover::after{opacity:1;}
+.kanban-card:hover{transform:translateX(-8px);box-shadow:var(--shadow-md),0 0 32px rgba(91,141,239,.28);}
+
+/* ─── 12) Custom Gradient Scrollbar ──────────────────────────── */
+*{scrollbar-width:thin;scrollbar-color:#5b8def rgba(255,255,255,.04);}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:rgba(255,255,255,.03);border-radius:10px;}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#5b8def,#a855f7);
+  border-radius:10px;border:2px solid transparent;background-clip:padding-box;
+  transition:background .3s;
+}
+::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,#5b8def,#2dd4a3,#a855f7);
+  background-clip:padding-box;
+}
+html[data-theme="light"] ::-webkit-scrollbar-track{background:rgba(15,23,42,.05);}
+html[data-theme="light"] ::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#3b6fd4,#9333ea);
+  background-clip:padding-box;
+}
+
+/* ─── 13) Focus Ring — Glow Halo ─────────────────────────────── */
+:focus-visible{
+  outline:2px solid var(--primary);
+  outline-offset:3px;border-radius:6px;
+  box-shadow:0 0 0 6px rgba(91,141,239,.18),0 0 22px rgba(91,141,239,.5);
+}
+
+/* ─── 14) Subtle Content Fade-In ─────────────────────────────── */
+.view-section.active{animation:fadeIn .45s var(--ease-out);}
+.task-card,.user-row,.kanban-card{animation:cardRise .4s var(--ease-out) backwards;}
+@keyframes cardRise{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ─── 15) Reduced Motion Respect ─────────────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  body::before,body::after,
+  .login-logo-wrap::before,.header-logo-wrap::before,.loading-logo-wrap::before,
+  .modal-box::before,#reminderCard::before,
+  header::after{animation:none !important;}
+  .empty::before{animation:none !important;}
+}
+
+/* ─── 16) Mobile — Snappier ──────────────────────────────────── */
+@media (max-width:768px){
+  header::after{height:1.5px;}
+  .card-panel::before{opacity:.65;}
+  body::before{filter:blur(30px);opacity:.75;}
+  .stat-num{filter:drop-shadow(0 0 10px currentColor);}
+}
+</style>
 </head>
 <body>
 
@@ -1410,11 +1639,10 @@ const state = {
   fullscreenReminderActive: false,
   reminderInterval: null,
   seenNotifications: new Set(),
-  _teamKeysCache: null,  // ✅ Cache for team keys
-  _scrollLockCount: 0    // ✅ Proper scroll lock counter
+  _teamKeysCache: null,
+  _scrollLockCount: 0
 };
 
-/* ✅ Better scroll lock */
 function lockScroll() {
   state._scrollLockCount++;
   document.body.classList.add('modal-open');
@@ -1432,7 +1660,6 @@ function forceUnlockScroll() {
   document.body.style.overflow = '';
 }
 
-/* ✅ Cached team keys */
 function getMyTeamKeys() {
   if (state._teamKeysCache && state._teamKeysCache.uid === state.user?.uid && state._teamKeysCache.teamRef === state.team) {
     return state._teamKeysCache.keys;
@@ -1456,7 +1683,6 @@ function isMyTask(task) {
   return false;
 }
 
-/* THEME */
 function initTheme() { const saved = Storage.get('emak_theme', 'dark'); applyTheme(saved); }
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -1464,7 +1690,6 @@ function applyTheme(theme) {
   Storage.set('emak_theme', theme);
   const icon = theme === 'dark' ? '🌙' : '☀️';
   $$('[data-theme-toggle]').forEach(btn => btn.textContent = icon);
-  // ✅ Refresh chart colors on theme change
   refreshChartTheme();
 }
 function refreshChartTheme() {
@@ -1487,7 +1712,6 @@ function toggleTheme() {
 function themeBg() { return state.theme === 'light' ? '#ffffff' : '#10141f'; }
 function themeFg() { return state.theme === 'light' ? '#0f172a' : '#f8fafc'; }
 
-/* TOAST */
 function showToast(msg, type = 'success', ms = 3200) {
   const host = $('#toastHost');
   if (!host) return;
@@ -1507,7 +1731,6 @@ const swalSuccess = (title, text="") => Swal.fire({ icon:"success", title, text,
 const swalError = (title, text="") => Swal.fire({ icon:"error", title, text, confirmButtonColor:"#f04b5c", background: themeBg(), color: themeFg() });
 const swalConfirm = (title, text="لا يمكن التراجع!") => Swal.fire({ icon:"warning", title, text, showCancelButton:true, confirmButtonText:"نعم", cancelButtonText:"إلغاء", confirmButtonColor:"#f04b5c", cancelButtonColor:"#5b6580", background: themeBg(), color: themeFg() });
 
-/* AUDIO */
 let _audioCtx = null;
 function playNotificationSound(priority = 'normal') {
   try {
@@ -1624,7 +1847,6 @@ async function loadLogoAsBase64() {
   } catch { return null; }
 }
 
-/* APPROVAL SYSTEM */
 async function approveTask(taskId) {
   if (!state.isAdmin) return swalError("غير مصرح");
   const t = state.tasks[taskId];
@@ -1745,7 +1967,6 @@ document.addEventListener('click', (e) => {
   else if (approval === 'reject') rejectTask(id);
 });
 
-/* REMINDER SYSTEM */
 function showReminder(options = {}) {
   if (state.reminderShowing) {
     setTimeout(() => showReminder(options), 2000);
@@ -2144,7 +2365,6 @@ function stopReminderEngine() {
   $('#fullscreenReminder')?.classList.remove('active');
 }
 
-/* SUB NOTIFICATIONS */
 function showSubNotification(task) {
   const container = $('#subNotifications');
   if (!container) return;
@@ -2233,7 +2453,6 @@ function closeWatchSubNotification(notifId) {
   setTimeout(() => notif.remove(), 400);
 }
 
-/* AUTH */
 function clearAllListeners() {
   Object.keys(state.unsubs).forEach(k => {
     if (state.unsubs[k]) { try { state.unsubs[k](); } catch {} state.unsubs[k] = null; }
@@ -2364,7 +2583,6 @@ function updateAddTaskFormForRole() {
   }
 }
 
-/* REALTIME */
 function startRealtimeListeners() {
   clearAllListeners();
   
@@ -3015,7 +3233,6 @@ async function logActivity(type, text, taskId = null, taskTitle = "") {
   try { await push(ref(db, "activity"), { type, text, taskId, taskTitle, uid: state.user.uid, byName: state.profile?.displayName || "—", at: Date.now() }); } catch {}
 }
 
-/* WATCH */
 function wRenderStats() {
   const tasks = Object.values(state.watchData.tasks || {});
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -3229,7 +3446,6 @@ function stopWatchData() {
   Object.keys(state.watchUnsubs).forEach(k => { if (state.watchUnsubs[k]) { try { state.watchUnsubs[k](); } catch {} state.watchUnsubs[k] = null; } });
 }
 
-/* USERS */
 function renderUsersStats() {
   const users = Object.values(state.users);
   const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -4034,7 +4250,6 @@ function setupGlobalEvents() {
     if (s) { s.classList.add('offline'); s.innerHTML = '<i></i> غير متصل'; }
     showToast("📡 غير متصل", 'warning');
   });
-  // ✅ Handle page unload - restore scroll
   window.addEventListener('beforeunload', forceUnlockScroll);
 }
 
