@@ -2,10 +2,15 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
 <meta name="theme-color" content="#050810">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
 <title>EMAK IT Dep. — لوحة التحكم</title>
 <link rel="icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
+<link rel="apple-touch-icon" href="https://i.postimg.cc/9MnXvxMn/EMAK-Logo.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,17 +66,27 @@ html[data-theme="light"]{
   --shadow-lg:0 40px 120px rgba(15,23,42,.18);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
-body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;font-size:clamp(13px,.45vw + 10.5px,17px);background:var(--body-bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;max-width:100%;overflow-x:hidden;}
+body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;font-size:clamp(13px,.45vw + 10.5px,17px);background:var(--body-bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;max-width:100%;}
 img{max-width:100%;display:block;}
 button{font-family:inherit;cursor:pointer;}
-button,input,select,textarea{font-size:inherit;}
+button,input,select,textarea{font-size:inherit;font-family:inherit;}
 [hidden]{display:none !important;}
 mark.hl{background:rgba(245,165,36,.35);color:inherit;padding:0 2px;border-radius:3px;}
 :focus-visible{outline:2px solid var(--primary);outline-offset:3px;border-radius:4px;}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}}
 .screen{display:none;}
 .screen.active{display:flex;}
+@supports (padding: max(0px)){
+  body{padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);}
+}
+
+/* ============ SKELETON LOADER ============ */
+.skeleton{background:linear-gradient(90deg,var(--bg-3) 25%,var(--bg-4) 50%,var(--bg-3) 75%);background-size:200% 100%;animation:skeletonShine 1.5s infinite;border-radius:12px;min-height:20px;}
+@keyframes skeletonShine{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.skeleton-card{height:180px;border-radius:22px;}
+.skeleton-line{height:14px;margin-bottom:8px;border-radius:6px;}
+.skeleton-line.short{width:60%;}
 
 /* ============ LOGIN ============ */
 #loginScreen{align-items:center;justify-content:center;min-height:100vh;padding:20px;background:var(--login-bg);position:relative;overflow:hidden;}
@@ -150,8 +165,9 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 #logoutBtn:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;border-color:var(--urgent);transform:translateY(-2px);}
 .btn-watch-screen{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border:none;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:800;transition:all .25s;box-shadow:0 6px 16px rgba(168,85,247,.4);}
 .btn-watch-screen:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(168,85,247,.6);}
-.main-nav{display:flex;gap:8px;padding:14px 30px;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);overflow-x:auto;}
-.nav-btn{background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);padding:11px 20px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap;transition:all .3s;display:inline-flex;align-items:center;gap:6px;}
+.main-nav{display:flex;gap:8px;padding:14px 30px;background:var(--nav-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.main-nav::-webkit-scrollbar{display:none;}
+.nav-btn{background:var(--surface-1);color:var(--text-2);border:1.5px solid var(--border);padding:11px 20px;border-radius:12px;font-size:13px;font-weight:700;white-space:nowrap;transition:all .3s;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;}
 .nav-btn:hover{background:rgba(91,141,239,.15);color:var(--text);border-color:rgba(91,141,239,.4);}
 .nav-btn.active{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;border-color:var(--primary);box-shadow:0 8px 24px rgba(91,141,239,.5);}
 .nav-btn.watch-highlight{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff !important;border-color:rgba(168,85,247,.6);margin-inline-start:auto;animation:watchPulse 2.5s ease-in-out infinite;}
@@ -310,6 +326,7 @@ header{background:var(--header-bg);backdrop-filter:blur(30px);border-bottom:1px 
 .btn-purge-deleted:hover{background:linear-gradient(135deg,#475569,#334155);color:#fff;transform:translateY(-2px);}
 
 /* ============ MODAL ============ */
+body.modal-open{overflow:hidden;}
 #modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(15px);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
 html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 #modalOverlay.active{display:flex;}
@@ -362,12 +379,14 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .btn-reject-modal:hover{background:linear-gradient(135deg,#f04b5c,#c81e3c);color:#fff;border-color:transparent;}
 
 /* ============ REPORT ============ */
+body.report-open{overflow:hidden;}
 #reportOverlay{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px;}
 #reportOverlay.active{display:flex;}
 .report-wrapper{background:var(--modal-bg);border-radius:28px;max-width:960px;width:100%;max-height:95vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow-lg);}
 .report-toolbar{padding:20px 28px;background:var(--surface-1);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
 .btn-download{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;border:none;padding:13px 24px;border-radius:12px;font-size:14px;font-weight:800;box-shadow:0 8px 24px rgba(45,212,163,.4);transition:all .3s;}
 .btn-download:hover{transform:translateY(-2px);}
+.btn-download:disabled{opacity:.6;cursor:not-allowed;}
 .btn-close-report{background:var(--surface-1);color:var(--text);border:1.5px solid var(--border-2);padding:13px 24px;border-radius:12px;font-size:14px;font-weight:700;}
 .btn-close-report:hover{background:linear-gradient(135deg,var(--urgent),#c81e3c);color:#fff;}
 .report-scroll{overflow-y:auto;flex:1;padding:28px;}
@@ -410,9 +429,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .sub-notif-close:hover,.watch-sub-close:hover{background:rgba(240,75,92,.15);color:#f04b5c;}
 .sub-notif-progress-text,.watch-sub-progress-text{position:absolute;bottom:6px;inset-inline-end:14px;font-size:9.5px;color:var(--text-3);font-weight:800;font-family:'JetBrains Mono',monospace;}
 
-/* ============================================================
-   CENTRAL REMINDER MODAL SYSTEM
-   ============================================================ */
+/* ============ REMINDER MODAL ============ */
 #reminderHost{position:fixed;inset:0;z-index:9500;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,0);backdrop-filter:blur(0px);transition:background .4s var(--ease-out),backdrop-filter .4s var(--ease-out);pointer-events:none;}
 #reminderHost.active{display:flex;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);pointer-events:auto;animation:reminderBgIn .4s var(--ease-out);}
 @keyframes reminderBgIn{from{background:rgba(0,0,0,0);backdrop-filter:blur(0px);}to{background:rgba(0,0,0,.75);backdrop-filter:blur(12px);}}
@@ -453,7 +470,6 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .reminder-task-box::-webkit-scrollbar{width:8px;}
 .reminder-task-box::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:4px;}
 .reminder-task-box::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#f04b5c,#c81e3c);border-radius:4px;}
-.reminder-task-box::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#ff6b7d,#f04b5c);}
 .reminder-task-box::before{content:'';position:absolute;top:0;bottom:0;inset-inline-end:0;width:4px;background:linear-gradient(180deg,#5b8def,#2dd4a3);}
 .reminder-card.p-urgent .reminder-task-box::before{background:linear-gradient(180deg,#f04b5c,#ff6b7d,#f04b5c);background-size:100% 200%;animation:reminderBarFlow 1.5s linear infinite;}
 .reminder-card.p-important .reminder-task-box::before{background:linear-gradient(180deg,#f5a524,#ffc043);}
@@ -483,9 +499,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .reminder-btn.warning:hover{box-shadow:0 12px 32px rgba(245,158,11,.6);}
 .reminder-btn.ghost{background:transparent;}
 
-/* ============================================================
-   FULLSCREEN REMINDER
-   ============================================================ */
+/* ============ FULLSCREEN REMINDER ============ */
 #fullscreenReminder{position:fixed;inset:0;z-index:9800;display:none;align-items:center;justify-content:center;background:radial-gradient(circle at center,#1a0408 0%,#050810 70%);padding:40px;overflow:hidden;}
 #fullscreenReminder.active{display:flex;animation:fsIn .5s var(--ease-out);}
 @keyframes fsIn{from{opacity:0;}to{opacity:1;}}
@@ -539,9 +553,7 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .btn-sm.success:hover{background:linear-gradient(135deg,var(--success),#22b388);color:#fff;}
 .empty{text-align:center;padding:60px 20px;color:var(--text-2);font-weight:700;font-size:14px;}
 
-/* ============================================================
-   WATCH SCREEN
-   ============================================================ */
+/* ============ WATCH SCREEN ============ */
 #watchScreen{position:fixed;inset:0;z-index:2000;background:#050810;overflow:hidden;display:none;}
 #watchScreen.active{display:block;}
 .watch-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
@@ -671,16 +683,226 @@ html[data-theme="light"] #modalOverlay{background:rgba(15,23,42,.5);}
 .watch-pin-hint{color:#64748b;font-size:12px;margin-top:20px;font-weight:700;}
 body.watch-kiosk .w-footer{display:none !important;}
 body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
+
+/* ============================================================
+   MOBILE & TABLET OPTIMIZATION — v24.2
+   ============================================================ */
+@media (max-width:1024px){
+  .charts-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  #tasksList{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
+  .modal-meta{grid-template-columns:1fr;}
+  .team-row{grid-template-columns:140px 1fr 120px;gap:12px;}
+  .chart-box{height:280px;}
+  .w-kanban{grid-template-columns:repeat(3,1fr);}
+  .w-kpis{grid-template-columns:repeat(4,1fr);}
+}
 @media (max-width:1400px){.w-kpis{grid-template-columns:repeat(4,1fr);}}
 @media (max-width:1100px){.w-kanban{grid-template-columns:repeat(3,1fr);}.w-clock{display:none;}}
 @media (max-width:700px){.w-kanban{grid-template-columns:1fr;}.w-footer{grid-template-columns:1fr;}.w-kpis{grid-template-columns:repeat(2,1fr);}}
 @media (max-width:640px){
-  .reminder-card{margin:0;}
+  .reminder-card{margin:0;border-radius:22px;}
   .reminder-icon-wrap{padding:24px 20px 16px;}
   .reminder-body{padding:0 20px 20px;}
   .reminder-actions{padding:16px 20px 24px;}
   .reminder-icon{width:56px;height:56px;font-size:28px;}
   .fs-alert-icon{width:100px;height:100px;font-size:52px;}
+}
+@media (max-width:768px){
+  header{padding:10px 12px;gap:10px;align-items:flex-start;}
+  .header-brand{gap:10px;flex:1;min-width:0;}
+  .header-logo-wrap{width:44px;height:44px;border-radius:14px;}
+  .header-logo{border-radius:10px;padding:4px;}
+  .header-brand h1{font-size:16px;}
+  .header-brand .subtitle{font-size:10px;margin-top:3px;}
+  .user-info{width:100%;gap:6px;justify-content:flex-start;padding-top:10px;border-top:1px solid var(--border);}
+  .user-info > div:first-child{display:none;}
+  #userName{font-size:12.5px;font-weight:800;flex:0 0 auto;}
+  .role{padding:4px 10px;font-size:10px;}
+  .icon-btn,.user-menu-btn,.btn-report,.btn-watch-screen,#logoutBtn{padding:8px 10px;font-size:12px;border-radius:10px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;gap:4px;}
+  .user-menu-btn,.btn-watch-screen,.btn-report{font-size:0;padding:8px 10px;min-width:38px;}
+  .user-menu-btn::before{content:'🔑';font-size:15px;}
+  .btn-watch-screen::before{content:'🖥️';font-size:15px;}
+  .btn-report::before{content:'📄';font-size:15px;}
+  #logoutBtn{font-size:11.5px;padding:8px 12px;}
+  .main-nav{padding:10px 12px;gap:6px;-webkit-overflow-scrolling:touch;}
+  .nav-btn{padding:9px 14px;font-size:12px;border-radius:10px;}
+  .nav-btn.watch-highlight{margin-inline-start:8px;animation:none;}
+  .watch-badge{font-size:8px;padding:2px 6px;}
+  .nav-btn.approval-nav .nav-badge{font-size:9px;padding:2px 6px;}
+  .container{margin:12px auto;padding:0 12px;}
+  .card-panel{padding:16px 14px;border-radius:18px;margin-bottom:14px;}
+  .panel-title{font-size:15px;margin-bottom:14px;gap:8px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat{padding:14px 10px;border-radius:14px;}
+  .stat-num{font-size:26px;letter-spacing:-1px;}
+  .stat-label{font-size:11px;}
+  .team-row{grid-template-columns:1fr auto;gap:8px;padding:12px 0;}
+  .team-row .team-name{font-size:13px;grid-column:1;}
+  .team-row .team-pct{font-size:12px;grid-column:2;}
+  .team-row .team-bar{grid-column:1 / -1;}
+  .chart-box{height:240px;}
+  #tasksList{grid-template-columns:1fr;gap:12px;}
+  #tasksList.kanban-board{grid-template-columns:1fr;gap:12px;}
+  .task-card{padding:18px 16px;min-height:auto;border-radius:18px;}
+  .task-card .card-title{font-size:16px;min-height:auto;margin-bottom:10px;}
+  .task-card .card-notes{font-size:13px;line-height:1.6;}
+  .assignee-chip{font-size:11.5px;padding:5px 12px;}
+  .card-due{font-size:11.5px;padding:5px 10px;}
+  .status-pill{font-size:11px;padding:5px 12px;}
+  .card-tag{font-size:10px;padding:4px 10px;}
+  .card-quick-actions{opacity:1;position:absolute;top:10px;inset-inline-start:10px;z-index:10;}
+  .quick-action-btn{width:32px;height:32px;font-size:13px;background:var(--bg-1);box-shadow:0 2px 8px rgba(0,0,0,.3);}
+  .task-card.approval-card{min-height:auto;padding:18px 16px;}
+  .approval-actions{flex-direction:column;gap:8px;}
+  .approval-btn{padding:12px 16px;font-size:13px;}
+  .kanban-col{min-height:200px;padding:14px;border-radius:16px;}
+  .kanban-col-header{font-size:14px;padding-bottom:10px;}
+  .kanban-count{font-size:12px;padding:3px 10px;}
+  .kanban-card{padding:16px;min-height:90px;border-radius:14px;border-inline-end-width:5px;}
+  .kanban-card-title{font-size:15px;margin-bottom:10px;}
+  .controls-bar{gap:8px;margin-bottom:14px;}
+  .search-wrap{min-width:100%;order:-1;}
+  .search-wrap input{padding:12px 14px 12px 42px;font-size:13px;border-radius:12px;}
+  .search-wrap::before{inset-inline-end:14px;font-size:14px;}
+  #sortSelect,.filter-select{padding:11px 14px;font-size:12px;border-radius:12px;flex:1;min-width:0;}
+  .view-toggle{flex:1;padding:3px;border-radius:12px;}
+  .view-toggle button{flex:1;padding:9px 10px;font-size:12px;border-radius:9px;}
+  .filters{gap:8px;margin-bottom:14px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .filters::-webkit-scrollbar{display:none;}
+  .filter-btn{padding:8px 14px;font-size:12px;border-radius:18px;flex-shrink:0;white-space:nowrap;}
+  .approval-banner{flex-direction:column;align-items:stretch;text-align:center;padding:14px 16px;gap:12px;}
+  .approval-banner-icon{align-self:center;width:46px;height:46px;font-size:22px;}
+  .approval-banner-title{font-size:14px;}
+  .approval-banner-sub{font-size:12px;}
+  .approval-banner-btn{width:100%;padding:12px 16px;}
+  .approval-header-bar{flex-direction:column;align-items:stretch;gap:10px;}
+  .approval-header-count{text-align:center;}
+  #modalOverlay{padding:0;align-items:flex-end;}
+  .modal-box{max-width:100%;max-height:94vh;border-radius:24px 24px 0 0;animation:modalSlideUp .35s var(--ease-out);}
+  @keyframes modalSlideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .modal-header{padding:18px;}
+  .modal-badges{flex-wrap:wrap;gap:6px;}
+  .priority-badge,.status-badge{font-size:11px;padding:5px 12px;}
+  .modal-close{width:36px;height:36px;font-size:14px;}
+  .modal-title{padding:18px 18px 12px;font-size:19px;}
+  .modal-tags{padding:0 18px 12px;gap:6px;}
+  .tag{font-size:11px;padding:5px 12px;}
+  .modal-meta{padding:0 18px 16px;grid-template-columns:1fr;gap:10px;}
+  .meta-item{padding:12px 14px;}
+  .meta-value{font-size:13px;}
+  .modal-section{padding:16px 18px;}
+  .modal-section-title{font-size:13px;}
+  .modal-notes{font-size:13px;padding:14px;}
+  .modal-comment{padding:12px 14px;}
+  .modal-comment-text{font-size:13px;}
+  .modal-comment-form{flex-direction:column;gap:8px;}
+  .modal-comment-form input,.modal-comment-form button{width:100%;padding:12px 14px;font-size:13px;}
+  .modal-actions{padding:14px 18px;border-radius:0;flex-direction:column;gap:8px;}
+  .modal-actions > button,.modal-actions > select{width:100%;margin:0;}
+  .modal-status-select{margin-inline-start:0;}
+  .btn-edit,.btn-del,.btn-pin,.btn-approve-modal,.btn-reject-modal{padding:12px 16px;font-size:13px;}
+  #reportOverlay{padding:0;align-items:stretch;}
+  .report-wrapper{max-width:100%;max-height:100vh;height:100vh;border-radius:0;}
+  .report-toolbar{padding:12px 14px;gap:8px;flex-wrap:wrap;}
+  .report-toolbar > div:last-child{width:100%;display:flex;gap:6px;}
+  .btn-download,.btn-close-report{padding:10px 12px;font-size:12px;flex:1;min-width:0;text-align:center;justify-content:center;}
+  .report-scroll{padding:10px;}
+  .report-content{padding:20px 14px;border-radius:14px;}
+  .report-content h1{font-size:20px !important;}
+  .report-content h2{font-size:16px !important;}
+  .report-content [style*="grid-template-columns:repeat(4"]{grid-template-columns:repeat(2,1fr) !important;gap:10px !important;}
+  .users-toolbar{flex-direction:column;align-items:stretch;gap:12px;}
+  .users-toolbar-actions{flex-direction:column;width:100%;gap:8px;}
+  .users-toolbar-actions .search-wrap{max-width:100% !important;}
+  .users-toolbar-actions .filter-select,.btn-add-user{width:100%;}
+  .user-row{flex-direction:column;align-items:stretch;padding:14px;gap:12px;}
+  .user-row:hover{transform:none;}
+  .user-avatar{width:48px;height:48px;font-size:20px;border-radius:14px;}
+  .user-name{font-size:14px;}
+  .user-meta{font-size:11px;gap:8px;}
+  .user-stats-row{font-size:11px;gap:10px;}
+  .user-actions{justify-content:flex-end;gap:6px;}
+  .btn-sm{padding:8px 12px;font-size:13px;}
+  .activity-header-bar{flex-direction:column;align-items:stretch;gap:10px;}
+  .activity-actions{flex-direction:column;width:100%;}
+  .btn-clear-deleted,.btn-purge-deleted{width:100%;justify-content:center;padding:11px 14px;font-size:12.5px;}
+  #toastHost{inset-inline:12px;bottom:12px;align-items:stretch;}
+  .toast{max-width:100%;width:100%;font-size:13px;padding:12px 16px;}
+  .notif-host{inset-inline:12px;top:12px;max-width:none;}
+  .sub-notification,.watch-sub-notification{padding:12px 14px;gap:10px;}
+  .sub-notif-icon,.watch-sub-icon{width:38px;height:38px;font-size:18px;border-radius:11px;}
+  .sub-notif-title,.watch-sub-title{font-size:12.5px;}
+  .sub-notif-message,.watch-sub-message{font-size:11.5px;}
+  .form-grid{grid-template-columns:1fr;gap:10px;}
+  .form-grid input,.form-grid select{padding:13px 14px;font-size:13px;border-radius:12px;}
+  .form-grid button{padding:14px;font-size:14px;border-radius:12px;}
+  #fullscreenReminder{padding:20px;}
+  .fs-content{gap:18px;}
+  .fs-alert-icon{width:100px;height:100px;font-size:50px;border-width:2px;}
+  .fs-title{font-size:26px;letter-spacing:-1px;}
+  .fs-subtitle{font-size:14px;letter-spacing:2px;}
+  .fs-task-name{padding:18px 22px;font-size:20px;border-radius:18px;}
+  .fs-meta{gap:8px;}
+  .fs-meta-chip{font-size:13px;padding:8px 14px;}
+  .fs-actions{flex-direction:column;width:100%;gap:10px;}
+  .fs-btn{width:100%;min-width:0;font-size:15px;padding:15px 20px;border-radius:14px;}
+  .swal2-popup{width:94% !important;padding:18px 14px !important;border-radius:18px !important;}
+  .swal2-title{font-size:17px !important;}
+  .swal2-html-container{font-size:13px !important;}
+  .swal2-input,.swal2-select,.swal2-textarea{font-size:14px !important;height:auto !important;padding:10px 12px !important;}
+  .swal2-actions{gap:8px !important;}
+  .swal2-confirm,.swal2-cancel{font-size:13px !important;padding:10px 18px !important;}
+  .w-clock{display:none;}
+  .w-kanban{grid-template-columns:1fr;}
+  .w-kpis{grid-template-columns:repeat(2,1fr);}
+  .w-footer{grid-template-columns:1fr;}
+  .w-header{padding:0 12px;gap:10px;}
+  .w-brand h1{font-size:13px;}
+  .w-brand span{font-size:9px;}
+}
+@media (max-width:480px){
+  .header-brand h1{font-size:14px;}
+  .header-brand .subtitle{display:none;}
+  .header-logo-wrap{width:40px;height:40px;}
+  .stat{padding:12px 8px;}
+  .stat-num{font-size:22px;}
+  .stat-label{font-size:10px;}
+  .nav-btn{padding:8px 12px;font-size:11.5px;}
+  .task-card{padding:16px 14px;}
+  .task-card .card-title{font-size:15px;}
+  .modal-title{font-size:17px;}
+  .user-avatar{width:42px;height:42px;font-size:18px;}
+  .fs-title{font-size:22px;}
+  .fs-alert-icon{width:80px;height:80px;font-size:40px;}
+  .fs-task-name{font-size:17px;padding:14px 18px;}
+  .reminder-icon{width:52px;height:52px;font-size:26px;}
+  .reminder-title{font-size:18px;}
+}
+@media (max-width:900px) and (orientation:landscape) and (max-height:500px){
+  .login-card{padding:30px 26px;transform:scale(.92);}
+  .login-logo-wrap{width:90px;height:90px;margin-bottom:16px;}
+  .login-card h1{font-size:22px;}
+  .login-card > p{margin-bottom:18px;font-size:12px;}
+  .login-watch-section{margin-top:16px;padding-top:14px;}
+  .modal-box{max-height:96vh;}
+  .report-wrapper{border-radius:0;}
+}
+@media (hover:none) and (pointer:coarse){
+  button,.filter-btn,.nav-btn,.view-toggle button,.approval-btn,.reminder-btn,.fs-btn{-webkit-tap-highlight-color:transparent;}
+  button:active,.filter-btn:active,.nav-btn:active{transform:scale(.96);transition:transform .08s ease;}
+  .task-card:active,.kanban-card:active,.w-task:active{transform:scale(.98);transition:transform .1s ease;}
+  .task-card:hover{transform:none;}
+  .stat:hover{transform:none;}
+  .user-row:hover{transform:none;}
+}
+
+/* ============ PRINT ============ */
+@media print{
+  body *{visibility:hidden;}
+  #reportBody, #reportBody *{visibility:visible;}
+  #reportBody{position:absolute;inset-inline-start:0;top:0;width:100%;}
+  .report-toolbar,.btn-close-report,.btn-download{display:none !important;}
 }
 </style>
 </head>
@@ -694,7 +916,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
     <h1>EMAK IT Dep.</h1>
     <p>نظام إدارة المهام — قسم نظم المعلومات</p>
     <form id="loginForm" novalidate>
-      <div class="input-group"><span class="input-icon" aria-hidden="true">👤</span><input id="loginUsername" type="text" placeholder="اسم المستخدم" autocomplete="username" required></div>
+      <div class="input-group"><span class="input-icon" aria-hidden="true">👤</span><input id="loginUsername" type="text" placeholder="اسم المستخدم" autocomplete="username" inputmode="text" autocapitalize="none" spellcheck="false" required></div>
       <div class="input-group"><span class="input-icon" aria-hidden="true">🔒</span><input id="loginPassword" type="password" placeholder="كلمة المرور" autocomplete="current-password" required><button type="button" class="toggle-pass" data-toggle-pass aria-label="إظهار كلمة المرور">👁️</button></div>
       <label class="remember-me"><input type="checkbox" id="rememberMe"> تذكرني على هذا الجهاز</label>
       <button type="submit" id="loginSubmitBtn">تسجيل الدخول</button>
@@ -797,7 +1019,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
         </form>
       </div>
       <div class="controls-bar">
-        <div class="search-wrap"><input id="searchBox" type="search" placeholder="ابحث في المهام..."></div>
+        <div class="search-wrap"><input id="searchBox" type="search" placeholder="ابحث في المهام..." inputmode="search"></div>
         <select id="sortSelect">
           <option value="priority">ترتيب: الأولوية</option>
           <option value="date">ترتيب: الأحدث</option>
@@ -869,7 +1091,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
         <div class="users-toolbar">
           <div class="panel-title" style="margin:0;">👥 إدارة المستخدمين</div>
           <div class="users-toolbar-actions">
-            <div class="search-wrap" style="max-width:240px;"><input id="usersSearchBox" type="search" placeholder="ابحث..."></div>
+            <div class="search-wrap" style="max-width:240px;"><input id="usersSearchBox" type="search" placeholder="ابحث..." inputmode="search"></div>
             <select id="usersRoleFilter" class="filter-select"><option value="all">كل الأدوار</option><option value="admin">👑 مدير</option><option value="employee">👤 موظف</option></select>
             <select id="usersStatusFilter" class="filter-select"><option value="all">كل الحالات</option><option value="active">نشط</option><option value="inactive">معطّل</option></select>
             <button class="btn-add-user" data-action="add-user">➕ إضافة مستخدم</button>
@@ -1056,7 +1278,7 @@ body.watch-kiosk #watchMainContent{grid-template-rows:56px auto minmax(0,1fr);}
 
 <script type="module">
 /* ============================================================
-   EMAK IT Dep. v24.1 — Fixed "My Tasks" filter
+   EMAK IT Dep. v24.2 — Mobile Optimized + Bug Fixes
    ============================================================ */
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -1170,30 +1392,6 @@ const dueLabel = (dueDate) => {
 const isThisWeek = (ts) => isValidTs(ts) && (Date.now() - ts) <= 7 * 86400000;
 const isThisMonth = (ts) => isValidTs(ts) && (Date.now() - ts) <= 30 * 86400000;
 
-/* ✅ دوال مساعدة جديدة */
-function getMyTeamKeys() {
-  const keys = new Set();
-  if (!state.user || !state.team) return keys;
-  Object.entries(state.team).forEach(([key, member]) => {
-    if (member && member.uid === state.user.uid) {
-      keys.add(key);
-    }
-  });
-  return keys;
-}
-
-function isMyTask(task) {
-  if (!task || !state.user) return false;
-  // 1. المسؤول هو المستخدم الحالي (matching by team key)
-  const myKeys = getMyTeamKeys();
-  if (task.assigneeId && myKeys.has(task.assigneeId)) return true;
-  // 2. المسؤول هو uid مباشر (fallback)
-  if (task.assigneeId === state.user.uid) return true;
-  // 3. المستخدم هو من أنشأ المهمة
-  if (task.createdBy === state.user.uid) return true;
-  return false;
-}
-
 const state = {
   user: null, profile: null, isAdmin: false,
   tasks: {}, team: {}, users: {}, activity: [], deletedTasks: {},
@@ -1211,8 +1409,52 @@ const state = {
   seenUrgentTasks: new Set(),
   fullscreenReminderActive: false,
   reminderInterval: null,
-  seenNotifications: new Set()
+  seenNotifications: new Set(),
+  _teamKeysCache: null,  // ✅ Cache for team keys
+  _scrollLockCount: 0    // ✅ Proper scroll lock counter
 };
+
+/* ✅ Better scroll lock */
+function lockScroll() {
+  state._scrollLockCount++;
+  document.body.classList.add('modal-open');
+}
+function unlockScroll() {
+  state._scrollLockCount = Math.max(0, state._scrollLockCount - 1);
+  if (state._scrollLockCount === 0) {
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+  }
+}
+function forceUnlockScroll() {
+  state._scrollLockCount = 0;
+  document.body.classList.remove('modal-open');
+  document.body.style.overflow = '';
+}
+
+/* ✅ Cached team keys */
+function getMyTeamKeys() {
+  if (state._teamKeysCache && state._teamKeysCache.uid === state.user?.uid && state._teamKeysCache.teamRef === state.team) {
+    return state._teamKeysCache.keys;
+  }
+  const keys = new Set();
+  if (!state.user || !state.team) return keys;
+  Object.entries(state.team).forEach(([key, member]) => {
+    if (member && member.uid === state.user.uid) keys.add(key);
+  });
+  state._teamKeysCache = { uid: state.user?.uid, teamRef: state.team, keys };
+  return keys;
+}
+function invalidateTeamKeysCache() { state._teamKeysCache = null; }
+
+function isMyTask(task) {
+  if (!task || !state.user) return false;
+  const myKeys = getMyTeamKeys();
+  if (task.assigneeId && myKeys.has(task.assigneeId)) return true;
+  if (task.assigneeId === state.user.uid) return true;
+  if (task.createdBy === state.user.uid) return true;
+  return false;
+}
 
 /* THEME */
 function initTheme() { const saved = Storage.get('emak_theme', 'dark'); applyTheme(saved); }
@@ -1222,6 +1464,20 @@ function applyTheme(theme) {
   Storage.set('emak_theme', theme);
   const icon = theme === 'dark' ? '🌙' : '☀️';
   $$('[data-theme-toggle]').forEach(btn => btn.textContent = icon);
+  // ✅ Refresh chart colors on theme change
+  refreshChartTheme();
+}
+function refreshChartTheme() {
+  state.charts.forEach((chart, id) => {
+    const isLight = state.theme === 'light';
+    const legendColor = isLight ? '#475569' : '#94a3b8';
+    if (chart.options?.plugins?.legend?.labels) {
+      chart.options.plugins.legend.labels.color = legendColor;
+    }
+    if (chart.options?.scales?.x?.ticks) chart.options.scales.x.ticks.color = isLight ? '#64748b' : '#64748b';
+    if (chart.options?.scales?.y?.ticks) chart.options.scales.y.ticks.color = isLight ? '#64748b' : '#64748b';
+    try { chart.update('none'); } catch {}
+  });
 }
 function toggleTheme() {
   const next = state.theme === 'dark' ? 'light' : 'dark';
@@ -1244,6 +1500,7 @@ function showToast(msg, type = 'success', ms = 3200) {
   setTimeout(() => {
     el.classList.remove('show');
     el.addEventListener('transitionend', () => el.remove(), { once:true });
+    setTimeout(() => el.remove(), 500);
   }, ms);
 }
 const swalSuccess = (title, text="") => Swal.fire({ icon:"success", title, text, timer:1800, showConfirmButton:false, background: themeBg(), color: themeFg() });
@@ -1336,6 +1593,10 @@ const Charts = {
     chart = new Chart(el, { type: config.type, data: config.data, options: { ...baseOptions, ...(config.options || {}) } });
     state.charts.set(id, chart);
     return chart;
+  },
+  destroy(id) {
+    const chart = state.charts.get(id);
+    if (chart) { try { chart.destroy(); } catch {} state.charts.delete(id); }
   }
 };
 
@@ -1514,7 +1775,7 @@ function showReminder(options = {}) {
   const actionsEl = $('#reminderActions');
   const progressBar = $('#reminderProgressBar');
 
-  if (!host || !card) return;
+  if (!host || !card) { state.reminderShowing = false; return; }
 
   card.classList.remove('p-urgent', 'p-important', 'p-normal', 'p-approval');
   card.classList.add(`p-${priority}`);
@@ -1669,7 +1930,7 @@ function showFullscreenReminder(task) {
   const openBtn = $('#fsOpenBtn');
   const closeBtn = $('#fsCloseBtn');
 
-  if (!host) return;
+  if (!host) { state.fullscreenReminderActive = false; return; }
 
   const d = daysRemaining(task.dueDate);
   const isOverdue = d !== null && d < 0;
@@ -1804,13 +2065,10 @@ function showDailySummaryIfNeeded() {
       if (t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING) return false;
       const d = daysRemaining(t.dueDate);
       if (d === null || d >= 0) return false;
-      // ✅ استخدام isMyTask للموظف
       if (!state.isAdmin && !isMyTask(t)) return false;
       return true;
     })
-    .sort((a, b) => {
-      return (daysRemaining(a[1].dueDate) ?? 0) - (daysRemaining(b[1].dueDate) ?? 0);
-    });
+    .sort((a, b) => (daysRemaining(a[1].dueDate) ?? 0) - (daysRemaining(b[1].dueDate) ?? 0));
 
   if (overdue.length === 0) return;
 
@@ -2036,10 +2294,12 @@ function setupAuthListener() {
     clearAllListeners();
     if (!user) {
       state.user = null; state.profile = null; state.isAdmin = false;
+      invalidateTeamKeysCache();
       loginScreen.classList.add('active');
       mainScreen.classList.remove('active');
       loadingScreen.classList.remove('active');
       stopReminderEngine();
+      forceUnlockScroll();
       return;
     }
     state.user = user;
@@ -2139,8 +2399,8 @@ function startRealtimeListeners() {
   
   state.unsubs.team = onValue(ref(db, "team"), (snap) => { 
     state.team = snap.val() || {}; 
+    invalidateTeamKeysCache();
     populateAssigneeSelect(); 
-    // ✅ أعد رسم المهام عند تحديث الفريق (لأن الفلتر "مهامي" يعتمد على team)
     scheduleRender();
   });
   
@@ -2222,7 +2482,6 @@ function renderStats() {
   const approvedTasks = allTasks.filter(t => t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING);
   
   $('#statTotal').textContent = approvedTasks.length;
-  // ✅ إحصائية مهامي
   const mineCount = approvedTasks.filter(t => isMyTask(t)).length;
   const statMine = $('#statMine');
   if (statMine) statMine.textContent = mineCount;
@@ -2336,7 +2595,6 @@ function renderTasks() {
     if (state.filter === 'overdue') { const d = daysRemaining(t.dueDate); return d !== null && d < 0 && t.status !== CONSTANTS.STATUS.DONE && t.approvalStatus !== CONSTANTS.APPROVAL_STATUS.PENDING; }
     if (state.filter === 'week') return isThisWeek(t.createdAt);
     if (state.filter === 'month') return isThisMonth(t.createdAt);
-    // ✅ إصلاح فلتر "مهامي"
     if (state.filter === 'mine') return isMyTask(t);
     if (state.filter === 'approval') return t.approvalStatus === CONSTANTS.APPROVAL_STATUS.PENDING;
     return true;
@@ -2516,8 +2774,17 @@ function renderKanban(list, filtered) {
   });
 }
 
-function openModal(taskId) { state.openTaskId = taskId; renderModal(taskId); $('#modalOverlay').classList.add('active'); document.body.style.overflow = "hidden"; }
-function closeModal() { state.openTaskId = null; $('#modalOverlay').classList.remove('active'); document.body.style.overflow = ""; }
+function openModal(taskId) { 
+  state.openTaskId = taskId; 
+  renderModal(taskId); 
+  $('#modalOverlay').classList.add('active'); 
+  lockScroll();
+}
+function closeModal() { 
+  state.openTaskId = null; 
+  $('#modalOverlay').classList.remove('active'); 
+  unlockScroll();
+}
 function renderModal(taskId) {
   const t = state.tasks[taskId];
   if (!t) return closeModal();
@@ -2540,7 +2807,7 @@ function renderModal(taskId) {
           <span>🕐 ${timeAgo(t.createdAt)}</span>
         </div>
         ${state.isAdmin ? `
-          <div style="display:flex;gap:12px;margin-top:16px;">
+          <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
             <button class="btn-approve-modal" data-approval="approve" data-id="${taskId}">✅ موافقة ونشر</button>
             <button class="btn-reject-modal" data-approval="reject" data-id="${taskId}">❌ رفض</button>
           </div>
@@ -2932,7 +3199,7 @@ function toggleKioskMode() {
   showToast(isKiosk ? "🖥️ وضع كامل" : "↩️ الوضع العادي", 'info');
 }
 async function startWatchData() {
-  if (!auth.currentUser) { try { await signInAnonymously(auth); } catch {} }
+  if (!auth.currentUser) { try { await signInAnonymously(auth); } catch (e) { console.warn('Anonymous auth failed:', e.message); } }
   startWatchClock();
   Object.keys(state.watchUnsubs).forEach(k => { if (state.watchUnsubs[k]) { try { state.watchUnsubs[k](); } catch {} state.watchUnsubs[k] = null; } });
   state.watchFirstLoad = false;
@@ -2949,7 +3216,7 @@ async function startWatchData() {
     } else { Object.keys(state.watchData.tasks).forEach(id => state.watchKnownTaskIds.add(id)); state.watchFirstLoad = true; }
     state.watchKnownTaskIds = new Set([...state.watchKnownTaskIds].filter(id => state.watchData.tasks[id]));
     if (state.watchMode) wRenderAll();
-  });
+  }, (err) => { console.warn('Watch tasks listener error:', err.message); });
   state.watchUnsubs.team = onValue(ref(db, "team"), (snap) => { state.watchData.team = snap.val() || {}; });
   state.watchUnsubs.activity = onValue(ref(db, "activity"), (snap) => {
     const raw = snap.val() || {};
@@ -2989,7 +3256,6 @@ function renderUsersList() {
   if (users.length === 0) { wrap.innerHTML = '<p class="empty">لا يوجد مستخدمون</p>'; return; }
   wrap.innerHTML = users.map(([uid, u]) => {
     const isMe = uid === state.user.uid;
-    // ✅ استخدام team keys بدل uid مباشر
     const userTeamKeys = new Set();
     Object.entries(state.team).forEach(([key, member]) => {
       if (member && member.uid === uid) userTeamKeys.add(key);
@@ -3082,9 +3348,9 @@ function openReport() {
       ${entries.map(([id, t]) => `<div style="background:#f8fafc;padding:16px;border-radius:12px;margin-bottom:12px;border-inline-end:4px solid ${t.priority==="عاجل"?"#dc2626":t.priority==="مهم"?"#d97706":"#059669"};"><div style="font-size:15px;font-weight:800;">${esc(t.title)}</div><div style="font-size:12px;color:#64748b;">👤 ${esc(t.assignee || "—")} • ${esc(t.status)}</div></div>`).join("")}
     </div>`;
   $("#reportOverlay").classList.add("active");
-  document.body.style.overflow = "hidden";
+  lockScroll();
 }
-function closeReport() { $("#reportOverlay").classList.remove("active"); document.body.style.overflow = ""; }
+function closeReport() { $("#reportOverlay").classList.remove("active"); unlockScroll(); }
 async function downloadPDF() {
   const btn = $("#downloadPdfBtn");
   btn.disabled = true; btn.textContent = "⏳ جارٍ التوليد...";
@@ -3189,9 +3455,9 @@ async function openAddUserModal() {
   const { value: formValues } = await Swal.fire({
     title: "➕ إضافة مستخدم",
     html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">اسم المستخدم</label><input id="nu-username" class="swal2-input" placeholder="bahaa" style="margin:0;width:100%;">
+      <label style="font-size:12px;font-weight:800;color:#94a3b8;">اسم المستخدم</label><input id="nu-username" class="swal2-input" placeholder="bahaa" autocomplete="off" autocapitalize="none" spellcheck="false" style="margin:0;width:100%;">
       <label style="font-size:12px;font-weight:800;color:#94a3b8;">الاسم الكامل</label><input id="nu-name" class="swal2-input" placeholder="بهاء محمد" style="margin:0;width:100%;">
-      <label style="font-size:12px;font-weight:800;color:#94a3b8;">كلمة المرور (6+)</label><input id="nu-pass" type="text" class="swal2-input" placeholder="مؤقتة" style="margin:0;width:100%;">
+      <label style="font-size:12px;font-weight:800;color:#94a3b8;">كلمة المرور (6+)</label><input id="nu-pass" type="text" class="swal2-input" placeholder="مؤقتة" autocomplete="off" style="margin:0;width:100%;">
       <label style="font-size:12px;font-weight:800;color:#94a3b8;">الدور</label><select id="nu-role" class="swal2-select" style="margin:0;width:100%;"><option value="employee">👤 موظف</option><option value="admin">👑 مدير</option></select>
     </div>`,
     showCancelButton:true, confirmButtonText:"إنشاء", cancelButtonText:"إلغاء",
@@ -3241,10 +3507,23 @@ async function openAddUserModal() {
         if (btn) {
           btn.onclick = () => {
             const text = `المستخدم: ${username}\nكلمة المرور: ${password}\nالرابط: ${location.origin}`;
-            navigator.clipboard.writeText(text).then(() => {
+            const doCopy = () => {
               btn.textContent = '✅ تم النسخ';
               setTimeout(() => { btn.textContent = '📋 نسخ البيانات'; }, 2000);
-            });
+            };
+            if (navigator.clipboard?.writeText) {
+              navigator.clipboard.writeText(text).then(doCopy).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = text; document.body.appendChild(ta); ta.select();
+                try { document.execCommand('copy'); doCopy(); } catch {}
+                ta.remove();
+              });
+            } else {
+              const ta = document.createElement('textarea');
+              ta.value = text; document.body.appendChild(ta); ta.select();
+              try { document.execCommand('copy'); doCopy(); } catch {}
+              ta.remove();
+            }
           };
         }
       }
@@ -3271,7 +3550,7 @@ async function openChangePasswordModal() {
   if (isGoogleUser) return Swal.fire({ icon:"info", title:"حساب جوجل", text:"كلمة المرور من جوجل.", confirmButtonText:"حسناً", background: themeBg(), color: themeFg() });
   const { value: formValues } = await Swal.fire({
     title: "🔑 كلمة المرور",
-    html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">الحالية</label><input id="cp-current" type="password" class="swal2-input" style="margin:0;width:100%;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">الجديدة (6+)</label><input id="cp-new" type="password" class="swal2-input" style="margin:0;width:100%;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">تأكيد</label><input id="cp-confirm" type="password" class="swal2-input" style="margin:0;width:100%;"></div>`,
+    html: `<div style="display:flex;flex-direction:column;gap:10px;text-align:right;direction:rtl;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">الحالية</label><input id="cp-current" type="password" class="swal2-input" autocomplete="current-password" style="margin:0;width:100%;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">الجديدة (6+)</label><input id="cp-new" type="password" class="swal2-input" autocomplete="new-password" style="margin:0;width:100%;"><label style="font-size:12px;font-weight:800;color:#94a3b8;">تأكيد</label><input id="cp-confirm" type="password" class="swal2-input" autocomplete="new-password" style="margin:0;width:100%;"></div>`,
     showCancelButton:true, confirmButtonText:"تغيير", cancelButtonText:"إلغاء",
     confirmButtonColor:"#5b8def", focusConfirm:false, background: themeBg(), color: themeFg(),
     preConfirm: () => {
@@ -3533,6 +3812,7 @@ document.addEventListener('click', async (e) => {
       });
       if (overdue.length === 0) return showToast("🎉 لا توجد مهام متأخرة", 'info');
       try {
+        let sentCount = 0;
         for (const [uid] of Object.entries(state.users)) {
           if (uid === state.user.uid) continue;
           if (state.users[uid]?.active === false) continue;
@@ -3542,8 +3822,9 @@ document.addEventListener('click', async (e) => {
             at: Date.now(),
             read: false
           });
+          sentCount++;
         }
-        showToast(`🔔 تم إرسال التذكير لـ ${Object.keys(state.users).length - 1} عضو`, 'success');
+        showToast(`🔔 تم إرسال التذكير لـ ${sentCount} عضو`, 'success');
       } catch (err) { swalError("فشل", err.message); }
       break;
   }
@@ -3635,7 +3916,7 @@ function setupNav() {
   const lb = $("#logoutBtn");
   if (lb) lb.onclick = async () => {
     const r = await swalConfirm("تسجيل الخروج؟");
-    if (r.isConfirmed) { stopReminderEngine(); clearAllListeners(); signOut(auth); }
+    if (r.isConfirmed) { stopReminderEngine(); clearAllListeners(); forceUnlockScroll(); signOut(auth); }
   };
   $("#modalOverlay").addEventListener('click', (e) => { if (e.target.id === 'modalOverlay') closeModal(); });
   $("#reportOverlay").addEventListener('click', (e) => { if (e.target.id === 'reportOverlay') closeReport(); });
@@ -3753,6 +4034,8 @@ function setupGlobalEvents() {
     if (s) { s.classList.add('offline'); s.innerHTML = '<i></i> غير متصل'; }
     showToast("📡 غير متصل", 'warning');
   });
+  // ✅ Handle page unload - restore scroll
+  window.addEventListener('beforeunload', forceUnlockScroll);
 }
 
 function init() {
